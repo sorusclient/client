@@ -2,9 +2,11 @@ package com.github.sorusclient.client.hud;
 
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
+import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
+import com.github.sorusclient.client.event.impl.KeyEvent;
 import com.github.sorusclient.client.event.impl.MouseEvent;
 import com.github.sorusclient.client.event.impl.RenderInGameEvent;
 import com.github.sorusclient.client.hud.impl.armor.Armor;
@@ -38,6 +40,7 @@ public class HUDManager implements SettingContainer {
 
     private final Map<String, HUDElement> elements = new HashMap<>();
 
+    private long prevClickTime = 0;
     private HUDElement draggedHud;
     private InteractType interactType;
     private double initialMouseX;
@@ -61,6 +64,7 @@ public class HUDManager implements SettingContainer {
         EventManager eventManager = Sorus.getInstance().get(EventManager.class);
         eventManager.register(RenderInGameEvent.class, this::render);
         eventManager.register(MouseEvent.class, this::onClick);
+        eventManager.register(KeyEvent.class, this::onKey);
 
         Sorus.getInstance().get(SettingManager.class).register(this);
     }
@@ -81,10 +85,14 @@ public class HUDManager implements SettingContainer {
         this.possibleElements.add(new Pair<>(hudClass, new Pair<>(displayName, description)));
     }
 
-    private void add(HUDElement hud) {
+    public void add(HUDElement hud) {
         String id = hud.getId() + "-" + (System.nanoTime() % 1000);
         this.elements.put(id, hud);
         hud.setInternalId(id);
+    }
+
+    public void remove(HUDElement hud) {
+        this.elements.remove(hud.getInternalId());
     }
 
     public void render(RenderInGameEvent ignored) {
@@ -99,8 +107,9 @@ public class HUDManager implements SettingContainer {
                 for (String attachedElementId : element.getAttached()) {
                     HUDElement attachedElement = this.getById(attachedElementId);
                     if (attachedElement == null) {
-                        element.updatePosition(null, screenDimensions);
+
                     }
+                    element.updatePosition(attachedElement, screenDimensions);
                 }
             }
         }
@@ -532,6 +541,11 @@ public class HUDManager implements SettingContainer {
                 } else if (event.getX() > left && event.getX() < right && event.getY() > top && event.getY() < bottom) {
                     this.interactType = InteractType.MOVE;
                     interacting = true;
+
+                    if (System.currentTimeMillis() - this.prevClickTime < 400) {
+                        element.detach();
+                        interacting = false;
+                    }
                 }
 
                 if (interacting) {
@@ -541,6 +555,7 @@ public class HUDManager implements SettingContainer {
                     this.initialHudX = x;
                     this.initialHudY = y;
                     this.initialScale = element.getScale();
+                    this.prevClickTime = System.currentTimeMillis();
                 }
             }
         } else {
@@ -555,6 +570,13 @@ public class HUDManager implements SettingContainer {
                 }
             }
             this.snapped = new Pair[0];
+            this.draggedHud = null;
+        }
+    }
+
+    public void onKey(KeyEvent event) {
+        if (event.isPressed() && event.getKey() == Key.D && this.draggedHud != null) {
+            this.draggedHud.delete(new ArrayList<>());
             this.draggedHud = null;
         }
     }

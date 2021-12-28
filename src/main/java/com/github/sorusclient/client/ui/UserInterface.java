@@ -91,8 +91,20 @@ public class UserInterface {
                                                             .setTextColor(new Absolute(Color.fromRGB(190, 190, 190, 255)))
                                                             .setPadding(new Relative(0.05))
                                                             .setX(new Side(Side.NEGATIVE))
-                                                            .setY(new Side(Side.NEGATIVE))
-                                                    ));
+                                                            .setY(new Side(Side.NEGATIVE)))
+                                                    .setOnDoubleClick(container1 -> {
+                                                        try {
+                                                            HUDElement hudElement = possibleElement.getFirst().newInstance();
+                                                            double[] screenDimensions = Sorus.getInstance().get(MinecraftAdapter.class).getScreenDimensions();
+                                                            hudElement.setPosition(screenDimensions[0] / 2, screenDimensions[1] / 2, screenDimensions);
+                                                            hudElement.setScale(1);
+
+                                                            Sorus.getInstance().get(HUDManager.class).add(hudElement);
+                                                        } catch (InstantiationException | IllegalAccessException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        container1.getRuntime().setState("currentHudTab", "main");
+                                                    }));
                                         }
                                     }))
                             .addStoredState("currentHudTab"))

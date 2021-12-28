@@ -26,6 +26,7 @@ public class Container extends Component {
     private Container parent;
 
     private Consumer<Container> onClick;
+    private Consumer<Container> onDoubleClick;
 
     public Container() {
         this.runtime = new Runtime();
@@ -78,6 +79,11 @@ public class Container extends Component {
         return this;
     }
 
+    public Container setOnDoubleClick(Consumer<Container> onDoubleClick) {
+        this.onDoubleClick = onDoubleClick;
+        return this;
+    }
+
     public Container setOnClick(Consumer<Container> onClick) {
         this.onClick = onClick;
         return this;
@@ -94,6 +100,8 @@ public class Container extends Component {
         private double padding;
 
         private final List<Pair<Component, double[]>> placedComponents = new ArrayList<>();
+
+        private long prevClick = 0;
 
         @Override
         public void render(double x, double y, double width, double height) {
@@ -125,7 +133,7 @@ public class Container extends Component {
             this.placedComponents.add(new Pair<>(null, new double[] {0, -this.getHeight() / 2 - 0.5, this.getWidth() + 1, 1, 0}));
 
             for (Component child : this.getChildren()) {
-                double[] wantedPosition = child.runtime.getCalculatedPosition();
+                double[] wantedPosition = this.getOtherCalculatedPosition(child);
                 double childX = wantedPosition[0];
                 double childY = wantedPosition[1];
                 double childWidth = wantedPosition[2];
@@ -144,6 +152,10 @@ public class Container extends Component {
         @Override
         public Container.Runtime getParent() {
             return (Runtime) Container.this.parent.runtime;
+        }
+
+        protected double[] getOtherCalculatedPosition(Component child) {
+            return child.runtime.getCalculatedPosition();
         }
 
         @Override
@@ -221,8 +233,18 @@ public class Container extends Component {
 
         @Override
         public void handleMouseEvent(MouseEvent event) {
-            if (Container.this.onClick != null && event.isPressed() && event.getButton() == Button.PRIMARY) {
-                Container.this.onClick.accept(Container.this);
+            if (event.isPressed() && event.getButton() == Button.PRIMARY) {
+                if (Container.this.onClick != null) {
+                    Container.this.onClick.accept(Container.this);
+                }
+
+                if (System.currentTimeMillis() - this.prevClick < 400) {
+                    if (Container.this.onDoubleClick != null) {
+                        Container.this.onDoubleClick.accept(Container.this);
+                    }
+                }
+
+                this.prevClick = System.currentTimeMillis();
             }
 
             for (Pair<Component, double[]> component : this.placedComponents) {

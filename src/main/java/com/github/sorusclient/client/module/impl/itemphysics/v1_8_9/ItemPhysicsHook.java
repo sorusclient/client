@@ -34,7 +34,7 @@ public class ItemPhysicsHook {
     public static void preRenderItem(ItemEntity entity) {
         ItemPhysics itemPhysics = Sorus.getInstance().get(ModuleManager.class).get(ItemPhysics.class);
         if (itemPhysics.isEnabled()) {
-            GlStateManager.translated(0, -0.25, 0);
+            GlStateManager.translated(0, -0.225, 0);
             GlStateManager.rotatef(90, 1, 0, 0);
 
             if (!entity.onGround) {

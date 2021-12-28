@@ -66,16 +66,20 @@ public class List extends Container {
         }
 
         @Override
-        protected void renderChild(Component.Runtime childRuntime, double x, double y, double width, double height) {
+        protected double[] getOtherCalculatedPosition(Component child) {
+            double[] array = super.getOtherCalculatedPosition(child);
+            Component.Runtime childRuntime = child.runtime;
+
             if ((List.this.type & HORIZONTAL) != 0) {
-                x = this.getX() + -this.width / 2 + width / 2 + childRuntime.getPadding() + (width + childRuntime.getPadding()) * (index % columns);
+                array[0] = -this.width / 2 + childRuntime.getWidth() / 2 + childRuntime.getPadding() + (childRuntime.getWidth() + childRuntime.getPadding()) * (index % columns);
             }
             if ((List.this.type & VERTICAL) != 0) {
-                y = this.getY() + -this.height / 2 + height / 2 + childRuntime.getPadding() + (height + childRuntime.getPadding()) * (int) (index / columns);
+                array[1] = -this.height / 2 + childRuntime.getHeight() / 2 + childRuntime.getPadding() + (childRuntime.getHeight() + childRuntime.getPadding()) * (int) (index / columns);
             }
 
-            super.renderChild(childRuntime, x, y, width, height);
             this.index++;
+
+            return array;
         }
 
     }

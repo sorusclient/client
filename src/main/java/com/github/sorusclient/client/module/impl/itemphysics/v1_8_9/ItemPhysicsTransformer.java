@@ -30,14 +30,14 @@ public class ItemPhysicsTransformer implements Listener, ITransformer {
         ClassReader classReader = new ClassReader(data);
         classReader.accept(classNode, 0);
 
-        this.transformGameRenderer(classNode);
+        this.transformItemEntityRenderer(classNode);
 
         ClassWriter classWriter = new ClassWriter(0);
         classNode.accept(classWriter);
         return classWriter.toByteArray();
     }
 
-    private void transformGameRenderer(ClassNode classNode) {
+    private void transformItemEntityRenderer(ClassNode classNode) {
         Identifier method_10221 = Identifier.parse("v1_8_9/net/minecraft/client/render/entity/ItemEntityRenderer#method_10221(Lv1_8_9/net/minecraft/entity/ItemEntity;DDDFLv1_8_9/net/minecraft/client/render/model/BakedModel;)I");
         Identifier color4f = Identifier.parse("v1_8_9/com/mojang/blaze3d/platform/GlStateManager#color4f(FFFF)V");
         Identifier itemEntity = Identifier.parse("v1_8_9/net/minecraft/entity/ItemEntity");

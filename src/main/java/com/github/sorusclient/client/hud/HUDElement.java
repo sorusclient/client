@@ -155,6 +155,32 @@ public abstract class HUDElement implements SettingContainer {
         }
     }
 
+    public void detach() {
+        for (String elementId : this.attached.getValue().keySet()) {
+            Sorus.getInstance().get(HUDManager.class).getById(elementId).detachOther(this);
+        }
+
+        this.attached.getValue().clear();
+    }
+
+    private void detachOther(HUDElement hud) {
+        this.attached.getValue().remove(hud.getInternalId());
+    }
+
+    public void delete(List<HUDElement> alreadyDeleted) {
+        alreadyDeleted.add(this);
+        Sorus.getInstance().get(HUDManager.class).remove(this);
+
+        for (String elementId : this.attached.getValue().keySet()) {
+            HUDElement element = Sorus.getInstance().get(HUDManager.class).getById(elementId);
+            if (!alreadyDeleted.contains(element)) {
+                if (element != null) {
+                    element.delete(alreadyDeleted);
+                }
+            }
+        }
+    }
+
     public List<String> getAttached() {
         return new ArrayList<>(this.attached.getValue().keySet());
     }
