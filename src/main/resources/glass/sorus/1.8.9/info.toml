@@ -1,0 +1,31 @@
+namespace = "com.github.sorusclient.client"
+
+[listeners]
+initialize = [
+    "adapter.v1_8_9.Adapter",
+    "event.v1_8_9.EventTransformer",
+    "ui.v1_8_9.RendererHook",
+    "module.impl.zoom.v1_8_9.ZoomTransformer",
+    "module.impl.blockoverlay.v1_8_9.BlockOverlayTransformer",
+    "module.impl.itemphysics.v1_8_9.ItemPhysicsTransformer",
+    "module.impl.fullbright.v1_8_9.FullBrightTransformer",
+    "module.impl.environmentchanger.v1_8_9.EnvironmentChangerTransformer",
+    "module.impl.oldanimations.v1_8_9.OldAnimationsTransformer",
+    "hud.impl.potionstatus.v1_8_9.PotionEffectRenderer",
+    "hud.impl.armor.v1_8_9.ArmorRenderer",
+    "hud.impl.armor.v1_8_9.ArmorTransformer",
+    "hud.impl.sidebar.v1_8_9.SideBarTransformer",
+    "hud.impl.health.v1_8_9.HealthRenderer",
+    "hud.impl.health.v1_8_9.HealthTransformer",
+    "hud.impl.hunger.v1_8_9.HungerRenderer",
+    "hud.impl.hunger.v1_8_9.HungerTransformer",
+    "hud.impl.experience.v1_8_9.ExperienceRenderer",
+    "hud.impl.experience.v1_8_9.ExperienceTransformer",
+    "hud.impl.bossbar.v1_8_9.BossBarRenderer",
+    "hud.impl.hotbar.v1_8_9.HotBarRenderer",
+    "hud.impl.hotbar.v1_8_9.HotBarTransformer"
+]
+
+[environment]
+    [environment.has]
+    client = "1.8.9"

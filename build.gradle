@@ -1,0 +1,36 @@
+import static com.github.glassmc.kiln.standard.DependencyHandlerExtension.*
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url = "https://jitpack.io/"
+        }
+    }
+
+    dependencies {
+        classpath("com.github.glassmc:kiln:v0.5.13")
+    }
+}
+
+apply plugin: "kiln-main"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url = "https://jitpack.io/"
+    }
+}
+
+dependencies {
+    implementation "com.github.glassmc:loader:v0.6.3"
+
+    implementation "org.ow2.asm:asm-tree:9.2"
+    shadowImplementation "commons-io:commons-io:2.11.0"
+    shadowImplementation "com.google.guava:guava:31.0.1-jre"
+    shadowImplementation "com.cedarsoftware:json-io:4.13.0"
+    shadowImplementation "org.json:json:20211205"
+
+    compileOnly minecraft("client", "1.8.9", "yarn")
+}

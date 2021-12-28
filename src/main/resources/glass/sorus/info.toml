@@ -1,0 +1,7 @@
+id = "sorus"
+version = "0.1.0"
+namespace = "com.github.sorusclient.client"
+
+implementations = [
+    "1.8.9"
+]
