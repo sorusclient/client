@@ -62,6 +62,7 @@ public class EventHook {
 
     static {
         buttonMap.put(0, Button.PRIMARY);
+        buttonMap.put(-1, Button.NONE);
     }
 
     public static void onKey() {

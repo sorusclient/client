@@ -3,6 +3,10 @@ package com.github.sorusclient.client.module.impl.blockoverlay;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.util.Color;
+import com.github.sorusclient.client.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockOverlay extends ModuleDisableable {
 
@@ -28,6 +32,15 @@ public class BlockOverlay extends ModuleDisableable {
 
     public Color getFillColor() {
         return this.fillColor.getValue();
+    }
+
+    @Override
+    public List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> getSettings() {
+        List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> settings = new ArrayList<>();
+
+        settings.add(new Pair<>(new Pair<>("Border Thickness", this.borderThickness), new Pair<>("SLIDER", new Pair<>(0.0, 5.0))));
+
+        return settings;
     }
 
 }

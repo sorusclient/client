@@ -37,12 +37,20 @@ public class TabHolder extends Container {
 
     public class Runtime extends Container.Runtime {
 
+        private String prevCurrentTab = null;
+
         @Override
         protected List<Component> getChildren() {
             String currentTab = (String) this.getState(TabHolder.this.stateId);
             if (currentTab == null) {
                 currentTab = TabHolder.this.defaultTab;
             }
+
+            if (this.prevCurrentTab != null && !this.prevCurrentTab.equals(currentTab)) {
+                TabHolder.this.tabs.get(this.prevCurrentTab).runtime.hasInit = false;
+            }
+
+            this.prevCurrentTab = currentTab;
 
             return Collections.singletonList(TabHolder.this.tabs.get(currentTab));
         }

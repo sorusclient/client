@@ -20,8 +20,14 @@ public abstract class Component {
 
     protected Runtime runtime;
 
-    private List<String> storedState = new ArrayList<>();
-    private Map<String, Consumer<Pair<Component, Object>>> onStateUpdates = new HashMap<>();
+    protected Container parent;
+
+    private final List<String> storedState = new ArrayList<>();
+    private final Map<String, Consumer<Pair<Component, Object>>> onStateUpdates = new HashMap<>();
+
+    public Component() {
+        this.addStoredState("selected");
+    }
 
     public Component setX(Constraint x) {
         this.x = x;
@@ -57,11 +63,15 @@ public abstract class Component {
         return runtime;
     }
 
-    public abstract void setParent(Container parent);
+    public void setParent(Container parent) {
+        this.parent = parent;
+    }
 
     public abstract class Runtime {
 
-        private final Map<String, Object> state = new HashMap<>();
+        public final Map<String, Object> state = new HashMap<>();
+
+        public boolean hasInit = false;
 
         public abstract void render(double x, double y, double width, double height);
 
@@ -101,6 +111,24 @@ public abstract class Component {
                 return this.state.get(id);
             } else {
                 return this.getParent().getState(id);
+            }
+        }
+
+        public Map<String, Object> getAvailableState() {
+            Map<String, Object> availableState = new HashMap<>();
+
+            if (Component.this.parent != null) {
+                availableState.putAll(this.getParent().getAvailableState());
+            }
+
+            availableState.putAll(this.state);
+
+            return availableState;
+        }
+
+        public void setAvailableState(Map<String, Object> state) {
+            for (Map.Entry<String, Object> entry : state.entrySet()) {
+                this.setState(entry.getKey(), entry.getValue());
             }
         }
 

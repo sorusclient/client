@@ -36,6 +36,7 @@ import java.util.Map;
 
 public class HUDManager implements SettingContainer {
 
+    //TODO: hud data as opposed to weird pair thing that isn't intuitive
     private final List<Pair<Class<? extends HUDElement>, Pair<String, String>>> possibleElements = new ArrayList<>();
 
     private final Map<String, HUDElement> elements = new HashMap<>();

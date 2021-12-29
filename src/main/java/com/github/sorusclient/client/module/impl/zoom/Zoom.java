@@ -8,11 +8,15 @@ import com.github.sorusclient.client.event.impl.KeyEvent;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.setting.Setting;
+import com.github.sorusclient.client.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Zoom extends ModuleDisableable {
 
     private final Setting<Key> key;
-    private final Setting<Integer> fov;
+    private final Setting<Double> fov;
     private final Setting<Double> sensitivity;
     private final Setting<Boolean> cinematicCamera;
 
@@ -22,7 +26,7 @@ public class Zoom extends ModuleDisableable {
         super("zoom");
 
         this.register("key", this.key = new Setting<>(Key.C));
-        this.register("fov", this.fov = new Setting<>(30));
+        this.register("fov", this.fov = new Setting<>(30.0));
         this.register("sensitivity", this.sensitivity = new Setting<>(0.5));
         this.register("cinematicCamera", this.cinematicCamera = new Setting<>(false));
 
@@ -41,7 +45,7 @@ public class Zoom extends ModuleDisableable {
         return this.isEnabled() && this.toggled;
     }
 
-    public long getFov() {
+    public double getFov() {
         return this.fov.getValue();
     }
 
@@ -51,6 +55,18 @@ public class Zoom extends ModuleDisableable {
 
     public boolean useCinematicCamera() {
         return this.cinematicCamera.getValue();
+    }
+
+    @Override
+    public List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> getSettings() {
+        List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> settings = new ArrayList<>();
+
+        settings.add(new Pair<>(new Pair<>("Key", this.key), new Pair<>("KEY", null)));
+        settings.add(new Pair<>(new Pair<>("Field Of View", this.fov), new Pair<>("SLIDER", new Pair<>(15.0, 100.0))));
+        settings.add(new Pair<>(new Pair<>("Sensitivity", this.sensitivity), new Pair<>("SLIDER", new Pair<>(0.25, 1.5))));
+        settings.add(new Pair<>(new Pair<>("Cinematic Camera", this.cinematicCamera), new Pair<>("TOGGLE", null)));
+
+        return settings;
     }
 
 }

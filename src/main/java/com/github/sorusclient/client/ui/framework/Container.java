@@ -2,6 +2,7 @@ package com.github.sorusclient.client.ui.framework;
 
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
+import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.event.impl.KeyEvent;
 import com.github.sorusclient.client.event.impl.MouseEvent;
 import com.github.sorusclient.client.ui.Renderer;
@@ -12,6 +13,7 @@ import com.github.sorusclient.client.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class Container extends Component {
@@ -23,10 +25,12 @@ public class Container extends Component {
     private Constraint padding = new Absolute(0);
 
     protected final List<Component> children = new ArrayList<>();
-    private Container parent;
 
-    private Consumer<Container> onClick;
-    private Consumer<Container> onDoubleClick;
+    private Consumer<Map<String, Object>> onClick;
+    private Consumer<Map<String, Object>> onDoubleClick;
+    private Consumer<Pair<Map<String, Object>, Pair<Double, Double>>> onDrag;
+    private Consumer<Pair<Map<String, Object>, Key>> onKey;
+    private Consumer<Pair<Container, Map<String, Object>>> onInit;
 
     public Container() {
         this.runtime = new Runtime();
@@ -79,18 +83,34 @@ public class Container extends Component {
         return this;
     }
 
-    public Container setOnDoubleClick(Consumer<Container> onDoubleClick) {
+    public Container setOnDoubleClick(Consumer<Map<String, Object>> onDoubleClick) {
         this.onDoubleClick = onDoubleClick;
         return this;
     }
 
-    public Container setOnClick(Consumer<Container> onClick) {
+    public Container setOnClick(Consumer<Map<String, Object>> onClick) {
         this.onClick = onClick;
         return this;
     }
 
-    public void setParent(Container parent) {
-        this.parent = parent;
+    public Container setOnDrag(Consumer<Pair<Map<String, Object>, Pair<Double, Double>>> onDrag) {
+        this.onDrag = onDrag;
+        return this;
+    }
+
+    public Container setOnKey(Consumer<Pair<Map<String, Object>, Key>> onKey) {
+        this.onKey = onKey;
+        return this;
+    }
+
+    public Container setOnInit(Consumer<Pair<Container, Map<String, Object>>> onInit) {
+        this.onInit = onInit;
+        return this;
+    }
+
+    public Container clear() {
+        this.children.clear();
+        return this;
     }
 
     public class Runtime extends Component.Runtime {
@@ -103,9 +123,22 @@ public class Container extends Component {
 
         private long prevClick = 0;
 
+        private boolean heldClick = false;
+
         @Override
         public void render(double x, double y, double width, double height) {
             this.placedComponents.clear();
+
+            if (!this.hasInit) {
+                if (Container.this.onInit != null) {
+                    Map<String, Object> state = this.getAvailableState();
+                    Container.this.onInit.accept(new Pair<>(Container.this, state));
+                    this.setAvailableState(state);
+                }
+
+                this.setState("selected", false);
+                this.hasInit = true;
+            }
 
             Container container = Container.this;
 
@@ -233,26 +266,47 @@ public class Container extends Component {
 
         @Override
         public void handleMouseEvent(MouseEvent event) {
+            Map<String, Object> state = this.getAvailableState();
+
             if (event.isPressed() && event.getButton() == Button.PRIMARY) {
-                if (Container.this.onClick != null) {
-                    Container.this.onClick.accept(Container.this);
-                }
 
-                if (System.currentTimeMillis() - this.prevClick < 400) {
-                    if (Container.this.onDoubleClick != null) {
-                        Container.this.onDoubleClick.accept(Container.this);
+                if (event.getX() > this.x - this.width / 2 &&
+                        event.getX() < this.x + this.width / 2 &&
+                        event.getY() > this.y - this.height / 2 &&
+                        event.getY() < this.y + this.height / 2) {
+
+                    if (Container.this.onClick != null) {
+                        Container.this.onClick.accept(state);
                     }
-                }
 
-                this.prevClick = System.currentTimeMillis();
+                    this.heldClick = true;
+
+                    if (System.currentTimeMillis() - this.prevClick < 400) {
+                        if (Container.this.onDoubleClick != null) {
+                            Container.this.onDoubleClick.accept(state);
+                        }
+                    }
+
+                    this.prevClick = System.currentTimeMillis();
+
+                    state.put("selected", true);
+                } else {
+                    state.put("selected", false);
+                }
+            } else if (!event.isPressed() && event.getButton() == Button.PRIMARY) {
+                this.heldClick = false;
             }
 
+            if (this.heldClick) {
+                if (Container.this.onDrag != null) {
+                    Container.this.onDrag.accept(new Pair<>(state, new Pair<>(Math.min(1, Math.max(0, (event.getX() - (this.x - this.width / 2)) / this.width)), Math.min(1, Math.max(0, (event.getY() - (this.y - this.height / 2)) / this.height)))));
+                }
+            }
+
+            this.setAvailableState(state);
+
             for (Pair<Component, double[]> component : this.placedComponents) {
-                double[] componentPosition = component.getSecond();
-                if (event.getX() > this.x + componentPosition[0] - componentPosition[2] / 2 &&
-                        event.getX() < this.x + componentPosition[0] + componentPosition[2] / 2 &&
-                        event.getY() > this.y + componentPosition[1] - componentPosition[3] / 2 &&
-                        event.getY() < this.y + componentPosition[1] + componentPosition[3] / 2) {
+                if (component.getFirst() != null) {
                     component.getFirst().runtime.handleMouseEvent(event);
                 }
             }
@@ -260,7 +314,21 @@ public class Container extends Component {
 
         @Override
         public void handleKeyEvent(KeyEvent event) {
+            if ((boolean) this.getState("selected")) {
+                if (Container.this.onKey != null) {
+                    Map<String, Object> state = this.getAvailableState();
 
+                    Container.this.onKey.accept(new Pair<>(state, event.getKey()));
+
+                    this.setAvailableState(state);
+                }
+            }
+
+            for (Pair<Component, double[]> component : this.placedComponents) {
+                if (component.getFirst() != null) {
+                    component.getFirst().runtime.handleKeyEvent(event);
+                }
+            }
         }
 
     }

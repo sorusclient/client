@@ -16,18 +16,11 @@ public class Text extends Component {
     private Constraint fontRenderer;
     private Constraint text;
 
-    private Container parent;
-
     private Constraint scale = new Absolute(1);
     private Constraint textColor = new Absolute(Color.WHITE);
 
     public Text() {
         this.runtime = new Runtime();
-    }
-
-    @Override
-    public void setParent(Container parent) {
-        this.parent = parent;
     }
 
     public Text setPadding(Constraint padding) {
