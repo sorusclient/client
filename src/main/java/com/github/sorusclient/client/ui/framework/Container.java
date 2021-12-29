@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 public class Container extends Component {
 
     private Constraint backgroundCornerRadius = new Absolute(0);
-    private Constraint backgroundColor;
+    private Constraint topLeftBackgroundColor, bottomLeftBackgroundColor, bottomRightBackgroundColor, topRightBackgroundColor;
     private Constraint backgroundImage;
 
     private Constraint padding = new Absolute(0);
@@ -58,7 +58,30 @@ public class Container extends Component {
     }
 
     public Container setBackgroundColor(Constraint backgroundColor) {
-        this.backgroundColor = backgroundColor;
+        this.topLeftBackgroundColor = backgroundColor;
+        this.bottomLeftBackgroundColor = backgroundColor;
+        this.bottomRightBackgroundColor = backgroundColor;
+        this.topRightBackgroundColor = backgroundColor;
+        return this;
+    }
+
+    public Container setTopLeftBackgroundColor(Constraint topLeftBackgroundColor) {
+        this.topLeftBackgroundColor = topLeftBackgroundColor;
+        return this;
+    }
+
+    public Container setBottomLeftBackgroundColor(Constraint bottomLeftBackgroundColor) {
+        this.bottomLeftBackgroundColor = bottomLeftBackgroundColor;
+        return this;
+    }
+
+    public Container setBottomRightBackgroundColor(Constraint bottomRightBackgroundColor) {
+        this.bottomRightBackgroundColor = bottomRightBackgroundColor;
+        return this;
+    }
+
+    public Container setTopRightBackgroundColor(Constraint topRightBackgroundColor) {
+        this.topRightBackgroundColor = topRightBackgroundColor;
         return this;
     }
 
@@ -150,13 +173,13 @@ public class Container extends Component {
             Renderer renderer = Sorus.getInstance().get(Renderer.class);
             if (container.backgroundImage != null) {
                 Color color = Color.WHITE;
-                if (container.backgroundColor != null) {
-                    color = container.backgroundColor.getColorValue(this);
+                if (container.topLeftBackgroundColor != null) {
+                    color = container.topLeftBackgroundColor.getColorValue(this);
                 }
 
                 renderer.drawImage(container.backgroundImage.getStringValue(this), x - width / 2, y - height / 2, width, height, color);
-            } else if (container.backgroundColor != null) {
-                renderer.drawRectangle(x - width / 2, y - height / 2, width, height, container.backgroundCornerRadius.getCornerRadiusValue(this), container.backgroundColor.getColorValue(this));
+            } else if (container.topLeftBackgroundColor != null) {
+                renderer.drawRectangle(x - width / 2, y - height / 2, width, height, container.backgroundCornerRadius.getCornerRadiusValue(this), container.topLeftBackgroundColor.getColorValue(this), container.bottomLeftBackgroundColor.getColorValue(this), container.bottomRightBackgroundColor.getColorValue(this), container.topRightBackgroundColor.getColorValue(this));
             }
 
             this.placedComponents.add(new Pair<>(null, new double[] {this.getWidth() / 2 + 0.5, 0, 1, this.getHeight() + 1, 0}));

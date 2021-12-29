@@ -39,6 +39,7 @@ public class BlockOverlay extends ModuleDisableable {
         List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> settings = new ArrayList<>();
 
         settings.add(new Pair<>(new Pair<>("Border Thickness", this.borderThickness), new Pair<>("SLIDER", new Pair<>(0.0, 5.0))));
+        settings.add(new Pair<>(new Pair<>("Fill Color", this.fillColor), new Pair<>("COLOR", null)));
 
         return settings;
     }

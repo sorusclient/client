@@ -31,46 +31,43 @@ public class RendererHook implements Listener, IRenderer {
     }
 
     @Override
-    public void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color color) {
+    public void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color topLeftColor, Color bottomLeftColor, Color bottomRightColor, Color topRightColor) {
         boolean textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
         boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
-        float red = (float) color.getRed();
-        float green = (float) color.getGreen();
-        float blue = (float) color.getBlue();
-        float alpha = (float) color.getAlpha();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
         bufferBuilder.begin(GL11.GL_POLYGON, VertexFormats.POSITION_COLOR);
 
-        bufferBuilder.vertex(x + cornerRadius, y + height, 0).color(red, green, blue, alpha).next();
-        bufferBuilder.vertex(x + width - cornerRadius, y + height, 0).color(red, green, blue, alpha).next();
+        bufferBuilder.vertex(x + cornerRadius, y + height, 0).color((float) bottomLeftColor.getRed(), (float) bottomLeftColor.getGreen(), (float) bottomLeftColor.getBlue(), (float) bottomLeftColor.getAlpha()).next();
+        bufferBuilder.vertex(x + width - cornerRadius, y + height, 0).color((float) bottomRightColor.getRed(), (float) bottomRightColor.getGreen(), (float) bottomRightColor.getBlue(), (float) bottomRightColor.getAlpha()).next();
 
         for (int i = 0; i < 90; i++) {
-            bufferBuilder.vertex(x + width - cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + height - cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color(red, green, blue, alpha).next();
+            bufferBuilder.vertex(x + width - cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + height - cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color((float) bottomRightColor.getRed(), (float) bottomRightColor.getGreen(), (float) bottomRightColor.getBlue(), (float) bottomRightColor.getAlpha()).next();
         }
 
-        bufferBuilder.vertex(x + width, y + height - cornerRadius, 0).color(red, green, blue, alpha).next();
-        bufferBuilder.vertex(x + width, y + cornerRadius, 0).color(red, green, blue, alpha).next();
+        bufferBuilder.vertex(x + width, y + height - cornerRadius, 0).color((float) bottomRightColor.getRed(), (float) bottomRightColor.getGreen(), (float) bottomRightColor.getBlue(), (float) bottomRightColor.getAlpha()).next();
+        bufferBuilder.vertex(x + width, y + cornerRadius, 0).color((float) topRightColor.getRed(), (float) topRightColor.getGreen(), (float) topRightColor.getBlue(), (float) topRightColor.getAlpha()).next();
 
         for (int i = 90; i < 180; i++) {
-            bufferBuilder.vertex(x + width - cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color(red, green, blue, alpha).next();
+            bufferBuilder.vertex(x + width - cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color((float) topRightColor.getRed(), (float) topRightColor.getGreen(), (float) topRightColor.getBlue(), (float) topRightColor.getAlpha()).next();
         }
 
-        bufferBuilder.vertex(x + width - cornerRadius, y, 0).color(red, green, blue, alpha).next();
-        bufferBuilder.vertex(x + cornerRadius, y, 0).color(red, green, blue, alpha).next();
+        bufferBuilder.vertex(x + width - cornerRadius, y, 0).color((float) topRightColor.getRed(), (float) topRightColor.getGreen(), (float) topRightColor.getBlue(), (float) topRightColor.getAlpha()).next();
+        bufferBuilder.vertex(x + cornerRadius, y, 0).color((float) topLeftColor.getRed(), (float) topLeftColor.getGreen(), (float) topLeftColor.getBlue(), (float) topLeftColor.getAlpha()).next();
 
         for (int i = 180; i < 270; i++) {
-            bufferBuilder.vertex(x + cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color(red, green, blue, alpha).next();
+            bufferBuilder.vertex(x + cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color((float) topLeftColor.getRed(), (float) topLeftColor.getGreen(), (float) topLeftColor.getBlue(), (float) topLeftColor.getAlpha()).next();
         }
 
-        bufferBuilder.vertex(x, y + cornerRadius, 0).color(red, green, blue, alpha).next();
-        bufferBuilder.vertex(x, y + height - cornerRadius, 0).color(red, green, blue, alpha).next();
+        bufferBuilder.vertex(x, y + cornerRadius, 0).color((float) topLeftColor.getRed(), (float) topLeftColor.getGreen(), (float) topLeftColor.getBlue(), (float) topLeftColor.getAlpha()).next();
+        bufferBuilder.vertex(x, y + height - cornerRadius, 0).color((float) bottomLeftColor.getRed(), (float) bottomLeftColor.getGreen(), (float) bottomLeftColor.getBlue(), (float) bottomLeftColor.getAlpha()).next();
 
         for (int i = 270; i < 360; i++) {
-            bufferBuilder.vertex(x + cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + height - cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color(red, green, blue, alpha).next();
+            bufferBuilder.vertex(x + cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, y + height - cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).color((float) bottomLeftColor.getRed(), (float) bottomLeftColor.getGreen(), (float) bottomLeftColor.getBlue(), (float) bottomLeftColor.getAlpha()).next();
         }
 
         tessellator.draw();

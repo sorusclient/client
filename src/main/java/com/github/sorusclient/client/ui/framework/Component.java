@@ -23,7 +23,7 @@ public abstract class Component {
     protected Container parent;
 
     private final List<String> storedState = new ArrayList<>();
-    private final Map<String, Consumer<Pair<Component, Object>>> onStateUpdates = new HashMap<>();
+    private final Map<String, Consumer<Object>> onStateUpdates = new HashMap<>();
 
     public Component() {
         this.addStoredState("selected");
@@ -54,7 +54,7 @@ public abstract class Component {
         return this;
     }
 
-    public Component addOnStateUpdate(String state, Consumer<Pair<Component, Object>> onStateUpdate) {
+    public Component addOnStateUpdate(String state, Consumer<Object> onStateUpdate) {
         this.onStateUpdates.put(state, onStateUpdate);
         return this;
     }
@@ -100,9 +100,9 @@ public abstract class Component {
         }
 
         public void onStateUpdate(String id, Object value) {
-            Consumer<Pair<Component, Object>> onStateUpdate = Component.this.onStateUpdates.get(id);
+            Consumer<Object> onStateUpdate = Component.this.onStateUpdates.get(id);
             if (onStateUpdate != null) {
-                onStateUpdate.accept(new Pair<>(Component.this, value));
+                onStateUpdate.accept(value);
             }
         }
 

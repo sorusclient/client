@@ -10,7 +10,11 @@ public class Renderer {
     }
 
     public void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color color) {
-        GlassLoader.getInstance().getInterface(IRenderer.class).drawRectangle(x, y, width, height, cornerRadius, color);
+        this.drawRectangle(x, y, width, height, cornerRadius, color, color, color, color);
+    }
+
+    public void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color topLeftColor, Color bottomLeftColor, Color bottomRightColor, Color topRightColor) {
+        GlassLoader.getInstance().getInterface(IRenderer.class).drawRectangle(x, y, width, height, cornerRadius, topLeftColor, bottomLeftColor, bottomRightColor, topRightColor);
     }
 
     public void drawImage(String imagePath, double x, double y, double width, double height, Color color) {

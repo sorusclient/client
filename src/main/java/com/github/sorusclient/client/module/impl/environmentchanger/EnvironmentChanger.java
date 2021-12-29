@@ -11,6 +11,7 @@ public class EnvironmentChanger extends ModuleDisableable {
 
     private final Setting<Boolean> modifyTime;
     private final Setting<Long> time;
+    private final Setting<Boolean> modifyWeather;
     private final Setting<Weather> weather;
 
     public EnvironmentChanger() {
@@ -18,7 +19,8 @@ public class EnvironmentChanger extends ModuleDisableable {
 
         this.register("modifyTime", this.modifyTime = new Setting<>(false));
         this.register("time", this.time = new Setting<>(5000L));
-        this.register("weather", this.weather = new Setting<>(Weather.DEFAULT));
+        this.register("modifyWeather", this.modifyWeather = new Setting<>(false));
+        this.register("weather", this.weather = new Setting<>(Weather.CLEAR));
     }
 
     public boolean modifyTime() {
@@ -27,6 +29,10 @@ public class EnvironmentChanger extends ModuleDisableable {
 
     public long getTime() {
         return this.time.getValue();
+    }
+
+    public boolean modifyWeather() {
+        return this.modifyWeather.getValue();
     }
 
     public Weather getWeather() {
@@ -39,14 +45,15 @@ public class EnvironmentChanger extends ModuleDisableable {
 
         settings.add(new Pair<>(new Pair<>("Modify Time", this.modifyTime), new Pair<>("TOGGLE", null)));
         settings.add(new Pair<>(new Pair<>("Time", this.time), new Pair<>("SLIDER", new Pair<>(0.0, 24000.0))));
+        settings.add(new Pair<>(new Pair<>("Modify Weather", this.modifyWeather), new Pair<>("TOGGLE", null)));
+        settings.add(new Pair<>(new Pair<>("Weather", this.weather), new Pair<>("CLICK_THROUGH", new Pair<>(0.0, 24000.0))));
 
         return settings;
     }
 
     public enum Weather {
-        RAIN,
         CLEAR,
-        DEFAULT
+        RAIN,
     }
 
 }

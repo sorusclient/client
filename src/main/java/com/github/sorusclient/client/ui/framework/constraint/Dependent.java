@@ -61,7 +61,7 @@ public class Dependent implements Constraint {
 
     @Override
     public String getStringValue(Component.Runtime componentRuntime) {
-        return null;
+        return (String) this.apply(componentRuntime);
     }
 
     private Object apply(Component.Runtime componentRuntime) {

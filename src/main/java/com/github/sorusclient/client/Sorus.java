@@ -24,6 +24,7 @@ import com.github.sorusclient.client.util.Color;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Sorus implements Listener {
@@ -36,12 +37,7 @@ public class Sorus implements Listener {
     }
 
     public static Sorus getInstance() {
-        try {
-            return GlassLoader.getInstance().getAPI(Sorus.class);
-        } catch (NoSuchApiException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return Objects.requireNonNull(GlassLoader.getInstance().getAPI(Sorus.class));
     }
 
     private final Map<Class<?>, Object> components = new HashMap<>();

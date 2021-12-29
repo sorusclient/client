@@ -45,11 +45,16 @@ public class List extends Container {
 
         private boolean firstRender = true;
 
-        private int index = 0;
+        private int xIndex;
+        private double xLocation;
+        private double yLocation;
 
         @Override
         public void render(double x, double y, double width, double height) {
-            this.index = 0;
+            this.xIndex = 0;
+            this.xLocation = -width / 2;
+            this.yLocation = -height / 2;
+
             if (this.firstRender) {
                 for (Component component : List.this.children) {
                     if ((List.this.type & HORIZONTAL) != 0) {
@@ -70,14 +75,31 @@ public class List extends Container {
             double[] array = super.getOtherCalculatedPosition(child);
             Component.Runtime childRuntime = child.runtime;
 
+            this.xIndex++;
+
             if ((List.this.type & HORIZONTAL) != 0) {
-                array[0] = -this.width / 2 + childRuntime.getWidth() / 2 + childRuntime.getPadding() + (childRuntime.getWidth() + childRuntime.getPadding()) * (index % columns);
-            }
-            if ((List.this.type & VERTICAL) != 0) {
-                array[1] = -this.height / 2 + childRuntime.getHeight() / 2 + childRuntime.getPadding() + (childRuntime.getHeight() + childRuntime.getPadding()) * (int) (index / columns);
+                double position = this.xLocation + childRuntime.getWidth() / 2 + childRuntime.getPadding();
+                array[0] = position;
+
+                this.xLocation += childRuntime.getWidth() + childRuntime.getPadding();
+
+                if (this.xIndex >= List.this.columns) {
+                    this.xLocation = -this.width / 2;
+                }
             }
 
-            this.index++;
+            if ((List.this.type & VERTICAL) != 0) {
+                double position = this.yLocation + childRuntime.getHeight() / 2 + childRuntime.getPadding();
+                array[1] = position;
+
+                if (this.xIndex >= List.this.columns) {
+                    this.yLocation += childRuntime.getHeight() + childRuntime.getPadding();
+                }
+            }
+
+            if (this.xIndex >= List.this.columns) {
+                this.xIndex = 0;
+            }
 
             return array;
         }

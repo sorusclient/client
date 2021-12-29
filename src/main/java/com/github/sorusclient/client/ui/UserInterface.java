@@ -17,6 +17,7 @@ import com.github.sorusclient.client.ui.framework.constraint.*;
 import com.github.sorusclient.client.util.Color;
 import com.github.sorusclient.client.util.Pair;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserInterface {
@@ -291,14 +292,12 @@ public class UserInterface {
                                                                                     .setBackgroundColor(new Absolute(Color.WHITE))
                                                                                     .setOnKey(state1 -> {
                                                                                         state1.getFirst().put("value", state1.getSecond());
+                                                                                        setting.getFirst().getSecond().setValueRaw(state1.getSecond());
                                                                                         state1.getFirst().put("selected", false);
                                                                                     })
                                                                                     .addChild(new Text()
                                                                                             .setText(new Dependent(state1 -> {
                                                                                                 Key key = (Key) state1.get("value");
-
-                                                                                                setting.getFirst().getSecond().setValueRaw(key);
-
                                                                                                 return key.toString();
                                                                                             }))
                                                                                             .setFontRenderer(new Absolute("minecraft"))
@@ -307,6 +306,141 @@ public class UserInterface {
                                                                                 container2.addStoredState("value");
 
                                                                                 container2.getRuntime().setState("value", setting.getFirst().getSecond().getValue());
+                                                                            }));
+                                                                    break;
+                                                                case "CLICK_THROUGH":
+                                                                    container1.addChild(new Container()
+                                                                            .setHeight(new Absolute(20))
+                                                                            .addChild(new Text()
+                                                                                    .setFontRenderer(new Absolute("minecraft"))
+                                                                                    .setText(new Absolute(setting.getFirst().getFirst()))
+                                                                                    .setX(new Side(Side.NEGATIVE)))
+                                                                            .addChild(new Container()
+                                                                                    .setX(new Side(Side.NEGATIVE))
+                                                                                    .setWidth(new Copy(2))
+                                                                                    .setHeight(new Relative(0.6))
+                                                                                    .setPadding(new Relative(0.2, true))
+                                                                                    .setBackgroundColor(new Absolute(Color.WHITE))
+                                                                                    .addChild(new Container()
+                                                                                            .setX(new Side(Side.NEGATIVE))
+                                                                                            .setWidth(new Relative(0.5))
+                                                                                            .setOnClick(state1 -> {
+                                                                                                int newValue = Math.max(0, (int) state1.get("value") - 1);
+                                                                                                state1.put("value", newValue);
+                                                                                            }))
+                                                                                    .addChild(new Container()
+                                                                                            .setX(new Side(Side.POSITIVE))
+                                                                                            .setWidth(new Relative(0.5))
+                                                                                            .setOnClick(state1 -> {
+                                                                                                int valuesLength = 0;
+                                                                                                try {
+                                                                                                    valuesLength = ((Object[]) setting.getFirst().getSecond().getType().getDeclaredMethod("values").invoke(null)).length - 1;
+                                                                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                                                                                    e.printStackTrace();
+                                                                                                }
+                                                                                                int newValue = Math.min(valuesLength, (int) state1.get("value") + 1);
+                                                                                                state1.put("value", newValue);
+                                                                                            }))
+                                                                                    .addChild(new Text()
+                                                                                            .setText(new Dependent(state1 -> {
+                                                                                                int value = (int) state1.get("value");
+                                                                                                try {
+                                                                                                    return ((Object[]) setting.getFirst().getSecond().getType().getDeclaredMethod("values").invoke(null))[value].toString();
+                                                                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                                                                                    e.printStackTrace();
+                                                                                                }
+
+                                                                                                return null;
+                                                                                            }))
+                                                                                            .setFontRenderer(new Absolute("minecraft"))
+                                                                                            .setTextColor(new Absolute(Color.BLACK)))
+                                                                                    .addOnStateUpdate("value", state1 -> {
+                                                                                        try {
+                                                                                            Object[] values = ((Object[]) setting.getFirst().getSecond().getType().getDeclaredMethod("values").invoke(null));
+                                                                                            setting.getFirst().getSecond().setValueRaw(values[(int) state1]);
+                                                                                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                                                                            e.printStackTrace();
+                                                                                        }
+                                                                                    }))
+                                                                            .apply(container2 -> {
+                                                                                container2.addStoredState("value");
+
+                                                                                container2.getRuntime().setState("value", ((Enum<?>) setting.getFirst().getSecond().getValue()).ordinal());
+                                                                            }));
+                                                                    break;
+                                                                case "COLOR":
+                                                                    container1.addChild(new Container()
+                                                                            .setHeight(new Absolute(50))
+                                                                            .addChild(new Text()
+                                                                                    .setFontRenderer(new Absolute("minecraft"))
+                                                                                    .setText(new Absolute(setting.getFirst().getFirst()))
+                                                                                    .setX(new Side(Side.NEGATIVE)))
+                                                                            .addChild(new Container()
+                                                                                    .setX(new Side(Side.NEGATIVE))
+                                                                                    .setWidth(new Copy())
+                                                                                    .setHeight(new Relative(0.6))
+                                                                                    .setPadding(new Relative(0.2, true))
+                                                                                    .setTopLeftBackgroundColor(new Absolute(Color.WHITE))
+                                                                                    .setBottomLeftBackgroundColor(new Absolute(Color.BLACK))
+                                                                                    .setBottomRightBackgroundColor(new Absolute(Color.BLACK))
+                                                                                    .setTopRightBackgroundColor(new Dependent(state1 -> {
+                                                                                        float[] colorData = (float[]) state1.get("value");
+                                                                                        int rgb = java.awt.Color.HSBtoRGB(colorData[0], 1, 1);
+                                                                                        java.awt.Color javaColor = new java.awt.Color(rgb);
+                                                                                        return Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), 255);
+                                                                                    }))
+                                                                                    .setOnDrag(state1 -> {
+                                                                                        float[] colorData = (float[]) state1.getFirst().get("value");
+                                                                                        colorData[1] = (float) (double) state1.getSecond().getFirst();
+                                                                                        colorData[2] = 1 - (float) (double) state1.getSecond().getSecond();
+                                                                                    }))
+                                                                            .addChild(new Container()
+                                                                                    .setX(new Side(Side.NEGATIVE))
+                                                                                    .setWidth(new Copy(0.5))
+                                                                                    .setHeight(new Relative(0.6))
+                                                                                    .setPadding(new Relative(0.2, true))
+                                                                                    .setBackgroundColor(new Absolute(Color.WHITE))
+                                                                                    .setOnDrag(state1 -> {
+                                                                                        float[] colorData = (float[]) state1.getFirst().get("value");
+                                                                                        colorData[0] = (float) (double) state1.getSecond().getSecond();
+                                                                                    })
+                                                                                    .addChild(new Container()
+                                                                                            .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[0] - 0.5)))
+                                                                                            .setHeight(new Absolute(1))
+                                                                                            .setBackgroundColor(new Absolute(Color.BLACK))))
+                                                                            .addChild(new Container()
+                                                                                    .setX(new Side(Side.NEGATIVE))
+                                                                                    .setWidth(new Copy(0.5))
+                                                                                    .setHeight(new Relative(0.6))
+                                                                                    .setPadding(new Relative(0.2, true))
+                                                                                    .setBackgroundColor(new Absolute(Color.WHITE))
+                                                                                    .setOnDrag(state1 -> {
+                                                                                        float[] colorData = (float[]) state1.getFirst().get("value");
+                                                                                        colorData[3] = (float) (double) state1.getSecond().getSecond();
+                                                                                    })
+                                                                                    .addChild(new Container()
+                                                                                            .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[3] - 0.5)))
+                                                                                            .setHeight(new Absolute(1))
+                                                                                            .setBackgroundColor(new Absolute(Color.BLACK))))
+                                                                            .apply(container2 -> {
+                                                                                container2.addStoredState("value");
+
+                                                                                Color color = (Color) setting.getFirst().getSecond().getValue();
+                                                                                java.awt.Color javaColor = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255), (int) (color.getAlpha() * 255));
+
+                                                                                float[] colorData = new float[4];
+                                                                                java.awt.Color.RGBtoHSB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), colorData);
+                                                                                colorData[3] = (float) color.getAlpha();
+
+                                                                                container2.getRuntime().setState("value", colorData);
+                                                                            })
+                                                                            .addOnStateUpdate("value", state1 -> {
+                                                                                float[] stateValue = (float[]) state1;
+
+                                                                                int rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2]);
+                                                                                java.awt.Color javaColor = new java.awt.Color(rgb);
+
+                                                                                setting.getFirst().getSecond().setValueRaw(Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), (int) (stateValue[3] * 255)));
                                                                             }));
                                                                     break;
                                                             }
@@ -318,7 +452,7 @@ public class UserInterface {
                                 .addStoredState("currentEditingModule"))
                         .setPadding(new Absolute(5)))
                 .addStoredState("currentTab")
-                .addOnStateUpdate("currentTab", componentObjectPair -> hudEditScreenOpen.set(componentObjectPair.getSecond().equals("hudEdit")));
+                .addOnStateUpdate("currentTab", state -> hudEditScreenOpen.set(state.equals("hudEdit")));
     }
 
     public boolean isHudEditScreenOpen() {

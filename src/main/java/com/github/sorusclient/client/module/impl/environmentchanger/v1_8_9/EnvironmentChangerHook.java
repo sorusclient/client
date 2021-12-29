@@ -18,7 +18,7 @@ public class EnvironmentChangerHook {
 
     public static float modifyRainGradient(float angle) {
         EnvironmentChanger environmentChanger = Sorus.getInstance().get(ModuleManager.class).get(EnvironmentChanger.class);
-        if (environmentChanger.isEnabled() && environmentChanger.getWeather() != EnvironmentChanger.Weather.DEFAULT) {
+        if (environmentChanger.isEnabled() && environmentChanger.modifyWeather()) {
             switch (environmentChanger.getWeather()) {
                 case CLEAR:
                     return 0;
