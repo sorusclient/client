@@ -20,9 +20,6 @@ public class PotionStatus extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
-
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
         IPotionEffectRenderer potionEffectRenderer = GlassLoader.getInstance().getInterface(IPotionEffectRenderer.class);
@@ -73,9 +70,6 @@ public class PotionStatus extends HUDElement {
 
     @Override
     public double getWidth() {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return 0;
-
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
@@ -91,9 +85,6 @@ public class PotionStatus extends HUDElement {
 
     @Override
     public double getHeight() {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return 0;
-
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 

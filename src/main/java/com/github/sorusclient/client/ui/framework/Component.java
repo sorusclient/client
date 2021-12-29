@@ -5,7 +5,6 @@ import com.github.sorusclient.client.event.impl.MouseEvent;
 import com.github.sorusclient.client.ui.framework.constraint.Constraint;
 import com.github.sorusclient.client.ui.framework.constraint.Flexible;
 import com.github.sorusclient.client.ui.framework.constraint.Side;
-import com.github.sorusclient.client.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;

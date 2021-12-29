@@ -2,9 +2,8 @@ package com.github.sorusclient.client.module.impl.environmentchanger;
 
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.util.Pair;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EnvironmentChanger extends ModuleDisableable {
@@ -40,15 +39,11 @@ public class EnvironmentChanger extends ModuleDisableable {
     }
 
     @Override
-    public List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> getSettings() {
-        List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> settings = new ArrayList<>();
-
-        settings.add(new Pair<>(new Pair<>("Modify Time", this.modifyTime), new Pair<>("TOGGLE", null)));
-        settings.add(new Pair<>(new Pair<>("Time", this.time), new Pair<>("SLIDER", new Pair<>(0.0, 24000.0))));
-        settings.add(new Pair<>(new Pair<>("Modify Weather", this.modifyWeather), new Pair<>("TOGGLE", null)));
-        settings.add(new Pair<>(new Pair<>("Weather", this.weather), new Pair<>("CLICK_THROUGH", new Pair<>(0.0, 24000.0))));
-
-        return settings;
+    public void addSettings(List<SettingConfigurableData> settings) {
+        settings.add(new SettingConfigurableData("Modify Time", this.modifyTime, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new SettingConfigurableData("Time", this.time, SettingConfigurableData.ConfigurableType.SLIDER, 0.0, 24000.0));
+        settings.add(new SettingConfigurableData("Modify Weather", this.modifyWeather, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new SettingConfigurableData("Weather", this.weather, SettingConfigurableData.ConfigurableType.CLICK_THROUGH));
     }
 
     public enum Weather {

@@ -15,7 +15,6 @@ public class Hunger extends HUDElement {
     @Override
     protected void render(double x, double y, double scale) {
         IPlayerEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
 
         int hunger = (int) player.getHunger();
 

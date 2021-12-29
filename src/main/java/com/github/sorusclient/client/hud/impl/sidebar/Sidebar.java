@@ -3,21 +3,27 @@ package com.github.sorusclient.client.hud.impl.sidebar;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.hud.HUDElement;
+import com.github.sorusclient.client.setting.Setting;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 import com.github.sorusclient.client.ui.IFontRenderer;
 import com.github.sorusclient.client.ui.Renderer;
 import com.github.sorusclient.client.util.Color;
 
+import java.util.List;
+
 public class Sidebar extends HUDElement {
 
+    private final Setting<Boolean> removeRedNumbers;
+
+    //TODO: Dummy value
     public Sidebar() {
         super("sideBar");
+
+        this.register("removeRedNumbers", this.removeRedNumbers = new Setting<>(false));
     }
 
     @Override
     protected void render(double x, double y, double scale) {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
-
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
@@ -42,15 +48,12 @@ public class Sidebar extends HUDElement {
 
     @Override
     public double getWidth() {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return 0;
-
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         IScoreboard scoreboard = Sorus.getInstance().get(MinecraftAdapter.class).getWorld().getScoreboard();
         IScoreboardObjective sidebarObjective = scoreboard.getObjective(IScoreboard.Slot.SIDEBAR);
-        if (sidebarObjective == null) return 0;
+        if (sidebarObjective == null) return 50;
 
         double maxWidth = 0;
 
@@ -63,17 +66,19 @@ public class Sidebar extends HUDElement {
 
     @Override
     public double getHeight() {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return 0;
-
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         IScoreboard scoreboard = Sorus.getInstance().get(MinecraftAdapter.class).getWorld().getScoreboard();
         IScoreboardObjective sidebarObjective = scoreboard.getObjective(IScoreboard.Slot.SIDEBAR);
-        if (sidebarObjective == null) return 0;
+        if (sidebarObjective == null) return 50;
 
         return (sidebarObjective.getScores().size() + 1) * (fontRenderer.getHeight() + 1) + 1;
+    }
+
+    @Override
+    public void addSettings(List<SettingConfigurableData> settings) {
+        settings.add(new SettingConfigurableData("Remove Red Numbers", this.removeRedNumbers, SettingConfigurableData.ConfigurableType.TOGGLE));
     }
 
 }

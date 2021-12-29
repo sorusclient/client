@@ -8,9 +8,8 @@ import com.github.sorusclient.client.event.impl.KeyEvent;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.util.Pair;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Zoom extends ModuleDisableable {
@@ -58,15 +57,11 @@ public class Zoom extends ModuleDisableable {
     }
 
     @Override
-    public List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> getSettings() {
-        List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> settings = new ArrayList<>();
-
-        settings.add(new Pair<>(new Pair<>("Key", this.key), new Pair<>("KEY", null)));
-        settings.add(new Pair<>(new Pair<>("Field Of View", this.fov), new Pair<>("SLIDER", new Pair<>(15.0, 100.0))));
-        settings.add(new Pair<>(new Pair<>("Sensitivity", this.sensitivity), new Pair<>("SLIDER", new Pair<>(0.25, 1.5))));
-        settings.add(new Pair<>(new Pair<>("Cinematic Camera", this.cinematicCamera), new Pair<>("TOGGLE", null)));
-
-        return settings;
+    public void addSettings(List<SettingConfigurableData> settings) {
+        settings.add(new SettingConfigurableData("Key", this.key, SettingConfigurableData.ConfigurableType.KEYBIND));
+        settings.add(new SettingConfigurableData("Field Of View", this.fov, SettingConfigurableData.ConfigurableType.SLIDER, 15.0, 100.0));
+        settings.add(new SettingConfigurableData("Sensitivity", this.sensitivity, SettingConfigurableData.ConfigurableType.SLIDER, 0.25, 1.5));
+        settings.add(new SettingConfigurableData("Cinematic Camera", this.cinematicCamera, SettingConfigurableData.ConfigurableType.TOGGLE));
     }
 
 }

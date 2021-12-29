@@ -17,12 +17,12 @@ public class Util {
             } else if (wantedClass.equals(Long.class)) {
                 return (T) ((Long) ((Integer) jsonSetting).longValue());
             } else {
-                return (T) (Integer) jsonSetting;
+                return (T) jsonSetting;
             }
         } else if (jsonSetting instanceof Boolean) {
-            return (T) (Boolean) jsonSetting;
+            return (T) jsonSetting;
         } else if (jsonSetting instanceof Double) {
-            return (T) (Double) jsonSetting;
+            return (T) jsonSetting;
         } else if (jsonSetting instanceof BigDecimal) {
             if (wantedClass.equals(Double.class)) {
                 return (T) (Double) ((BigDecimal) jsonSetting).doubleValue();
@@ -37,7 +37,7 @@ public class Util {
                     e.printStackTrace();
                 }
             } else {
-                return (T) (String) jsonSetting;
+                return (T) jsonSetting;
             }
         } else if (jsonSetting instanceof Map) {
             Map<String, Object> jsonSettingMap = (Map<String, Object>) jsonSetting;
@@ -61,11 +61,11 @@ public class Util {
                 }
 
                 return (T) map;
-            } else {
+            } else if(wantedClass != null) {
                 try {
                     Map<String, Object> map = (Map<String, Object>) jsonSetting;
 
-                    Constructor<T> constructor = wantedClass.getDeclaredConstructor();
+                    Constructor<T> constructor = Objects.requireNonNull(wantedClass).getDeclaredConstructor();
                     constructor.setAccessible(true);
                     T wantedObject = constructor.newInstance();
 
@@ -89,64 +89,6 @@ public class Util {
             }
 
             return (T) list;
-        }
-
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T toJava2(Class<T> wantedClass, Object jsonSetting) {
-        if (Boolean.class.equals(wantedClass)) {
-            return (T) jsonSetting;
-        } else if (Integer.class == wantedClass) {
-            return (T) jsonSetting;
-        } else if (Long.class == wantedClass) {
-            return (T) jsonSetting;
-        } else if (Double.class == wantedClass || double.class == wantedClass) {
-            if (jsonSetting instanceof BigDecimal) {
-                return (T) (Double) ((BigDecimal) jsonSetting).doubleValue();
-            } else if (jsonSetting instanceof Integer) {
-                return (T) (Double) ((Integer) jsonSetting).doubleValue();
-            }
-            return (T) jsonSetting;
-        } else if (Float.class == wantedClass) {
-            return (T) jsonSetting;
-        } else if (String.class == wantedClass) {
-            return (T) jsonSetting;
-        } else if (wantedClass.getSuperclass() == Enum.class) {
-            try {
-                return (T) wantedClass.getDeclaredField((String) jsonSetting).get(null);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        } else if (wantedClass == List.class) {
-            /*List<Object> list = new ArrayList<>();
-            for (Object object : (List<?>) jsonSetting) {
-                list.add(Util.toJava());
-            }*/
-        } else if (wantedClass == Map.class) {
-            Map<String, Object> map = new HashMap<>();
-            /*for (Object object : (List<?>) jsonSetting) {
-                list.add(Util.toJava());
-            }*/
-        } else {
-            try {
-                Map<String, Object> map = (Map<String, Object>) jsonSetting;
-
-                Constructor<T> constructor = wantedClass.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                T wantedObject = constructor.newInstance();
-
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    Field field = wantedClass.getDeclaredField(entry.getKey());
-                    field.setAccessible(true);
-                    field.set(wantedObject, Util.toJava(field.getType(), entry.getValue()));
-                }
-
-                return wantedObject;
-            } catch (InstantiationException | IllegalAccessException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
         }
 
         return null;

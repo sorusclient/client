@@ -3,7 +3,6 @@ package com.github.sorusclient.client.hud.impl.bossbar;
 import com.github.glassmc.loader.GlassLoader;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.IBossBar;
-import com.github.sorusclient.client.adapter.IPlayerEntity;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.ui.IFontRenderer;
@@ -18,9 +17,6 @@ public class BossBar extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        IPlayerEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
-
         IBossBar bossBar = Sorus.getInstance().get(MinecraftAdapter.class).getWorld().getBossBar();
 
         if (!bossBar.isBossBar()) return;

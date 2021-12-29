@@ -2,30 +2,19 @@ package com.github.sorusclient.client;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
-import com.github.glassmc.loader.exception.NoSuchApiException;
-import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
-import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.event.impl.KeyEvent;
-import com.github.sorusclient.client.event.impl.RenderEvent;
 import com.github.sorusclient.client.hud.HUDManager;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.transform.TransformerManager;
 import com.github.sorusclient.client.ui.Renderer;
 import com.github.sorusclient.client.ui.UserInterface;
-import com.github.sorusclient.client.ui.framework.Container;
 import com.github.sorusclient.client.ui.framework.ContainerRenderer;
-import com.github.sorusclient.client.ui.framework.List;
-import com.github.sorusclient.client.ui.framework.TabHolder;
-import com.github.sorusclient.client.ui.framework.constraint.*;
-import com.github.sorusclient.client.util.Color;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Sorus implements Listener {
 

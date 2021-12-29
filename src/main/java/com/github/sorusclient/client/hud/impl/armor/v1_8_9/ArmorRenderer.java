@@ -5,7 +5,6 @@ import com.github.glassmc.loader.Listener;
 import com.github.sorusclient.client.adapter.IItem;
 import com.github.sorusclient.client.adapter.v1_8_9.Util;
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer;
-import com.github.sorusclient.client.hud.impl.hunger.IHungerRenderer;
 import org.lwjgl.opengl.GL11;
 import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.gui.DrawableHelper;

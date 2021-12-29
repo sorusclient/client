@@ -18,7 +18,6 @@ public class Experience extends HUDElement {
     @Override
     protected void render(double x, double y, double scale) {
         IPlayerEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
 
         double experiencePercent = player.getExperiencePercentUntilNextLevel();
         IExperienceRenderer experienceRenderer = GlassLoader.getInstance().getInterface(IExperienceRenderer.class);

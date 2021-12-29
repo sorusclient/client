@@ -12,10 +12,8 @@ import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.render.BufferBuilder;
 import v1_8_9.net.minecraft.client.render.Tessellator;
 import v1_8_9.net.minecraft.client.render.VertexFormats;
-import v1_8_9.net.minecraft.util.Identifier;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;

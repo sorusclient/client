@@ -1,7 +1,6 @@
 package com.github.sorusclient.client.event.impl;
 
 import com.github.sorusclient.client.adapter.Button;
-import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.event.Event;
 
 public class MouseEvent extends Event {

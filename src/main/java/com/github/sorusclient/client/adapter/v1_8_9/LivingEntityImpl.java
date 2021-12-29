@@ -3,7 +3,6 @@ package com.github.sorusclient.client.adapter.v1_8_9;
 import com.github.sorusclient.client.adapter.IItem;
 import com.github.sorusclient.client.adapter.ILivingEntity;
 import com.github.sorusclient.client.adapter.IPotionEffect;
-import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.entity.Entity;
 import v1_8_9.net.minecraft.entity.LivingEntity;
 import v1_8_9.net.minecraft.entity.effect.StatusEffectInstance;

@@ -32,6 +32,8 @@ public class Container extends Component {
     private Consumer<Pair<Map<String, Object>, Key>> onKey;
     private Consumer<Pair<Container, Map<String, Object>>> onInit;
 
+    private Consumer<Map<String, Object>> onUpdate;
+
     public Container() {
         this.runtime = new Runtime();
     }
@@ -131,6 +133,11 @@ public class Container extends Component {
         return this;
     }
 
+    public Container setOnUpdate(Consumer<Map<String, Object>> onUpdate) {
+        this.onUpdate = onUpdate;
+        return this;
+    }
+
     public Container clear() {
         this.children.clear();
         return this;
@@ -152,6 +159,13 @@ public class Container extends Component {
         public void render(double x, double y, double width, double height) {
             this.placedComponents.clear();
 
+            Container container = Container.this;
+
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+
             if (!this.hasInit) {
                 if (Container.this.onInit != null) {
                     Map<String, Object> state = this.getAvailableState();
@@ -163,12 +177,11 @@ public class Container extends Component {
                 this.hasInit = true;
             }
 
-            Container container = Container.this;
-
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
+            if (Container.this.onUpdate != null) {
+                Map<String, Object> state = this.getAvailableState();
+                Container.this.onUpdate.accept(state);
+                this.setAvailableState(state);
+            }
 
             Renderer renderer = Sorus.getInstance().get(Renderer.class);
             if (container.backgroundImage != null) {

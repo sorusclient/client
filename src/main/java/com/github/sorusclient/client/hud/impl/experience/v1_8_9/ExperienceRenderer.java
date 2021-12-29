@@ -2,7 +2,6 @@ package com.github.sorusclient.client.hud.impl.experience.v1_8_9;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
-import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer;
 import com.github.sorusclient.client.hud.impl.experience.IExperienceRenderer;
 import org.lwjgl.opengl.GL11;
 import v1_8_9.net.minecraft.client.MinecraftClient;

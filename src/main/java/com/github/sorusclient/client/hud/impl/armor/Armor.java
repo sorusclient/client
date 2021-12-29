@@ -5,6 +5,7 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 import com.github.sorusclient.client.ui.IFontRenderer;
 import com.github.sorusclient.client.ui.Renderer;
 import com.github.sorusclient.client.ui.UserInterface;
@@ -26,7 +27,6 @@ public class Armor extends HUDElement {
     @Override
     protected void render(double x, double y, double scale) {
         IPlayerEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
 
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
@@ -96,9 +96,6 @@ public class Armor extends HUDElement {
 
     @Override
     public double getHeight() {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return 0;
-
         switch (this.mode.getValue()) {
             case INDIVIDUAL:
                 Renderer renderer = Sorus.getInstance().get(Renderer.class);
@@ -112,6 +109,11 @@ public class Armor extends HUDElement {
             default:
                 return 0;
         }
+    }
+
+    @Override
+    public void addSettings(List<SettingConfigurableData> settings) {
+        settings.add(new SettingConfigurableData("Mode", this.mode, SettingConfigurableData.ConfigurableType.CLICK_THROUGH));
     }
 
     private static class FakeArmorItem implements IItem {

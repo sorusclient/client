@@ -25,7 +25,6 @@ public class Health extends HUDElement {
     @Override
     protected void render(double x, double y, double scale) {
         ILivingEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
 
         boolean hasRegen = false;
         for (IPotionEffect effect : Sorus.getInstance().get(MinecraftAdapter.class).getPlayer().getEffects()) {
@@ -82,11 +81,6 @@ public class Health extends HUDElement {
             double heartX = x + (1 + (i % 10) * 8) * scale;
             double heartY = y + (1 + 10 * (totalRows - 1) - (int) (i / 10) * 10) * scale;
 
-            double timeSinceRegen2 = (System.currentTimeMillis() - regenStartTime) % (totalHealth * 50L + 1000);
-            if (hasRegen && timeSinceRegen2 >= i * 50 && timeSinceRegen2 <= (i + 1) * 50) {
-                //heartY -= 2;
-            }
-
             healthRenderer.renderHeartBackground(heartX, heartY, scale, backgroundType);
 
             if (i < healthInt / 2) {
@@ -120,7 +114,6 @@ public class Health extends HUDElement {
     @Override
     public double getHeight() {
         ILivingEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return 0;
 
         double absorption = player.getAbsorption();
         int absorptionInt = (int) Math.ceil(absorption);

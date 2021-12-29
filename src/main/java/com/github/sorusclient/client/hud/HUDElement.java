@@ -3,6 +3,7 @@ package com.github.sorusclient.client.hud;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.setting.Setting;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 import com.github.sorusclient.client.setting.SettingContainer;
 import com.github.sorusclient.client.setting.Util;
 import com.github.sorusclient.client.util.Axis;
@@ -233,6 +234,10 @@ public abstract class HUDElement implements SettingContainer {
 
     @Override
     public void setShared(boolean isShared) {
+
+    }
+
+    public void addSettings(List<SettingConfigurableData> settings) {
 
     }
 

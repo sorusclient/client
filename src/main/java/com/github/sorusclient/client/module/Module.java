@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.module;
 
 import com.github.sorusclient.client.setting.Setting;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 import com.github.sorusclient.client.setting.SettingContainer;
 import com.github.sorusclient.client.setting.Util;
-import com.github.sorusclient.client.util.Pair;
 
 import java.util.*;
 
@@ -48,8 +48,8 @@ public class Module implements SettingContainer {
         return settingsMap;
     }
 
-    public List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> getSettings() {
-        return Collections.emptyList();
+    public void addSettings(List<SettingConfigurableData> settings) {
+
     }
 
     @Override

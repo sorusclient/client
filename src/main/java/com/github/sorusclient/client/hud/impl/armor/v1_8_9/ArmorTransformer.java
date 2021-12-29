@@ -4,8 +4,6 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
-import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.transform.TransformerManager;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;

@@ -2,10 +2,9 @@ package com.github.sorusclient.client.module.impl.blockoverlay;
 
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 import com.github.sorusclient.client.util.Color;
-import com.github.sorusclient.client.util.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BlockOverlay extends ModuleDisableable {
@@ -35,13 +34,9 @@ public class BlockOverlay extends ModuleDisableable {
     }
 
     @Override
-    public List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> getSettings() {
-        List<Pair<Pair<String, Setting<?>>, Pair<String, Object>>> settings = new ArrayList<>();
-
-        settings.add(new Pair<>(new Pair<>("Border Thickness", this.borderThickness), new Pair<>("SLIDER", new Pair<>(0.0, 5.0))));
-        settings.add(new Pair<>(new Pair<>("Fill Color", this.fillColor), new Pair<>("COLOR", null)));
-
-        return settings;
+    public void addSettings(List<SettingConfigurableData> settings) {
+        settings.add(new SettingConfigurableData("Border Thickness", this.borderThickness, SettingConfigurableData.ConfigurableType.SLIDER, 0.0, 5.0));
+        settings.add(new SettingConfigurableData("Fill Color", this.fillColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
     }
 
 }

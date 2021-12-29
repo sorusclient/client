@@ -4,7 +4,6 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
-import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.event.impl.KeyEvent;
 import com.github.sorusclient.client.event.impl.MouseEvent;
@@ -37,7 +36,7 @@ import java.util.Map;
 public class HUDManager implements SettingContainer {
 
     //TODO: hud data as opposed to weird pair thing that isn't intuitive
-    private final List<Pair<Class<? extends HUDElement>, Pair<String, String>>> possibleElements = new ArrayList<>();
+    private final Map<Class<? extends HUDElement>, Pair<String, String>> possibleElements = new HashMap<>();
 
     private final Map<String, HUDElement> elements = new HashMap<>();
 
@@ -49,11 +48,14 @@ public class HUDManager implements SettingContainer {
     private double initialHudX;
     private double initialHudY;
     private double initialScale;
-    private Pair<HUDElement, AttachType>[] snapped = new Pair[0];
+    @SuppressWarnings("rawtypes")
+    private Pair[] snapped = new Pair[0];
 
     private double[] prevScreenDimensions = new double[] {0, 0};
 
     private final Setting<Boolean> isShared;
+
+    public HUDElement hudToOpenSettings = null;
 
     public HUDManager() {
         this.isShared = new Setting<>(false);
@@ -83,7 +85,7 @@ public class HUDManager implements SettingContainer {
     }
 
     private void registerPossibleElement(Class<? extends HUDElement> hudClass, String displayName, String description) {
-        this.possibleElements.add(new Pair<>(hudClass, new Pair<>(displayName, description)));
+        this.possibleElements.put(hudClass, new Pair<>(displayName, description));
     }
 
     public void add(HUDElement hud) {
@@ -107,9 +109,6 @@ public class HUDManager implements SettingContainer {
             for (HUDElement element : this.elements.values()) {
                 for (String attachedElementId : element.getAttached()) {
                     HUDElement attachedElement = this.getById(attachedElementId);
-                    if (attachedElement == null) {
-
-                    }
                     element.updatePosition(attachedElement, screenDimensions);
                 }
             }
@@ -192,6 +191,8 @@ public class HUDManager implements SettingContainer {
                         height,
                         Color.fromRGB(200, 200, 200, 50)
                 );
+
+                renderer.drawRectangle(x - width / 2 + 1, y - height / 2 + 1, 3, 3, Color.WHITE);
             }
         }
 
@@ -239,8 +240,6 @@ public class HUDManager implements SettingContainer {
                                             }
                                             if (isMinSnap) {
                                                 wantedX = snapLocationX - selfSide * draggedHud.getScaledWidth() / 2;
-                                                //xPosition = new HUDPosition.Absolute(draggedHud, snapLocationX - selfSide * draggedHud.getScaledWidth() / 2, screenDimensions[0], Axis.X);
-                                                //xPosition = new HUDPosition.Attached(draggedHud, hud, otherSide, selfSide, Axis.X);
                                                 for (Snap snap : new ArrayList<>(xSnaps)) {
                                                     if (snap.offset != snapOffsetX) {
                                                         xSnaps.remove(snap);
@@ -269,8 +268,6 @@ public class HUDManager implements SettingContainer {
                                             }
                                             if (isMinSnap) {
                                                 wantedY = snapLocationY - selfSide * draggedHud.getScaledHeight() / 2;
-                                                //yPosition = new HUDPosition.Absolute(draggedHud, snapLocationY - selfSide * draggedHud.getScaledHeight() / 2, screenDimensions[1], Axis.X);
-                                                //yPosition = new HUDPosition.Attached(draggedHud, hud, otherSide, selfSide, Axis.Y);
                                                 for (Snap snap : new ArrayList<>(ySnaps)) {
                                                     if (snap.offset != snapOffsetY) {
                                                         ySnaps.remove(snap);
@@ -511,6 +508,7 @@ public class HUDManager implements SettingContainer {
         return wantedScale;
     }
 
+    @SuppressWarnings("rawtypes")
     public void onClick(MouseEvent event) {
         if (event.getButton() != Button.PRIMARY) return;
 
@@ -527,7 +525,10 @@ public class HUDManager implements SettingContainer {
                 double bottom = y + element.getScaledHeight() / 2;
 
                 boolean interacting = false;
-                if (distance(event.getX(), right, event.getY(), bottom) < 5) {
+
+                if (event.getX() > left + 1 && event.getX() < left + 4 && event.getY() > top + 1 && event.getY() < top + 4) {
+                    this.hudToOpenSettings = element;
+                } else if (distance(event.getX(), right, event.getY(), bottom) < 5) {
                     this.interactType = InteractType.RESIZE_BOTTOM_RIGHT;
                     interacting = true;
                 } else if (distance(event.getX(), right, event.getY(), top) < 5) {
@@ -562,12 +563,12 @@ public class HUDManager implements SettingContainer {
         } else {
             if (this.draggedHud == null) return;
             this.draggedHud.clearStaticAttached(new ArrayList<>());
-            for (Pair<HUDElement, AttachType> hud : this.snapped) {
-                this.draggedHud.addAttached(hud.getFirst(), hud.getSecond());
+            for (Pair hud : this.snapped) {
+                this.draggedHud.addAttached((HUDElement) hud.getFirst(), (AttachType) hud.getSecond());
 
                 if (hud.getFirst() != null) {
-                    hud.getFirst().clearStaticAttached(new ArrayList<>());
-                    hud.getFirst().addAttached(this.draggedHud, hud.getSecond().reverse());
+                    ((HUDElement) hud.getFirst()).clearStaticAttached(new ArrayList<>());
+                    ((HUDElement) hud.getFirst()).addAttached(this.draggedHud, ((AttachType) hud.getSecond()).reverse());
                 }
             }
             this.snapped = new Pair[0];
@@ -632,7 +633,7 @@ public class HUDManager implements SettingContainer {
         this.isShared.setValue(isShared);
     }
 
-    public List<Pair<Class<? extends HUDElement>, Pair<String, String>>> getPossibleElements() {
+    public Map<Class<? extends HUDElement>, Pair<String, String>> getPossibleElements() {
         return possibleElements;
     }
 

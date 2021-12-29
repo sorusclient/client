@@ -5,10 +5,13 @@ import com.github.sorusclient.client.adapter.IEntity;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
+import com.github.sorusclient.client.setting.SettingConfigurableData;
 import com.github.sorusclient.client.ui.IFontRenderer;
 import com.github.sorusclient.client.ui.Renderer;
 import com.github.sorusclient.client.util.Color;
 import com.github.sorusclient.client.util.Pair;
+
+import java.util.List;
 
 public class Coordinates extends HUDElement {
 
@@ -39,7 +42,6 @@ public class Coordinates extends HUDElement {
     @Override
     protected void render(double x, double y, double scale) {
         IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
-        if (player == null) return;
 
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
@@ -64,9 +66,9 @@ public class Coordinates extends HUDElement {
     private Pair<String, Color>[] getText(String identifier, String value) {
         switch (this.mode.getValue()) {
             case SEMI_COLON:
-                return new Pair[] {new Pair(identifier, this.identifierColor), new Pair(": ", this.otherColor), new Pair(value, this.valueColor)};
+                return new Pair[] {new Pair(identifier, this.identifierColor.getValue()), new Pair(": ", this.otherColor.getValue()), new Pair(value, this.valueColor.getValue())};
             case BRACKET:
-                return new Pair[] {new Pair("[", this.otherColor), new Pair(identifier, this.identifierColor), new Pair("] ", this.otherColor), new Pair(value, this.valueColor)};
+                return new Pair[] {new Pair("[", this.otherColor.getValue()), new Pair(identifier, this.identifierColor.getValue()), new Pair("] ", this.otherColor.getValue()), new Pair(value, this.valueColor.getValue())};
             default:
                 return new Pair[0];
         }
@@ -88,6 +90,17 @@ public class Coordinates extends HUDElement {
     @Override
     public double getHeight() {
         return 12 * ((showX.getValue() ? 1 : 0) + (showY.getValue() ? 1 : 0) + (showZ.getValue() ? 1 : 0));
+    }
+
+    @Override
+    public void addSettings(List<SettingConfigurableData> settings) {
+        settings.add(new SettingConfigurableData("Show X", this.showX, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new SettingConfigurableData("Show Y", this.showY, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new SettingConfigurableData("Show Z", this.showZ, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new SettingConfigurableData("Identifier Color", this.identifierColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
+        settings.add(new SettingConfigurableData("Other Color", this.otherColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
+        settings.add(new SettingConfigurableData("Value Color", this.valueColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
+        settings.add(new SettingConfigurableData("Mode", this.mode, SettingConfigurableData.ConfigurableType.CLICK_THROUGH));
     }
 
     public enum Mode {
