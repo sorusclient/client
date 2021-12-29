@@ -94,6 +94,7 @@ public class Coordinates extends HUDElement {
 
     @Override
     public void addSettings(List<SettingConfigurableData> settings) {
+        super.addSettings(settings);
         settings.add(new SettingConfigurableData("Show X", this.showX, SettingConfigurableData.ConfigurableType.TOGGLE));
         settings.add(new SettingConfigurableData("Show Y", this.showY, SettingConfigurableData.ConfigurableType.TOGGLE));
         settings.add(new SettingConfigurableData("Show Z", this.showZ, SettingConfigurableData.ConfigurableType.TOGGLE));

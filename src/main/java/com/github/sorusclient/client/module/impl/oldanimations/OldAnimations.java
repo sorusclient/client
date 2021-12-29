@@ -28,6 +28,7 @@ public class OldAnimations extends ModuleDisableable {
 
     @Override
     public void addSettings(List<SettingConfigurableData> settings) {
+        super.addSettings(settings);
         settings.add(new SettingConfigurableData("Old Blockhit", this.oldBlockHit, SettingConfigurableData.ConfigurableType.TOGGLE));
         settings.add(new SettingConfigurableData("Show Armor Damage", this.showArmorDamage, SettingConfigurableData.ConfigurableType.TOGGLE));
     }

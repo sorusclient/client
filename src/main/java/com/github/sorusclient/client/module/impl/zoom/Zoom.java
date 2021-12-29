@@ -58,6 +58,7 @@ public class Zoom extends ModuleDisableable {
 
     @Override
     public void addSettings(List<SettingConfigurableData> settings) {
+        super.addSettings(settings);
         settings.add(new SettingConfigurableData("Key", this.key, SettingConfigurableData.ConfigurableType.KEYBIND));
         settings.add(new SettingConfigurableData("Field Of View", this.fov, SettingConfigurableData.ConfigurableType.SLIDER, 15.0, 100.0));
         settings.add(new SettingConfigurableData("Sensitivity", this.sensitivity, SettingConfigurableData.ConfigurableType.SLIDER, 0.25, 1.5));

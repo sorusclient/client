@@ -13,13 +13,13 @@ import java.util.List;
 
 public class Sidebar extends HUDElement {
 
-    private final Setting<Boolean> removeRedNumbers;
+    private final Setting<Boolean> showRedNumbers;
 
     //TODO: Dummy value
     public Sidebar() {
         super("sideBar");
 
-        this.register("removeRedNumbers", this.removeRedNumbers = new Setting<>(false));
+        this.register("removeRedNumbers", this.showRedNumbers = new Setting<>(true));
     }
 
     @Override
@@ -41,7 +41,9 @@ public class Sidebar extends HUDElement {
         for (IScoreboardScore score : sidebarObjective.getScores()) {
             fontRenderer.drawString(score.getName(), x + 2 * scale, y + yOffset, scale, Color.WHITE);
             String scoreString = String.valueOf(score.getScore());
-            fontRenderer.drawString(scoreString, x + this.getWidth() * scale - (fontRenderer.getWidth(scoreString) + 1) * scale, y + yOffset, scale, Color.fromRGB(255, 85, 85, 255));
+            if (this.showRedNumbers.getValue()) {
+                fontRenderer.drawString(scoreString, x + this.getWidth() * scale - (fontRenderer.getWidth(scoreString) + 1) * scale, y + yOffset, scale, Color.fromRGB(255, 85, 85, 255));
+            }
             yOffset += (fontRenderer.getHeight() + 1) * scale;
         }
     }
@@ -58,7 +60,8 @@ public class Sidebar extends HUDElement {
         double maxWidth = 0;
 
         for (IScoreboardScore score : sidebarObjective.getScores()) {
-            maxWidth = Math.max(maxWidth, fontRenderer.getWidth(score.getName() + " " + score.getScore()));
+            String scoreString = this.showRedNumbers.getValue() ? " " + score.getScore() : "";
+            maxWidth = Math.max(maxWidth, fontRenderer.getWidth(score.getName() + scoreString));
         }
 
         return 2 + maxWidth + 6;
@@ -78,7 +81,8 @@ public class Sidebar extends HUDElement {
 
     @Override
     public void addSettings(List<SettingConfigurableData> settings) {
-        settings.add(new SettingConfigurableData("Remove Red Numbers", this.removeRedNumbers, SettingConfigurableData.ConfigurableType.TOGGLE));
+        super.addSettings(settings);
+        settings.add(new SettingConfigurableData("Show Red Numbers", this.showRedNumbers, SettingConfigurableData.ConfigurableType.TOGGLE));
     }
 
 }

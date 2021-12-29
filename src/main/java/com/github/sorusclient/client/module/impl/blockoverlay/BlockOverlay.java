@@ -35,6 +35,7 @@ public class BlockOverlay extends ModuleDisableable {
 
     @Override
     public void addSettings(List<SettingConfigurableData> settings) {
+        super.addSettings(settings);
         settings.add(new SettingConfigurableData("Border Thickness", this.borderThickness, SettingConfigurableData.ConfigurableType.SLIDER, 0.0, 5.0));
         settings.add(new SettingConfigurableData("Fill Color", this.fillColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
     }

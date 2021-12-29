@@ -40,6 +40,7 @@ public class EnvironmentChanger extends ModuleDisableable {
 
     @Override
     public void addSettings(List<SettingConfigurableData> settings) {
+        super.addSettings(settings);
         settings.add(new SettingConfigurableData("Modify Time", this.modifyTime, SettingConfigurableData.ConfigurableType.TOGGLE));
         settings.add(new SettingConfigurableData("Time", this.time, SettingConfigurableData.ConfigurableType.SLIDER, 0.0, 24000.0));
         settings.add(new SettingConfigurableData("Modify Weather", this.modifyWeather, SettingConfigurableData.ConfigurableType.TOGGLE));

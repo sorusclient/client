@@ -32,6 +32,8 @@ public class LivingEntityImpl extends EntityImpl implements ILivingEntity {
         for (ItemStack itemStack : this.entity.getArmorStacks()) {
             if (itemStack != null) {
                 armor.add(0, new ItemImpl(itemStack));
+            } else {
+                armor.add(0, null);
             }
         }
         return armor;
