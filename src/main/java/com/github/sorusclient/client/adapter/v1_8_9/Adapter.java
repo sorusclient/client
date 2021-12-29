@@ -15,7 +15,7 @@ public class Adapter implements Listener, IAdapter {
 
     @Override
     public void run() {
-        GlassLoader.getInstance().registerInterface(IAdapter.class, this);
+        GlassLoader.getInstance().registerInterface(IAdapter.class, new Adapter());
     }
 
     @Override
@@ -67,11 +67,7 @@ public class Adapter implements Listener, IAdapter {
         Screen screen = null;
         switch (screenType) {
             case DUMMY:
-                try {
-                    screen = (Screen) Class.forName("com.github.sorusclient.client.adapter.v1_8_9.DummyScreen").newInstance();
-                } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                screen = new DummyScreen();
                 break;
             case IN_GAME:
                 break;

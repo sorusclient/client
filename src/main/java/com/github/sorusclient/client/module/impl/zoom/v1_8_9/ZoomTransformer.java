@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.module.impl.zoom.v1_8_9;
 
+import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
@@ -16,7 +17,7 @@ public class ZoomTransformer implements Listener, ITransformer {
 
     @Override
     public void run() {
-        Sorus.getInstance().get(TransformerManager.class).register(ZoomTransformer.class);
+        GlassLoader.getInstance().registerTransformer(ZoomTransformer.class);
     }
 
     @Override

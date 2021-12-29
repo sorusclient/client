@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.module.impl.environmentchanger.v1_8_9;
 
+import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
@@ -18,7 +19,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
 
     @Override
     public void run() {
-        Sorus.getInstance().get(TransformerManager.class).register(EnvironmentChangerTransformer.class);
+        GlassLoader.getInstance().registerTransformer(EnvironmentChangerTransformer.class);
     }
 
     @Override
@@ -53,11 +54,13 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
         Identifier getRainGradient = Identifier.parse("v1_8_9/net/minecraft/world/World#getRainGradient(F)F");
         Identifier getRainGradient2 = Identifier.parse("v1_8_9/net/minecraft/client/world/ClientWorld#getRainGradient(F)F");
 
+        String environmentChangerHook = "com/github/sorusclient/client/module/impl/environmentchanger/v1_8_9/EnvironmentChangerHook";
+        
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals(getFogColor.getMethodName()) && methodNode.desc.equals(getFogColor.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if (node.getOpcode() == Opcodes.FSTORE && ((VarInsnNode) node).var == 2) {
-                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifySkyAngle", "(F)F"));
+                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifySkyAngle", "(F)F"));
                     }
                 }
             }
@@ -65,7 +68,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
             if (methodNode.name.equals(getSkyAngleRadians.getMethodName()) && methodNode.desc.equals(getSkyAngleRadians.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if (node.getOpcode() == Opcodes.FSTORE && ((VarInsnNode) node).var == 2) {
-                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifySkyAngle", "(F)F"));
+                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifySkyAngle", "(F)F"));
                     }
                 }
             }
@@ -73,7 +76,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
             if (methodNode.name.equals(getCloudColor.getMethodName()) && methodNode.desc.equals(getCloudColor.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if (node.getOpcode() == Opcodes.FSTORE && ((VarInsnNode) node).var == 2) {
-                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifySkyAngle", "(F)F"));
+                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifySkyAngle", "(F)F"));
                     }
                 }
             }
@@ -81,7 +84,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
             if (methodNode.name.equals(method_9891.getMethodName()) && methodNode.desc.equals(method_9891.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if (node instanceof MethodInsnNode && ((MethodInsnNode) node).owner.equals(getSkyAngle2.getClassName()) && ((MethodInsnNode) node).name.equals(getSkyAngle2.getMethodName())) {
-                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifySkyAngle", "(F)F"));
+                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifySkyAngle", "(F)F"));
                     }
                 }
             }
@@ -89,7 +92,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
             if (methodNode.name.equals(updateFog.getMethodName()) && methodNode.desc.equals(updateFog.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if (node instanceof MethodInsnNode && ((MethodInsnNode) node).owner.equals(getSkyAngle.getClassName()) && ((MethodInsnNode) node).name.equals(getSkyAngle.getMethodName())) {
-                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifySkyAngle", "(F)F"));
+                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifySkyAngle", "(F)F"));
                     }
                 }
             }
@@ -97,7 +100,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
             if (methodNode.name.equals(method_3707.getMethodName()) && methodNode.desc.equals(method_3707.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if (node instanceof MethodInsnNode && ((MethodInsnNode) node).owner.equals(getSkyAngle.getClassName()) && ((MethodInsnNode) node).name.equals(getSkyAngle.getMethodName())) {
-                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifySkyAngle", "(F)F"));
+                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifySkyAngle", "(F)F"));
                     }
                 }
             }
@@ -105,7 +108,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
             if (methodNode.name.equals(method_3631.getMethodName()) && methodNode.desc.equals(method_3631.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if (node instanceof MethodInsnNode && ((MethodInsnNode) node).owner.equals(getSkyAngle.getClassName()) && ((MethodInsnNode) node).name.equals(getSkyAngle.getMethodName())) {
-                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifySkyAngle", "(F)F"));
+                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifySkyAngle", "(F)F"));
                     }
                 }
             }
@@ -117,7 +120,7 @@ public class EnvironmentChangerTransformer implements Listener, ITransformer {
                 for (AbstractInsnNode node : methodNode.instructions) {
                     if (node instanceof MethodInsnNode && (((MethodInsnNode) node).owner.equals(getRainGradient2.getClassName()) && ((MethodInsnNode) node).name.equals(getRainGradient2.getMethodName()) ||
                             ((MethodInsnNode) node).owner.equals(getRainGradient.getClassName()) && ((MethodInsnNode) node).name.equals(getRainGradient.getMethodName()))) {
-                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EnvironmentChangerHook.class.getName().replace(".", "/"), "modifyRainGradient", "(F)F"));
+                        methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, environmentChangerHook, "modifyRainGradient", "(F)F"));
                     }
                 }
             }

@@ -14,6 +14,8 @@ public class Util {
         if (jsonSetting instanceof Integer) {
             if (wantedClass.equals(Double.class)) {
                 return (T) (Double) ((Integer) jsonSetting).doubleValue();
+            } else if (wantedClass.equals(Long.class)) {
+                return (T) ((Long) ((Integer) jsonSetting).longValue());
             } else {
                 return (T) (Integer) jsonSetting;
             }

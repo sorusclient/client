@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.glassmc:loader:v0.6.3"
+    implementation "com.github.glassmc:loader:v0.6.4"
 
     implementation "org.ow2.asm:asm-tree:9.2"
     shadowImplementation "commons-io:commons-io:2.11.0"

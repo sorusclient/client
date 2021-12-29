@@ -273,7 +273,7 @@ public class UserInterface {
                                                                                 container2.addStoredState("value");
 
                                                                                 Pair<Double, Double> bounds = (Pair<Double, Double>) setting.getSecond().getSecond();
-                                                                                container2.getRuntime().setState("value", ((Double) setting.getFirst().getSecond().getValue() - bounds.getFirst()) / (bounds.getSecond() - bounds.getFirst()));
+                                                                                container2.getRuntime().setState("value", (((Number) setting.getFirst().getSecond().getValue()).doubleValue() - bounds.getFirst()) / (bounds.getSecond() - bounds.getFirst()));
                                                                             }));
                                                                     break;
                                                                 case "KEY":

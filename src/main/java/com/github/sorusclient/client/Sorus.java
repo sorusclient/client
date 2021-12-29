@@ -1,6 +1,7 @@
 package com.github.sorusclient.client;
 
 import com.github.glassmc.loader.GlassLoader;
+import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.exception.NoSuchApiException;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
@@ -25,27 +26,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Sorus {
+public class Sorus implements Listener {
+
+    @Override
+    public void run() {
+        Sorus sorus = new Sorus();
+        GlassLoader.getInstance().registerAPI(sorus);
+        sorus.initialize();
+    }
 
     public static Sorus getInstance() {
         try {
             return GlassLoader.getInstance().getAPI(Sorus.class);
-        } catch (NoSuchApiException ignored) {
-            Sorus sorus = new Sorus();
-            GlassLoader.getInstance().registerAPI(sorus);
-            sorus.initialize();
-            return sorus;
+        } catch (NoSuchApiException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
     private final Map<Class<?>, Object> components = new HashMap<>();
 
     public void initialize() {
+        this.register(new ModuleManager());
         this.register(new ContainerRenderer());
         this.register(new EventManager());
         this.register(new HUDManager());
         this.register(new MinecraftAdapter());
-        this.register(new ModuleManager());
         this.register(new Renderer());
         this.register(new SettingManager());
         this.register(new TransformerManager());
@@ -61,6 +67,8 @@ public class Sorus {
         settingManager.load("/");
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> this.get(SettingManager.class).saveCurrent()));
+
+        GlassLoader.getInstance().runHooks("post-initialize");
     }
 
     public void register(Object component) {

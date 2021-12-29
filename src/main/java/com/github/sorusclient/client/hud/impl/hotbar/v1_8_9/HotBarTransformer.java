@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.hud.impl.hotbar.v1_8_9;
 
+import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
@@ -18,7 +19,7 @@ public class HotBarTransformer implements Listener, ITransformer {
 
     @Override
     public void run() {
-        Sorus.getInstance().get(TransformerManager.class).register(HotBarTransformer.class);
+        GlassLoader.getInstance().registerTransformer(HotBarTransformer.class);
     }
 
     @Override

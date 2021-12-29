@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.module.impl.oldanimations.v1_8_9;
 
+import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
@@ -26,7 +27,7 @@ public class OldAnimationsTransformer implements Listener, ITransformer {
 
     @Override
     public void run() {
-        Sorus.getInstance().get(TransformerManager.class).register(this.getClass());
+        GlassLoader.getInstance().registerTransformer(this.getClass());
     }
 
     @Override

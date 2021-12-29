@@ -2,7 +2,6 @@ namespace = "com.github.sorusclient.client"
 
 [listeners]
 initialize = [
-    "adapter.v1_8_9.Adapter",
     "event.v1_8_9.EventTransformer",
     "ui.v1_8_9.RendererHook",
     "module.impl.zoom.v1_8_9.ZoomTransformer",
@@ -23,7 +22,10 @@ initialize = [
     "hud.impl.experience.v1_8_9.ExperienceTransformer",
     "hud.impl.bossbar.v1_8_9.BossBarRenderer",
     "hud.impl.hotbar.v1_8_9.HotBarRenderer",
-    "hud.impl.hotbar.v1_8_9.HotBarTransformer"
+    "hud.impl.hotbar.v1_8_9.HotBarTransformer",
+]
+post-initialize = [
+    "adapter.v1_8_9.Adapter",
 ]
 
 [environment]

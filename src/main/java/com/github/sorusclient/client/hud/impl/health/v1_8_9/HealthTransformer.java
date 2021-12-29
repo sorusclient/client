@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.hud.impl.health.v1_8_9;
 
+import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
@@ -16,7 +17,7 @@ public class HealthTransformer implements Listener, ITransformer {
 
     @Override
     public void run() {
-        Sorus.getInstance().get(TransformerManager.class).register(HealthTransformer.class);
+        GlassLoader.getInstance().registerTransformer(HealthTransformer.class);
     }
 
     @Override
