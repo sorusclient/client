@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.setting;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -88,6 +89,35 @@ public class Profile {
             return "/" + this.id + "/";
         } else {
             return "/";
+        }
+    }
+
+    public Profile createProfile(String id) {
+        String idSimplified = id.substring(1, id.length() - 1);
+        File file = new File(this.settingsFile.getParentFile(), idSimplified);
+        file.mkdirs();
+        try {
+            FileWriter settingsWriter = new FileWriter(new File(file, "settings.json"));
+            settingsWriter.write("{}");
+            settingsWriter.close();
+
+            Profile profile = Profile.read(file);
+            this.children.put(idSimplified, profile);
+            profile.setParent(this);
+
+            return profile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void delete() {
+        this.getParent().children.remove(this.id);
+        try {
+            FileUtils.deleteDirectory(this.settingsFile.getParentFile());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -166,7 +166,7 @@ public class Container extends Component {
             this.width = width;
             this.height = height;
 
-            if (!this.hasInit) {
+            if (!(boolean) this.getState("hasInit")) {
                 if (Container.this.onInit != null) {
                     Map<String, Object> state = this.getAvailableState();
                     Container.this.onInit.accept(new Pair<>(Container.this, state));
@@ -174,7 +174,7 @@ public class Container extends Component {
                 }
 
                 this.setState("selected", false);
-                this.hasInit = true;
+                this.setState("hasInit", true);
             }
 
             if (Container.this.onUpdate != null) {
@@ -296,12 +296,25 @@ public class Container extends Component {
         public void onStateUpdate(String id, Object value) {
             super.onStateUpdate(id, value);
             for (Component child : this.getChildren()) {
-                child.runtime.onStateUpdate(id, value);
+                if (child != null) {
+                    child.runtime.onStateUpdate(id, value);
+                }
             }
         }
 
         @Override
-        public void handleMouseEvent(MouseEvent event) {
+        public boolean handleMouseEvent(MouseEvent event) {
+            boolean handled = false;
+            for (Pair<Component, double[]> component : this.placedComponents) {
+                if (component.getFirst() != null) {
+                    handled = component.getFirst().runtime.handleMouseEvent(event);
+
+                    if (handled) {
+                        return true;
+                    }
+                }
+            }
+
             Map<String, Object> state = this.getAvailableState();
 
             if (event.isPressed() && event.getButton() == Button.PRIMARY) {
@@ -312,6 +325,7 @@ public class Container extends Component {
                         event.getY() < this.y + this.height / 2) {
 
                     if (Container.this.onClick != null) {
+                        handled = true;
                         Container.this.onClick.accept(state);
                     }
 
@@ -319,6 +333,7 @@ public class Container extends Component {
 
                     if (System.currentTimeMillis() - this.prevClick < 400) {
                         if (Container.this.onDoubleClick != null) {
+                            handled = true;
                             Container.this.onDoubleClick.accept(state);
                         }
                     }
@@ -335,17 +350,14 @@ public class Container extends Component {
 
             if (this.heldClick) {
                 if (Container.this.onDrag != null) {
+                    handled = true;
                     Container.this.onDrag.accept(new Pair<>(state, new Pair<>(Math.min(1, Math.max(0, (event.getX() - (this.x - this.width / 2)) / this.width)), Math.min(1, Math.max(0, (event.getY() - (this.y - this.height / 2)) / this.height)))));
                 }
             }
 
             this.setAvailableState(state);
 
-            for (Pair<Component, double[]> component : this.placedComponents) {
-                if (component.getFirst() != null) {
-                    component.getFirst().runtime.handleMouseEvent(event);
-                }
-            }
+            return handled;
         }
 
         @Override
@@ -371,8 +383,10 @@ public class Container extends Component {
         public void setHasInit(boolean hasInit) {
             super.setHasInit(hasInit);
 
-            for (Component component : this.getChildren()) {
-                component.runtime.setHasInit(false);
+            if (!hasInit) {
+                for (Component component : this.getChildren()) {
+                    component.runtime.setHasInit(false);
+                }
             }
         }
     }

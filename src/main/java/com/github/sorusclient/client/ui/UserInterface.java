@@ -206,7 +206,7 @@ public class UserInterface {
                                     .addOnStateUpdate("value", state1 -> {
                                         try {
                                             Object[] values = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null));
-                                            setting.getSetting().setValueRaw(values[(int) state1]);
+                                            setting.getSetting().setValueRaw(values[(int) state1.get("value")]);
                                         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                                             e.printStackTrace();
                                         }
@@ -284,7 +284,7 @@ public class UserInterface {
                                 container2.getRuntime().setState("value", colorData);
                             })
                             .addOnStateUpdate("value", state1 -> {
-                                float[] stateValue = (float[]) state1;
+                                float[] stateValue = (float[]) state1.get("value");
 
                                 int rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2]);
                                 java.awt.Color javaColor = new java.awt.Color(rgb);
@@ -504,29 +504,64 @@ public class UserInterface {
                                 .addStoredState("currentModuleTab")
                                 .addStoredState("currentEditingModule"))
                         .addChild("profileEdit", new Container()
-                                .addChild(new List(List.VERTICAL)
+                                .addChild(new Container()
                                         .setWidth(new Relative(0.5))
                                         .setBackgroundCornerRadius(new Relative(0.015))
                                         .setBackgroundColor(new Absolute(Color.fromRGB(30, 30, 30, 255)))
-                                        .apply(container -> {
-                                            java.util.List<Profile> profiles = Sorus.getInstance().get(SettingManager.class).getAllProfiles();
+                                        .addChild(new List(List.VERTICAL)
+                                                .setY(new Side(Side.NEGATIVE))
+                                                .setHeight(new Relative(0.6))
+                                                .setOnInit(state -> {
+                                                    state.getFirst().clear();
 
-                                            for (Profile profile : profiles) {
-                                                container.addChild(new Container()
-                                                        .setHeight(new Absolute(30))
-                                                        .setBackgroundColor(new Dependent(state -> Sorus.getInstance().get(SettingManager.class).getCurrentProfile().equals(profile) ? Color.fromRGB(0, 255, 0, 255) : Color.WHITE))
-                                                        .addChild(new Text()
-                                                                .setFontRenderer(new Absolute("minecraft"))
-                                                                .setTextColor(new Absolute(Color.BLACK))
-                                                                .setText(new Absolute(profile.getId())))
-                                                        .setOnClick(state -> {
-                                                            Sorus.getInstance().get(SettingManager.class).load(profile.getId());
-                                                        }));
-                                            }
+                                                    java.util.List<Profile> profiles = Sorus.getInstance().get(SettingManager.class).getAllProfiles();
+
+                                                    for (Profile profile : profiles) {
+                                                        state.getFirst().addChild(new Container()
+                                                                .setHeight(new Absolute(30))
+                                                                .setBackgroundColor(new Dependent(state1 -> Sorus.getInstance().get(SettingManager.class).getCurrentProfile().equals(profile) ? Color.fromRGB(0, 255, 0, 255) : Color.WHITE))
+                                                                .addChild(new Text()
+                                                                        .setFontRenderer(new Absolute("minecraft"))
+                                                                        .setTextColor(new Absolute(Color.BLACK))
+                                                                        .setText(new Absolute(profile.getId())))
+                                                                .addChild(new Container()
+                                                                        .setX(new Side(Side.POSITIVE))
+                                                                        .setWidth(new Copy())
+                                                                        .setHeight(new Relative(0.5))
+                                                                        .setBackgroundColor(new Absolute(Color.fromRGB(255, 0, 0, 255)))
+                                                                        .setOnClick(state1 -> {
+                                                                            Sorus.getInstance().get(SettingManager.class).delete(profile);
+                                                                            state1.put("refreshProfiles", true);
+                                                                        }))
+                                                                .setOnClick(state1 -> {
+                                                                    Sorus.getInstance().get(SettingManager.class).load(profile);
+                                                                }));
+                                                    }
+                                                })
+                                                .addOnStateUpdate("refreshProfiles", state -> {
+                                                    if ((boolean) state.get("refreshProfiles")) {
+                                                        state.put("refreshProfiles", false);
+                                                        state.put("hasInit", false);
+                                                    }
+                                                })
+                                        )
+                                        .addChild(new Container()
+                                                .setX(new Side(Side.POSITIVE))
+                                                .setY(new Side(Side.POSITIVE))
+                                                .setWidth(new Absolute(25))
+                                                .setHeight(new Absolute(25))
+                                                .setBackgroundColor(new Absolute(Color.WHITE))
+                                                .setOnClick(state -> {
+                                                    Sorus.getInstance().get(SettingManager.class).createNewProfile();
+                                                    state.put("refreshProfiles", true);
+                                                }))
+                                        .setOnInit(state -> {
+                                            state.getFirst().addStoredState("refreshProfiles");
+                                            state.getSecond().put("refreshProfiles", false);
                                         })))
                         .setPadding(new Absolute(5)))
                 .addStoredState("currentTab")
-                .addOnStateUpdate("currentTab", state -> hudEditScreenOpen.set(state.equals("hudEdit")));
+                .addOnStateUpdate("currentTab", state -> hudEditScreenOpen.set(state.get("currentTab").equals("hudEdit")));
     }
 
     public boolean isHudEditScreenOpen() {

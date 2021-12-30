@@ -5,6 +5,8 @@ import com.github.sorusclient.client.adapter.IScoreboardObjective;
 import v1_8_9.net.minecraft.scoreboard.Scoreboard;
 import v1_8_9.net.minecraft.scoreboard.ScoreboardObjective;
 
+import java.awt.*;
+
 public class ScoreboardImpl implements IScoreboard {
 
     private final Scoreboard scoreboard;

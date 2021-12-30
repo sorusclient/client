@@ -37,10 +37,19 @@ public class SettingManager {
         load(profile);
     }
 
-    private void load(Profile profile) {
+    public void load(Profile profile) {
         this.currentProfile = profile;
 
         this.loadInternal(profile);
+    }
+
+    public void delete(Profile profile) {
+        if (profile == this.mainProfile) return;
+        this.load(this.mainProfile);
+
+        this.allProfiles.remove(profile);
+
+        profile.delete();
     }
 
     @SuppressWarnings("unchecked")
@@ -122,6 +131,29 @@ public class SettingManager {
         for (Profile profile1 : profile.getChildren().values()) {
             this.updateProfile(profile1);
         }
+    }
+
+    public void createNewProfile() {
+        List<String> currentNames = new ArrayList<>();
+        for (Profile profile : this.allProfiles) {
+            if (profile.getId().length() > 1) {
+                currentNames.add(profile.getId().substring(1, profile.getId().length() - 1));
+            }
+        }
+
+        Profile newProfile = null;
+        int i = 0;
+        while (newProfile == null) {
+            String id = "profile" + i;
+            if (!currentNames.contains(id)) {
+                newProfile = this.mainProfile.createProfile("/" + id + "/");
+            }
+            i++;
+        }
+
+        this.allProfiles.add(newProfile);
+
+        this.load(newProfile);
     }
 
 }

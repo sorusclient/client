@@ -22,10 +22,11 @@ public abstract class Component {
     protected Container parent;
 
     private final List<String> storedState = new ArrayList<>();
-    private final Map<String, Consumer<Object>> onStateUpdates = new HashMap<>();
+    private final Map<String, Consumer<Map<String, Object>>> onStateUpdates = new HashMap<>();
 
     public Component() {
         this.addStoredState("selected");
+        this.addStoredState("hasInit");
     }
 
     public Component setX(Constraint x) {
@@ -53,7 +54,7 @@ public abstract class Component {
         return this;
     }
 
-    public Component addOnStateUpdate(String state, Consumer<Object> onStateUpdate) {
+    public Component addOnStateUpdate(String state, Consumer<Map<String, Object>> onStateUpdate) {
         this.onStateUpdates.put(state, onStateUpdate);
         return this;
     }
@@ -69,8 +70,6 @@ public abstract class Component {
     public abstract class Runtime {
 
         public final Map<String, Object> state = new HashMap<>();
-
-        public boolean hasInit = false;
 
         public abstract void render(double x, double y, double width, double height);
 
@@ -89,6 +88,10 @@ public abstract class Component {
 
         public abstract double getPadding();
 
+        public Runtime() {
+            this.setState("hasInit", false);
+        }
+
         public void setState(String id, Object value) {
             if (Component.this.storedState.contains(id)) {
                 this.state.put(id, value);
@@ -99,9 +102,11 @@ public abstract class Component {
         }
 
         public void onStateUpdate(String id, Object value) {
-            Consumer<Object> onStateUpdate = Component.this.onStateUpdates.get(id);
+            Consumer<Map<String, Object>> onStateUpdate = Component.this.onStateUpdates.get(id);
             if (onStateUpdate != null) {
-                onStateUpdate.accept(value);
+                Map<String, Object> state = this.getAvailableState();
+                onStateUpdate.accept(state);
+                this.setAvailableState(state);
             }
         }
 
@@ -109,7 +114,11 @@ public abstract class Component {
             if (Component.this.storedState.contains(id)) {
                 return this.state.get(id);
             } else {
-                return this.getParent().getState(id);
+                if (Component.this.parent != null) {
+                    return this.getParent().getState(id);
+                } else {
+                    return null;
+                }
             }
         }
 
@@ -127,15 +136,17 @@ public abstract class Component {
 
         public void setAvailableState(Map<String, Object> state) {
             for (Map.Entry<String, Object> entry : state.entrySet()) {
-                this.setState(entry.getKey(), entry.getValue());
+                if (!entry.getValue().equals(this.getState(entry.getKey()))) {
+                    this.setState(entry.getKey(), entry.getValue());
+                }
             }
         }
 
         public void setHasInit(boolean hasInit) {
-            this.hasInit = hasInit;
+            this.setState("hasInit", hasInit);
         }
 
-        public abstract void handleMouseEvent(MouseEvent event);
+        public abstract boolean handleMouseEvent(MouseEvent event);
         public abstract void handleKeyEvent(KeyEvent event);
 
     }

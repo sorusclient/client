@@ -118,8 +118,8 @@ public class Text extends Component {
         }
 
         @Override
-        public void handleMouseEvent(MouseEvent event) {
-
+        public boolean handleMouseEvent(MouseEvent event) {
+            return false;
         }
 
         @Override
