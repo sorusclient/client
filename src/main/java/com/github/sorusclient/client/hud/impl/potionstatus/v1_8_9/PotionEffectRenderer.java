@@ -24,23 +24,75 @@ public class PotionEffectRenderer implements Listener, IPotionEffectRenderer {
             case SPEED:
                 id = 1;
                 break;
+            case SLOWNESS:
+                id = 2;
+                break;
+            case HASTE:
+                id = 3;
+                break;
+            case MINING_FATIGUE:
+                id = 4;
+                break;
+            case STRENGTH:
+                id = 5;
+                break;
+            case INSTANT_HEALTH:
+                id = 6;
+                break;
+            case INSTANT_DAMAGE:
+                id = 7;
+                break;
+            case JUMP_BOOST:
+                id = 8;
+                break;
+            case NAUSEA:
+                id = 9;
+                break;
             case REGENERATION:
                 id = 10;
+                break;
+            case RESISTANCE:
+                id = 11;
                 break;
             case FIRE_RESISTANCE:
                 id = 12;
                 break;
+            case WATER_BREATHING:
+                id = 13;
+                break;
+            case INVISIBILITY:
+                id = 14;
+                break;
+            case BLINDNESS:
+                id = 15;
+                break;
+            case NIGHT_VISION:
+                id = 16;
+                break;
+            case HUNGER:
+                id = 17;
+                break;
+            case WEAKNESS:
+                id = 18;
+                break;
+            case POISON:
+                id = 19;
+                break;
+            case WITHER:
+                id = 20;
+                break;
+            case HEALTH_BOOST:
+                id = 21;
+                break;
             case ABSORPTION:
+                id = 22;
+                break;
+            case SATURATION:
                 id = 22;
                 break;
             default:
                 id = -1;
                 break;
-        }
-
-        if (id == -1) {
-            System.out.println("unknown effect");
-            return;
         }
 
         int index = StatusEffect.STATUS_EFFECTS[id].method_2444();

@@ -30,11 +30,6 @@ public class ArmorRenderer implements Listener, IArmorRenderer {
             }
         }
 
-        if (itemStack == null) {
-            System.out.println("unknown hotbar item");
-            return;
-        }
-
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, 0);
         GL11.glScaled(scale * 18 / 16, scale * 18 / 16, 0);

@@ -47,7 +47,7 @@ public class TabHolder extends Container {
             }
 
             if (this.prevCurrentTab != null && !this.prevCurrentTab.equals(currentTab)) {
-                TabHolder.this.tabs.get(this.prevCurrentTab).runtime.hasInit = false;
+                TabHolder.this.tabs.get(this.prevCurrentTab).runtime.setHasInit(false);
             }
 
             this.prevCurrentTab = currentTab;

@@ -131,6 +131,10 @@ public abstract class Component {
             }
         }
 
+        public void setHasInit(boolean hasInit) {
+            this.hasInit = hasInit;
+        }
+
         public abstract void handleMouseEvent(MouseEvent event);
         public abstract void handleKeyEvent(KeyEvent event);
 

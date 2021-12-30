@@ -367,6 +367,14 @@ public class Container extends Component {
             }
         }
 
+        @Override
+        public void setHasInit(boolean hasInit) {
+            super.setHasInit(hasInit);
+
+            for (Component component : this.getChildren()) {
+                component.runtime.setHasInit(false);
+            }
+        }
     }
 
 }

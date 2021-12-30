@@ -21,6 +21,7 @@ initialize = [
     "hud.impl.experience.v1_8_9.ExperienceRenderer",
     "hud.impl.experience.v1_8_9.ExperienceTransformer",
     "hud.impl.bossbar.v1_8_9.BossBarRenderer",
+    "hud.impl.bossbar.v1_8_9.BossBarTransformer",
     "hud.impl.hotbar.v1_8_9.HotBarRenderer",
     "hud.impl.hotbar.v1_8_9.HotBarTransformer",
 ]

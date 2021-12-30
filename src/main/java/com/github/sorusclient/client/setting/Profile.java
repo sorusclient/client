@@ -16,7 +16,7 @@ public class Profile {
             }
         }
 
-        Profile profile = new Profile(new File(folder, "settings.json"), children);
+        Profile profile = new Profile(new File(folder, "settings.json"), folder.getName(), children);
         for (Profile childProfile : profile.children.values()) {
             childProfile.setParent(profile);
         }
@@ -27,9 +27,11 @@ public class Profile {
     private Profile parent;
     private final File settingsFile;
     private final Map<String, Profile> children;
+    private final String id;
 
-    private Profile(File settingsFile, Map<String, Profile> children) {
+    private Profile(File settingsFile, String id, Map<String, Profile> children) {
         this.settingsFile = settingsFile;
+        this.id = id;
         this.children = children;
     }
 
@@ -78,6 +80,14 @@ public class Profile {
             Profile nextProfile = this.children.get(nextProfileId);
             if (nextProfile == null) return null;
             return nextProfile.getProfile(nextProfileArguments);
+        }
+    }
+
+    public String getId() {
+        if (this.parent != null) {
+            return "/" + this.id + "/";
+        } else {
+            return "/";
         }
     }
 

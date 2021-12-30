@@ -105,7 +105,7 @@ public class Armor extends HUDElement {
 
         List<IItem> realArmor = adapter.getPlayer().getArmor();
 
-        if (!editing || realArmor.stream().filter(Objects::nonNull).count() > 0) {
+        if (!editing || realArmor.stream().anyMatch(Objects::nonNull)) {
             return realArmor;
         } else {
             List<IItem> fakeArmor = new ArrayList<>();

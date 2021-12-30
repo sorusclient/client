@@ -45,11 +45,12 @@ public class Sorus implements Listener {
         this.get(HUDManager.class).initialize();
         this.get(ModuleManager.class).initialize();
         this.get(ContainerRenderer.class).initialize();
-        this.get(UserInterface.class).initialize();
 
         SettingManager settingManager = this.get(SettingManager.class);
         settingManager.loadProfiles();
         settingManager.load("/");
+
+        this.get(UserInterface.class).initialize();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> this.get(SettingManager.class).saveCurrent()));
 

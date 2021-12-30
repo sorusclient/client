@@ -49,7 +49,7 @@ public class Module implements SettingContainer {
     }
 
     public void addSettings(List<SettingConfigurableData> settings) {
-
+        settings.add(new SettingConfigurableData("Shared", this.isShared, SettingConfigurableData.ConfigurableType.TOGGLE));
     }
 
     @Override

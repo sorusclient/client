@@ -13,15 +13,26 @@ public class SettingManager {
     private Profile mainProfile;
     private Profile currentProfile;
 
+    private final List<Profile> allProfiles = new ArrayList<>();
+
     public void register(SettingContainer settingContainer) {
         this.settingContainers.put(settingContainer.getId(), settingContainer);
     }
 
     public void loadProfiles() {
         this.mainProfile = Profile.read(new File(PROFILE_FILE, "main"));
+        this.addAllProfiles(this.mainProfile);
+    }
+
+    private void addAllProfiles(Profile profile) {
+        this.allProfiles.add(profile);
+        this.allProfiles.addAll(profile.getChildren().values());
     }
 
     public void load(String profileId) {
+        if (this.currentProfile != null) {
+            this.save(this.currentProfile);
+        }
         Profile profile = mainProfile.getProfile(profileId);
         load(profile);
     }
@@ -51,6 +62,14 @@ public class SettingManager {
                 settingContainer.load(jsonObject1);
             }
         }
+    }
+
+    public List<Profile> getAllProfiles() {
+        return this.allProfiles;
+    }
+
+    public Profile getCurrentProfile() {
+        return currentProfile;
     }
 
     public void saveCurrent() {

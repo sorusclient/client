@@ -11,8 +11,10 @@ import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.hud.HUDManager;
 import com.github.sorusclient.client.module.Module;
 import com.github.sorusclient.client.module.ModuleManager;
+import com.github.sorusclient.client.setting.Profile;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.ui.framework.*;
 import com.github.sorusclient.client.ui.framework.constraint.*;
 import com.github.sorusclient.client.util.Color;
@@ -304,7 +306,7 @@ public class UserInterface {
                         .setPadding(new Absolute(5))
                         .setBackgroundColor(new Absolute(Color.fromRGB(30, 30, 30, 255)))
                         .apply(container1 -> {
-                            String[] tabs = new String[] {"home", "hudEdit", "moduleEdit"};
+                            String[] tabs = new String[] {"home", "hudEdit", "moduleEdit", "profileEdit"};
 
                             for (String tab : tabs) {
                                 container1.addChild(new Container()
@@ -501,6 +503,27 @@ public class UserInterface {
                                 )
                                 .addStoredState("currentModuleTab")
                                 .addStoredState("currentEditingModule"))
+                        .addChild("profileEdit", new Container()
+                                .addChild(new List(List.VERTICAL)
+                                        .setWidth(new Relative(0.5))
+                                        .setBackgroundCornerRadius(new Relative(0.015))
+                                        .setBackgroundColor(new Absolute(Color.fromRGB(30, 30, 30, 255)))
+                                        .apply(container -> {
+                                            java.util.List<Profile> profiles = Sorus.getInstance().get(SettingManager.class).getAllProfiles();
+
+                                            for (Profile profile : profiles) {
+                                                container.addChild(new Container()
+                                                        .setHeight(new Absolute(30))
+                                                        .setBackgroundColor(new Dependent(state -> Sorus.getInstance().get(SettingManager.class).getCurrentProfile().equals(profile) ? Color.fromRGB(0, 255, 0, 255) : Color.WHITE))
+                                                        .addChild(new Text()
+                                                                .setFontRenderer(new Absolute("minecraft"))
+                                                                .setTextColor(new Absolute(Color.BLACK))
+                                                                .setText(new Absolute(profile.getId())))
+                                                        .setOnClick(state -> {
+                                                            Sorus.getInstance().get(SettingManager.class).load(profile.getId());
+                                                        }));
+                                            }
+                                        })))
                         .setPadding(new Absolute(5)))
                 .addStoredState("currentTab")
                 .addOnStateUpdate("currentTab", state -> hudEditScreenOpen.set(state.equals("hudEdit")));
