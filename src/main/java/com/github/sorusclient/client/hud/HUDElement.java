@@ -123,6 +123,13 @@ public abstract class HUDElement implements SettingContainer {
         this.y.setValue((y + this.getScaledHeight() / 2 * offsetY.getValue()) / screenDimensions[1]);
     }
 
+    public void setPositionSpecific(double x, double y, double offsetX, double offsetY) {
+        this.x.setValue(x);
+        this.y.setValue(y);
+        this.offsetX.setValue(offsetX);
+        this.offsetY.setValue(offsetY);
+    }
+
     public double getX(double screenWidth) {
         return -this.offsetX.getValue() * this.getScaledWidth() / 2 + this.x.getValue() * screenWidth;
     }

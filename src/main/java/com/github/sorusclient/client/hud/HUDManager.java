@@ -61,6 +61,56 @@ public class HUDManager implements SettingContainer {
         this.isShared = new Setting<>(false);
 
         this.initializePossibleElements();
+        this.setupDefaultHud();
+    }
+
+    private void setupDefaultHud() {
+        HotBar hotBar = new HotBar();
+        hotBar.addAttached(null, new AttachType(0, 0, Axis.X));
+        hotBar.addAttached(null, new AttachType(1, 1, Axis.Y));
+        this.add(hotBar);
+
+        Experience experience = new Experience();
+        experience.addAttached(hotBar, new AttachType(0, 0, Axis.X));
+        experience.addAttached(hotBar, new AttachType(1, -1, Axis.Y));
+        this.add(experience);
+
+        hotBar.addAttached(experience, new AttachType(0, 0, Axis.X));
+        hotBar.addAttached(experience, new AttachType(-1, 1, Axis.Y));
+
+        Health health = new Health();
+        health.addAttached(experience, new AttachType(-1, -1, Axis.X));
+        health.addAttached(experience, new AttachType(1, -1, Axis.Y));
+        this.add(health);
+
+        experience.addAttached(health, new AttachType(-1, -1, Axis.X));
+        experience.addAttached(health, new AttachType(-1, 1, Axis.Y));
+
+        Armor armor = new Armor();
+        armor.addAttached(health, new AttachType(-1, -1, Axis.X));
+        armor.addAttached(health, new AttachType(1, -1, Axis.Y));
+        this.add(armor);
+
+        health.addAttached(armor, new AttachType(-1, -1, Axis.X));
+        health.addAttached(armor, new AttachType(-1, 1, Axis.Y));
+
+        Hunger hunger = new Hunger();
+        hunger.addAttached(experience, new AttachType(1, 1, Axis.X));
+        hunger.addAttached(experience, new AttachType(1, -1, Axis.Y));
+        this.add(hunger);
+
+        experience.addAttached(hunger, new AttachType(1, 1, Axis.X));
+        experience.addAttached(hunger, new AttachType(-1, 1, Axis.Y));
+
+        BossBar bossBar = new BossBar();
+        bossBar.addAttached(null, new AttachType(0, 0, Axis.X));
+        bossBar.addAttached(null, new AttachType(-1, -1, Axis.Y));
+        this.add(bossBar);
+
+        Sidebar sideBar = new Sidebar();
+        sideBar.addAttached(null, new AttachType(1, 1, Axis.X));
+        sideBar.addAttached(null, new AttachType(0, 0, Axis.Y));
+        this.add(sideBar);
     }
 
     public void initialize() {
@@ -116,7 +166,7 @@ public class HUDManager implements SettingContainer {
 
         this.prevScreenDimensions = screenDimensions;
 
-        if (this.elements.isEmpty()) {
+        /*if (this.elements.isEmpty()) {
             HUDElement element = new PotionStatus();
             element.setPosition(0, 0, screenDimensions);
             element.setScale(1);
@@ -168,7 +218,7 @@ public class HUDManager implements SettingContainer {
             element.setScale(1);
 
             this.add(element);
-        }
+        }*/
 
         boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
         boolean textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
@@ -599,6 +649,8 @@ public class HUDManager implements SettingContainer {
     @SuppressWarnings("unchecked")
     @Override
     public void load(Map<String, Object> settings) {
+        this.elements.clear();
+
         for (Map.Entry<String, Object> hud : settings.entrySet()) {
             Map<String, Object> hudSettings = (Map<String, Object>) hud.getValue();
 

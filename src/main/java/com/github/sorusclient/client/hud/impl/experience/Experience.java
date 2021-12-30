@@ -21,7 +21,7 @@ public class Experience extends HUDElement {
 
         double experiencePercent = player.getExperiencePercentUntilNextLevel();
         IExperienceRenderer experienceRenderer = GlassLoader.getInstance().getInterface(IExperienceRenderer.class);
-        experienceRenderer.renderExperienceBar(x + 1 * scale, y + 8 * scale, scale, experiencePercent);
+        experienceRenderer.renderExperienceBar(x + 1 * scale, y + 1 * scale, scale, experiencePercent);
 
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer minecraftFontRenderer = renderer.getFontRenderer("minecraft");
@@ -32,7 +32,7 @@ public class Experience extends HUDElement {
                 minecraftFontRenderer,
                 experienceLevel,
                 x + this.getWidth() / 2 * scale - minecraftFontRenderer.getWidth(experienceLevel) / 2 * scale,
-                y + 6 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
+                y - 1 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
                 scale
         );
     }
@@ -52,7 +52,7 @@ public class Experience extends HUDElement {
 
     @Override
     public double getHeight() {
-        return 14;
+        return 7;
     }
 
 }
