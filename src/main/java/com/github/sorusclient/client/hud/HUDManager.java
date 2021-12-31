@@ -35,8 +35,7 @@ import java.util.Map;
 
 public class HUDManager implements SettingContainer {
 
-    //TODO: hud data as opposed to weird pair thing that isn't intuitive
-    private final Map<Class<? extends HUDElement>, Pair<String, String>> possibleElements = new HashMap<>();
+    private final List<HUDData> possibleHuds = new ArrayList<>();
 
     private final Map<String, HUDElement> elements = new HashMap<>();
 
@@ -134,8 +133,8 @@ public class HUDManager implements SettingContainer {
         this.registerPossibleElement(Sidebar.class, "Sidebar", "yes yersy");
     }
 
-    private void registerPossibleElement(Class<? extends HUDElement> hudClass, String displayName, String description) {
-        this.possibleElements.put(hudClass, new Pair<>(displayName, description));
+    private void registerPossibleElement(Class<? extends HUDElement> hudClass, String name, String description) {
+        this.possibleHuds.add(new HUDData(hudClass, name, description));
     }
 
     public void add(HUDElement hud) {
@@ -685,8 +684,8 @@ public class HUDManager implements SettingContainer {
         this.isShared.setValue(isShared);
     }
 
-    public Map<Class<? extends HUDElement>, Pair<String, String>> getPossibleElements() {
-        return possibleElements;
+    public List<HUDData> getPossibleHuds() {
+        return this.possibleHuds;
     }
 
     private static class Snap {

@@ -7,9 +7,10 @@ import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.event.impl.KeyEvent;
 import com.github.sorusclient.client.event.impl.RenderEvent;
+import com.github.sorusclient.client.hud.HUDData;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.hud.HUDManager;
-import com.github.sorusclient.client.module.Module;
+import com.github.sorusclient.client.module.ModuleData;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.plugin.Plugin;
 import com.github.sorusclient.client.plugin.PluginManager;
@@ -20,11 +21,9 @@ import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.ui.framework.*;
 import com.github.sorusclient.client.ui.framework.constraint.*;
 import com.github.sorusclient.client.util.Color;
-import com.github.sorusclient.client.util.Pair;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserInterface {
@@ -298,7 +297,6 @@ public class UserInterface {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void initializeUserInterface() {
         this.mainGui = (Container) new Container()
                 .addChild(new List(List.VERTICAL)
@@ -353,8 +351,8 @@ public class UserInterface {
                                         .setBackgroundCornerRadius(new Relative(0.015))
                                         .setBackgroundColor(new Absolute(Color.fromRGB(30, 30, 30, 255)))
                                         .apply(container -> {
-                                            Map<Class<? extends HUDElement>, Pair<String, String>> possibleElements = Sorus.getInstance().get(HUDManager.class).getPossibleElements();
-                                            for (Map.Entry<Class<? extends HUDElement>, Pair<String, String>> possibleElement : possibleElements.entrySet()) {
+                                            java.util.List<HUDData> possibleHuds = Sorus.getInstance().get(HUDManager.class).getPossibleHuds();
+                                            for (HUDData possibleHud : possibleHuds) {
                                                 container.addChild(new Container()
                                                         .setWidth(new Relative(0.225))
                                                         .setHeight(new Copy(0.8))
@@ -364,7 +362,7 @@ public class UserInterface {
                                                         .addChild(new Text()
                                                                 .setScale(new Relative(0.008))
                                                                 .setFontRenderer(new Absolute("minecraft"))
-                                                                .setText(new Absolute(possibleElement.getValue().getFirst()))
+                                                                .setText(new Absolute(possibleHud.getName()))
                                                                 .setTextColor(new Absolute(Color.fromRGB(230, 230, 230, 255)))
                                                                 .setPadding(new Relative(0.05))
                                                                 .setX(new Side(Side.NEGATIVE))
@@ -373,14 +371,14 @@ public class UserInterface {
                                                         .addChild(new Text()
                                                                 .setScale(new Relative(0.006))
                                                                 .setFontRenderer(new Absolute("minecraft"))
-                                                                .setText(new Absolute(possibleElement.getValue().getSecond()))
+                                                                .setText(new Absolute(possibleHud.getDescription()))
                                                                 .setTextColor(new Absolute(Color.fromRGB(190, 190, 190, 255)))
                                                                 .setPadding(new Relative(0.05))
                                                                 .setX(new Side(Side.NEGATIVE))
                                                                 .setY(new Side(Side.NEGATIVE)))
                                                         .setOnDoubleClick(state -> {
                                                             try {
-                                                                HUDElement hudElement = possibleElement.getKey().newInstance();
+                                                                HUDElement hudElement = possibleHud.getHudClass().newInstance();
                                                                 double[] screenDimensions = Sorus.getInstance().get(MinecraftAdapter.class).getScreenDimensions();
                                                                 hudElement.setPosition(screenDimensions[0] / 2, screenDimensions[1] / 2, screenDimensions);
                                                                 hudElement.setScale(1);
@@ -400,8 +398,16 @@ public class UserInterface {
                                         .setOnInit(state -> {
                                             Container container = state.getFirst();
 
+
                                             HUDElement hud = (HUDElement) state.getSecond().get("currentEditingHud");
-                                            Pair<String, String> hudData = Sorus.getInstance().get(HUDManager.class).getPossibleElements().get(hud.getClass());
+                                            HUDData hudData = null;
+                                            for (HUDData hudData1 : Sorus.getInstance().get(HUDManager.class).getPossibleHuds()) {
+                                                if (hudData1.getHudClass().equals(hud.getClass())) {
+                                                    hudData = hudData1;
+                                                }
+                                            }
+
+                                            if (hudData == null) return;
 
                                             java.util.List<SettingConfigurableData> settings = new ArrayList<>();
                                             hud.addSettings(settings);
@@ -410,7 +416,7 @@ public class UserInterface {
                                                     .clear()
                                                     .addChild(new Text()
                                                             .setFontRenderer(new Absolute("minecraft"))
-                                                            .setText(new Absolute(hudData.getFirst()))
+                                                            .setText(new Absolute(hudData.getName()))
                                                             .setX(new Side(Side.NEGATIVE))
                                                             .setY(new Side(Side.NEGATIVE)))
                                                     .addChild(new Container()
@@ -438,8 +444,8 @@ public class UserInterface {
                                         .setBackgroundCornerRadius(new Relative(0.015))
                                         .setBackgroundColor(new Absolute(Color.fromRGB(30, 30, 30, 255)))
                                         .apply(container -> {
-                                            java.util.List<Pair<Module, Pair<String, String>>> modules = Sorus.getInstance().get(ModuleManager.class).getModules();
-                                            for (Pair<Module, Pair<String, String>> module : modules) {
+                                            java.util.List<ModuleData> modules = Sorus.getInstance().get(ModuleManager.class).getModules();
+                                            for (ModuleData moduleData : modules) {
                                                 container.addChild(new Container()
                                                         .setWidth(new Relative(0.225))
                                                         .setHeight(new Copy(0.8))
@@ -449,7 +455,7 @@ public class UserInterface {
                                                         .addChild(new Text()
                                                                 .setScale(new Relative(0.008))
                                                                 .setFontRenderer(new Absolute("minecraft"))
-                                                                .setText(new Absolute(module.getSecond().getFirst()))
+                                                                .setText(new Absolute(moduleData.getName()))
                                                                 .setTextColor(new Absolute(Color.fromRGB(230, 230, 230, 255)))
                                                                 .setPadding(new Relative(0.05))
                                                                 .setX(new Side(Side.NEGATIVE))
@@ -458,14 +464,14 @@ public class UserInterface {
                                                         .addChild(new Text()
                                                                 .setScale(new Relative(0.006))
                                                                 .setFontRenderer(new Absolute("minecraft"))
-                                                                .setText(new Absolute(module.getSecond().getSecond()))
+                                                                .setText(new Absolute(moduleData.getDescription()))
                                                                 .setTextColor(new Absolute(Color.fromRGB(190, 190, 190, 255)))
                                                                 .setPadding(new Relative(0.05))
                                                                 .setX(new Side(Side.NEGATIVE))
                                                                 .setY(new Side(Side.NEGATIVE)))
                                                         .setOnDoubleClick(state -> {
                                                             state.put("currentModuleTab", "edit");
-                                                            state.put("currentEditingModule", module);
+                                                            state.put("currentEditingModule", moduleData);
                                                         }));
                                             }
                                         }))
@@ -476,17 +482,17 @@ public class UserInterface {
                                         .setOnInit(state -> {
                                             Container container = state.getFirst();
 
-                                            Pair<Module, Pair<String, String>> module = (Pair<Module, Pair<String, String>>) state.getSecond().get("currentEditingModule");
+                                            ModuleData moduleData = (ModuleData) state.getSecond().get("currentEditingModule");
 
                                             java.util.List<SettingConfigurableData> settings = new ArrayList<>();
 
-                                            module.getFirst().addSettings(settings);
+                                            moduleData.getModule().addSettings(settings);
 
                                             container
                                                     .clear()
                                                     .addChild(new Text()
                                                             .setFontRenderer(new Absolute("minecraft"))
-                                                            .setText(new Absolute(module.getSecond().getFirst()))
+                                                            .setText(new Absolute(moduleData.getName()))
                                                             .setX(new Side(Side.NEGATIVE))
                                                             .setY(new Side(Side.NEGATIVE)))
                                                     .addChild(new Container()
@@ -535,9 +541,7 @@ public class UserInterface {
                                                                             Sorus.getInstance().get(SettingManager.class).delete(profile);
                                                                             state1.put("refreshProfiles", true);
                                                                         }))
-                                                                .setOnClick(state1 -> {
-                                                                    Sorus.getInstance().get(SettingManager.class).load(profile);
-                                                                }));
+                                                                .setOnClick(state1 -> Sorus.getInstance().get(SettingManager.class).load(profile)));
                                                     }
                                                 })
                                                 .addOnStateUpdate("refreshProfiles", state -> {

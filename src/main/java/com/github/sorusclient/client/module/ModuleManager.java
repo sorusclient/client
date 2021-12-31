@@ -17,8 +17,7 @@ import java.util.Map;
 
 public class ModuleManager {
 
-    //TODO: Module data as opposed to weird pair thing
-    private final Map<Class<Module>, Pair<Module, Pair<String, String>>> modules = new HashMap<>();
+    private final Map<Class<Module>, ModuleData> modules = new HashMap<>();
 
     public void initialize() {
         this.registerInternalModules();
@@ -34,17 +33,17 @@ public class ModuleManager {
     }
 
     @SuppressWarnings("unchecked")
-    public void register(Module module, String displayName, String description) {
-        this.modules.put((Class<Module>) module.getClass(), new Pair<>(module, new Pair<>(displayName, description)));
+    public void register(Module module, String name, String description) {
+        this.modules.put((Class<Module>) module.getClass(), new ModuleData(module, name, description));
         Sorus.getInstance().get(SettingManager.class).register(module);
     }
 
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> moduleClass) {
-        return (T) this.modules.get(moduleClass).getFirst();
+        return (T) this.modules.get(moduleClass).getModule();
     }
 
-    public List<Pair<Module, Pair<String, String>>> getModules() {
+    public List<ModuleData> getModules() {
         return new ArrayList<>(this.modules.values());
     }
 

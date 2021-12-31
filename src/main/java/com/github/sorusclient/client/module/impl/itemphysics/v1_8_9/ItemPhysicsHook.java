@@ -4,7 +4,10 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.module.impl.itemphysics.ItemPhysics;
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager;
+import v1_8_9.net.minecraft.block.Block;
+import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.entity.ItemEntity;
+import v1_8_9.net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +37,12 @@ public class ItemPhysicsHook {
     public static void preRenderItem(ItemEntity entity) {
         ItemPhysics itemPhysics = Sorus.getInstance().get(ModuleManager.class).get(ItemPhysics.class);
         if (itemPhysics.isEnabled()) {
-            GlStateManager.translated(0, -0.225, 0);
+            Block block = MinecraftClient.getInstance().world.getBlockAt(new BlockPos(entity.x, entity.y, entity.z));
+            if (!block.getTranslationKey().equals("tile.snow")) {
+                GlStateManager.translated(0, -0.225, 0);
+            } else {
+                GlStateManager.translated(0, -0.11, 0);
+            }
             GlStateManager.rotatef(90, 1, 0, 0);
 
             if (!entity.onGround) {
