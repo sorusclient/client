@@ -32,4 +32,12 @@ public class MinecraftAdapter {
         this.getAdapter().openScreen(screenType);
     }
 
+    public void setPerspective(IAdapter.PerspectiveMode perspectiveMode) {
+        this.getAdapter().setPerspective(perspectiveMode);
+    }
+
+    public IAdapter.PerspectiveMode getPerspective() {
+        return this.getAdapter().getPerspective();
+    }
+
 }

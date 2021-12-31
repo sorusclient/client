@@ -76,4 +76,35 @@ public class Adapter implements Listener, IAdapter {
         MinecraftClient.getInstance().openScreen(screen);
     }
 
+    @Override
+    public void setPerspective(PerspectiveMode perspectiveMode) {
+        int newPerspective = -1;
+        switch (perspectiveMode) {
+            case FIRST_PERSON:
+                newPerspective = 0;
+                break;
+            case THIRD_PERSON_BACK:
+                newPerspective = 1;
+                break;
+            case THIRD_PERSON_FRONT:
+                newPerspective = 2;
+                break;
+        }
+
+        MinecraftClient.getInstance().options.perspective = newPerspective;
+    }
+
+    @Override
+    public PerspectiveMode getPerspective() {
+        switch (MinecraftClient.getInstance().options.perspective) {
+            case 0:
+                return PerspectiveMode.FIRST_PERSON;
+            case 1:
+                return PerspectiveMode.THIRD_PERSON_BACK;
+            case 2:
+                return PerspectiveMode.THIRD_PERSON_FRONT;
+        }
+        return null;
+    }
+
 }

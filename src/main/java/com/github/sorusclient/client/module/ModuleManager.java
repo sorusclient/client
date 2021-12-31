@@ -6,6 +6,7 @@ import com.github.sorusclient.client.module.impl.fullbright.FullBright;
 import com.github.sorusclient.client.module.impl.itemphysics.ItemPhysics;
 import com.github.sorusclient.client.module.impl.oldanimations.OldAnimations;
 import com.github.sorusclient.client.module.impl.environmentchanger.EnvironmentChanger;
+import com.github.sorusclient.client.module.impl.perspective.Perspective;
 import com.github.sorusclient.client.module.impl.zoom.Zoom;
 import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.util.Pair;
@@ -28,6 +29,7 @@ public class ModuleManager {
         this.register(new FullBright(), "FullBright", "test");
         this.register(new ItemPhysics(), "ItemPhysics", "test");
         this.register(new OldAnimations(), "OldAnimations", "test");
+        this.register(new Perspective(), "Perspective", "test");
         this.register(new EnvironmentChanger(), "EnvironmentChanger", "test");
         this.register(new Zoom(), "Zoom", "test");
     }

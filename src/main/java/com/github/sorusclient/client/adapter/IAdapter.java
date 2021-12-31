@@ -14,4 +14,13 @@ public interface IAdapter {
 
     void openScreen(ScreenType screenType);
 
+    void setPerspective(PerspectiveMode perspectiveMode);
+    PerspectiveMode getPerspective();
+
+    enum PerspectiveMode {
+        FIRST_PERSON,
+        THIRD_PERSON_BACK,
+        THIRD_PERSON_FRONT,
+    }
+
 }
