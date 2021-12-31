@@ -29,7 +29,6 @@ dependencies {
     implementation "org.ow2.asm:asm-tree:9.2"
     shadowImplementation "commons-io:commons-io:2.11.0"
     shadowImplementation "com.google.guava:guava:31.0.1-jre"
-    shadowImplementation "com.cedarsoftware:json-io:4.13.0"
     shadowImplementation "org.json:json:20211205"
 
     compileOnly minecraft("client", "1.8.9", "yarn")

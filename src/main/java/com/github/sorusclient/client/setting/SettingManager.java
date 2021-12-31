@@ -85,11 +85,6 @@ public class SettingManager {
         this.save(this.currentProfile);
     }
 
-    public void save(String profileId) {
-        Profile profile = mainProfile.getProfile(profileId);
-        save(profile);
-    }
-
     private void save(Profile profile) {
         boolean isMainProfile = profile.equals(this.mainProfile);
 

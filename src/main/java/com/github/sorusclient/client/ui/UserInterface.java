@@ -11,6 +11,8 @@ import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.hud.HUDManager;
 import com.github.sorusclient.client.module.Module;
 import com.github.sorusclient.client.module.ModuleManager;
+import com.github.sorusclient.client.plugin.Plugin;
+import com.github.sorusclient.client.plugin.PluginManager;
 import com.github.sorusclient.client.setting.Profile;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
@@ -306,7 +308,7 @@ public class UserInterface {
                         .setPadding(new Absolute(5))
                         .setBackgroundColor(new Absolute(Color.fromRGB(30, 30, 30, 255)))
                         .apply(container1 -> {
-                            String[] tabs = new String[] {"home", "hudEdit", "moduleEdit", "profileEdit"};
+                            String[] tabs = new String[] {"home", "hudEdit", "moduleEdit", "profileEdit", "pluginEdit"};
 
                             for (String tab : tabs) {
                                 container1.addChild(new Container()
@@ -558,6 +560,49 @@ public class UserInterface {
                                         .setOnInit(state -> {
                                             state.getFirst().addStoredState("refreshProfiles");
                                             state.getSecond().put("refreshProfiles", false);
+                                        })))
+                        .addChild("pluginEdit", new Container()
+                                .addChild(new Container()
+                                        .setWidth(new Relative(0.5))
+                                        .setBackgroundCornerRadius(new Relative(0.015))
+                                        .setBackgroundColor(new Absolute(Color.fromRGB(30, 30, 30, 255)))
+                                        .addChild(new List(List.VERTICAL)
+                                                .setY(new Side(Side.NEGATIVE))
+                                                .setHeight(new Relative(0.6))
+                                                .setOnInit(state -> {
+                                                    state.getFirst().clear();
+
+                                                    java.util.List<Plugin> plugins = Sorus.getInstance().get(PluginManager.class).getPlugins();
+
+                                                    for (Plugin plugin : plugins) {
+                                                        state.getFirst().addChild(new Container()
+                                                                .setHeight(new Absolute(30))
+                                                                .setBackgroundColor(new Absolute(Color.WHITE))
+                                                                .addChild(new Text()
+                                                                        .setFontRenderer(new Absolute("minecraft"))
+                                                                        .setTextColor(new Absolute(Color.BLACK))
+                                                                        .setText(new Absolute(plugin.getName())))
+                                                                .addChild(new Container()
+                                                                        .setX(new Side(Side.POSITIVE))
+                                                                        .setWidth(new Copy())
+                                                                        .setHeight(new Relative(0.5))
+                                                                        .setBackgroundColor(new Absolute(Color.fromRGB(255, 0, 0, 255)))
+                                                                        .setOnClick(state1 -> {
+                                                                            Sorus.getInstance().get(PluginManager.class).remove(plugin);
+                                                                            state1.put("refreshPlugins", true);
+                                                                        })));
+                                                    }
+                                                })
+                                                .addOnStateUpdate("refreshPlugins", state -> {
+                                                    if ((boolean) state.get("refreshPlugins")) {
+                                                        state.put("refreshPlugins", false);
+                                                        state.put("hasInit", false);
+                                                    }
+                                                })
+                                        )
+                                        .setOnInit(state -> {
+                                            state.getFirst().addStoredState("refreshPlugins");
+                                            state.getSecond().put("refreshPlugins", false);
                                         })))
                         .setPadding(new Absolute(5)))
                 .addStoredState("currentTab")

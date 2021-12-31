@@ -47,7 +47,7 @@ public class BossBarTransformer implements Listener, ITransformer {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals(renderBossBar.getMethodName()) && methodNode.desc.equals(renderBossBar.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions) {
-                    if (node instanceof FieldInsnNode && ((FieldInsnNode) node).owner.equals(framesToLive.getClassName()) && ((FieldInsnNode) node).name.equals(framesToLive.getFieldName())) {
+                    if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTSTATIC && ((FieldInsnNode) node).owner.equals(framesToLive.getClassName()) && ((FieldInsnNode) node).name.equals(framesToLive.getFieldName())) {
                         methodNode.instructions.insert(node, new InsnNode(Opcodes.RETURN));
                     }
                 }

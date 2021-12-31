@@ -6,6 +6,7 @@ import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.hud.HUDManager;
 import com.github.sorusclient.client.module.ModuleManager;
+import com.github.sorusclient.client.plugin.PluginManager;
 import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.transform.TransformerManager;
 import com.github.sorusclient.client.ui.Renderer;
@@ -37,6 +38,7 @@ public class Sorus implements Listener {
         this.register(new EventManager());
         this.register(new HUDManager());
         this.register(new MinecraftAdapter());
+        this.register(new PluginManager());
         this.register(new Renderer());
         this.register(new SettingManager());
         this.register(new TransformerManager());
