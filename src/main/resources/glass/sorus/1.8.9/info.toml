@@ -2,6 +2,7 @@ namespace = "com.github.sorusclient.client"
 
 [listeners]
 initialize = [
+    "v1_8_9.SorusTransformer",
     "event.v1_8_9.EventTransformer",
     "ui.v1_8_9.RendererHook",
     "module.impl.zoom.v1_8_9.ZoomTransformer",

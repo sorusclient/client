@@ -68,4 +68,8 @@ public class Sorus implements Listener {
         return (T) this.components.get(componentClass);
     }
 
+    public String getClientBrand() {
+        return "sorus";
+    }
+
 }

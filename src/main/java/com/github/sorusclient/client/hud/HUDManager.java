@@ -165,60 +165,6 @@ public class HUDManager implements SettingContainer {
 
         this.prevScreenDimensions = screenDimensions;
 
-        /*if (this.elements.isEmpty()) {
-            HUDElement element = new PotionStatus();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-
-            element = new Armor();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-
-            element = new Coordinates();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            element = new Sidebar();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-
-            element = new Health();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-
-            element = new Hunger();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-
-            element = new Experience();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-
-            element = new BossBar();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-
-            element = new HotBar();
-            element.setPosition(0, 0, screenDimensions);
-            element.setScale(1);
-
-            this.add(element);
-        }*/
-
         boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
         boolean textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 
