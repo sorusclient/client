@@ -9,12 +9,19 @@ import com.github.sorusclient.client.event.impl.GameLeaveEvent;
 import com.github.sorusclient.client.module.Module;
 import com.github.sorusclient.client.module.ModuleData;
 import com.github.sorusclient.client.module.ModuleManager;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
 
 public class ServerIntegrationManager {
+
+    private final String BASE_SERVERS_URL = "https://raw.githubusercontent.com/sorusclient/asset/main/server";
+    private final String SERVERS_JSON_URL = BASE_SERVERS_URL + "/servers.json";
 
     public ServerIntegrationManager() {
         Sorus.getInstance().get(EventManager.class).register(GameJoinEvent.class, this::onGameJoin);
@@ -24,10 +31,12 @@ public class ServerIntegrationManager {
     private void onGameJoin(GameJoinEvent event) {
         IServer server = Sorus.getInstance().get(MinecraftAdapter.class).getCurrentServer();
         if (server != null) {
-            String json = this.getJsonForServer(server.getIp());
-            if (json != null) {
-                this.applyServerConfiguration(json);
-            }
+            new Thread(() -> {
+                String json = this.getJsonForServer(server.getIp());
+                if (json != null) {
+                    this.applyServerConfiguration(json);
+                }
+            }).start();
         }
     }
 
@@ -36,27 +45,23 @@ public class ServerIntegrationManager {
     }
 
     private String getJsonForServer(String ip) {
-        if (ip.equals("mc.herobrine.org")) {
-            return "{\n" +
-                    "    \"module\": {\n" +
-                    "        \"environmentChanger\": {\n" +
-                    "            \"enabled\": false\n" +
-                    "        },\n" +
-                    "        \"fullBright\": {\n" +
-                    "            \"enabled\": true\n" +
-                    "        },\n" +
-                    "        \"oldAnimations\": {\n" +
-                    "            \"showArmorDamage\": false\n" +
-                    "        }\n" +
-                    "    },\n" +
-                    "    \"hud\": {\n" +
-                    "        \"sideBar\": {\n" +
-                    "            \"showScores\": true\n" +
-                    "        }\n" +
-                    "    }\n" +
-                    "}\n";
-        }
+        try {
+            InputStream inputStream = new URL(SERVERS_JSON_URL).openStream();
+            String jsonString = IOUtils.toString(inputStream);
+            inputStream.close();
 
+            Map<String, Object> json = new JSONObject(jsonString).toMap();
+            for (Map.Entry<String, Object> entry : json.entrySet()) {
+                if (ip.matches((String) entry.getValue())) {
+                    InputStream inputStream1 = new URL(BASE_SERVERS_URL + "/" + entry.getKey() + ".json").openStream();
+                    String serverJson = IOUtils.toString(inputStream1);
+                    inputStream1.close();
+                    return serverJson;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
