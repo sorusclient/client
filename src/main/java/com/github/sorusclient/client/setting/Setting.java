@@ -3,8 +3,8 @@ package com.github.sorusclient.client.setting;
 public class Setting<T> {
 
     private final Class<T> type;
-    private final T defaultValue;
     private T value;
+    private T forcedValue = null;
 
     @SuppressWarnings("unchecked")
     public Setting(T defaultValue) {
@@ -13,11 +13,23 @@ public class Setting<T> {
 
     public <U extends T> Setting(Class<T> clazz, U defaultValue) {
         this.type = clazz;
-        this.value = this.defaultValue = defaultValue;
+        this.value = defaultValue;
     }
 
     public Class<T> getType() {
-        return type;
+        return this.type;
+    }
+
+    public void setForcedValue(T forcedValue) {
+        this.forcedValue = forcedValue;
+    }
+
+    public void setForcedValueRaw(Object forcedValue) {
+        this.forcedValue = (T) forcedValue;
+    }
+
+    public boolean isForcedValue() {
+        return this.forcedValue != null;
     }
 
     public void setValue(T value) {
@@ -30,11 +42,11 @@ public class Setting<T> {
     }
 
     public T getValue() {
-        return value;
+        return this.forcedValue != null ? this.forcedValue : this.value;
     }
 
-    public T getDefaultValue() {
-        return defaultValue;
+    public T getRealValue() {
+        return this.value;
     }
 
 }

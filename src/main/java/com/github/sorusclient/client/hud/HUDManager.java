@@ -612,6 +612,16 @@ public class HUDManager implements SettingContainer {
     }
 
     @Override
+    public void loadForced(Map<String, Object> settings) {
+
+    }
+
+    @Override
+    public void removeForced() {
+
+    }
+
+    @Override
     public Map<String, Object> save() {
         Map<String, Object> settingsMap = new HashMap<>();
         for (Map.Entry<String, HUDElement> setting : this.elements.entrySet()) {

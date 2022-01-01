@@ -8,6 +8,7 @@ import org.lwjgl.opengl.Display;
 import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen;
 import v1_8_9.net.minecraft.client.gui.screen.Screen;
+import v1_8_9.net.minecraft.client.network.ServerInfo;
 import v1_8_9.net.minecraft.client.util.Window;
 import v1_8_9.net.minecraft.entity.Entity;
 
@@ -105,6 +106,16 @@ public class Adapter implements Listener, IAdapter {
                 return PerspectiveMode.THIRD_PERSON_FRONT;
         }
         return null;
+    }
+
+    @Override
+    public IServer getCurrentServer() {
+        ServerInfo serverInfo = MinecraftClient.getInstance().getCurrentServerEntry();
+        if (serverInfo != null) {
+            return new ServerImpl(serverInfo);
+        } else {
+            return null;
+        }
     }
 
 }

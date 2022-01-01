@@ -21,6 +21,7 @@ public class EventTransformer implements Listener, ITransformer {
             put(Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient").getClassName(), EventTransformer.this::transformMinecraftClient);
             put(Identifier.parse("v1_8_9/net/minecraft/client/gui/screen/Screen").getClassName(), EventTransformer.this::transformScreen);
             put(Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud").getClassName(), EventTransformer.this::transformInGameHud);
+            put(Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler").getClassName(), EventTransformer.this::transformClientPlayerNetworkHandler);
         }
     };
 
@@ -49,7 +50,6 @@ public class EventTransformer implements Listener, ITransformer {
 
     private void transformGameRenderer(ClassNode classNode) {
         Identifier render = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#render(FJ)V");
-        Identifier render2 = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#render(F)V");
 
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals(render.getMethodName()) && methodNode.desc.equals(render.getMethodDesc())) {
@@ -65,11 +65,23 @@ public class EventTransformer implements Listener, ITransformer {
 
     private void transformMinecraftClient(ClassNode classNode) {
         Identifier render = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#handleKeyInput()V");
+        Identifier connect = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#connect(Lv1_8_9/net/minecraft/client/world/ClientWorld;Ljava/lang/String;)V");
+
+        Identifier clientWorld = Identifier.parse("v1_8_9/net/minecraft/client/world/ClientWorld");
 
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals(render.getMethodName()) && methodNode.desc.equals(render.getMethodDesc())) {
                 methodNode.instructions.insert(
                         new MethodInsnNode(Opcodes.INVOKESTATIC, EventHook.class.getName().replace(".", "/"), "onKey", "()V"));
+            }
+
+            if (methodNode.name.equals(connect.getMethodName()) && methodNode.desc.equals(connect.getMethodDesc())) {
+                InsnList insnList = new InsnList();
+                insnList.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                insnList.add(new VarInsnNode(Opcodes.ALOAD, 2));
+                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, EventHook.class.getName().replace(".", "/"), "onConnect", "(L" + clientWorld.getClassName() + ";Ljava/lang/String;)V"));
+
+                methodNode.instructions.insert(insnList);
             }
         }
     }
@@ -96,6 +108,29 @@ public class EventTransformer implements Listener, ITransformer {
                         methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, EventHook.class.getName().replace(".", "/"), "onInGameRender", "()V"));
                     }
                 }
+            }
+        }
+    }
+
+    private void transformClientPlayerNetworkHandler(ClassNode classNode) {
+        Identifier onCustomPayload = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onCustomPayload(Lv1_8_9/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;)V");
+        Identifier onGameJoin = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_8_9/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V");
+
+        Identifier customPayloadS2CPacket = Identifier.parse("v1_8_9/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket");
+
+        for (MethodNode methodNode : classNode.methods) {
+            if (methodNode.name.equals(onCustomPayload.getMethodName()) && methodNode.desc.equals(onCustomPayload.getMethodDesc())) {
+                InsnList insnList = new InsnList();
+                insnList.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, EventHook.class.getName().replace(".", "/"), "onCustomPayload", "(L" + customPayloadS2CPacket.getClassName() + ";)V"));
+
+                methodNode.instructions.insert(insnList);
+            }
+
+            if (methodNode.name.equals(onGameJoin.getMethodName()) && methodNode.desc.equals(onGameJoin.getMethodDesc())) {
+                methodNode.instructions.insert(
+                        new MethodInsnNode(Opcodes.INVOKESTATIC, EventHook.class.getName().replace(".", "/"), "onGameJoin", "()V")
+                );
             }
         }
     }

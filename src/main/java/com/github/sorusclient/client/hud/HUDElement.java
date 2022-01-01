@@ -225,10 +225,27 @@ public abstract class HUDElement implements SettingContainer {
     }
 
     @Override
+    public void loadForced(Map<String, Object> settings) {
+        for (Map.Entry<String, Object> setting : settings.entrySet()) {
+            Setting<?> setting1 = this.settings.get(setting.getKey());
+            if (setting1 != null) {
+                setting1.setForcedValueRaw(Util.toJava(setting1.getType(), setting.getValue()));
+            }
+        }
+    }
+
+    @Override
+    public void removeForced() {
+        for (Setting<?> setting : this.settings.values()) {
+            setting.setForcedValueRaw(null);
+        }
+    }
+
+    @Override
     public Map<String, Object> save() {
         Map<String, Object> settingsMap = new HashMap<>();
         for (Map.Entry<String, Setting<?>> setting : this.settings.entrySet()) {
-            settingsMap.put(setting.getKey(), Util.toData(setting.getValue().getValue()));
+            settingsMap.put(setting.getKey(), Util.toData(setting.getValue().getRealValue()));
         }
         settingsMap.put("class", this.getClass().getName());
         return settingsMap;

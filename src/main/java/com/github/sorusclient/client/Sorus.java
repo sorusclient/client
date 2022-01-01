@@ -4,9 +4,11 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.event.EventManager;
+import com.github.sorusclient.client.event.impl.SorusCustomPacketEvent;
 import com.github.sorusclient.client.hud.HUDManager;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.plugin.PluginManager;
+import com.github.sorusclient.client.server.ServerIntegrationManager;
 import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.transform.TransformerManager;
 import com.github.sorusclient.client.ui.Renderer;
@@ -40,6 +42,7 @@ public class Sorus implements Listener {
         this.register(new MinecraftAdapter());
         this.register(new PluginManager());
         this.register(new Renderer());
+        this.register(new ServerIntegrationManager());
         this.register(new SettingManager());
         this.register(new TransformerManager());
         this.register(new UserInterface());
@@ -51,6 +54,10 @@ public class Sorus implements Listener {
         SettingManager settingManager = this.get(SettingManager.class);
         settingManager.loadProfiles();
         settingManager.load("/");
+
+        this.get(EventManager.class).register(SorusCustomPacketEvent.class, event -> {
+            //System.out.println(event.getIp());
+        });
 
         this.get(UserInterface.class).initialize();
 

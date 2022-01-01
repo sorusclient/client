@@ -3,11 +3,8 @@ package com.github.sorusclient.client.event.v1_8_9;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.event.impl.KeyEvent;
-import com.github.sorusclient.client.event.impl.MouseEvent;
-import com.github.sorusclient.client.event.impl.RenderEvent;
+import com.github.sorusclient.client.event.impl.*;
 import com.github.sorusclient.client.adapter.Key;
-import com.github.sorusclient.client.event.impl.RenderInGameEvent;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.lwjgl.input.Keyboard;
@@ -15,6 +12,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.util.Window;
+import v1_8_9.net.minecraft.client.world.ClientWorld;
+import v1_8_9.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 
 public class EventHook {
 
@@ -87,6 +86,24 @@ public class EventHook {
                 pressed,
                 x / (double) Display.getWidth() * window.getScaledWidth(),
                 window.getScaledHeight() - (y / (double) Display.getHeight() * window.getScaledHeight())));
+    }
+
+    public static void onConnect(ClientWorld world, String ip) {
+        if (world == null && ip.isEmpty()) {
+            Sorus.getInstance().get(EventManager.class).call(new GameLeaveEvent());
+        }
+    }
+
+    public static void onCustomPayload(CustomPayloadS2CPacket packet) {
+        String channel = packet.getChannel();
+        if (channel.startsWith("sorus:")) {
+            channel = channel.substring(6);
+            Sorus.getInstance().get(EventManager.class).call(new SorusCustomPacketEvent(channel, packet.getPayload().readString(32767)));
+        }
+    }
+
+    public static void onGameJoin() {
+        Sorus.getInstance().get(EventManager.class).call(new GameJoinEvent());
     }
 
 }

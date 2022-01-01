@@ -11,10 +11,7 @@ import com.github.sorusclient.client.module.impl.zoom.Zoom;
 import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ModuleManager {
 
@@ -43,6 +40,11 @@ public class ModuleManager {
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> moduleClass) {
         return (T) this.modules.get(moduleClass).getModule();
+    }
+
+    public Module get(String id) {
+        Optional<ModuleData> optionalModuleData = this.modules.values().stream().filter(moduleData -> moduleData.getModule().getId().equals(id)).findFirst();
+        return optionalModuleData.map(ModuleData::getModule).orElse(null);
     }
 
     public List<ModuleData> getModules() {

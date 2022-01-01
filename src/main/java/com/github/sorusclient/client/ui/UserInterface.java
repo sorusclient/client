@@ -75,13 +75,15 @@ public class UserInterface {
                                     .setHeight(new Relative(0.6))
                                     .setPadding(new Relative(0.2, true))
                                     .setBackgroundColor(new Dependent(state1 -> {
-                                        boolean toggled = (boolean) state1.get("toggled");
+                                        boolean toggled = (Boolean) setting.getSetting().getValue();
                                         return toggled ? Color.fromRGB(0, 255, 0, 255) : Color.fromRGB(255, 0, 0, 255);
                                     }))
                                     .setOnClick(state1 -> {
-                                        boolean toggled = !(boolean) state1.get("toggled");
-                                        state1.put("toggled", toggled);
-                                        setting.getSetting().setValueRaw(toggled);
+                                        if (!setting.getSetting().isForcedValue()) {
+                                            boolean toggled = !(boolean) state1.get("toggled");
+                                            state1.put("toggled", toggled);
+                                            setting.getSetting().setValueRaw(toggled);
+                                        }
                                     }))
                             .apply(container2 -> {
                                 container2.addStoredState("toggled");
@@ -102,22 +104,27 @@ public class UserInterface {
                                     .setPadding(new Relative(0.2, true))
                                     .setBackgroundColor(new Absolute(Color.WHITE))
                                     .setOnDrag(state1 -> {
-                                        Object[] bounds = setting.getArguments();
-                                        double value = state1.getSecond().getFirst();
-                                        state1.getFirst().put("value", value);
+                                        if (!setting.getSetting().isForcedValue()) {
+                                            Object[] bounds = setting.getArguments();
+                                            double value = state1.getSecond().getFirst();
+                                            state1.getFirst().put("value", value);
 
-                                        Setting<?> actualSetting = setting.getSetting();
+                                            Setting<?> actualSetting = setting.getSetting();
 
-                                        double valueToSet = ((double) bounds[1] - (double) bounds[0]) * value + (double) bounds[0];
+                                            double valueToSet = ((double) bounds[1] - (double) bounds[0]) * value + (double) bounds[0];
 
-                                        if (actualSetting.getType() == Double.class) {
-                                            actualSetting.setValueRaw(valueToSet);
-                                        } else if (actualSetting.getType() == Long.class) {
-                                            actualSetting.setValueRaw((long) valueToSet);
+                                            if (actualSetting.getType() == Double.class) {
+                                                actualSetting.setValueRaw(valueToSet);
+                                            } else if (actualSetting.getType() == Long.class) {
+                                                actualSetting.setValueRaw((long) valueToSet);
+                                            }
                                         }
                                     })
                                     .addChild(new Container()
-                                            .setX(new Dependent(state1 -> new Relative((double) state1.get("value") - 0.5)))
+                                            .setX(new Dependent(state1 -> {
+                                                Object[] bounds = setting.getArguments();
+                                                return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]));
+                                            }))
                                             .setWidth(new Absolute(1))
                                             .setBackgroundColor(new Absolute(Color.BLACK))))
                             .apply(container2 -> {
@@ -175,33 +182,28 @@ public class UserInterface {
                                             .setX(new Side(Side.NEGATIVE))
                                             .setWidth(new Relative(0.5))
                                             .setOnClick(state1 -> {
-                                                int newValue = Math.max(0, (int) state1.get("value") - 1);
-                                                state1.put("value", newValue);
+                                                if (!setting.getSetting().isForcedValue()) {
+                                                    int newValue = Math.max(0, (int) state1.get("value") - 1);
+                                                    state1.put("value", newValue);
+                                                }
                                             }))
                                     .addChild(new Container()
                                             .setX(new Side(Side.POSITIVE))
                                             .setWidth(new Relative(0.5))
                                             .setOnClick(state1 -> {
-                                                int valuesLength = 0;
-                                                try {
-                                                    valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length - 1;
-                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                                    e.printStackTrace();
+                                                if (!setting.getSetting().isForcedValue()) {
+                                                    int valuesLength = 0;
+                                                    try {
+                                                        valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length - 1;
+                                                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    int newValue = Math.min(valuesLength, (int) state1.get("value") + 1);
+                                                    state1.put("value", newValue);
                                                 }
-                                                int newValue = Math.min(valuesLength, (int) state1.get("value") + 1);
-                                                state1.put("value", newValue);
                                             }))
                                     .addChild(new Text()
-                                            .setText(new Dependent(state1 -> {
-                                                int value = (int) state1.get("value");
-                                                try {
-                                                    return ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null))[value].toString();
-                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                                return null;
-                                            }))
+                                            .setText(new Dependent(state1 -> setting.getSetting().getValue().toString()))
                                             .setFontRenderer(new Absolute("minecraft"))
                                             .setTextColor(new Absolute(Color.BLACK)))
                                     .addOnStateUpdate("value", state1 -> {

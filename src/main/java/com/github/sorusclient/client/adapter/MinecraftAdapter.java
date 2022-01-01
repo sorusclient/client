@@ -40,4 +40,8 @@ public class MinecraftAdapter {
         return this.getAdapter().getPerspective();
     }
 
+    public IServer getCurrentServer() {
+        return this.getAdapter().getCurrentServer();
+    }
+
 }
