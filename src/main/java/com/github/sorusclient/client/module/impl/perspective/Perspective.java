@@ -13,10 +13,10 @@ import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
 
 import java.util.List;
+import java.util.Map;
 
 public class Perspective extends ModuleDisableable {
 
-    //TODO: update particles and chunks and everything else
     private final Setting<Key> key;
 
     private boolean toggled;

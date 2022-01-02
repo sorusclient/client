@@ -20,8 +20,4 @@ public class SorusCustomPacketEvent extends Event {
         return contents;
     }
 
-    public enum ChannelMain {
-
-    }
-
 }

@@ -6,6 +6,7 @@ import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.event.impl.GameJoinEvent;
 import com.github.sorusclient.client.event.impl.GameLeaveEvent;
+import com.github.sorusclient.client.event.impl.SorusCustomPacketEvent;
 import com.github.sorusclient.client.module.Module;
 import com.github.sorusclient.client.module.ModuleData;
 import com.github.sorusclient.client.module.ModuleManager;
@@ -24,8 +25,10 @@ public class ServerIntegrationManager {
     private final String SERVERS_JSON_URL = BASE_SERVERS_URL + "/servers.json";
 
     public ServerIntegrationManager() {
-        Sorus.getInstance().get(EventManager.class).register(GameJoinEvent.class, this::onGameJoin);
-        Sorus.getInstance().get(EventManager.class).register(GameLeaveEvent.class, this::onGameLeave);
+        EventManager eventManager = Sorus.getInstance().get(EventManager.class);
+        eventManager.register(GameJoinEvent.class, this::onGameJoin);
+        eventManager.register(GameLeaveEvent.class, this::onGameLeave);
+        eventManager.register(SorusCustomPacketEvent.class, this::onCustomPacket);
     }
 
     private void onGameJoin(GameJoinEvent event) {
@@ -42,6 +45,12 @@ public class ServerIntegrationManager {
 
     private void onGameLeave(GameLeaveEvent event) {
         this.removeServerConfiguration();
+    }
+
+    private void onCustomPacket(SorusCustomPacketEvent event) {
+        if (event.getChannel().equals("integration")) {
+            this.applyServerConfiguration(event.getContents());
+        }
     }
 
     private String getJsonForServer(String ip) {
