@@ -4,6 +4,7 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.module.impl.enhancements.Enhancements;
 import org.lwjgl.opengl.GL11;
+import v1_8_9.net.minecraft.client.MinecraftClient;
 
 public class EnhancementsHook {
 
@@ -29,5 +30,20 @@ public class EnhancementsHook {
         }
         return offset;
     }
+
+    public static float modifyPitch(float pitch) {
+        if (MinecraftClient.getInstance().options.perspective == 2) {
+            return -pitch;
+        }
+        return pitch;
+    }
+
+    public static float modifyPrevPitch(float prevPitch) {
+        if (MinecraftClient.getInstance().options.perspective == 2) {
+            return -prevPitch;
+        }
+        return prevPitch;
+    }
+
 
 }
