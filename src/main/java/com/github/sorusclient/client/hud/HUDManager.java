@@ -35,6 +35,7 @@ import java.util.Map;
 
 public class HUDManager implements SettingContainer {
 
+    //TODO: elements resizing does not affect attached elements
     private final List<HUDData> possibleHuds = new ArrayList<>();
 
     private final Map<String, HUDElement> elements = new HashMap<>();

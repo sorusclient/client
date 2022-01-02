@@ -123,7 +123,7 @@ public class UserInterface {
                                     .addChild(new Container()
                                             .setX(new Dependent(state1 -> {
                                                 Object[] bounds = setting.getArguments();
-                                                return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]));
+                                                return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]) - 0.5);
                                             }))
                                             .setWidth(new Absolute(1))
                                             .setBackgroundColor(new Absolute(Color.BLACK))))

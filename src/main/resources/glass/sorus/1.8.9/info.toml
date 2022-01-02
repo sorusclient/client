@@ -13,6 +13,7 @@ initialize = [
     "module.impl.oldanimations.v1_8_9.OldAnimationsTransformer",
     "module.impl.perspective.v1_8_9.PerspectiveTransformer",
     "module.impl.perspective.v1_8_9.PerspectiveHelper",
+    "module.impl.enhancements.v1_8_9.EnhancementsTransformer",
     "hud.impl.potionstatus.v1_8_9.PotionEffectRenderer",
     "hud.impl.armor.v1_8_9.ArmorRenderer",
     "hud.impl.armor.v1_8_9.ArmorTransformer",

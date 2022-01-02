@@ -2,6 +2,7 @@ package com.github.sorusclient.client.module;
 
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.module.impl.blockoverlay.BlockOverlay;
+import com.github.sorusclient.client.module.impl.enhancements.Enhancements;
 import com.github.sorusclient.client.module.impl.fullbright.FullBright;
 import com.github.sorusclient.client.module.impl.itemphysics.ItemPhysics;
 import com.github.sorusclient.client.module.impl.oldanimations.OldAnimations;
@@ -22,12 +23,13 @@ public class ModuleManager {
     }
 
     private void registerInternalModules() {
-        this.register(new BlockOverlay(), "BlockOverlay", "test");
+        this.register(new BlockOverlay(), "Block Overlay", "test");
+        this.register(new Enhancements(), "Enhancements", "test");
         this.register(new FullBright(), "FullBright", "test");
         this.register(new ItemPhysics(), "ItemPhysics", "test");
         this.register(new OldAnimations(), "OldAnimations", "test");
         this.register(new Perspective(), "Perspective", "test");
-        this.register(new EnvironmentChanger(), "EnvironmentChanger", "test");
+        this.register(new EnvironmentChanger(), "Environment Changer", "test");
         this.register(new Zoom(), "Zoom", "test");
     }
 
