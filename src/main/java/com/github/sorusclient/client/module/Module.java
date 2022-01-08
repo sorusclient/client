@@ -43,9 +43,15 @@ public class Module implements SettingContainer {
     public void loadForced(Map<String, Object> settings) {
         for (Map.Entry<String, Object> setting : settings.entrySet()) {
             Setting<?> setting1 = this.settings.get(setting.getKey());
-            if (setting1 != null) {
-                setting1.setForcedValueRaw(Util.toJava(setting1.getType(), setting.getValue()));
+            List<Object> forcedValues = new ArrayList<>();
+            if (setting.getValue() instanceof List) {
+                for (Object element : ((List<Object>) setting.getValue())) {
+                    forcedValues.add(Util.toJava(setting1.getType(), element));
+                }
+            } else {
+                forcedValues.add(Util.toJava(setting1.getType(), setting.getValue()));
             }
+            setting1.setForcedValueRaw(forcedValues);
         }
     }
 

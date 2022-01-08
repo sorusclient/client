@@ -50,6 +50,7 @@ public class EnvironmentChanger extends ModuleDisableable {
     public enum Weather {
         CLEAR,
         RAIN,
+        TEST,
     }
 
 }

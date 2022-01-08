@@ -182,24 +182,23 @@ public class UserInterface {
                                             .setX(new Side(Side.NEGATIVE))
                                             .setWidth(new Relative(0.5))
                                             .setOnClick(state1 -> {
-                                                if (!setting.getSetting().isForcedValue()) {
-                                                    int newValue = Math.max(0, (int) state1.get("value") - 1);
-                                                    state1.put("value", newValue);
-                                                }
+                                                int newValue = Math.max(0, (int) state1.get("value") - 1);
+                                                state1.put("value", newValue);
                                             }))
                                     .addChild(new Container()
                                             .setX(new Side(Side.POSITIVE))
                                             .setWidth(new Relative(0.5))
                                             .setOnClick(state1 -> {
-                                                if (!setting.getSetting().isForcedValue()) {
-                                                    int valuesLength = 0;
-                                                    try {
-                                                        valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length - 1;
-                                                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    int newValue = Math.min(valuesLength, (int) state1.get("value") + 1);
-                                                    state1.put("value", newValue);
+                                                int valuesLength = 0;
+                                                try {
+                                                    valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length;
+                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                if ((int) state1.get("value") + 1 >= valuesLength) {
+                                                    state1.put("value", 0);
+                                                } else {
+                                                    state1.put("value", (int) state1.get("value") + 1);
                                                 }
                                             }))
                                     .addChild(new Text()
@@ -209,7 +208,25 @@ public class UserInterface {
                                     .addOnStateUpdate("value", state1 -> {
                                         try {
                                             Object[] values = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null));
-                                            setting.getSetting().setValueRaw(values[(int) state1.get("value")]);
+
+                                            Setting<?> setting1 = setting.getSetting();
+                                            if (setting1.isForcedValue()) {
+                                                int index = (int) state1.get("value");
+                                                while (index != -1) {
+                                                    if (setting1.getForcedValues().contains(values[index])) {
+                                                        setting1.setValueRaw(values[index]);
+                                                        state1.put("value", index);
+                                                        index = -1;
+                                                    } else {
+                                                        index++;
+                                                        if (index >= values.length) {
+                                                            index = 0;
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                setting1.setValueRaw(values[(int) state1.get("value")]);
+                                            }
                                         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                                             e.printStackTrace();
                                         }

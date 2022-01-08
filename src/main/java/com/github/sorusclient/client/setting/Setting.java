@@ -1,10 +1,12 @@
 package com.github.sorusclient.client.setting;
 
+import java.util.List;
+
 public class Setting<T> {
 
     private final Class<T> type;
     private T value;
-    private T forcedValue = null;
+    private List<T> forcedValues;
 
     @SuppressWarnings("unchecked")
     public Setting(T defaultValue) {
@@ -20,16 +22,16 @@ public class Setting<T> {
         return this.type;
     }
 
-    public void setForcedValue(T forcedValue) {
-        this.forcedValue = forcedValue;
-    }
-
-    public void setForcedValueRaw(Object forcedValue) {
-        this.forcedValue = (T) forcedValue;
+    public void setForcedValueRaw(List<Object> forcedValues) {
+        this.forcedValues = (List<T>) forcedValues;
     }
 
     public boolean isForcedValue() {
-        return this.forcedValue != null;
+        return this.forcedValues != null;
+    }
+
+    public List<T> getForcedValues() {
+        return forcedValues;
     }
 
     public void setValue(T value) {
@@ -42,7 +44,11 @@ public class Setting<T> {
     }
 
     public T getValue() {
-        return this.forcedValue != null ? this.forcedValue : this.value;
+        if (this.forcedValues != null) {
+            return this.forcedValues.contains(this.value) ? this.value : this.forcedValues.get(0);
+        } else {
+            return this.value;
+        }
     }
 
     public T getRealValue() {
