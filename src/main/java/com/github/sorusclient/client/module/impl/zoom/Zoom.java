@@ -4,7 +4,7 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.event.impl.KeyEvent;
+import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.setting.Setting;

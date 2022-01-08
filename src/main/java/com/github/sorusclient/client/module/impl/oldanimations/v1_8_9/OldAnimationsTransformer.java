@@ -2,56 +2,30 @@ package com.github.sorusclient.client.module.impl.oldanimations.v1_8_9;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
-import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
+import com.github.sorusclient.client.transform.Transformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
-public class OldAnimationsTransformer implements Listener, ITransformer {
-
-    private final Map<String, Consumer<ClassNode>> transformers = new HashMap<String, Consumer<ClassNode>>() {
-        {
-            put(Identifier.parse("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer").getClassName(), OldAnimationsTransformer.this::transformHeldItemRenderer);
-            put(Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient").getClassName(), OldAnimationsTransformer.this::transformMinecraftClient);
-            put(Identifier.parse("v1_8_9/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer").getClassName(), OldAnimationsTransformer.this::transformArmorFeatureRenderer);
-        }
-    };
+public class OldAnimationsTransformer extends Transformer implements Listener {
 
     @Override
     public void run() {
         GlassLoader.getInstance().registerTransformer(this.getClass());
     }
 
-    @Override
-    public boolean canTransform(String name) {
-        return transformers.keySet().stream().anyMatch(identifier -> identifier.equals(name));
-    }
-
-    @Override
-    public byte[] transform(String name, byte[] data) {
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(data);
-        classReader.accept(classNode, 0);
-
-        this.transformers.get(name).accept(classNode);
-
-        ClassWriter classWriter = new ClassWriter(0);
-        classNode.accept(classWriter);
-        return classWriter.toByteArray();
+    public OldAnimationsTransformer() {
+        this.register("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer", this::transformHeldItemRenderer);
+        this.register("v1_8_9/net/minecraft/client/MinecraftClient", this::transformMinecraftClient);
+        this.register("v1_8_9/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer", this::transformArmorFeatureRenderer);
     }
 
     private void transformHeldItemRenderer(ClassNode classNode) {
-        Identifier render = Identifier.parse("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_1354(F)V");
+        Identifier method_1354 = Identifier.parse("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_1354(F)V");
         Identifier method_9873 = Identifier.parse("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_9873(FF)V");
 
         for (MethodNode methodNode : classNode.methods) {
-            if (methodNode.name.equals(render.getMethodName()) && methodNode.desc.equals(render.getMethodDesc())) {
+            if (methodNode.name.equals(method_1354.getMethodName()) && methodNode.desc.equals(method_1354.getMethodDesc())) {
                 for (AbstractInsnNode node : methodNode.instructions) {
                     if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals(method_9873.getMethodName()) && ((MethodInsnNode) node).desc.equals(method_9873.getMethodDesc()) && node.getPrevious().getOpcode() == Opcodes.T_LONG) {
                         methodNode.instructions.remove(node.getPrevious());

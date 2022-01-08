@@ -1,4 +1,4 @@
-package com.github.sorusclient.client.event.impl;
+package com.github.sorusclient.client.adapter.event;
 
 import com.github.sorusclient.client.event.Event;
 import com.github.sorusclient.client.adapter.Key;

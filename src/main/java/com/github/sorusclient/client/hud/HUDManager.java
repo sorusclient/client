@@ -5,9 +5,9 @@ import com.github.sorusclient.client.adapter.Button;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.event.impl.KeyEvent;
-import com.github.sorusclient.client.event.impl.MouseEvent;
-import com.github.sorusclient.client.event.impl.RenderInGameEvent;
+import com.github.sorusclient.client.adapter.event.KeyEvent;
+import com.github.sorusclient.client.adapter.event.MouseEvent;
+import com.github.sorusclient.client.adapter.event.RenderInGameEvent;
 import com.github.sorusclient.client.hud.impl.armor.Armor;
 import com.github.sorusclient.client.hud.impl.bossbar.BossBar;
 import com.github.sorusclient.client.hud.impl.coordinates.Coordinates;
@@ -155,7 +155,9 @@ public class HUDManager implements SettingContainer {
         double[] screenDimensions = minecraftAdapter.getScreenDimensions();
         double[] mouseLocation = minecraftAdapter.getMouseLocation();
 
-        if (screenDimensions[0] != this.prevScreenDimensions[0] || screenDimensions[1] != this.prevScreenDimensions[1]) {
+        boolean isHudEditScreenOpen = Sorus.getInstance().get(UserInterface.class).isHudEditScreenOpen();
+
+        if (!isHudEditScreenOpen) {
             for (HUDElement element : this.elements.values()) {
                 for (String attachedElementId : element.getAttached()) {
                     HUDElement attachedElement = this.getById(attachedElementId);
@@ -173,7 +175,7 @@ public class HUDManager implements SettingContainer {
             element.render();
         }
 
-        if (Sorus.getInstance().get(UserInterface.class).isHudEditScreenOpen()) {
+        if (isHudEditScreenOpen) {
             for (HUDElement element : this.elements.values()) {
                 double x = element.getX(screenDimensions[0]);
                 double y = element.getY(screenDimensions[1]);

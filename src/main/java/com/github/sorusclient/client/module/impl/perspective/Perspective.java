@@ -7,13 +7,12 @@ import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.event.impl.KeyEvent;
+import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
 
 import java.util.List;
-import java.util.Map;
 
 public class Perspective extends ModuleDisableable {
 

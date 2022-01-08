@@ -2,51 +2,25 @@ package com.github.sorusclient.client.module.impl.perspective.v1_8_9;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
-import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
+import com.github.sorusclient.client.transform.Transformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
-public class PerspectiveTransformer implements Listener, ITransformer {
-
-    private final Map<String, Consumer<ClassNode>> transformers = new HashMap<String, Consumer<ClassNode>>() {
-        {
-            put(Identifier.parse("v1_8_9/net/minecraft/entity/Entity").getClassName(), PerspectiveTransformer.this::transformEntity);
-            put(Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer").getClassName(), PerspectiveTransformer.this::transformGameRenderer);
-            put(Identifier.parse("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher").getClassName(), PerspectiveTransformer.this::transformEntityRenderDispatcher);
-            put(Identifier.parse("v1_8_9/net/minecraft/client/render/WorldRenderer").getClassName(), PerspectiveTransformer.this::transformWorldRenderer);
-            put(Identifier.parse("v1_8_9/net/minecraft/client/particle/ParticleManager").getClassName(), PerspectiveTransformer.this::transformParticleManager);
-            put(Identifier.parse("v1_8_9/net/minecraft/client/class_321").getClassName(), PerspectiveTransformer.this::transformClass321);
-        }
-    };
+public class PerspectiveTransformer extends Transformer implements Listener {
 
     @Override
     public void run() {
         GlassLoader.getInstance().registerTransformer(PerspectiveTransformer.class);
     }
 
-    @Override
-    public boolean canTransform(String name) {
-        return this.transformers.keySet().stream().anyMatch(identifier -> identifier.equals(name));
-    }
-
-    @Override
-    public byte[] transform(String name, byte[] data) {
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(data);
-        classReader.accept(classNode, 0);
-
-        this.transformers.get(name).accept(classNode);
-
-        ClassWriter classWriter = new ClassWriter(0);
-        classNode.accept(classWriter);
-        return classWriter.toByteArray();
+    public PerspectiveTransformer() {
+        this.register("v1_8_9/net/minecraft/entity/Entity", this::transformEntity);
+        this.register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer);
+        this.register("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher", this::transformEntityRenderDispatcher);
+        this.register("v1_8_9/net/minecraft/client/render/WorldRenderer", this::transformWorldRenderer);
+        this.register("v1_8_9/net/minecraft/client/particle/ParticleManager", this::transformParticleManager);
+        this.register("v1_8_9/net/minecraft/client/class_321", this::transformClass321);
     }
 
     private void transformEntity(ClassNode classNode) {

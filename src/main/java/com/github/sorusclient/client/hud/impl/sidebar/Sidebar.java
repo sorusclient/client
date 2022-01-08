@@ -73,7 +73,7 @@ public class Sidebar extends HUDElement {
         IScoreboardObjective sidebarObjective = this.getSidebarObjective();
         if (sidebarObjective == null) return 0;
 
-        double maxWidth = 0;
+        double maxWidth = fontRenderer.getWidth(sidebarObjective.getName());
 
         for (IScoreboardScore score : sidebarObjective.getScores()) {
             String scoreString = this.showScores.getValue() ? " " + score.getScore() : "";

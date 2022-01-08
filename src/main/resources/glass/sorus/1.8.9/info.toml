@@ -3,7 +3,7 @@ namespace = "com.github.sorusclient.client"
 [listeners]
 initialize = [
     "v1_8_9.SorusTransformer",
-    "event.v1_8_9.EventTransformer",
+    "adapter.v1_8_9.event.EventTransformer",
     "ui.v1_8_9.RendererHook",
     "module.impl.zoom.v1_8_9.ZoomTransformer",
     "module.impl.blockoverlay.v1_8_9.BlockOverlayTransformer",

@@ -1,9 +1,9 @@
-package com.github.sorusclient.client.event.v1_8_9;
+package com.github.sorusclient.client.adapter.v1_8_9.event;
 
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
+import com.github.sorusclient.client.adapter.event.*;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.event.impl.*;
 import com.github.sorusclient.client.adapter.Key;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

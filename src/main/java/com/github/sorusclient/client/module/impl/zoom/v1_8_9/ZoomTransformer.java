@@ -4,36 +4,21 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
+import com.github.sorusclient.client.transform.Transformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-public class ZoomTransformer implements Listener, ITransformer {
-
-    private static final String GAME_RENDERER = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer").getClassName();
+public class ZoomTransformer extends Transformer implements Listener {
 
     @Override
     public void run() {
         GlassLoader.getInstance().registerTransformer(ZoomTransformer.class);
     }
 
-    @Override
-    public boolean canTransform(String name) {
-        return GAME_RENDERER.equals(name);
-    }
-
-    @Override
-    public byte[] transform(String name, byte[] data) {
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(data);
-        classReader.accept(classNode, 0);
-
-        this.transformGameRenderer(classNode);
-
-        ClassWriter classWriter = new ClassWriter(0);
-        classNode.accept(classWriter);
-        return classWriter.toByteArray();
+    public ZoomTransformer() {
+        this.register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer);
     }
 
     private void transformGameRenderer(ClassNode classNode) {

@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.ui.framework;
 
-import com.github.sorusclient.client.event.impl.KeyEvent;
-import com.github.sorusclient.client.event.impl.MouseEvent;
+import com.github.sorusclient.client.adapter.event.KeyEvent;
+import com.github.sorusclient.client.adapter.event.MouseEvent;
 import com.github.sorusclient.client.ui.framework.constraint.Constraint;
 import com.github.sorusclient.client.ui.framework.constraint.Flexible;
 import com.github.sorusclient.client.ui.framework.constraint.Side;

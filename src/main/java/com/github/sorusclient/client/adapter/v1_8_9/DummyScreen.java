@@ -9,9 +9,4 @@ public class DummyScreen extends Screen {
 
     }
 
-    //TODO: fix kiln so this isnt the way to solve the issue
-    protected void a(char c, int i) {
-
-    }
-
 }

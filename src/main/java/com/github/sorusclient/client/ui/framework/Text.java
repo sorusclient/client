@@ -1,8 +1,8 @@
 package com.github.sorusclient.client.ui.framework;
 
 import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.event.impl.KeyEvent;
-import com.github.sorusclient.client.event.impl.MouseEvent;
+import com.github.sorusclient.client.adapter.event.KeyEvent;
+import com.github.sorusclient.client.adapter.event.MouseEvent;
 import com.github.sorusclient.client.ui.IFontRenderer;
 import com.github.sorusclient.client.ui.Renderer;
 import com.github.sorusclient.client.ui.framework.constraint.Absolute;
