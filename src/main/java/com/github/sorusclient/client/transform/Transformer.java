@@ -101,10 +101,10 @@ public class Transformer implements ITransformer {
         return node instanceof MethodInsnNode && ((MethodInsnNode) node).owner.equals(methodIdentifier.getClassName()) && ((MethodInsnNode) node).name.equals(methodIdentifier.getMethodName()) && ((MethodInsnNode) node).desc.equals(methodIdentifier.getMethodDesc());
     }
 
-    protected Result<FieldInsnNode> findFieldReferences(MethodNode methodNode, Identifier methodIdentifier, FieldReferenceType fieldReferenceType) {
+    protected Result<FieldInsnNode> findFieldReferences(MethodNode methodNode, Identifier fieldIdentifier, FieldReferenceType fieldReferenceType) {
         List<FieldInsnNode> results = new ArrayList<>();
         for (AbstractInsnNode node : methodNode.instructions) {
-            if (node instanceof FieldInsnNode && this.isReferenceType((FieldInsnNode) node, fieldReferenceType) && ((FieldInsnNode) node).owner.equals(methodIdentifier.getClassName()) && ((FieldInsnNode) node).name.equals(methodIdentifier.getMethodName())) {
+            if (node instanceof FieldInsnNode && this.isReferenceType((FieldInsnNode) node, fieldReferenceType) && ((FieldInsnNode) node).owner.equals(fieldIdentifier.getClassName()) && ((FieldInsnNode) node).name.equals(fieldIdentifier.getFieldName())) {
                 results.add((FieldInsnNode) node);
             }
         }
