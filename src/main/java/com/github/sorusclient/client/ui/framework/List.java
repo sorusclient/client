@@ -26,13 +26,6 @@ public class List extends Container {
 
     @Override
     public List addChild(Component child) {
-        if ((List.this.type & HORIZONTAL) != 0) {
-            child.setX(new Side(Side.NEGATIVE));
-        }
-        if ((this.type & VERTICAL) != 0) {
-            child.setY(new Side(Side.NEGATIVE));
-        }
-
         return (List) super.addChild(child);
     }
 
