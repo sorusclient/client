@@ -22,10 +22,13 @@ public class MinecraftFontRenderer implements IFontRenderer {
         GL11.glTranslated(x, y, 0);
         GL11.glScaled(scale, scale, 1);
 
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
 
         textRenderer.draw(text, 0, 0, color.getRgb(), false);
+
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         GL11.glPopMatrix();
     }
