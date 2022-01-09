@@ -4,7 +4,6 @@ namespace = "com.github.sorusclient.client"
 initialize = [
     "v1_8_9.SorusTransformer",
     "adapter.v1_8_9.event.EventTransformer",
-    "ui.v1_8_9.RendererHook",
     "module.impl.zoom.v1_8_9.ZoomTransformer",
     "module.impl.itemphysics.v1_8_9.ItemPhysicsTransformer",
     "module.impl.fullbright.v1_8_9.FullBrightTransformer",

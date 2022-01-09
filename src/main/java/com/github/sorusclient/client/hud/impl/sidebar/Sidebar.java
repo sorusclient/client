@@ -5,8 +5,7 @@ import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.ui.UserInterface;
 import com.github.sorusclient.client.util.Color;
 
@@ -25,7 +24,7 @@ public class Sidebar extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         renderer.drawRectangle(x, y, this.getWidth() * scale, this.getHeight() * scale, Color.fromRGB(0, 0, 0, 80));
@@ -67,7 +66,7 @@ public class Sidebar extends HUDElement {
 
     @Override
     public double getWidth() {
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         IScoreboardObjective sidebarObjective = this.getSidebarObjective();
@@ -85,7 +84,7 @@ public class Sidebar extends HUDElement {
 
     @Override
     public double getHeight() {
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         IScoreboardObjective sidebarObjective = this.getSidebarObjective();

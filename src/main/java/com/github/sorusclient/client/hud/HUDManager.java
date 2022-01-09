@@ -3,6 +3,7 @@ package com.github.sorusclient.client.hud;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
 import com.github.sorusclient.client.adapter.IAdapter;
+import com.github.sorusclient.client.adapter.IRenderer;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.event.*;
 import com.github.sorusclient.client.event.EventManager;
@@ -18,7 +19,6 @@ import com.github.sorusclient.client.hud.impl.sidebar.Sidebar;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingContainer;
 import com.github.sorusclient.client.setting.SettingManager;
-import com.github.sorusclient.client.ui.Renderer;
 import com.github.sorusclient.client.ui.UserInterface;
 import com.github.sorusclient.client.util.Axis;
 import com.github.sorusclient.client.util.Color;
@@ -155,7 +155,7 @@ public class HUDManager implements SettingContainer {
 
     public void render(RenderInGameEvent ignored) {
         IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
 
         double[] screenDimensions = adapter.getScreenDimensions();
         double[] mouseLocation = adapter.getMouseLocation();
@@ -430,13 +430,13 @@ public class HUDManager implements SettingContainer {
     }
 
     private void displaySnaps(double[] screenDimensions, List<Snap> snaps) {
-        Renderer renderer2 = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
 
         for (Snap snap : snaps) {
             if (snap.axis == Axis.X) {
-                renderer2.drawRectangle(snap.location - 0.25, 0, 0.5, screenDimensions[1], Color.fromRGB(255, 255, 255, 120));
+                renderer.drawRectangle(snap.location - 0.25, 0, 0.5, screenDimensions[1], Color.fromRGB(255, 255, 255, 120));
             } else {
-                renderer2.drawRectangle(0, snap.location - 0.25, screenDimensions[0], 0.5, Color.fromRGB(255, 255, 255, 120));
+                renderer.drawRectangle(0, snap.location - 0.25, screenDimensions[0], 0.5, Color.fromRGB(255, 255, 255, 120));
             }
 
         }

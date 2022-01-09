@@ -1,10 +1,10 @@
 package com.github.sorusclient.client.ui.framework;
 
 import com.github.sorusclient.client.Sorus;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.adapter.event.MouseEvent;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.ui.framework.constraint.Absolute;
 import com.github.sorusclient.client.ui.framework.constraint.Constraint;
 import com.github.sorusclient.client.util.Color;
@@ -55,7 +55,7 @@ public class Text extends Component {
 
         @Override
         public void render(double x, double y, double width, double height) {
-            IFontRenderer fontRenderer = Sorus.getInstance().get(Renderer.class).getFontRenderer(Text.this.fontRenderer.getStringValue(this));
+            IFontRenderer fontRenderer = Sorus.getInstance().get(IAdapter.class).getRenderer().getFontRenderer(Text.this.fontRenderer.getStringValue(this));
             fontRenderer.drawString(Text.this.text.getStringValue(this), x - this.getWidth() / 2, y - this.getHeight() / 2, Text.this.scale.getPaddingValue(this), Text.this.textColor.getColorValue(this));
         }
 
@@ -102,13 +102,13 @@ public class Text extends Component {
 
         @Override
         public double getWidth() {
-            IFontRenderer fontRenderer = Sorus.getInstance().get(Renderer.class).getFontRenderer(Text.this.fontRenderer.getStringValue(this));
+            IFontRenderer fontRenderer = Sorus.getInstance().get(IAdapter.class).getRenderer().getFontRenderer(Text.this.fontRenderer.getStringValue(this));
             return fontRenderer.getWidth(Text.this.text.getStringValue(this)) * Text.this.scale.getPaddingValue(this);
         }
 
         @Override
         public double getHeight() {
-            IFontRenderer fontRenderer = Sorus.getInstance().get(Renderer.class).getFontRenderer(Text.this.fontRenderer.getStringValue(this));
+            IFontRenderer fontRenderer = Sorus.getInstance().get(IAdapter.class).getRenderer().getFontRenderer(Text.this.fontRenderer.getStringValue(this));
             return fontRenderer.getHeight() * Text.this.scale.getPaddingValue(this);
         }
 

@@ -6,8 +6,7 @@ import com.github.sorusclient.client.adapter.IItem;
 import com.github.sorusclient.client.adapter.IPlayerInventory;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.hud.HUDElement;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.util.Color;
 
 public class HotBar extends HUDElement {
@@ -24,7 +23,7 @@ public class HotBar extends HUDElement {
         hotBarRenderer.renderBackground(x + 1 * scale, y + 1 * scale, scale);
         hotBarRenderer.renderSelectedSlot(x + 20 * inventory.getSelectedSlot().ordinal() * scale, y, scale);
 
-        IFontRenderer minecraftFontRenderer = Sorus.getInstance().get(Renderer.class).getFontRenderer("minecraft");
+        IFontRenderer minecraftFontRenderer = Sorus.getInstance().get(IAdapter.class).getRenderer().getFontRenderer("minecraft");
 
         for (int i = 0; i < 9; i++) {
             IPlayerInventory.Slot slot = IPlayerInventory.Slot.values()[i];

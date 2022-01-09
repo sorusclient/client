@@ -1,4 +1,4 @@
-package com.github.sorusclient.client.ui;
+package com.github.sorusclient.client.adapter;
 
 import com.github.sorusclient.client.util.Color;
 

@@ -4,9 +4,9 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IBossBar;
+import com.github.sorusclient.client.adapter.IRenderer;
 import com.github.sorusclient.client.hud.HUDElement;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.util.Color;
 
 public class BossBar extends HUDElement {
@@ -26,7 +26,7 @@ public class BossBar extends HUDElement {
         IBossBarRenderer bossBarRenderer = GlassLoader.getInstance().getInterface(IBossBarRenderer.class);
         bossBarRenderer.renderBossBar(x + 1 * scale, y + 11 * scale, scale, percent);
 
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer minecraftFontRenderer = renderer.getFontRenderer("minecraft");
 
         String bossBarName = bossBar.getName();

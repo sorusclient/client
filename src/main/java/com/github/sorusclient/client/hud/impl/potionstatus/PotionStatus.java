@@ -4,8 +4,7 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.hud.HUDElement;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.ui.UserInterface;
 import com.github.sorusclient.client.util.Color;
 
@@ -20,7 +19,7 @@ public class PotionStatus extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
         IPotionEffectRenderer potionEffectRenderer = GlassLoader.getInstance().getInterface(IPotionEffectRenderer.class);
 
@@ -70,7 +69,7 @@ public class PotionStatus extends HUDElement {
 
     @Override
     public double getWidth() {
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         double maxWidth = 0;
@@ -85,7 +84,7 @@ public class PotionStatus extends HUDElement {
 
     @Override
     public double getHeight() {
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         List<IPotionEffect> effects = this.getEffects();

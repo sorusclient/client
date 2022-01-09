@@ -25,6 +25,7 @@ public class HotBarRenderer implements Listener, IHotBarRenderer {
         GL11.glScaled(scale, scale, 1);
 
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glColor4d(1.0, 1.0, 1.0, 1.0);
 
         DrawableHelper drawableHelper = new DrawableHelper();

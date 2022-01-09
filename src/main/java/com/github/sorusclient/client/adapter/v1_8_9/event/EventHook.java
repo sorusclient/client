@@ -7,6 +7,7 @@ import com.github.sorusclient.client.event.EventManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.util.Window;
 import v1_8_9.net.minecraft.client.world.ClientWorld;
@@ -17,6 +18,7 @@ public class EventHook {
 
     public static void onRender() {
         Sorus.getInstance().get(EventManager.class).call(new RenderEvent());
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
     public static void onInGameRender() {

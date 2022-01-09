@@ -2,10 +2,11 @@ package com.github.sorusclient.client.ui.framework;
 
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
+import com.github.sorusclient.client.adapter.IAdapter;
+import com.github.sorusclient.client.adapter.IRenderer;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.adapter.event.MouseEvent;
-import com.github.sorusclient.client.ui.Renderer;
 import com.github.sorusclient.client.ui.framework.constraint.Absolute;
 import com.github.sorusclient.client.ui.framework.constraint.Constraint;
 import com.github.sorusclient.client.util.Color;
@@ -183,7 +184,7 @@ public class Container extends Component {
                 this.setAvailableState(state);
             }
 
-            Renderer renderer = Sorus.getInstance().get(Renderer.class);
+            IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
             if (container.backgroundImage != null) {
                 Color color = Color.WHITE;
                 if (container.topLeftBackgroundColor != null) {

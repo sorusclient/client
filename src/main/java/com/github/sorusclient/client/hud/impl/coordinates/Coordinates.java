@@ -3,11 +3,11 @@ package com.github.sorusclient.client.hud.impl.coordinates;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IEntity;
+import com.github.sorusclient.client.adapter.IRenderer;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.util.Color;
 import com.github.sorusclient.client.util.Pair;
 
@@ -43,7 +43,7 @@ public class Coordinates extends HUDElement {
     protected void render(double x, double y, double scale) {
         IEntity player = Sorus.getInstance().get(IAdapter.class).getPlayer();
 
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
         renderer.drawRectangle(x, y, this.getWidth() * scale, this.getHeight() * scale, Color.fromRGB(0, 0, 0, 100));

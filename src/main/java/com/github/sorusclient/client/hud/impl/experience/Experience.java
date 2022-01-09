@@ -4,9 +4,9 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IPlayerEntity;
+import com.github.sorusclient.client.adapter.IRenderer;
 import com.github.sorusclient.client.hud.HUDElement;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.util.Color;
 
 public class Experience extends HUDElement {
@@ -23,7 +23,7 @@ public class Experience extends HUDElement {
         IExperienceRenderer experienceRenderer = GlassLoader.getInstance().getInterface(IExperienceRenderer.class);
         experienceRenderer.renderExperienceBar(x + 1 * scale, y + 1 * scale, scale, experiencePercent);
 
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer minecraftFontRenderer = renderer.getFontRenderer("minecraft");
 
         String experienceLevel = String.valueOf(player.getExperienceLevel());

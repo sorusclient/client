@@ -6,8 +6,7 @@ import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
-import com.github.sorusclient.client.ui.IFontRenderer;
-import com.github.sorusclient.client.ui.Renderer;
+import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.ui.UserInterface;
 import com.github.sorusclient.client.util.Color;
 
@@ -40,7 +39,7 @@ public class Armor extends HUDElement {
     protected void render(double x, double y, double scale) {
         IPlayerEntity player = Sorus.getInstance().get(IAdapter.class).getPlayer();
 
-        Renderer renderer = Sorus.getInstance().get(Renderer.class);
+        IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
         IArmorRenderer armorRenderer = GlassLoader.getInstance().getInterface(IArmorRenderer.class);
 
@@ -134,7 +133,7 @@ public class Armor extends HUDElement {
     public double getHeight() {
         switch (this.mode.getValue()) {
             case INDIVIDUAL:
-                Renderer renderer = Sorus.getInstance().get(Renderer.class);
+                IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
                 IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
 
                 AtomicInteger index = new AtomicInteger(0);
