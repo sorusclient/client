@@ -17,18 +17,11 @@ initialize = [
     "module.impl.togglesprintsneak.v1_8_9.ToggleSprintSneakTransformer",
     "hud.impl.potionstatus.v1_8_9.PotionEffectRenderer",
     "hud.impl.armor.v1_8_9.ArmorRenderer",
-    "hud.impl.armor.v1_8_9.ArmorTransformer",
-    "hud.impl.sidebar.v1_8_9.SideBarTransformer",
     "hud.impl.health.v1_8_9.HealthRenderer",
-    "hud.impl.health.v1_8_9.HealthTransformer",
     "hud.impl.hunger.v1_8_9.HungerRenderer",
-    "hud.impl.hunger.v1_8_9.HungerTransformer",
     "hud.impl.experience.v1_8_9.ExperienceRenderer",
-    "hud.impl.experience.v1_8_9.ExperienceTransformer",
     "hud.impl.bossbar.v1_8_9.BossBarRenderer",
-    "hud.impl.bossbar.v1_8_9.BossBarTransformer",
     "hud.impl.hotbar.v1_8_9.HotBarRenderer",
-    "hud.impl.hotbar.v1_8_9.HotBarTransformer",
 ]
 post-initialize = [
     "adapter.v1_8_9.Adapter",

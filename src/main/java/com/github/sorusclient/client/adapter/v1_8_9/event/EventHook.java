@@ -1,11 +1,9 @@
 package com.github.sorusclient.client.adapter.v1_8_9.event;
 
 import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.adapter.Button;
 import com.github.sorusclient.client.adapter.event.*;
 import com.github.sorusclient.client.adapter.v1_8_9.Util;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.adapter.Key;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -64,6 +62,48 @@ public class EventHook {
 
     public static void onGameJoin() {
         Sorus.getInstance().get(EventManager.class).call(new GameJoinEvent());
+    }
+
+    public static ArmorBarRenderEvent onArmorBarRender() {
+        ArmorBarRenderEvent event = new ArmorBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
+    }
+
+    public static BossBarRenderEvent onBossBarRender() {
+        BossBarRenderEvent event = new BossBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
+    }
+
+    public static ExperienceBarRenderEvent onExperienceBarRender() {
+        ExperienceBarRenderEvent event = new ExperienceBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
+    }
+
+    public static HealthBarRenderEvent onHealthBarRender() {
+        HealthBarRenderEvent event = new HealthBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
+    }
+
+    public static HotBarRenderEvent onHotBarRender() {
+        HotBarRenderEvent event = new HotBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
+    }
+
+    public static HungerBarRenderEvent onHungerBarRender() {
+        HungerBarRenderEvent event = new HungerBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
+    }
+
+    public static SideBarRenderEvent onSideBarRender() {
+        SideBarRenderEvent event = new SideBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
     }
 
 }

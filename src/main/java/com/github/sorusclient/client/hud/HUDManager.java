@@ -4,10 +4,8 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
+import com.github.sorusclient.client.adapter.event.*;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.adapter.event.KeyEvent;
-import com.github.sorusclient.client.adapter.event.MouseEvent;
-import com.github.sorusclient.client.adapter.event.RenderInGameEvent;
 import com.github.sorusclient.client.hud.impl.armor.Armor;
 import com.github.sorusclient.client.hud.impl.bossbar.BossBar;
 import com.github.sorusclient.client.hud.impl.coordinates.Coordinates;
@@ -51,8 +49,6 @@ public class HUDManager implements SettingContainer {
     @SuppressWarnings("rawtypes")
     private Pair[] snapped = new Pair[0];
 
-    private double[] prevScreenDimensions = new double[] {0, 0};
-
     private final Setting<Boolean> isShared;
 
     public HUDElement hudToOpenSettings = null;
@@ -62,6 +58,15 @@ public class HUDManager implements SettingContainer {
 
         this.initializePossibleElements();
         this.setupDefaultHud();
+
+        EventManager eventManager = Sorus.getInstance().get(EventManager.class);
+        eventManager.register(ArmorBarRenderEvent.class, event -> event.setCanceled(true));
+        eventManager.register(BossBarRenderEvent.class, event -> event.setCanceled(true));
+        eventManager.register(ExperienceBarRenderEvent.class, event -> event.setCanceled(true));
+        eventManager.register(HealthBarRenderEvent.class, event -> event.setCanceled(true));
+        eventManager.register(HotBarRenderEvent.class, event -> event.setCanceled(true));
+        eventManager.register(HungerBarRenderEvent.class, event -> event.setCanceled(true));
+        eventManager.register(SideBarRenderEvent.class, event -> event.setCanceled(true));
     }
 
     private void setupDefaultHud() {
@@ -165,8 +170,6 @@ public class HUDManager implements SettingContainer {
                 }
             }
         }
-
-        this.prevScreenDimensions = screenDimensions;
 
         boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
         boolean textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);

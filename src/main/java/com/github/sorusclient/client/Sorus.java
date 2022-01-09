@@ -4,7 +4,6 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
 import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.event.EventManager;
-import com.github.sorusclient.client.adapter.event.SorusCustomPacketEvent;
 import com.github.sorusclient.client.hud.HUDManager;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.plugin.PluginManager;

@@ -3,20 +3,29 @@ package com.github.sorusclient.client.transform;
 import org.objectweb.asm.tree.*;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Applier {
 
     public static class Insert<T> implements Consumer<MethodNode> {
 
         private final T instruction;
+        private final Function<MethodNode, T> function;
 
         public Insert(T instruction) {
             this.instruction = instruction;
+            this.function = null;
+        }
+
+        public Insert(Function<MethodNode, T> function) {
+            this.function = function;
+            this.instruction = null;
         }
 
         @Override
         public void accept(MethodNode methodNode) {
-            Object instruction = Applier.clone(this.instruction);
+            T instructionT = this.instruction != null ? this.instruction : this.function.apply(methodNode);
+            Object instruction = Applier.clone(instructionT);
             if (instruction instanceof InsnList) {
                 methodNode.instructions.insert((InsnList) instruction);
             } else if (this.instruction instanceof AbstractInsnNode) {
@@ -86,6 +95,12 @@ public class Applier {
         } else if (instruction instanceof InsnNode) {
             InsnNode insnNode = (InsnNode) instruction;
             return new InsnNode(insnNode.getOpcode());
+        } else if (instruction instanceof JumpInsnNode) {
+            JumpInsnNode jumpInsnNode = (JumpInsnNode) instruction;
+            return new JumpInsnNode(jumpInsnNode.getOpcode(), (LabelNode) Applier.clone(jumpInsnNode.label));
+        } else if (instruction instanceof LabelNode) {
+            LabelNode labelNode = (LabelNode) instruction;
+            return new LabelNode(labelNode.getLabel());
         }
         return null;
     }
