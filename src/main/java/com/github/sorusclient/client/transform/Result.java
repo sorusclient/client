@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.transform;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -15,6 +16,10 @@ public class Result<T> {
         for (T result : this.results) {
             ((Consumer<T>) consumer).accept(result);
         }
+    }
+
+    public Result<T> nth(int index) {
+        return new Result<>(Collections.singletonList(this.results.get(index)));
     }
 
 }

@@ -44,4 +44,8 @@ public class MinecraftAdapter {
         return this.getAdapter().getCurrentServer();
     }
 
+    public IKeyBind getKeyBind(IKeyBind.KeyBindType type) {
+        return this.getAdapter().getKeyBind(type);
+    }
+
 }

@@ -1,6 +1,10 @@
 package com.github.sorusclient.client.adapter.v1_8_9;
 
+import com.github.sorusclient.client.adapter.Button;
 import com.github.sorusclient.client.adapter.IItem;
+import com.github.sorusclient.client.adapter.Key;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 public class Util {
     
@@ -50,6 +54,55 @@ public class Util {
                 return -1;
                 
         }
+    }
+
+    private static final BiMap<Integer, Key> keyMap = HashBiMap.create();
+
+    static {
+        keyMap.put(1, Key.ESCAPE);
+        keyMap.put(16, Key.Q);
+        keyMap.put(17, Key.W);
+        keyMap.put(18, Key.E);
+        keyMap.put(19, Key.R);
+        keyMap.put(20, Key.T);
+        keyMap.put(21, Key.Y);
+        keyMap.put(22, Key.U);
+        keyMap.put(23, Key.I);
+        keyMap.put(24, Key.O);
+        keyMap.put(25, Key.P);
+        keyMap.put(29, Key.CONTROL_LEFT);
+        keyMap.put(30, Key.A);
+        keyMap.put(31, Key.S);
+        keyMap.put(32, Key.D);
+        keyMap.put(33, Key.F);
+        keyMap.put(34, Key.G);
+        keyMap.put(35, Key.H);
+        keyMap.put(36, Key.J);
+        keyMap.put(37, Key.K);
+        keyMap.put(38, Key.L);
+        keyMap.put(42, Key.SHIFT_LEFT);
+        keyMap.put(44, Key.Z);
+        keyMap.put(45, Key.X);
+        keyMap.put(46, Key.C);
+        keyMap.put(47, Key.V);
+        keyMap.put(48, Key.B);
+        keyMap.put(49, Key.N);
+        keyMap.put(50, Key.M);
+    }
+
+    public static Key getKey(int id) {
+        return keyMap.getOrDefault(id, Key.UNKNOWN);
+    }
+
+    private static final BiMap<Integer, Button> buttonMap = HashBiMap.create();
+
+    static {
+        buttonMap.put(0, Button.PRIMARY);
+        buttonMap.put(-1, Button.NONE);
+    }
+
+    public static Button getButton(int id) {
+        return buttonMap.getOrDefault(id, Button.UNKNOWN);
     }
     
 }

@@ -33,10 +33,10 @@ public class EventTransformer extends Transformer implements Listener {
     }
 
     private void transformMinecraftClient(ClassNode classNode) {
-        Identifier render = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#handleKeyInput()V");
+        Identifier handleKeyInput = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#handleKeyInput()V");
         Identifier connect = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#connect(Lv1_8_9/net/minecraft/client/world/ClientWorld;Ljava/lang/String;)V");
 
-        this.findMethod(classNode, render)
+        this.findMethod(classNode, handleKeyInput)
                 .apply(new Applier.Insert<>(this.getHook("onKey")));
         this.findMethod(classNode, connect)
                 .apply(new Applier.Insert<>(this.createList(insnList -> {

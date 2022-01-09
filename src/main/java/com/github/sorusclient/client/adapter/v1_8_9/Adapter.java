@@ -9,6 +9,8 @@ import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen;
 import v1_8_9.net.minecraft.client.gui.screen.Screen;
 import v1_8_9.net.minecraft.client.network.ServerInfo;
+import v1_8_9.net.minecraft.client.options.GameOptions;
+import v1_8_9.net.minecraft.client.options.KeyBinding;
 import v1_8_9.net.minecraft.client.util.Window;
 import v1_8_9.net.minecraft.entity.Entity;
 
@@ -116,6 +118,24 @@ public class Adapter implements Listener, IAdapter {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public IKeyBind getKeyBind(IKeyBind.KeyBindType type) {
+        GameOptions options = MinecraftClient.getInstance().options;
+        KeyBinding keyBinding;
+        switch (type) {
+            case SPRINT:
+                keyBinding = options.keySprint;
+                break;
+            case SNEAK:
+                keyBinding = options.keySneak;
+                break;
+            default:
+                return null;
+        }
+
+        return new KeyBindImpl(keyBinding);
     }
 
 }

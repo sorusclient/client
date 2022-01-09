@@ -19,6 +19,8 @@ public interface IAdapter {
 
     IServer getCurrentServer();
 
+    IKeyBind getKeyBind(IKeyBind.KeyBindType type);
+
     enum PerspectiveMode {
         FIRST_PERSON,
         THIRD_PERSON_BACK,
