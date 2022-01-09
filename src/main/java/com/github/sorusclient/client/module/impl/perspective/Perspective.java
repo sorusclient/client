@@ -2,10 +2,7 @@ package com.github.sorusclient.client.module.impl.perspective;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.adapter.IAdapter;
-import com.github.sorusclient.client.adapter.Key;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
-import com.github.sorusclient.client.adapter.ScreenType;
+import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.module.ModuleDisableable;
@@ -19,7 +16,7 @@ public class Perspective extends ModuleDisableable {
     private final Setting<Key> key;
 
     private boolean toggled;
-    private IAdapter.PerspectiveMode previousPerspective = null;
+    private PerspectiveMode previousPerspective = null;
 
     public Perspective() {
         super("perspective");
@@ -30,19 +27,19 @@ public class Perspective extends ModuleDisableable {
     }
 
     private void onKey(KeyEvent event) {
-        MinecraftAdapter minecraftAdapter = Sorus.getInstance().get(MinecraftAdapter.class);
-        if (this.isEnabled() && minecraftAdapter.getOpenScreen() == ScreenType.IN_GAME) {
+        IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
+        if (this.isEnabled() && adapter.getOpenScreen() == ScreenType.IN_GAME) {
             if (event.getKey() == this.key.getValue() && !event.isRepeat()) {
                 this.toggled = event.isPressed();
 
                 if (this.toggled) {
-                    this.previousPerspective = minecraftAdapter.getPerspective();
+                    this.previousPerspective = adapter.getPerspective();
 
                     GlassLoader.getInstance().getInterface(IPerspectiveHelper.class).onToggle();
 
-                    minecraftAdapter.setPerspective(IAdapter.PerspectiveMode.THIRD_PERSON_BACK);
+                    adapter.setPerspective(PerspectiveMode.THIRD_PERSON_BACK);
                 } else {
-                    minecraftAdapter.setPerspective(this.previousPerspective);
+                    adapter.setPerspective(this.previousPerspective);
                 }
             }
         }

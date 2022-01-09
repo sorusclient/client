@@ -2,9 +2,9 @@ package com.github.sorusclient.client.hud.impl.health;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.sorusclient.client.Sorus;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.ILivingEntity;
 import com.github.sorusclient.client.adapter.IPotionEffect;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.hud.HUDElement;
 
 public class Health extends HUDElement {
@@ -24,10 +24,10 @@ public class Health extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        ILivingEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
+        ILivingEntity player = Sorus.getInstance().get(IAdapter.class).getPlayer();
 
         boolean hasRegen = false;
-        for (IPotionEffect effect : Sorus.getInstance().get(MinecraftAdapter.class).getPlayer().getEffects()) {
+        for (IPotionEffect effect : Sorus.getInstance().get(IAdapter.class).getPlayer().getEffects()) {
             if (effect.getType() == IPotionEffect.PotionType.REGENERATION) {
                 hasRegen = true;
                 break;
@@ -113,7 +113,7 @@ public class Health extends HUDElement {
 
     @Override
     public double getHeight() {
-        ILivingEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
+        ILivingEntity player = Sorus.getInstance().get(IAdapter.class).getPlayer();
 
         double absorption = player.getAbsorption();
         int absorptionInt = (int) Math.ceil(absorption);

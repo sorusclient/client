@@ -18,7 +18,7 @@ public class MinecraftFontRenderer implements IFontRenderer {
 
     @Override
     public void drawString(String text, double x, double y, double scale, Color color) {
-        MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("assets/minecraft/textures/font/ascii.png"));
+        MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("textures/font/ascii.png"));
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, 0);
         GL11.glScaled(scale, scale, 1);

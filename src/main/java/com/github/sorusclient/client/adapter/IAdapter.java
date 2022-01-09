@@ -21,10 +21,6 @@ public interface IAdapter {
 
     IKeyBind getKeyBind(IKeyBind.KeyBindType type);
 
-    enum PerspectiveMode {
-        FIRST_PERSON,
-        THIRD_PERSON_BACK,
-        THIRD_PERSON_FRONT,
-    }
+    IRenderer getRenderer();
 
 }

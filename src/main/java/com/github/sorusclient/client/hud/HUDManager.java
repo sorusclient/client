@@ -2,8 +2,8 @@ package com.github.sorusclient.client.hud;
 
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.Button;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.Key;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.adapter.event.*;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.hud.impl.armor.Armor;
@@ -154,11 +154,11 @@ public class HUDManager implements SettingContainer {
     }
 
     public void render(RenderInGameEvent ignored) {
-        MinecraftAdapter minecraftAdapter = Sorus.getInstance().get(MinecraftAdapter.class);
+        IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
 
-        double[] screenDimensions = minecraftAdapter.getScreenDimensions();
-        double[] mouseLocation = minecraftAdapter.getMouseLocation();
+        double[] screenDimensions = adapter.getScreenDimensions();
+        double[] mouseLocation = adapter.getMouseLocation();
 
         boolean isHudEditScreenOpen = Sorus.getInstance().get(UserInterface.class).isHudEditScreenOpen();
 
@@ -514,7 +514,7 @@ public class HUDManager implements SettingContainer {
         if (event.getButton() != Button.PRIMARY) return;
 
         if (event.isPressed() && Sorus.getInstance().get(UserInterface.class).isHudEditScreenOpen()) {
-            double[] screenDimensions = Sorus.getInstance().get(MinecraftAdapter.class).getScreenDimensions();
+            double[] screenDimensions = Sorus.getInstance().get(IAdapter.class).getScreenDimensions();
 
             for (HUDElement element : this.elements.values()) {
                 double x = element.getX(screenDimensions[0]);

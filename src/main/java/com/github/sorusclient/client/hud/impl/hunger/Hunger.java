@@ -2,8 +2,8 @@ package com.github.sorusclient.client.hud.impl.hunger;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.sorusclient.client.Sorus;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IPlayerEntity;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.hud.HUDElement;
 
 public class Hunger extends HUDElement {
@@ -14,7 +14,7 @@ public class Hunger extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        IPlayerEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
+        IPlayerEntity player = Sorus.getInstance().get(IAdapter.class).getPlayer();
 
         int hunger = (int) player.getHunger();
 

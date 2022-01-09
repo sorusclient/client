@@ -11,6 +11,7 @@ import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.util.Window;
 import v1_8_9.net.minecraft.client.world.ClientWorld;
 import v1_8_9.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import v1_8_9.net.minecraft.util.math.Box;
 
 public class EventHook {
 
@@ -102,6 +103,12 @@ public class EventHook {
 
     public static SideBarRenderEvent onSideBarRender() {
         SideBarRenderEvent event = new SideBarRenderEvent();
+        Sorus.getInstance().get(EventManager.class).call(event);
+        return event;
+    }
+
+    public static BlockOutlineRenderEvent onBlockOutlineRender(Box box) {
+        BlockOutlineRenderEvent event = new BlockOutlineRenderEvent(new com.github.sorusclient.client.adapter.Box(box.minX, box.maxX, box.minY, box.maxY, box.minZ, box.maxZ));
         Sorus.getInstance().get(EventManager.class).call(event);
         return event;
     }

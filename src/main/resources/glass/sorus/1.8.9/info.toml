@@ -6,7 +6,6 @@ initialize = [
     "adapter.v1_8_9.event.EventTransformer",
     "ui.v1_8_9.RendererHook",
     "module.impl.zoom.v1_8_9.ZoomTransformer",
-    "module.impl.blockoverlay.v1_8_9.BlockOverlayTransformer",
     "module.impl.itemphysics.v1_8_9.ItemPhysicsTransformer",
     "module.impl.fullbright.v1_8_9.FullBrightTransformer",
     "module.impl.environmentchanger.v1_8_9.EnvironmentChangerTransformer",

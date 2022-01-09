@@ -138,4 +138,9 @@ public class Adapter implements Listener, IAdapter {
         return new KeyBindImpl(keyBinding);
     }
 
+    @Override
+    public IRenderer getRenderer() {
+        return new RendererImpl();
+    }
+
 }

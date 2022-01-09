@@ -38,7 +38,7 @@ public class Armor extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        IPlayerEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
+        IPlayerEntity player = Sorus.getInstance().get(IAdapter.class).getPlayer();
 
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");
@@ -100,7 +100,7 @@ public class Armor extends HUDElement {
     }
 
     private List<IItem> getArmor() {
-        MinecraftAdapter adapter = Sorus.getInstance().get(MinecraftAdapter.class);
+        IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
         boolean editing = Sorus.getInstance().get(UserInterface.class).isHudEditScreenOpen();
 
         List<IItem> realArmor = adapter.getPlayer().getArmor();

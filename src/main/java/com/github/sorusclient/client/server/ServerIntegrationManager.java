@@ -1,8 +1,8 @@
 package com.github.sorusclient.client.server;
 
 import com.github.sorusclient.client.Sorus;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IServer;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.GameJoinEvent;
 import com.github.sorusclient.client.adapter.event.GameLeaveEvent;
@@ -32,7 +32,7 @@ public class ServerIntegrationManager {
     }
 
     private void onGameJoin(GameJoinEvent event) {
-        IServer server = Sorus.getInstance().get(MinecraftAdapter.class).getCurrentServer();
+        IServer server = Sorus.getInstance().get(IAdapter.class).getCurrentServer();
         if (server != null) {
             new Thread(() -> {
                 String json = this.getJsonForServer(server.getIp());

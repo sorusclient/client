@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.module.impl.zoom;
 
 import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
@@ -33,7 +33,7 @@ public class Zoom extends ModuleDisableable {
     }
 
     private void onKey(KeyEvent event) {
-        if (Sorus.getInstance().get(MinecraftAdapter.class).getOpenScreen() == ScreenType.IN_GAME) {
+        if (Sorus.getInstance().get(IAdapter.class).getOpenScreen() == ScreenType.IN_GAME) {
             if (event.getKey().equals(this.key.getValue()) && !event.isRepeat()) {
                 this.toggled = event.isPressed();
             }

@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.module.impl.togglesprintsneak;
 
 import com.github.sorusclient.client.Sorus;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IKeyBind;
 import com.github.sorusclient.client.adapter.Key;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.module.ModuleDisableable;
@@ -50,13 +50,13 @@ public class ToggleSprintSneak extends ModuleDisableable {
     }
 
     private Key getSprintKey() {
-        MinecraftAdapter minecraftAdapter = Sorus.getInstance().get(MinecraftAdapter.class);
-        return this.useCustomSprintKey.getValue() ? this.customSprintKey.getValue() : minecraftAdapter.getKeyBind(IKeyBind.KeyBindType.SPRINT).getKey();
+        IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
+        return this.useCustomSprintKey.getValue() ? this.customSprintKey.getValue() : adapter.getKeyBind(IKeyBind.KeyBindType.SPRINT).getKey();
     }
 
     private Key getSneakKey() {
-        MinecraftAdapter minecraftAdapter = Sorus.getInstance().get(MinecraftAdapter.class);
-        return this.useCustomSneakKey.getValue() ? this.customSneakKey.getValue() : minecraftAdapter.getKeyBind(IKeyBind.KeyBindType.SNEAK).getKey();
+        IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
+        return this.useCustomSneakKey.getValue() ? this.customSneakKey.getValue() : adapter.getKeyBind(IKeyBind.KeyBindType.SNEAK).getKey();
     }
 
     public boolean isSprintToggled() {

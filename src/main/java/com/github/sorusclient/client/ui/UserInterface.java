@@ -1,8 +1,8 @@
 package com.github.sorusclient.client.ui;
 
 import com.github.sorusclient.client.Sorus;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.Key;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
@@ -40,13 +40,13 @@ public class UserInterface {
         EventManager eventManager = Sorus.getInstance().get(EventManager.class);
 
         eventManager.register(KeyEvent.class, event -> {
-            MinecraftAdapter minecraftAdapter = Sorus.getInstance().get(MinecraftAdapter.class);
+            IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
             if (!event.isRepeat()) {
-                if (event.getKey() == Key.P && event.isPressed() && minecraftAdapter.getOpenScreen() == ScreenType.IN_GAME) {
-                    minecraftAdapter.openScreen(ScreenType.DUMMY);
+                if (event.getKey() == Key.P && event.isPressed() && adapter.getOpenScreen() == ScreenType.IN_GAME) {
+                    adapter.openScreen(ScreenType.DUMMY);
                     guiOpened.set(true);
-                } else if (event.getKey() == Key.ESCAPE && event.isPressed() && minecraftAdapter.getOpenScreen() == ScreenType.DUMMY) {
-                    minecraftAdapter.openScreen(ScreenType.IN_GAME);
+                } else if (event.getKey() == Key.ESCAPE && event.isPressed() && adapter.getOpenScreen() == ScreenType.DUMMY) {
+                    adapter.openScreen(ScreenType.IN_GAME);
                     guiOpened.set(false);
                 }
             }
@@ -260,8 +260,8 @@ public class UserInterface {
                                     }))
                                     .setOnDrag(state1 -> {
                                         float[] colorData = (float[]) state1.getFirst().get("value");
-                                        colorData[1] = (float) (double) state1.getSecond().getFirst();
-                                        colorData[2] = 1 - (float) (double) state1.getSecond().getSecond();
+                                        float[] colorDataNew = new float[] {colorData[0], (float) (double) state1.getSecond().getFirst(), 1 - (float) (double) state1.getSecond().getSecond(), colorData[3]};
+                                        state1.getFirst().put("value", colorDataNew);
                                     }))
                             .addChild(new Container()
                                     .setX(new Side(Side.NEGATIVE))
@@ -271,7 +271,8 @@ public class UserInterface {
                                     .setBackgroundColor(new Absolute(Color.WHITE))
                                     .setOnDrag(state1 -> {
                                         float[] colorData = (float[]) state1.getFirst().get("value");
-                                        colorData[0] = (float) (double) state1.getSecond().getSecond();
+                                        float[] colorDataNew = new float[] {(float) (double) state1.getSecond().getSecond(), colorData[1], colorData[2], colorData[3]};
+                                        state1.getFirst().put("value", colorDataNew);
                                     })
                                     .addChild(new Container()
                                             .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[0] - 0.5)))
@@ -285,7 +286,8 @@ public class UserInterface {
                                     .setBackgroundColor(new Absolute(Color.WHITE))
                                     .setOnDrag(state1 -> {
                                         float[] colorData = (float[]) state1.getFirst().get("value");
-                                        colorData[3] = (float) (double) state1.getSecond().getSecond();
+                                        float[] colorDataNew = new float[] {colorData[0], colorData[1], colorData[2], (float) (double) state1.getSecond().getSecond()};
+                                        state1.getFirst().put("value", colorDataNew);
                                     })
                                     .addChild(new Container()
                                             .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[3] - 0.5)))
@@ -398,7 +400,7 @@ public class UserInterface {
                                                         .setOnDoubleClick(state -> {
                                                             try {
                                                                 HUDElement hudElement = possibleHud.getHudClass().newInstance();
-                                                                double[] screenDimensions = Sorus.getInstance().get(MinecraftAdapter.class).getScreenDimensions();
+                                                                double[] screenDimensions = Sorus.getInstance().get(IAdapter.class).getScreenDimensions();
                                                                 hudElement.setPosition(screenDimensions[0] / 2, screenDimensions[1] / 2, screenDimensions);
                                                                 hudElement.setScale(1);
 

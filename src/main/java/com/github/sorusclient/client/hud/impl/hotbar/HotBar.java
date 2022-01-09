@@ -1,10 +1,10 @@
 package com.github.sorusclient.client.hud.impl.hotbar;
 
 import com.github.glassmc.loader.GlassLoader;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IItem;
 import com.github.sorusclient.client.adapter.IPlayerInventory;
 import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.ui.IFontRenderer;
 import com.github.sorusclient.client.ui.Renderer;
@@ -18,7 +18,7 @@ public class HotBar extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        IPlayerInventory inventory = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer().getInventory();
+        IPlayerInventory inventory = Sorus.getInstance().get(IAdapter.class).getPlayer().getInventory();
 
         IHotBarRenderer hotBarRenderer = GlassLoader.getInstance().getInterface(IHotBarRenderer.class);
         hotBarRenderer.renderBackground(x + 1 * scale, y + 1 * scale, scale);

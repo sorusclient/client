@@ -2,7 +2,7 @@ package com.github.sorusclient.client;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.loader.Listener;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.hud.HUDManager;
 import com.github.sorusclient.client.module.ModuleManager;
@@ -21,6 +21,8 @@ public class Sorus implements Listener {
 
     @Override
     public void run() {
+        GlassLoader.getInstance().runHooks("post-initialize");
+
         Sorus sorus = new Sorus();
         GlassLoader.getInstance().registerAPI(sorus);
         sorus.initialize();
@@ -37,7 +39,7 @@ public class Sorus implements Listener {
         this.register(new ContainerRenderer());
         this.register(new EventManager());
         this.register(new HUDManager());
-        this.register(new MinecraftAdapter());
+        this.register(IAdapter.class, GlassLoader.getInstance().getInterface(IAdapter.class));
         this.register(new PluginManager());
         this.register(new Renderer());
         this.register(new ServerIntegrationManager());
@@ -55,12 +57,14 @@ public class Sorus implements Listener {
         this.get(UserInterface.class).initialize();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> this.get(SettingManager.class).saveCurrent()));
-
-        GlassLoader.getInstance().runHooks("post-initialize");
     }
 
     public void register(Object component) {
-        this.components.put(component.getClass(), component);
+        this.register(component.getClass(), component);
+    }
+
+    public void register(Class<?> clazz, Object component) {
+        this.components.put(clazz, component);
     }
 
     @SuppressWarnings("unchecked")

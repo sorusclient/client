@@ -53,7 +53,7 @@ public class PotionStatus extends HUDElement {
     }
 
     private List<IPotionEffect> getEffects() {
-        MinecraftAdapter adapter = Sorus.getInstance().get(MinecraftAdapter.class);
+        IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
         boolean editing = Sorus.getInstance().get(UserInterface.class).isHudEditScreenOpen();
 
         List<IPotionEffect> realEffects = adapter.getPlayer().getEffects();

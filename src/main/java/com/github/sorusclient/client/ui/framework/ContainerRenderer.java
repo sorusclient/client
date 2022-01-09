@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.ui.framework;
 
 import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.adapter.event.MouseEvent;
@@ -21,7 +21,7 @@ public class ContainerRenderer {
     }
 
     public void render(Container container) {
-        double[] screenDimensions = Sorus.getInstance().get(MinecraftAdapter.class).getScreenDimensions();
+        double[] screenDimensions = Sorus.getInstance().get(IAdapter.class).getScreenDimensions();
 
         container.runtime.render(screenDimensions[0] / 2, screenDimensions[1] / 2, screenDimensions[0], screenDimensions[1]);
 

@@ -23,6 +23,7 @@ public class EventTransformer extends Transformer implements Listener {
         this.register("v1_8_9/net/minecraft/client/gui/screen/Screen", this::transformScreen);
         this.register("v1_8_9/net/minecraft/client/gui/hud/InGameHud", this::transformInGameHud);
         this.register("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler", this::transformClientPlayerNetworkHandler);
+        this.register("v1_8_9/net/minecraft/client/render/WorldRenderer", this::transformWorldRenderer);
     }
 
     private void transformGameRenderer(ClassNode classNode) {
@@ -222,6 +223,28 @@ public class EventTransformer extends Transformer implements Listener {
                 })));
         this.findMethod(classNode, onGameJoin)
                 .apply(new Applier.Insert<>(this.getHook("onGameJoin")));
+    }
+
+    private void transformWorldRenderer(ClassNode classNode) {
+        Identifier method_9895 = Identifier.parse("v1_8_9/net/minecraft/client/render/WorldRenderer#method_9895(Lv1_8_9/net/minecraft/util/math/Box;)V");
+
+        this.findMethod(classNode, method_9895)
+                .apply(new Applier.Insert<>(methodNode -> this.createList(insnList -> {
+                    String eventClassName = BlockOutlineRenderEvent.class.getName().replace(".", "/");
+                    insnList.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                    insnList.add(this.getHook("onBlockOutlineRender"));
+                    int index = methodNode.maxLocals;
+                    insnList.add(new VarInsnNode(Opcodes.ASTORE, index));
+                    methodNode.maxLocals++;
+
+                    LabelNode labelNode = new LabelNode();
+
+                    insnList.add(new VarInsnNode(Opcodes.ALOAD, index));
+                    insnList.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"));
+                    insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+                    insnList.add(new InsnNode(Opcodes.RETURN));
+                    insnList.add(labelNode);
+                })));
     }
 
 }

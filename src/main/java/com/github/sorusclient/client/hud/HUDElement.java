@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.hud;
 
 import com.github.sorusclient.client.Sorus;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
 import com.github.sorusclient.client.setting.SettingContainer;
@@ -206,7 +206,7 @@ public abstract class HUDElement implements SettingContainer {
     }
 
     public final void render() {
-        double[] screenDimensions = Sorus.getInstance().get(MinecraftAdapter.class).getScreenDimensions();
+        double[] screenDimensions = Sorus.getInstance().get(IAdapter.class).getScreenDimensions();
         this.render(this.getX(screenDimensions[0]) - this.getScaledWidth() / 2, this.getY(screenDimensions[1]) - this.getScaledHeight() / 2, this.getScale());
     }
 

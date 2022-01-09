@@ -1,8 +1,8 @@
 package com.github.sorusclient.client.hud.impl.coordinates;
 
 import com.github.sorusclient.client.Sorus;
+import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.IEntity;
-import com.github.sorusclient.client.adapter.MinecraftAdapter;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
@@ -41,7 +41,7 @@ public class Coordinates extends HUDElement {
 
     @Override
     protected void render(double x, double y, double scale) {
-        IEntity player = Sorus.getInstance().get(MinecraftAdapter.class).getPlayer();
+        IEntity player = Sorus.getInstance().get(IAdapter.class).getPlayer();
 
         Renderer renderer = Sorus.getInstance().get(Renderer.class);
         IFontRenderer fontRenderer = renderer.getFontRenderer("minecraft");

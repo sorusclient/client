@@ -49,7 +49,7 @@ public class Sidebar extends HUDElement {
     }
 
     private IScoreboardObjective getSidebarObjective() {
-        IScoreboard scoreboard = Sorus.getInstance().get(MinecraftAdapter.class).getWorld().getScoreboard();
+        IScoreboard scoreboard = Sorus.getInstance().get(IAdapter.class).getWorld().getScoreboard();
         IScoreboardObjective sidebarObjective = scoreboard.getObjective(IScoreboard.Slot.SIDEBAR);
 
         boolean editing = Sorus.getInstance().get(UserInterface.class).isHudEditScreenOpen();
