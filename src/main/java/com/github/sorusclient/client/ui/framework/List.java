@@ -48,18 +48,6 @@ public class List extends Container {
             this.xLocation = -width / 2;
             this.yLocation = -height / 2;
 
-            if (this.firstRender) {
-                for (Component component : List.this.children) {
-                    if ((List.this.type & HORIZONTAL) != 0) {
-                        component.runtime.setX(width / 3);
-                    }
-                    if ((List.this.type & VERTICAL) != 0) {
-                        component.runtime.setY(height / 3);
-                    }
-                }
-                this.firstRender = false;
-            }
-
             super.render(x, y, width, height);
         }
 
