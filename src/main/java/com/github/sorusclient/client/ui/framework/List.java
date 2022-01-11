@@ -1,7 +1,5 @@
 package com.github.sorusclient.client.ui.framework;
 
-import com.github.sorusclient.client.ui.framework.constraint.Side;
-
 public class List extends Container {
 
     public static final int VERTICAL = 1;
@@ -35,8 +33,6 @@ public class List extends Container {
     }
 
     public class Runtime extends Container.Runtime {
-
-        private boolean firstRender = true;
 
         private int xIndex;
         private double xLocation;
@@ -83,6 +79,11 @@ public class List extends Container {
             }
 
             return array;
+        }
+
+        @Override
+        protected void addPlacedComponents(Component child, double[] wantedPosition) {
+
         }
 
     }

@@ -60,6 +60,10 @@ public class Container extends Component {
         return this;
     }
 
+    public Container setBackgroundColor(Color backgroundColor) {
+        return this.setBackgroundColor(new Absolute(backgroundColor));
+    }
+
     public Container setBackgroundColor(Constraint backgroundColor) {
         this.topLeftBackgroundColor = backgroundColor;
         this.bottomLeftBackgroundColor = backgroundColor;
@@ -151,6 +155,7 @@ public class Container extends Component {
         private double padding;
 
         private final List<Pair<Component, double[]>> placedComponents = new ArrayList<>();
+        private final List<Component> placedComponents2 = new ArrayList<>();
 
         private long prevClick = 0;
 
@@ -159,6 +164,7 @@ public class Container extends Component {
         @Override
         public void render(double x, double y, double width, double height) {
             this.placedComponents.clear();
+            this.placedComponents2.clear();
 
             Container container = Container.this;
 
@@ -209,7 +215,8 @@ public class Container extends Component {
                 double childWidth = wantedPosition[2];
                 double childHeight = wantedPosition[3];
 
-                this.placedComponents.add(new Pair<>(child, wantedPosition));
+                this.addPlacedComponents(child, wantedPosition);
+                this.placedComponents2.add(child);
 
                 this.renderChild(child.runtime, this.x + childX, this.y + childY, childWidth, childHeight);
             }
@@ -226,6 +233,10 @@ public class Container extends Component {
 
         protected double[] getOtherCalculatedPosition(Component child) {
             return child.runtime.getCalculatedPosition();
+        }
+
+        protected void addPlacedComponents(Component child, double[] wantedPosition) {
+            this.placedComponents.add(new Pair<>(child, wantedPosition));
         }
 
         @Override
@@ -306,9 +317,9 @@ public class Container extends Component {
         @Override
         public boolean handleMouseEvent(MouseEvent event) {
             boolean handled = false;
-            for (Pair<Component, double[]> component : this.placedComponents) {
-                if (component.getFirst() != null) {
-                    handled = component.getFirst().runtime.handleMouseEvent(event);
+            for (Component component : this.placedComponents2) {
+                if (component != null) {
+                    handled = component.runtime.handleMouseEvent(event);
 
                     if (handled) {
                         return true;
@@ -373,9 +384,9 @@ public class Container extends Component {
                 }
             }
 
-            for (Pair<Component, double[]> component : this.placedComponents) {
-                if (component.getFirst() != null) {
-                    component.getFirst().runtime.handleKeyEvent(event);
+            for (Component component : this.placedComponents2) {
+                if (component != null) {
+                    component.runtime.handleKeyEvent(event);
                 }
             }
         }

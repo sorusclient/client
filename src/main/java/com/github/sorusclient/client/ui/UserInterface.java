@@ -7,23 +7,16 @@ import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.adapter.event.RenderEvent;
-import com.github.sorusclient.client.hud.HUDData;
-import com.github.sorusclient.client.hud.HUDElement;
-import com.github.sorusclient.client.hud.HUDManager;
+import com.github.sorusclient.client.module.Module;
 import com.github.sorusclient.client.module.ModuleData;
 import com.github.sorusclient.client.module.ModuleManager;
-import com.github.sorusclient.client.plugin.Plugin;
-import com.github.sorusclient.client.plugin.PluginManager;
-import com.github.sorusclient.client.setting.Profile;
 import com.github.sorusclient.client.setting.Setting;
 import com.github.sorusclient.client.setting.SettingConfigurableData;
-import com.github.sorusclient.client.setting.SettingManager;
 import com.github.sorusclient.client.ui.framework.*;
 import com.github.sorusclient.client.ui.framework.constraint.*;
 import com.github.sorusclient.client.util.Color;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserInterface {
@@ -42,7 +35,7 @@ public class UserInterface {
         eventManager.register(KeyEvent.class, event -> {
             IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
             if (!event.isRepeat()) {
-                if (event.getKey() == Key.P && event.isPressed() && adapter.getOpenScreen() == ScreenType.IN_GAME) {
+                if (event.getKey() == Key.P && event.isPressed()/* && adapter.getOpenScreen() == ScreenType.IN_GAME*/) {
                     adapter.openScreen(ScreenType.DUMMY);
                     guiOpened.set(true);
                 } else if (event.getKey() == Key.ESCAPE && event.isPressed() && adapter.getOpenScreen() == ScreenType.DUMMY) {
@@ -55,6 +48,12 @@ public class UserInterface {
         eventManager.register(RenderEvent.class, event -> {
             if (guiOpened.get()) {
                 Sorus.getInstance().get(ContainerRenderer.class).render(mainGui);
+            }
+        });
+
+        eventManager.register(KeyEvent.class, event -> {
+            if (event.isPressed() && !event.isRepeat() && event.getKey() == Key.U) {
+                this.initializeUserInterface();
             }
         });
     }
@@ -319,7 +318,7 @@ public class UserInterface {
     }
 
     public void initializeUserInterface() {
-        this.mainGui = (Container) new Container()
+        /*this.mainGui = (Container) new Container()
                 .addChild(new List(List.VERTICAL)
                         .setX(new Side(Side.NEGATIVE))
                         .setWidth(new Relative(0.065))
@@ -631,7 +630,160 @@ public class UserInterface {
                                         })))
                         .setPadding(new Absolute(5)))
                 .addStoredState("currentTab")
+                .addOnStateUpdate("currentTab", state -> hudEditScreenOpen.set(state.get("currentTab").equals("hudEdit")));*/
+
+        this.mainGui = (Container) new TabHolder()
+                .setStateId("currentTab")
+                .apply(container -> {
+                    String[] tabs = new String[] {"home", "hudEdit", "moduleEdit", "pluginEdit", "profileEdit"};
+
+                    TabHolder tabHolder = (TabHolder) container;
+                    for (String tab : tabs) {
+                        Container container1 = new Container();
+                        this.addNavBar(container1, tabs);
+
+                        if (tab.equals("moduleEdit")) {
+                            this.addModulesScreen(container1);
+                        }
+
+                        tabHolder.addChild(tab, container1);
+                    }
+                })
+                /*.addChild(new Container()
+                        .setY(new Side(Side.NEGATIVE))
+                        .setWidth(new Relative(0.55))
+                        .setPadding(new Relative(0.01))
+                        .setBackgroundCornerRadius(new Relative(0.0075))
+                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230)))
+                .addChild(new Container()
+                        .setX(new Side(Side.NEGATIVE))
+                        .setY(new Side(Side.POSITIVE))
+                        .setHeight(new Relative(0.09))
+                        .setPadding(new Relative(0.01))
+                        .setBackgroundCornerRadius(new Relative(0.0075))
+                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230)))
+                .addChild(new Container()
+                        .setX(new Side(Side.NEGATIVE))
+                        .setY(new Side(Side.NEGATIVE))
+                        .setPadding(new Relative(0.01))
+                        .setBackgroundCornerRadius(new Relative(0.0075))
+                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230)))
+                .addChild(new Container()
+                        .setX(new Side(Side.POSITIVE))
+                        .setY(new Side(Side.POSITIVE))
+                        .setHeight(new Relative(0.4))
+                        .setPadding(new Relative(0.01))
+                        .setBackgroundCornerRadius(new Relative(0.0075))
+                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230)))
+                .addChild(new Container()
+                        .setX(new Side(Side.POSITIVE))
+                        .setY(new Side(Side.NEGATIVE))
+                        .setPadding(new Relative(0.01))
+                        .setBackgroundCornerRadius(new Relative(0.0075))
+                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230)))*/
+                .setOnInit(state -> {
+                    state.getFirst().addStoredState("currentTab");
+                    state.getSecond().put("currentTab", "home");
+                })
                 .addOnStateUpdate("currentTab", state -> hudEditScreenOpen.set(state.get("currentTab").equals("hudEdit")));
+    }
+
+    private void addNavBar(Container container, String[] tabs) {
+        container.addChild(new Container()
+                .setY(new Side(Side.POSITIVE))
+                .setWidth(new Relative(0.53))
+                .setHeight(new Relative(0.09))
+                .setPadding(new Relative(0.01))
+                .setBackgroundCornerRadius(new Relative(0.0075))
+                .setBackgroundColor(Color.fromRGB(26, 26, 26, 230))
+                .addChild(new Container()
+                        .setX(new Side(Side.NEGATIVE))
+                        .setWidth(new Copy())
+                        .setHeight(new Relative(0.7))
+                        .setPadding(new Relative(0.02))
+                        .setBackgroundImage(new Absolute("sorus.png")))
+                .addChild(new List(List.HORIZONTAL)
+                        .setX(new Side(Side.ZERO))
+                        .setY(new Side(Side.ZERO))
+                        .setHeight(new Relative(0.7))
+                        .apply(list -> {
+                            for (String tab : tabs) {
+                                list.addChild(new Container()
+                                                .setWidth(new Copy())
+                                                .setPadding(new Relative(0.01))
+                                                .setBackgroundCornerRadius(new Relative(0.0075))
+                                                .setOnClick(state -> state.put("currentTab", tab))
+                                                .setBackgroundColor(new Dependent(state -> {
+                                                    if (state.get("currentTab").equals(tab)) {
+                                                        return Color.fromRGB(20, 118, 188, 255);
+                                                    } else {
+                                                        return Color.fromRGB(24, 24, 24, 255);
+                                                    }
+                                                }))
+                                                .addChild(new Container()
+                                                        .setWidth(new Relative(0.5))
+                                                        .setHeight(new Relative(0.5))
+                                                        .setBackgroundImage(new Absolute(tab + ".png"))))
+                                        .addChild(new Container()
+                                                .setWidth(new Copy(0.1)));
+                            }
+                        })));
+    }
+
+    private void addModulesScreen(Container container) {
+        container.addChild(new Container()
+                        .setY(new Side(Side.NEGATIVE))
+                        .setWidth(new Relative(0.53))
+                        .setPadding(new Relative(0.01))
+                        .setBackgroundCornerRadius(new Relative(0.0075))
+                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230))
+                        .addChild(new Container()
+                                .setY(new Side(Side.NEGATIVE))
+                                .setHeight(new Copy(0.04))
+                                .setPadding(new Relative(0.005))
+                                .addChild(new Text()
+                                        .setFontRenderer(new Absolute("minecraft"))
+                                        .setPadding(new Relative(0.01))
+                                        .setText(new Absolute("Modules"))
+                                        .setScale(new Relative(0.003))
+                                        .setX(new Side(Side.NEGATIVE))))
+                        .addChild(new List(List.VERTICAL)
+                                .apply(container1 -> {
+                                    for (ModuleData module : Sorus.getInstance().get(ModuleManager.class).getModules()) {
+                                        container1.addChild(new Container()
+                                                .setHeight(new Copy(0.1))
+                                                .setPadding(new Relative(0.01))
+                                                .setBackgroundCornerRadius(new Relative(0.01))
+                                                .setBackgroundColor(Color.fromRGB(24, 24, 24, 255))
+                                                .addChild(new Container()
+                                                        .setX(new Side(Side.NEGATIVE))
+                                                        .setWidth(new Copy())
+                                                        .setHeight(new Relative(0.6))
+                                                        .setPadding(new Relative(0.2, true))
+                                                        .setBackgroundCornerRadius(new Relative(0.01))
+                                                        .setBackgroundColor(Color.fromRGB(255, 255, 255, 200)))
+                                                .addChild(new Text()
+                                                        .setText(new Absolute(module.getName()))
+                                                        .setFontRenderer(new Absolute("minecraft"))
+                                                        .setScale(new Relative(0.003))
+                                                        .setPadding(new Relative(0.175, true))
+                                                        .setX(new Side(Side.NEGATIVE))
+                                                        .setY(new Side(Side.NEGATIVE)))
+                                                .addChild(new Text()
+                                                        .setText(new Absolute(module.getDescription()))
+                                                        .setFontRenderer(new Absolute("minecraft"))
+                                                        .setScale(new Relative(0.003))
+                                                        .setTextColor(new Absolute(Color.fromRGB(255, 255, 255, 80)))
+                                                        .setPadding(new Relative(0.175, true))
+                                                        .setX(new Side(Side.NEGATIVE))
+                                                        .setY(new Side(Side.POSITIVE))));
+                                    }
+                                })))
+                .addChild(new Container()
+                        .setX(new Side(Side.NEGATIVE))
+                        .setPadding(new Relative(0.01))
+                        .setBackgroundCornerRadius(new Relative(0.0075))
+                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230)));
     }
 
     public boolean isHudEditScreenOpen() {
