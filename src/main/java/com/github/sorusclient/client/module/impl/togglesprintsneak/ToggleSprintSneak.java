@@ -71,11 +71,11 @@ public class ToggleSprintSneak extends ModuleDisableable {
     public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
         settings.add(new ConfigurableData.Toggle("Toggle Sprint", this.toggleSprint));
-        settings.add(new ConfigurableData.Toggle("Use Custom Sprint Key", this.useCustomSprintKey));
-        settings.add(new ConfigurableData.KeyBind("Custom Sprint Key", this.customSprintKey));
+        settings.add(new ConfigurableData.Dependent(new ConfigurableData.Toggle("Use Custom Sprint Key", this.useCustomSprintKey), this.toggleSprint, true));
+        settings.add(new ConfigurableData.Dependent(new ConfigurableData.Dependent(new ConfigurableData.KeyBind("Custom Sprint Key", this.customSprintKey), this.useCustomSprintKey, true), this.toggleSprint, true));
         settings.add(new ConfigurableData.Toggle("Toggle Sneak", this.toggleSneak));
-        settings.add(new ConfigurableData.Toggle("Use Custom Sneak Key", this.useCustomSneakKey));
-        settings.add(new ConfigurableData.KeyBind("Custom Sneak Key", this.customSneakKey));
+        settings.add(new ConfigurableData.Dependent(new ConfigurableData.Toggle("Use Custom Sneak Key", this.useCustomSneakKey), this.toggleSneak, true));
+        settings.add(new ConfigurableData.Dependent(new ConfigurableData.Dependent(new ConfigurableData.KeyBind("Custom Sneak Key", this.customSneakKey), this.useCustomSneakKey, true), this.toggleSneak, true));
     }
 
 }

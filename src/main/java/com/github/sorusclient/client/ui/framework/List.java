@@ -1,5 +1,7 @@
 package com.github.sorusclient.client.ui.framework;
 
+import java.util.stream.Collectors;
+
 public class List extends Container {
 
     public static final int VERTICAL = 1;

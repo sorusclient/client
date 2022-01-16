@@ -27,6 +27,7 @@ public abstract class Component {
     public Component() {
         this.addStoredState("selected");
         this.addStoredState("hasInit");
+        this.addStoredState("hidden");
     }
 
     public Component setX(Constraint x) {
@@ -90,6 +91,7 @@ public abstract class Component {
 
         public Runtime() {
             this.setState("hasInit", false);
+            this.setState("hidden", false);
         }
 
         public void setState(String id, Object value) {

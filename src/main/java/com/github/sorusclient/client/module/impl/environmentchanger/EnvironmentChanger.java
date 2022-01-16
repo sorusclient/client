@@ -43,9 +43,9 @@ public class EnvironmentChanger extends ModuleDisableable {
     public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
         settings.add(new ConfigurableData.Toggle("Modify Time", this.modifyTime));
-        settings.add(new ConfigurableData.Slider("Time", this.time, 0.0, 24000.0));
+        settings.add(new ConfigurableData.Dependent(new ConfigurableData.Slider("Time", this.time, 0.0, 24000.0), this.modifyTime, true));
         settings.add(new ConfigurableData.Toggle("Modify Weather", this.modifyWeather));
-        settings.add(new ConfigurableData.ClickThrough("Weather", this.weather));
+        settings.add(new ConfigurableData.Dependent(new ConfigurableData.ClickThrough("Weather", this.weather), this.modifyWeather, true));
     }
 
     public enum Weather {

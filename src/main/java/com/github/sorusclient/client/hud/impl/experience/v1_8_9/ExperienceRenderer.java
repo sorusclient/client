@@ -23,6 +23,7 @@ public class ExperienceRenderer implements Listener, IExperienceRenderer {
 
         DrawableHelper drawableHelper = new DrawableHelper();
         GL11.glColor4d(1.0, 1.0, 1.0, 1.0);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("textures/gui/icons.png"));
 

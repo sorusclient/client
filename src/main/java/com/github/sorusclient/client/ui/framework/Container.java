@@ -33,7 +33,7 @@ public class Container extends Component {
     private Consumer<Pair<Map<String, Object>, Key>> onKey;
     private Consumer<Pair<Container, Map<String, Object>>> onInit;
 
-    private Consumer<Map<String, Object>> onUpdate;
+    private List<Consumer<Map<String, Object>>> onUpdate = new ArrayList<>();
 
     public Container() {
         this.runtime = new Runtime();
@@ -139,8 +139,8 @@ public class Container extends Component {
         return this;
     }
 
-    public Container setOnUpdate(Consumer<Map<String, Object>> onUpdate) {
-        this.onUpdate = onUpdate;
+    public Container addOnUpdate(Consumer<Map<String, Object>> onUpdate) {
+        this.onUpdate.add(onUpdate);
         return this;
     }
 
@@ -187,8 +187,14 @@ public class Container extends Component {
 
             if (Container.this.onUpdate != null) {
                 Map<String, Object> state = this.getAvailableState();
-                Container.this.onUpdate.accept(state);
+                for (Consumer<Map<String, Object>> onUpdate : Container.this.onUpdate) {
+                    onUpdate.accept(state);
+                }
                 this.setAvailableState(state);
+            }
+
+            if ((boolean) this.getState("hidden")) {
+                return;
             }
 
             IRenderer renderer = Sorus.getInstance().get(IAdapter.class).getRenderer();
@@ -210,16 +216,20 @@ public class Container extends Component {
             this.placedComponents.add(new Pair<>(null, new double[] {0, -this.getHeight() / 2 - 0.5, this.getWidth() + 1, 1, 0}));
 
             for (Component child : this.getChildren()) {
-                double[] wantedPosition = this.getOtherCalculatedPosition(child);
-                double childX = wantedPosition[0];
-                double childY = wantedPosition[1];
-                double childWidth = wantedPosition[2];
-                double childHeight = wantedPosition[3];
+                if (!(boolean) child.getRuntime().getState("hidden")) {
+                    double[] wantedPosition = this.getOtherCalculatedPosition(child);
+                    double childX = wantedPosition[0];
+                    double childY = wantedPosition[1];
+                    double childWidth = wantedPosition[2];
+                    double childHeight = wantedPosition[3];
 
-                this.addPlacedComponents(child, wantedPosition);
-                this.placedComponents2.add(child);
+                    this.addPlacedComponents(child, wantedPosition);
+                    this.placedComponents2.add(child);
 
-                this.renderChild(child.runtime, this.x + childX, this.y + childY, childWidth, childHeight);
+                    this.renderChild(child.runtime, this.x + childX, this.y + childY, childWidth, childHeight);
+                } else {
+                    this.renderChild(child.runtime, -1, -1, -1, -1);
+                }
             }
         }
 
