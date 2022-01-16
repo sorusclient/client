@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.module;
 
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 import com.github.sorusclient.client.setting.SettingContainer;
 import com.github.sorusclient.client.setting.Util;
 
@@ -71,8 +71,8 @@ public class Module implements SettingContainer {
         return settingsMap;
     }
 
-    public void addSettings(List<SettingConfigurableData> settings) {
-        settings.add(new SettingConfigurableData("Shared", this.isShared, SettingConfigurableData.ConfigurableType.TOGGLE));
+    public void addSettings(List<ConfigurableData> settings) {
+        settings.add(new ConfigurableData.Toggle("Shared", this.isShared));
     }
 
     @Override

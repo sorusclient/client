@@ -3,7 +3,7 @@ package com.github.sorusclient.client.hud;
 import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 import com.github.sorusclient.client.setting.SettingContainer;
 import com.github.sorusclient.client.setting.Util;
 import com.github.sorusclient.client.util.Axis;
@@ -269,7 +269,7 @@ public abstract class HUDElement implements SettingContainer {
 
     }
 
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
 
     }
 

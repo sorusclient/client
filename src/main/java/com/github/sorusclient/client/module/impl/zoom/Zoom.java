@@ -8,7 +8,7 @@ import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 
 import java.util.List;
 
@@ -57,12 +57,12 @@ public class Zoom extends ModuleDisableable {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Key", this.key, SettingConfigurableData.ConfigurableType.KEYBIND));
-        settings.add(new SettingConfigurableData("Field Of View", this.fov, SettingConfigurableData.ConfigurableType.SLIDER, 15.0, 100.0));
-        settings.add(new SettingConfigurableData("Sensitivity", this.sensitivity, SettingConfigurableData.ConfigurableType.SLIDER, 0.25, 1.5));
-        settings.add(new SettingConfigurableData("Cinematic Camera", this.cinematicCamera, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new ConfigurableData.KeyBind("Key", this.key));
+        settings.add(new ConfigurableData.Slider("Field Of View", this.fov, 15.0, 100.0));
+        settings.add(new ConfigurableData.Slider("Sensitivity", this.sensitivity, 0.25, 1.5));
+        settings.add(new ConfigurableData.Toggle("Cinematic Camera", this.cinematicCamera));
     }
 
 }

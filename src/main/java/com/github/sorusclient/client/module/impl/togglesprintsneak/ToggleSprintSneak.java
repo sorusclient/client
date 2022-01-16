@@ -8,7 +8,7 @@ import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 
 import java.util.List;
 
@@ -68,14 +68,14 @@ public class ToggleSprintSneak extends ModuleDisableable {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Toggle Sprint", this.toggleSprint, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Use Custom Sprint Key", this.useCustomSprintKey, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Custom Sprint Key", this.customSprintKey, SettingConfigurableData.ConfigurableType.KEYBIND));
-        settings.add(new SettingConfigurableData("Toggle Sneak", this.toggleSneak, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Use Custom Sneak Key", this.useCustomSneakKey, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Custom Sneak Key", this.customSneakKey, SettingConfigurableData.ConfigurableType.KEYBIND));
+        settings.add(new ConfigurableData.Toggle("Toggle Sprint", this.toggleSprint));
+        settings.add(new ConfigurableData.Toggle("Use Custom Sprint Key", this.useCustomSprintKey));
+        settings.add(new ConfigurableData.KeyBind("Custom Sprint Key", this.customSprintKey));
+        settings.add(new ConfigurableData.Toggle("Toggle Sneak", this.toggleSneak));
+        settings.add(new ConfigurableData.Toggle("Use Custom Sneak Key", this.useCustomSneakKey));
+        settings.add(new ConfigurableData.KeyBind("Custom Sneak Key", this.customSneakKey));
     }
 
 }

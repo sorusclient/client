@@ -6,7 +6,7 @@ import com.github.sorusclient.client.adapter.event.BlockOutlineRenderEvent;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 import com.github.sorusclient.client.util.Color;
 
 import java.util.List;
@@ -87,11 +87,11 @@ public class BlockOverlay extends ModuleDisableable {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Border Thickness", this.borderThickness, SettingConfigurableData.ConfigurableType.SLIDER, 0.0, 5.0));
-        settings.add(new SettingConfigurableData("Border Color", this.borderColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
-        settings.add(new SettingConfigurableData("Fill Color", this.fillColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
+        settings.add(new ConfigurableData.Slider("Border Thickness", this.borderThickness, 0.0, 5.0));
+        settings.add(new ConfigurableData.ColorPicker("Border Color", this.borderColor));
+        settings.add(new ConfigurableData.ColorPicker("Fill Color", this.fillColor));
     }
 
 }

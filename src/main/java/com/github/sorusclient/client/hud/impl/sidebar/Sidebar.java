@@ -4,7 +4,7 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.ui.UserInterface;
 import com.github.sorusclient.client.util.Color;
@@ -94,9 +94,9 @@ public class Sidebar extends HUDElement {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Show Scores", this.showScores, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new ConfigurableData.Toggle("Show Scores", this.showScores));
     }
 
     private static class FakeScoreboardObjective implements IScoreboardObjective {

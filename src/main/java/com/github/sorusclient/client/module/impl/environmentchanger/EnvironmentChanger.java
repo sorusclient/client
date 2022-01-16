@@ -2,7 +2,7 @@ package com.github.sorusclient.client.module.impl.environmentchanger;
 
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 
 import java.util.List;
 
@@ -40,18 +40,17 @@ public class EnvironmentChanger extends ModuleDisableable {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Modify Time", this.modifyTime, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Time", this.time, SettingConfigurableData.ConfigurableType.SLIDER, 0.0, 24000.0));
-        settings.add(new SettingConfigurableData("Modify Weather", this.modifyWeather, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Weather", this.weather, SettingConfigurableData.ConfigurableType.CLICK_THROUGH));
+        settings.add(new ConfigurableData.Toggle("Modify Time", this.modifyTime));
+        settings.add(new ConfigurableData.Slider("Time", this.time, 0.0, 24000.0));
+        settings.add(new ConfigurableData.Toggle("Modify Weather", this.modifyWeather));
+        settings.add(new ConfigurableData.ClickThrough("Weather", this.weather));
     }
 
     public enum Weather {
         CLEAR,
         RAIN,
-        TEST,
     }
 
 }

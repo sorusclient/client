@@ -10,7 +10,7 @@ import com.github.sorusclient.client.adapter.event.RenderEvent;
 import com.github.sorusclient.client.module.ModuleData;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 import com.github.sorusclient.client.ui.framework.*;
 import com.github.sorusclient.client.ui.framework.constraint.*;
 import com.github.sorusclient.client.util.Color;
@@ -58,339 +58,308 @@ public class UserInterface {
         });
     }
 
-    private void addSettingsList(Container container, java.util.List<SettingConfigurableData> settings) {
-        for (SettingConfigurableData setting : settings) {
-            switch (setting.getType()) {
-                case TOGGLE:
-                    container.addChild(new Container()
-                            .setHeight(new Absolute(15))
-                            .addChild(new Container()
-                                    .setWidth(new Relative(0.05))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Text()
-                                    .setFontRenderer(new Absolute("minecraft"))
-                                    .setText(new Absolute(setting.getDisplayName()))
-                                    .setScale(new Relative(0.0025))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setWidth(new Relative(0.05))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(2))
-                                    .setHeight(new Relative(0.6))
-                                    .setBackgroundCornerRadius(new Relative(0.01))
-                                    .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Dependent(state1 -> {
-                                        boolean toggled = (Boolean) setting.getSetting().getValue();
-                                        return toggled ? Color.fromRGB(20, 118, 188, 255) : Color.fromRGB(20, 118, 188, 125);
-                                    }))
-                                    .setOnClick(state1 -> {
-                                        if (!setting.getSetting().isForcedValue()) {
-                                            boolean toggled = !(boolean) state1.get("toggled");
-                                            state1.put("toggled", toggled);
-                                            setting.getSetting().setValueRaw(toggled);
+    private void addSettingsList(Container container, java.util.List<ConfigurableData> settings) {
+        for (ConfigurableData setting : settings) {
+            if (setting instanceof ConfigurableData.Toggle) {
+                container.addChild(new Container()
+                        .setHeight(new Absolute(15))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Text()
+                                .setFontRenderer(new Absolute("minecraft"))
+                                .setText(new Absolute(setting.getDisplayName()))
+                                .setScale(new Relative(0.0025))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(2))
+                                .setHeight(new Relative(0.6))
+                                .setBackgroundCornerRadius(new Relative(0.01))
+                                .setPadding(new Relative(0.2, true))
+                                .setBackgroundColor(new Dependent(state1 -> {
+                                    boolean toggled = (Boolean) setting.getSetting().getValue();
+                                    return toggled ? Color.fromRGB(20, 118, 188, 255) : Color.fromRGB(20, 118, 188, 125);
+                                }))
+                                .setOnClick(state1 -> {
+                                    if (!setting.getSetting().isForcedValue()) {
+                                        boolean toggled = !(boolean) state1.get("toggled");
+                                        state1.put("toggled", toggled);
+                                        setting.getSetting().setValueRaw(toggled);
+                                    }
+                                })
+                                .addChild(new Container()
+                                        .setWidth(new Copy())
+                                        .setHeight(new Relative(0.8))
+                                        .setPadding(new Relative(0.1, true))
+                                        .setX(new Dependent(state -> new Side((boolean) state.get("toggled") ? 1 : -1)))
+                                        .setBackgroundColor(Color.WHITE)
+                                        .setBackgroundCornerRadius(new Relative(0.1))))
+                        .apply(container2 -> {
+                            container2.addStoredState("toggled");
+                            container2.getRuntime().setState("toggled", setting.getSetting().getValue());
+                        }));
+            } else if (setting instanceof ConfigurableData.Slider) {
+                container.addChild(new Container()
+                        .setHeight(new Absolute(15))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Text()
+                                .setFontRenderer(new Absolute("minecraft"))
+                                .setText(new Absolute(setting.getDisplayName()))
+                                .setScale(new Relative(0.0025))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(35))
+                                .setHeight(new Relative(0.1))
+                                .setPadding(new Relative(0.2, true))
+                                .setBackgroundColor(new Absolute(Color.fromRGB(255, 255, 255, 155)))
+                                .setBackgroundCornerRadius(new Relative(0.05, true))
+                                .setOnDrag(state1 -> {
+                                    if (!setting.getSetting().isForcedValue()) {
+                                        double minimum = ((ConfigurableData.Slider) setting).getMinimum();
+                                        double maximum = ((ConfigurableData.Slider) setting).getMaximum();
+
+                                        double value = state1.getSecond().getFirst();
+                                        state1.getFirst().put("value", value);
+
+                                        Setting<?> actualSetting = setting.getSetting();
+
+                                        double valueToSet = (maximum - minimum) * value + minimum;
+
+                                        if (actualSetting.getType() == Double.class) {
+                                            actualSetting.setValueRaw(valueToSet);
+                                        } else if (actualSetting.getType() == Long.class) {
+                                            actualSetting.setValueRaw((long) valueToSet);
                                         }
-                                    })
-                                    .addChild(new Container()
-                                            .setWidth(new Copy())
-                                            .setHeight(new Relative(0.8))
-                                            .setPadding(new Relative(0.1, true))
-                                            .setX(new Dependent(state -> new Side((boolean) state.get("toggled") ? 1 : -1)))
-                                            .setBackgroundColor(Color.WHITE)
-                                            .setBackgroundCornerRadius(new Relative(0.1))))
-                            .apply(container2 -> {
-                                container2.addStoredState("toggled");
-                                container2.getRuntime().setState("toggled", setting.getSetting().getValue());
-                            }));
-                    break;
-                case SLIDER:
-                    container.addChild(new Container()
-                            .setHeight(new Absolute(15))
-                            .addChild(new Container()
-                                    .setWidth(new Relative(0.05))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Text()
-                                    .setFontRenderer(new Absolute("minecraft"))
-                                    .setText(new Absolute(setting.getDisplayName()))
-                                    .setScale(new Relative(0.0025))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setWidth(new Relative(0.05))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(35))
-                                    .setHeight(new Relative(0.1))
-                                    .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Absolute(Color.fromRGB(255, 255, 255, 155)))
-                                    .setBackgroundCornerRadius(new Relative(0.05, true))
-                                    .setOnDrag(state1 -> {
-                                        if (!setting.getSetting().isForcedValue()) {
-                                            Object[] bounds = setting.getArguments();
-                                            double value = state1.getSecond().getFirst();
-                                            state1.getFirst().put("value", value);
-
-                                            Setting<?> actualSetting = setting.getSetting();
-
-                                            double valueToSet = ((double) bounds[1] - (double) bounds[0]) * value + (double) bounds[0];
-
-                                            if (actualSetting.getType() == Double.class) {
-                                                actualSetting.setValueRaw(valueToSet);
-                                            } else if (actualSetting.getType() == Long.class) {
-                                                actualSetting.setValueRaw((long) valueToSet);
-                                            }
-                                        }
-                                    })
-                                    .addChild(new Container()
+                                    }
+                                })
+                                .addChild(new Container()
                                         .setX(new Side(Side.NEGATIVE))
                                         .setWidth(new Dependent(state -> {
-                                            Object[] bounds = setting.getArguments();
-                                            return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]));
+                                            double minimum = ((ConfigurableData.Slider) setting).getMinimum();
+                                            double maximum = ((ConfigurableData.Slider) setting).getMaximum();
+                                            return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - minimum) / (maximum - minimum));
                                         }))
                                         .setBackgroundColor(Color.fromRGB(20, 118, 188, 255))
                                         .setBackgroundCornerRadius(new Relative(0.5, true)))
-                                    .addChild(new Container()
-                                            .setWidth(new Copy())
-                                            .setHeight(new Relative(2))
-                                            .setX(new Dependent(state -> {
-                                                Object[] bounds = setting.getArguments();
-                                                return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]) - 0.5);
-                                            }))
-                                            .setY(new Relative(0))
-                                            .setBackgroundColor(Color.WHITE)
-                                            .setBackgroundCornerRadius(new Relative(1, true))))
-                                    /*.addChild(new Container()
-                                            .setX(new Dependent(state1 -> {
-                                                Object[] bounds = setting.getArguments();
-                                                return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]) - 0.5);
-                                            }))
-                                            .setWidth(new Absolute(1))
-                                            .setBackgroundColor(new Absolute(Color.BLACK))))*/
-                            .apply(container2 -> {
-                                container2.addStoredState("value");
+                                .addChild(new Container()
+                                        .setWidth(new Copy())
+                                        .setHeight(new Relative(2))
+                                        .setX(new Dependent(state -> {
+                                            double minimum = ((ConfigurableData.Slider) setting).getMinimum();
+                                            double maximum = ((ConfigurableData.Slider) setting).getMaximum();
+                                            return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - minimum) / (maximum - minimum) - 0.5);
+                                        }))
+                                        .setY(new Relative(0))
+                                        .setBackgroundColor(Color.WHITE)
+                                        .setBackgroundCornerRadius(new Relative(1, true))))
+                        .apply(container2 -> {
+                            container2.addStoredState("value");
 
-                                Object[] bounds = setting.getArguments();
-                                container2.getRuntime().setState("value", (((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]));
-                            }));
-                    break;
-                case KEYBIND:
-                    container.addChild(new Container()
-                            .setHeight(new Absolute(20))
-                            .addChild(new Text()
-                                    .setFontRenderer(new Absolute("minecraft"))
-                                    .setText(new Absolute(setting.getDisplayName()))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(2))
-                                    .setHeight(new Relative(0.6))
-                                    .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Absolute(Color.WHITE))
-                                    .setOnKey(state1 -> {
-                                        state1.getFirst().put("value", state1.getSecond());
-                                        setting.getSetting().setValueRaw(state1.getSecond());
-                                        state1.getFirst().put("selected", false);
-                                    })
-                                    .addChild(new Text()
-                                            .setText(new Dependent(state1 -> {
-                                                Key key = (Key) state1.get("value");
-                                                return key.toString();
-                                            }))
-                                            .setFontRenderer(new Absolute("minecraft"))
-                                            .setTextColor(new Absolute(Color.BLACK))))
-                            .apply(container2 -> {
-                                container2.addStoredState("value");
+                            double minimum = ((ConfigurableData.Slider) setting).getMinimum();
+                            double maximum = ((ConfigurableData.Slider) setting).getMaximum();
+                            container2.getRuntime().setState("value", (((Number) setting.getSetting().getValue()).doubleValue() - minimum) / (maximum - minimum));
+                        }));
+            } else if (setting instanceof ConfigurableData.KeyBind) {
+                container.addChild(new Container()
+                        .setHeight(new Absolute(20))
+                        .addChild(new Text()
+                                .setFontRenderer(new Absolute("minecraft"))
+                                .setText(new Absolute(setting.getDisplayName()))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(2))
+                                .setHeight(new Relative(0.6))
+                                .setPadding(new Relative(0.2, true))
+                                .setBackgroundColor(new Absolute(Color.WHITE))
+                                .setOnKey(state1 -> {
+                                    state1.getFirst().put("value", state1.getSecond());
+                                    setting.getSetting().setValueRaw(state1.getSecond());
+                                    state1.getFirst().put("selected", false);
+                                })
+                                .addChild(new Text()
+                                        .setText(new Dependent(state1 -> {
+                                            Key key = (Key) state1.get("value");
+                                            return key.toString();
+                                        }))
+                                        .setFontRenderer(new Absolute("minecraft"))
+                                        .setTextColor(new Absolute(Color.BLACK))))
+                        .apply(container2 -> {
+                            container2.addStoredState("value");
 
-                                container2.getRuntime().setState("value", setting.getSetting().getValue());
-                            }));
-                    break;
-                case CLICK_THROUGH:
-                    container.addChild(new Container()
-                            .setHeight(new Absolute(20))
-                            .addChild(new Container()
-                                    .setWidth(new Relative(0.05))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Text()
-                                    .setFontRenderer(new Absolute("minecraft"))
-                                    .setText(new Absolute(setting.getDisplayName()))
-                                    .setScale(new Relative(0.0025))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setWidth(new Relative(0.05))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(5))
-                                    .setHeight(new Relative(0.6))
-                                    .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Absolute(Color.fromRGB(20, 118, 188, 255)))
-                                    .addChild(new Container()
-                                            .setX(new Side(Side.NEGATIVE))
-                                            .setWidth(new Copy())
-                                            .setHeight(new Relative(0.6))
-                                            .setPadding(new Relative(0.15, true))
-                                            .setBackgroundImage(new Absolute("arrow_left.png"))
-                                            .setOnClick(state1 -> {
-                                                int newValue = Math.max(0, (int) state1.get("value") - 1);
-                                                state1.put("value", newValue);
-                                            }))
-                                    /*.addChild(new Container()
-                                            .setX(new Side(Side.NEGATIVE))
-                                            .setWidth(new Relative(0.5))
-                                            .setOnClick(state1 -> {
-                                                int newValue = Math.max(0, (int) state1.get("value") - 1);
-                                                state1.put("value", newValue);
-                                            }))*/
-                                    .addChild(new Container()
-                                            .setX(new Side(Side.POSITIVE))
-                                            .setWidth(new Copy())
-                                            .setHeight(new Relative(0.6))
-                                            .setPadding(new Relative(0.15, true))
-                                            .setBackgroundImage(new Absolute("arrow_right.png"))
-                                            .setOnClick(state1 -> {
-                                                int valuesLength = 0;
-                                                try {
-                                                    valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length;
-                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                if ((int) state1.get("value") + 1 >= valuesLength) {
-                                                    state1.put("value", 0);
+                            container2.getRuntime().setState("value", setting.getSetting().getValue());
+                        }));
+            } else if (setting instanceof ConfigurableData.ClickThrough) {
+                container.addChild(new Container()
+                        .setHeight(new Absolute(20))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Text()
+                                .setFontRenderer(new Absolute("minecraft"))
+                                .setText(new Absolute(setting.getDisplayName()))
+                                .setScale(new Relative(0.0025))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(5))
+                                .setHeight(new Relative(0.6))
+                                .setPadding(new Relative(0.2, true))
+                                .setBackgroundColor(new Absolute(Color.fromRGB(20, 118, 188, 255)))
+                                .addChild(new Container()
+                                        .setX(new Side(Side.NEGATIVE))
+                                        .setWidth(new Copy())
+                                        .setHeight(new Relative(0.6))
+                                        .setPadding(new Relative(0.15, true))
+                                        .setBackgroundImage(new Absolute("arrow_left.png"))
+                                        .setOnClick(state1 -> {
+                                            int newValue = Math.max(0, (int) state1.get("value") - 1);
+                                            state1.put("value", newValue);
+                                        }))
+                                .addChild(new Container()
+                                        .setX(new Side(Side.POSITIVE))
+                                        .setWidth(new Copy())
+                                        .setHeight(new Relative(0.6))
+                                        .setPadding(new Relative(0.15, true))
+                                        .setBackgroundImage(new Absolute("arrow_right.png"))
+                                        .setOnClick(state1 -> {
+                                            int valuesLength = 0;
+                                            try {
+                                                valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length;
+                                            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                                e.printStackTrace();
+                                            }
+                                            if ((int) state1.get("value") + 1 >= valuesLength) {
+                                                state1.put("value", 0);
+                                            } else {
+                                                state1.put("value", (int) state1.get("value") + 1);
+                                            }
+                                        }))
+                                .addChild(new Text()
+                                        .setText(new Dependent(state1 -> setting.getSetting().getValue().toString()))
+                                        .setFontRenderer(new Absolute("minecraft"))
+                                        .setScale(new Relative(0.01))
+                                        .setTextColor(new Absolute(Color.WHITE)))
+                                .addOnStateUpdate("value", state1 -> {
+                                    try {
+                                        Object[] values = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null));
+
+                                        Setting<?> setting1 = setting.getSetting();
+                                        if (setting1.isForcedValue()) {
+                                            int index = (int) state1.get("value");
+                                            while (index != -1) {
+                                                if (setting1.getForcedValues().contains(values[index])) {
+                                                    setting1.setValueRaw(values[index]);
+                                                    state1.put("value", index);
+                                                    index = -1;
                                                 } else {
-                                                    state1.put("value", (int) state1.get("value") + 1);
-                                                }
-                                            }))
-                                    /*.addChild(new Container()
-                                            .setX(new Side(Side.POSITIVE))
-                                            .setWidth(new Relative(0.5))
-                                            .setOnClick(state1 -> {
-                                                int valuesLength = 0;
-                                                try {
-                                                    valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length;
-                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                if ((int) state1.get("value") + 1 >= valuesLength) {
-                                                    state1.put("value", 0);
-                                                } else {
-                                                    state1.put("value", (int) state1.get("value") + 1);
-                                                }
-                                            }))*/
-                                    .addChild(new Text()
-                                            .setText(new Dependent(state1 -> setting.getSetting().getValue().toString()))
-                                            .setFontRenderer(new Absolute("minecraft"))
-                                            .setScale(new Relative(0.01))
-                                            .setTextColor(new Absolute(Color.WHITE)))
-                                    .addOnStateUpdate("value", state1 -> {
-                                        try {
-                                            Object[] values = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null));
-
-                                            Setting<?> setting1 = setting.getSetting();
-                                            if (setting1.isForcedValue()) {
-                                                int index = (int) state1.get("value");
-                                                while (index != -1) {
-                                                    if (setting1.getForcedValues().contains(values[index])) {
-                                                        setting1.setValueRaw(values[index]);
-                                                        state1.put("value", index);
-                                                        index = -1;
-                                                    } else {
-                                                        index++;
-                                                        if (index >= values.length) {
-                                                            index = 0;
-                                                        }
+                                                    index++;
+                                                    if (index >= values.length) {
+                                                        index = 0;
                                                     }
                                                 }
-                                            } else {
-                                                setting1.setValueRaw(values[(int) state1.get("value")]);
                                             }
-                                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                            e.printStackTrace();
+                                        } else {
+                                            setting1.setValueRaw(values[(int) state1.get("value")]);
                                         }
-                                    }))
-                            .apply(container2 -> {
-                                container2.addStoredState("value");
+                                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                        e.printStackTrace();
+                                    }
+                                }))
+                        .apply(container2 -> {
+                            container2.addStoredState("value");
 
-                                container2.getRuntime().setState("value", ((Enum<?>) setting.getSetting().getValue()).ordinal());
-                            }));
-                    break;
-                case COLOR_PICKER:
-                    container.addChild(new Container()
-                            .setHeight(new Absolute(50))
-                            .addChild(new Text()
-                                    .setFontRenderer(new Absolute("minecraft"))
-                                    .setText(new Absolute(setting.getDisplayName()))
-                                    .setX(new Side(Side.NEGATIVE)))
-                            .addChild(new Container()
-                                    .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy())
-                                    .setHeight(new Relative(0.6))
-                                    .setPadding(new Relative(0.2, true))
-                                    .setTopLeftBackgroundColor(new Absolute(Color.WHITE))
-                                    .setBottomLeftBackgroundColor(new Absolute(Color.BLACK))
-                                    .setBottomRightBackgroundColor(new Absolute(Color.BLACK))
-                                    .setTopRightBackgroundColor(new Dependent(state1 -> {
-                                        float[] colorData = (float[]) state1.get("value");
-                                        int rgb = java.awt.Color.HSBtoRGB(colorData[0], 1, 1);
-                                        java.awt.Color javaColor = new java.awt.Color(rgb);
-                                        return Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), 255);
-                                    }))
-                                    .setOnDrag(state1 -> {
-                                        float[] colorData = (float[]) state1.getFirst().get("value");
-                                        float[] colorDataNew = new float[] {colorData[0], (float) (double) state1.getSecond().getFirst(), 1 - (float) (double) state1.getSecond().getSecond(), colorData[3]};
-                                        state1.getFirst().put("value", colorDataNew);
-                                    }))
-                            .addChild(new Container()
-                                    .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(0.5))
-                                    .setHeight(new Relative(0.6))
-                                    .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Absolute(Color.WHITE))
-                                    .setOnDrag(state1 -> {
-                                        float[] colorData = (float[]) state1.getFirst().get("value");
-                                        float[] colorDataNew = new float[] {(float) (double) state1.getSecond().getSecond(), colorData[1], colorData[2], colorData[3]};
-                                        state1.getFirst().put("value", colorDataNew);
-                                    })
-                                    .addChild(new Container()
-                                            .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[0] - 0.5)))
-                                            .setHeight(new Absolute(1))
-                                            .setBackgroundColor(new Absolute(Color.BLACK))))
-                            .addChild(new Container()
-                                    .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(0.5))
-                                    .setHeight(new Relative(0.6))
-                                    .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Absolute(Color.WHITE))
-                                    .setOnDrag(state1 -> {
-                                        float[] colorData = (float[]) state1.getFirst().get("value");
-                                        float[] colorDataNew = new float[] {colorData[0], colorData[1], colorData[2], (float) (double) state1.getSecond().getSecond()};
-                                        state1.getFirst().put("value", colorDataNew);
-                                    })
-                                    .addChild(new Container()
-                                            .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[3] - 0.5)))
-                                            .setHeight(new Absolute(1))
-                                            .setBackgroundColor(new Absolute(Color.BLACK))))
-                            .apply(container2 -> {
-                                container2.addStoredState("value");
+                            container2.getRuntime().setState("value", ((Enum<?>) setting.getSetting().getValue()).ordinal());
+                        }));
+            } else if (setting instanceof ConfigurableData.ColorPicker) {
+                container.addChild(new Container()
+                        .setHeight(new Absolute(50))
+                        .addChild(new Text()
+                                .setFontRenderer(new Absolute("minecraft"))
+                                .setText(new Absolute(setting.getDisplayName()))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy())
+                                .setHeight(new Relative(0.6))
+                                .setPadding(new Relative(0.2, true))
+                                .setTopLeftBackgroundColor(new Absolute(Color.WHITE))
+                                .setBottomLeftBackgroundColor(new Absolute(Color.BLACK))
+                                .setBottomRightBackgroundColor(new Absolute(Color.BLACK))
+                                .setTopRightBackgroundColor(new Dependent(state1 -> {
+                                    float[] colorData = (float[]) state1.get("value");
+                                    int rgb = java.awt.Color.HSBtoRGB(colorData[0], 1, 1);
+                                    java.awt.Color javaColor = new java.awt.Color(rgb);
+                                    return Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), 255);
+                                }))
+                                .setOnDrag(state1 -> {
+                                    float[] colorData = (float[]) state1.getFirst().get("value");
+                                    float[] colorDataNew = new float[] {colorData[0], (float) (double) state1.getSecond().getFirst(), 1 - (float) (double) state1.getSecond().getSecond(), colorData[3]};
+                                    state1.getFirst().put("value", colorDataNew);
+                                }))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(0.5))
+                                .setHeight(new Relative(0.6))
+                                .setPadding(new Relative(0.2, true))
+                                .setBackgroundColor(new Absolute(Color.WHITE))
+                                .setOnDrag(state1 -> {
+                                    float[] colorData = (float[]) state1.getFirst().get("value");
+                                    float[] colorDataNew = new float[] {(float) (double) state1.getSecond().getSecond(), colorData[1], colorData[2], colorData[3]};
+                                    state1.getFirst().put("value", colorDataNew);
+                                })
+                                .addChild(new Container()
+                                        .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[0] - 0.5)))
+                                        .setHeight(new Absolute(1))
+                                        .setBackgroundColor(new Absolute(Color.BLACK))))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(0.5))
+                                .setHeight(new Relative(0.6))
+                                .setPadding(new Relative(0.2, true))
+                                .setBackgroundColor(new Absolute(Color.WHITE))
+                                .setOnDrag(state1 -> {
+                                    float[] colorData = (float[]) state1.getFirst().get("value");
+                                    float[] colorDataNew = new float[] {colorData[0], colorData[1], colorData[2], (float) (double) state1.getSecond().getSecond()};
+                                    state1.getFirst().put("value", colorDataNew);
+                                })
+                                .addChild(new Container()
+                                        .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[3] - 0.5)))
+                                        .setHeight(new Absolute(1))
+                                        .setBackgroundColor(new Absolute(Color.BLACK))))
+                        .apply(container2 -> {
+                            container2.addStoredState("value");
 
-                                Color color = (Color) setting.getSetting().getValue();
-                                java.awt.Color javaColor = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255), (int) (color.getAlpha() * 255));
+                            Color color = (Color) setting.getSetting().getValue();
+                            java.awt.Color javaColor = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255), (int) (color.getAlpha() * 255));
 
-                                float[] colorData = new float[4];
-                                java.awt.Color.RGBtoHSB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), colorData);
-                                colorData[3] = (float) color.getAlpha();
+                            float[] colorData = new float[4];
+                            java.awt.Color.RGBtoHSB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), colorData);
+                            colorData[3] = (float) color.getAlpha();
 
-                                container2.getRuntime().setState("value", colorData);
-                            })
-                            .addOnStateUpdate("value", state1 -> {
-                                float[] stateValue = (float[]) state1.get("value");
+                            container2.getRuntime().setState("value", colorData);
+                        })
+                        .addOnStateUpdate("value", state1 -> {
+                            float[] stateValue = (float[]) state1.get("value");
 
-                                int rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2]);
-                                java.awt.Color javaColor = new java.awt.Color(rgb);
+                            int rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2]);
+                            java.awt.Color javaColor = new java.awt.Color(rgb);
 
-                                setting.getSetting().setValueRaw(Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), (int) (stateValue[3] * 255)));
-                            }));
-                    break;
+                            setting.getSetting().setValueRaw(Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), (int) (stateValue[3] * 255)));
+                        }));
             }
         }
     }
@@ -881,7 +850,7 @@ public class UserInterface {
 
                                     ModuleData moduleData = (ModuleData) state.getSecond().get("currentEditingModule");
 
-                                    java.util.List<SettingConfigurableData> settings = new ArrayList<>();
+                                    java.util.List<ConfigurableData> settings = new ArrayList<>();
 
                                     moduleData.getModule().addSettings(settings);
 

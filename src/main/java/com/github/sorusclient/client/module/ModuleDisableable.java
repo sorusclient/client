@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.module;
 
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 
 import java.util.List;
 
@@ -24,9 +24,9 @@ public class ModuleDisableable extends Module {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Enabled", this.enabled, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new ConfigurableData.Toggle("Enabled", this.enabled));
     }
 
 }

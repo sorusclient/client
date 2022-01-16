@@ -7,7 +7,7 @@ import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 
 import java.util.List;
 
@@ -50,9 +50,9 @@ public class Perspective extends ModuleDisableable {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Key", this.key, SettingConfigurableData.ConfigurableType.KEYBIND));
+        settings.add(new ConfigurableData.KeyBind("Key", this.key));
     }
 
 }

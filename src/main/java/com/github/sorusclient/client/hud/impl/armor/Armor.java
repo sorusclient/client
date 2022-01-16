@@ -5,7 +5,7 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.*;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.ui.UserInterface;
 import com.github.sorusclient.client.util.Color;
@@ -152,13 +152,13 @@ public class Armor extends HUDElement {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Mode", this.mode, SettingConfigurableData.ConfigurableType.CLICK_THROUGH));
-        settings.add(new SettingConfigurableData("Show Helmet", this.showHelmet, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Show Chestplate", this.showChestplate, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Show Leggings", this.showLeggings, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Show Boots", this.showBoots, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new ConfigurableData.ClickThrough("Mode", this.mode));
+        settings.add(new ConfigurableData.Toggle("Show Helmet", this.showHelmet));
+        settings.add(new ConfigurableData.Toggle("Show Chestplate", this.showChestplate));
+        settings.add(new ConfigurableData.Toggle("Show Leggings", this.showLeggings));
+        settings.add(new ConfigurableData.Toggle("Show Boots", this.showBoots));
     }
 
     private static class FakeArmorItem implements IItem {

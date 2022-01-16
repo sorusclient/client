@@ -6,7 +6,7 @@ import com.github.sorusclient.client.adapter.IEntity;
 import com.github.sorusclient.client.adapter.IRenderer;
 import com.github.sorusclient.client.hud.HUDElement;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.util.Color;
 import com.github.sorusclient.client.util.Pair;
@@ -93,15 +93,15 @@ public class Coordinates extends HUDElement {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Show X", this.showX, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Show Y", this.showY, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Show Z", this.showZ, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Identifier Color", this.identifierColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
-        settings.add(new SettingConfigurableData("Other Color", this.otherColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
-        settings.add(new SettingConfigurableData("Value Color", this.valueColor, SettingConfigurableData.ConfigurableType.COLOR_PICKER));
-        settings.add(new SettingConfigurableData("Mode", this.mode, SettingConfigurableData.ConfigurableType.CLICK_THROUGH));
+        settings.add(new ConfigurableData.Toggle("Show X", this.showX));
+        settings.add(new ConfigurableData.Toggle("Show Y", this.showY));
+        settings.add(new ConfigurableData.Toggle("Show Z", this.showZ));
+        settings.add(new ConfigurableData.ColorPicker("Identifier Color", this.identifierColor));
+        settings.add(new ConfigurableData.ColorPicker("Other Color", this.otherColor));
+        settings.add(new ConfigurableData.ColorPicker("Value Color", this.valueColor));
+        settings.add(new ConfigurableData.ClickThrough("Mode", this.mode));
     }
 
     public enum Mode {

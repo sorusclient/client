@@ -2,7 +2,7 @@ package com.github.sorusclient.client.module.impl.oldanimations;
 
 import com.github.sorusclient.client.module.ModuleDisableable;
 import com.github.sorusclient.client.setting.Setting;
-import com.github.sorusclient.client.setting.SettingConfigurableData;
+import com.github.sorusclient.client.setting.ConfigurableData;
 
 import java.util.List;
 
@@ -27,10 +27,10 @@ public class OldAnimations extends ModuleDisableable {
     }
 
     @Override
-    public void addSettings(List<SettingConfigurableData> settings) {
+    public void addSettings(List<ConfigurableData> settings) {
         super.addSettings(settings);
-        settings.add(new SettingConfigurableData("Old Blockhit", this.oldBlockHit, SettingConfigurableData.ConfigurableType.TOGGLE));
-        settings.add(new SettingConfigurableData("Show Armor Damage", this.showArmorDamage, SettingConfigurableData.ConfigurableType.TOGGLE));
+        settings.add(new ConfigurableData.Toggle("Old Blockhit", this.oldBlockHit));
+        settings.add(new ConfigurableData.Toggle("Show Armor Damage", this.showArmorDamage));
     }
 
 }
