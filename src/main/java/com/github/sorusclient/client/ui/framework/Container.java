@@ -327,6 +327,19 @@ public class Container extends Component {
 
         @Override
         public boolean handleMouseEvent(MouseEvent event) {
+            Map<String, Object> state = this.getAvailableState();
+            if (event.isPressed() && event.getButton() == Button.PRIMARY) {
+                if (event.getX() > this.x - this.width / 2 &&
+                        event.getX() < this.x + this.width / 2 &&
+                        event.getY() > this.y - this.height / 2 &&
+                        event.getY() < this.y + this.height / 2) {
+
+                    state.put("selected", true);
+                } else {
+                    state.put("selected", false);
+                }
+            }
+
             boolean handled = false;
             for (Component component : this.placedComponents2) {
                 if (component != null) {
@@ -337,8 +350,6 @@ public class Container extends Component {
                     }
                 }
             }
-
-            Map<String, Object> state = this.getAvailableState();
 
             if (event.isPressed() && event.getButton() == Button.PRIMARY) {
 

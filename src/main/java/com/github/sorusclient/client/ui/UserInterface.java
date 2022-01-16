@@ -4,6 +4,7 @@ import com.github.sorusclient.client.Sorus;
 import com.github.sorusclient.client.adapter.IAdapter;
 import com.github.sorusclient.client.adapter.Key;
 import com.github.sorusclient.client.adapter.ScreenType;
+import com.github.sorusclient.client.adapter.event.RenderInGameEvent;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.adapter.event.RenderEvent;
@@ -35,7 +36,7 @@ public class UserInterface {
         eventManager.register(KeyEvent.class, event -> {
             IAdapter adapter = Sorus.getInstance().get(IAdapter.class);
             if (!event.isRepeat()) {
-                if (event.getKey() == Key.P && event.isPressed()/* && adapter.getOpenScreen() == ScreenType.IN_GAME*/) {
+                if (event.getKey() == Key.P && event.isPressed() && adapter.getOpenScreen() == ScreenType.IN_GAME) {
                     adapter.openScreen(ScreenType.DUMMY);
                     guiOpened.set(true);
                 } else if (event.getKey() == Key.ESCAPE && event.isPressed() && adapter.getOpenScreen() == ScreenType.DUMMY) {
@@ -312,109 +313,134 @@ public class UserInterface {
                     });
         } else if (setting instanceof ConfigurableData.ColorPicker) {
             ConfigurableData.ColorPicker colorPicker = (ConfigurableData.ColorPicker) setting;
-            return new Container()
-                    .addOnUpdate(state -> state.put("hidden", false))
-                    .setHeight(new Absolute(30))
-                    .addChild(new Container()
-                            .setWidth(new Relative(0.05))
-                            .setX(new Side(Side.NEGATIVE)))
-                    .addChild(new Text()
-                            .setFontRenderer(new Absolute("minecraft"))
-                            .setText(new Absolute(colorPicker.getDisplayName()))
-                            .setScale(new Relative(0.0025))
-                            .setX(new Side(Side.NEGATIVE)))
-                    .addChild(new Container()
-                            .setWidth(new Relative(0.05))
-                            .setX(new Side(Side.NEGATIVE)))
-                    .addChild(new Container()
-                            .setX(new Side(Side.NEGATIVE))
-                            .setWidth(new Copy())
-                            .setHeight(new Relative(0.85))
-                            .setPadding(new Relative(0.1, true))
-                            .setTopLeftBackgroundColor(new Absolute(Color.WHITE))
-                            .setBottomLeftBackgroundColor(new Absolute(Color.BLACK))
-                            .setBottomRightBackgroundColor(new Absolute(Color.BLACK))
-                            .setTopRightBackgroundColor(new Dependent(state1 -> {
-                                float[] colorData = (float[]) state1.get("value");
-                                int rgb = java.awt.Color.HSBtoRGB(colorData[0], 1, 1);
-                                java.awt.Color javaColor = new java.awt.Color(rgb);
-                                return Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), 255);
-                            }))
-                            .setOnDrag(state1 -> {
-                                float[] colorData = (float[]) state1.getFirst().get("value");
-                                float[] colorDataNew = new float[] {colorData[0], (float) (double) state1.getSecond().getFirst(), 1 - (float) (double) state1.getSecond().getSecond(), colorData[3]};
-                                state1.getFirst().put("value", colorDataNew);
-                            })
-                            .addChild(new Container()
-                                    .setX(new Dependent(state -> {
-                                        float[] colorData = (float[]) state.get("value");
-                                        return new Relative(colorData[1] - 0.5);
-                                    }))
-                                    .setY(new Dependent(state -> {
-                                        float[] colorData = (float[]) state.get("value");
-                                        return new Relative((1 - colorData[2]) - 0.5);
-                                    }))
-                                    .setWidth(new Absolute(1.5))
-                                    .setHeight(new Copy())
-                                    .setBackgroundCornerRadius(new Absolute(0.75))
-                                    .setBackgroundColor(Color.WHITE)))
-                    .addChild(new Container()
-                            .setX(new Side(Side.NEGATIVE))
-                            .setWidth(new Copy(0.25))
-                            .setHeight(new Relative(0.85))
-                            .setPadding(new Relative(0.1, true))
-                            .setBackgroundImage(new Absolute("color_range.png"))
-                            .setOnDrag(state1 -> {
-                                float[] colorData = (float[]) state1.getFirst().get("value");
-                                float[] colorDataNew = new float[] {(float) (double) state1.getSecond().getSecond(), colorData[1], colorData[2], colorData[3]};
-                                state1.getFirst().put("value", colorDataNew);
-                            })
-                            .addChild(new Container()
-                                    .setX(new Relative(0))
-                                    .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[0] - 0.5)))
-                                    .setWidth(new Relative(1))
-                                    .setHeight(new Absolute(0.5))
-                                    .setBackgroundColor(new Absolute(Color.WHITE))))
-                    .addChild(new Container()
-                            .setX(new Side(Side.NEGATIVE))
-                            .setWidth(new Copy(0.25))
-                            .setHeight(new Relative(0.85))
-                            .setPadding(new Relative(0.1, true))
-                            .setTopRightBackgroundColor(new Absolute(Color.WHITE))
-                            .setTopLeftBackgroundColor(new Absolute(Color.WHITE))
-                            .setBottomRightBackgroundColor(new Absolute(Color.fromRGB(255, 255, 255, 50)))
-                            .setBottomLeftBackgroundColor(new Absolute(Color.fromRGB(255, 255, 255, 50)))
-                            .setOnDrag(state1 -> {
-                                float[] colorData = (float[]) state1.getFirst().get("value");
-                                float[] colorDataNew = new float[] {colorData[0], colorData[1], colorData[2], 1 - (float) (double) state1.getSecond().getSecond()};
-                                state1.getFirst().put("value", colorDataNew);
-                            })
-                            .addChild(new Container()
-                                    .setX(new Relative(0))
-                                    .setY(new Dependent(state1 -> new Relative((double) (1 - ((float[]) state1.get("value"))[3]) - 0.5)))
-                                    .setWidth(new Relative(1))
-                                    .setHeight(new Absolute(0.5))
-                                    .setBackgroundColor(new Absolute(Color.WHITE))))
-                    .apply(container2 -> {
-                        container2.addStoredState("value");
+            return new TabHolder()
+                    .addChild("edit", new Container()
+                        .addOnUpdate(state -> state.put("hidden", false))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Text()
+                                .setFontRenderer(new Absolute("minecraft"))
+                                .setText(new Absolute(colorPicker.getDisplayName()))
+                                .setScale(new Relative(0.0025))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setWidth(new Relative(0.05))
+                                .setX(new Side(Side.NEGATIVE)))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy())
+                                .setHeight(new Relative(0.85))
+                                .setPadding(new Relative(0.1, true))
+                                .setTopLeftBackgroundColor(new Absolute(Color.WHITE))
+                                .setBottomLeftBackgroundColor(new Absolute(Color.BLACK))
+                                .setBottomRightBackgroundColor(new Absolute(Color.BLACK))
+                                .setTopRightBackgroundColor(new Dependent(state1 -> {
+                                    float[] colorData = (float[]) state1.get("value");
+                                    int rgb = java.awt.Color.HSBtoRGB(colorData[0], 1, 1);
+                                    java.awt.Color javaColor = new java.awt.Color(rgb);
+                                    return Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), 255);
+                                }))
+                                .setOnDrag(state1 -> {
+                                    float[] colorData = (float[]) state1.getFirst().get("value");
+                                    float[] colorDataNew = new float[] {colorData[0], (float) (double) state1.getSecond().getFirst(), 1 - (float) (double) state1.getSecond().getSecond(), colorData[3]};
+                                    state1.getFirst().put("value", colorDataNew);
+                                })
+                                .addChild(new Container()
+                                        .setX(new Dependent(state -> {
+                                            float[] colorData = (float[]) state.get("value");
+                                            return new Relative(colorData[1] - 0.5);
+                                        }))
+                                        .setY(new Dependent(state -> {
+                                            float[] colorData = (float[]) state.get("value");
+                                            return new Relative((1 - colorData[2]) - 0.5);
+                                        }))
+                                        .setWidth(new Absolute(1.5))
+                                        .setHeight(new Copy())
+                                        .setBackgroundCornerRadius(new Absolute(0.75))
+                                        .setBackgroundColor(Color.WHITE)))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(0.25))
+                                .setHeight(new Relative(0.85))
+                                .setPadding(new Relative(0.1, true))
+                                .setBackgroundImage(new Absolute("color_range.png"))
+                                .setOnDrag(state1 -> {
+                                    float[] colorData = (float[]) state1.getFirst().get("value");
+                                    float[] colorDataNew = new float[] {(float) (double) state1.getSecond().getSecond(), colorData[1], colorData[2], colorData[3]};
+                                    state1.getFirst().put("value", colorDataNew);
+                                })
+                                .addChild(new Container()
+                                        .setX(new Relative(0))
+                                        .setY(new Dependent(state1 -> new Relative((double) ((float[]) state1.get("value"))[0] - 0.5)))
+                                        .setWidth(new Relative(1))
+                                        .setHeight(new Absolute(0.5))
+                                        .setBackgroundColor(new Absolute(Color.WHITE))))
+                        .addChild(new Container()
+                                .setX(new Side(Side.NEGATIVE))
+                                .setWidth(new Copy(0.25))
+                                .setHeight(new Relative(0.85))
+                                .setPadding(new Relative(0.1, true))
+                                .setTopRightBackgroundColor(new Absolute(Color.WHITE))
+                                .setTopLeftBackgroundColor(new Absolute(Color.WHITE))
+                                .setBottomRightBackgroundColor(new Absolute(Color.fromRGB(255, 255, 255, 50)))
+                                .setBottomLeftBackgroundColor(new Absolute(Color.fromRGB(255, 255, 255, 50)))
+                                .setOnDrag(state1 -> {
+                                    float[] colorData = (float[]) state1.getFirst().get("value");
+                                    float[] colorDataNew = new float[] {colorData[0], colorData[1], colorData[2], 1 - (float) (double) state1.getSecond().getSecond()};
+                                    state1.getFirst().put("value", colorDataNew);
+                                })
+                                .addChild(new Container()
+                                        .setX(new Relative(0))
+                                        .setY(new Dependent(state1 -> new Relative((double) (1 - ((float[]) state1.get("value"))[3]) - 0.5)))
+                                        .setWidth(new Relative(1))
+                                        .setHeight(new Absolute(0.5))
+                                        .setBackgroundColor(new Absolute(Color.WHITE))))
+                        .apply(container2 -> {
+                            container2.addStoredState("value");
 
-                        Color color = colorPicker.getSetting().getValue();
-                        java.awt.Color javaColor = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255), (int) (color.getAlpha() * 255));
+                            Color color = colorPicker.getSetting().getValue();
+                            java.awt.Color javaColor = new java.awt.Color((int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255), (int) (color.getAlpha() * 255));
 
-                        float[] colorData = new float[4];
-                        java.awt.Color.RGBtoHSB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), colorData);
-                        colorData[3] = (float) color.getAlpha();
+                            float[] colorData = new float[4];
+                            java.awt.Color.RGBtoHSB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), colorData);
+                            colorData[3] = (float) color.getAlpha();
 
-                        container2.getRuntime().setState("value", colorData);
+                            container2.getRuntime().setState("value", colorData);
+                        })
+                        .addOnStateUpdate("value", state1 -> {
+                            float[] stateValue = (float[]) state1.get("value");
+
+                            int rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2]);
+                            java.awt.Color javaColor = new java.awt.Color(rgb);
+
+                            colorPicker.getSetting().setValue(Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), (int) (stateValue[3] * 255)));
+                        }))
+                    .addChild("view", new Container()
+                            .addOnUpdate(state -> state.put("hidden", false))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
+                                    .setX(new Side(Side.NEGATIVE)))
+                            .addChild(new Text()
+                                    .setFontRenderer(new Absolute("minecraft"))
+                                    .setText(new Absolute(colorPicker.getDisplayName()))
+                                    .setScale(new Relative(0.0025))
+                                    .setX(new Side(Side.NEGATIVE)))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
+                                    .setX(new Side(Side.NEGATIVE)))
+                            .addChild(new Container()
+                                    .setX(new Side(Side.NEGATIVE))
+                                    .setWidth(new Copy())
+                                    .setHeight(new Relative(0.6))
+                                    .setBackgroundColor(new Dependent(state -> colorPicker.getSetting().getValue()))))
+                    .setStateId("colorTab")
+                    .setOnInit(state -> {
+                        state.getSecond().put("colorTab", "view");
                     })
-                    .addOnStateUpdate("value", state1 -> {
-                        float[] stateValue = (float[]) state1.get("value");
-
-                        int rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2]);
-                        java.awt.Color javaColor = new java.awt.Color(rgb);
-
-                        colorPicker.getSetting().setValue(Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue(), (int) (stateValue[3] * 255)));
-                    });
+                    .setHeight(new Dependent(state -> new Absolute(state.get("colorTab").equals("edit") ? 30 : 15)))
+                    .addStoredState("colorTab")
+                    .addOnStateUpdate("selected", state -> state.put("colorTab", (boolean) state.get("selected") ? "edit" : "view"));
         } else if (setting instanceof ConfigurableData.Dependent) {
             ConfigurableData.Dependent dependent = (ConfigurableData.Dependent) setting;
             return ((Container) this.getSetting(dependent.getConfigurableData()))
@@ -927,7 +953,7 @@ public class UserInterface {
                                                     .addChild(new Text()
                                                             .setFontRenderer(new Absolute("minecraft"))
                                                             .setPadding(new Relative(0.01))
-                                                            .setText(new Absolute("Modules"))
+                                                            .setText(new Absolute(moduleData.getName()))
                                                             .setScale(new Relative(0.003))
                                                             .setX(new Side(Side.NEGATIVE))))
                                             .addChild(new Container()

@@ -17,12 +17,25 @@ import v1_8_9.net.minecraft.util.math.Box;
 public class EventHook {
 
     public static void onRender() {
+        boolean textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
+        boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
         Sorus.getInstance().get(EventManager.class).call(new RenderEvent());
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        setEnabled(GL11.GL_TEXTURE_2D, textureEnabled);
+        setEnabled(GL11.GL_BLEND, blendEnabled);
     }
 
     public static void onInGameRender() {
+        boolean textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
         Sorus.getInstance().get(EventManager.class).call(new RenderInGameEvent());
+        setEnabled(GL11.GL_TEXTURE_2D, textureEnabled);
+    }
+
+    private static void setEnabled(int capability, boolean enabled) {
+        if (enabled) {
+            GL11.glEnable(capability);
+        } else {
+            GL11.glDisable(capability);
+        }
     }
 
     public static void onKey() {
