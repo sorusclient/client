@@ -103,7 +103,7 @@ public class UserInterface {
                                     .setWidth(new Copy())
                                     .setHeight(new Relative(0.8))
                                     .setPadding(new Relative(0.1, true))
-                                    .setX(new Dependent(state -> new Side((boolean) state.get("toggled") ? 1 : -1)))
+                                    .setX(new Dependent(state -> new Side(toggle.getSetting().getValue() ? 1 : -1)))
                                     .setBackgroundColor(Color.WHITE)
                                     .setBackgroundCornerRadius(new Relative(0.1))))
                     .apply(container2 -> {
@@ -885,7 +885,7 @@ public class UserInterface {
                                             .setText(new Absolute("Modules"))
                                             .setScale(new Relative(0.003))
                                             .setX(new Side(Side.NEGATIVE))))
-                            .addChild(new List(List.VERTICAL)
+                            .addChild(new Scroll(List.VERTICAL)
                                     .apply(container1 -> {
                                         for (ModuleData module : Sorus.getInstance().get(ModuleManager.class).getModules()) {
                                             container1.addChild(new Container()
@@ -928,7 +928,8 @@ public class UserInterface {
                                                                 state.put("currentEditingModule", module);
                                                             })));
                                         }
-                                    })))
+                                    })
+                                    .setScissor(true)))
                         .addChild("edit", new Container()
                                 .setY(new Side(Side.NEGATIVE))
                                 .setWidth(new Relative(0.53))
@@ -962,12 +963,11 @@ public class UserInterface {
                                                     .setWidth(new Absolute(25))
                                                     .setHeight(new Absolute(25))
                                                     .setBackgroundColor(new Absolute(Color.WHITE))
-                                                    .setOnClick(state1 -> state1.put("currentModuleTab", "main")));
-
-                                    container1.addChild(new List(List.VERTICAL)
-                                            .setHeight(new Relative(0.6))
-                                            .setY(new Side(Side.NEGATIVE))
-                                            .apply(container2 -> this.addSettingsList(container2, settings)));
+                                                    .setOnClick(state1 -> state1.put("currentModuleTab", "main")))
+                                            .addChild(new Scroll(List.VERTICAL)
+                                                    .setScissor(true)
+                                                    .setY(new Side(Side.NEGATIVE))
+                                                    .apply(container2 -> this.addSettingsList(container2, settings)));
                                 }))
                         .setStateId("moduleScreen")
                         .setOnInit(state -> {

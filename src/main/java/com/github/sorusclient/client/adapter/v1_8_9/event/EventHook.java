@@ -59,7 +59,8 @@ public class EventHook {
                 Util.getButton(button),
                 pressed,
                 x / (double) Display.getWidth() * window.getScaledWidth(),
-                window.getScaledHeight() - (y / (double) Display.getHeight() * window.getScaledHeight())));
+                window.getScaledHeight() - (y / (double) Display.getHeight() * window.getScaledHeight()),
+                Mouse.getDWheel() / 120.));
     }
 
     public static void onConnect(ClientWorld world, String ip) {

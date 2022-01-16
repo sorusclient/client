@@ -15,6 +15,8 @@ public interface IRenderer {
 
     void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color topLeftColor, Color bottomLeftColor, Color bottomRightColor, Color topRightColor);
     void drawImage(String imagePath, double x, double y, double width, double height, Color color);
+    void scissor(double x, double y, double width, double height);
+    void endScissor();
     IFontRenderer getFontRenderer(String id);
 
 }

@@ -6,23 +6,18 @@ import com.github.sorusclient.client.adapter.RenderBuffer;
 import com.github.sorusclient.client.adapter.Vertex;
 import com.github.sorusclient.client.adapter.IFontRenderer;
 import com.github.sorusclient.client.util.Color;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager;
 import v1_8_9.net.minecraft.client.MinecraftClient;
 import v1_8_9.net.minecraft.client.render.BufferBuilder;
 import v1_8_9.net.minecraft.client.render.Tessellator;
 import v1_8_9.net.minecraft.client.render.VertexFormats;
-import v1_8_9.net.minecraft.client.texture.Texture;
+import v1_8_9.net.minecraft.client.util.Window;
 import v1_8_9.net.minecraft.util.Identifier;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class RendererImpl implements IRenderer {
 
@@ -120,6 +115,23 @@ public class RendererImpl implements IRenderer {
         bufferBuilder.vertex(x + width, y, 0).texture(1, 0).next();
         bufferBuilder.vertex(x, y, 0).texture(0, 0).next();
         tessellator.draw();
+    }
+
+    @Override
+    public void scissor(double x, double y, double width, double height) {
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        y += height;
+        MinecraftClient minecraft = MinecraftClient.getInstance();
+        Window scaledResolution = new Window(minecraft);
+        GL11.glScissor((int) ((x * minecraft.width) / scaledResolution.getScaledWidth()),
+                (int) (((scaledResolution.getScaledHeight() - y) * minecraft.height) / scaledResolution.getScaledHeight()),
+                (int) (width * minecraft.width / scaledResolution.getScaledWidth()),
+                (int) (height * minecraft.height / scaledResolution.getScaledHeight()));
+    }
+
+    @Override
+    public void endScissor() {
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     private final Map<String, IFontRenderer> fontRenderers = new HashMap<>();

@@ -32,6 +32,8 @@ public class Container extends Component {
     private Consumer<Pair<Map<String, Object>, Pair<Double, Double>>> onDrag;
     private Consumer<Pair<Map<String, Object>, Key>> onKey;
     private Consumer<Pair<Container, Map<String, Object>>> onInit;
+    private Consumer<Pair<Double, Map<String, Object>>> onScroll;
+    private boolean scissor = false;
 
     private List<Consumer<Map<String, Object>>> onUpdate = new ArrayList<>();
 
@@ -139,8 +141,17 @@ public class Container extends Component {
         return this;
     }
 
+    public void setOnScroll(Consumer<Pair<Double, Map<String, Object>>> onScroll) {
+        this.onScroll = onScroll;
+    }
+
     public Container addOnUpdate(Consumer<Map<String, Object>> onUpdate) {
         this.onUpdate.add(onUpdate);
+        return this;
+    }
+
+    public Container setScissor(boolean scissor) {
+        this.scissor = scissor;
         return this;
     }
 
@@ -215,6 +226,10 @@ public class Container extends Component {
             this.placedComponents.add(new Pair<>(null, new double[] {0, this.getHeight() / 2 + 0.5, this.getWidth() + 1, 1, 0}));
             this.placedComponents.add(new Pair<>(null, new double[] {0, -this.getHeight() / 2 - 0.5, this.getWidth() + 1, 1, 0}));
 
+            if (Container.this.scissor) {
+                renderer.scissor(x - width / 2, y - height / 2, width, height);
+            }
+
             for (Component child : this.getChildren()) {
                 if (!(boolean) child.getRuntime().getState("hidden")) {
                     double[] wantedPosition = this.getOtherCalculatedPosition(child);
@@ -230,6 +245,10 @@ public class Container extends Component {
                 } else {
                     this.renderChild(child.runtime, -1, -1, -1, -1);
                 }
+            }
+
+            if (Container.this.scissor) {
+                renderer.endScissor();
             }
         }
 
@@ -348,6 +367,16 @@ public class Container extends Component {
                     if (handled) {
                         return true;
                     }
+                }
+            }
+
+            if (event.getX() > this.x - this.width / 2 &&
+                    event.getX() < this.x + this.width / 2 &&
+                    event.getY() > this.y - this.height / 2 &&
+                    event.getY() < this.y + this.height / 2) {
+
+                if (event.getWheel() != 0 && Container.this.onScroll != null) {
+                    Container.this.onScroll.accept(new Pair<>(event.getWheel(), state));
                 }
             }
 

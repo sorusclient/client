@@ -37,8 +37,8 @@ public class List extends Container {
     public class Runtime extends Container.Runtime {
 
         private int xIndex;
-        private double xLocation;
-        private double yLocation;
+        protected double xLocation;
+        protected double yLocation;
 
         @Override
         public void render(double x, double y, double width, double height) {
