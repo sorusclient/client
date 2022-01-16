@@ -36,12 +36,22 @@ public class Dependent implements Constraint {
 
     @Override
     public double getWidthValue(Component.Runtime componentRuntime) {
-        return 0;
+        Object value = this.function.apply(componentRuntime.getAvailableState());
+        if (value instanceof Constraint) {
+            return ((Constraint) value).getWidthValue(componentRuntime);
+        } else {
+            return (double) value;
+        }
     }
 
     @Override
     public double getHeightValue(Component.Runtime componentRuntime) {
-        return 0;
+        Object value = this.function.apply(componentRuntime.getAvailableState());
+        if (value instanceof Constraint) {
+            return ((Constraint) value).getHeightValue(componentRuntime);
+        } else {
+            return (double) value;
+        }
     }
 
     @Override

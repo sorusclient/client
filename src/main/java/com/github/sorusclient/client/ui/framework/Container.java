@@ -55,6 +55,7 @@ public class Container extends Component {
         return (Container) super.setHeight(height);
     }
 
+    //TODO: Make it max out at width / height so now weird looking shapes
     public Container setBackgroundCornerRadius(Constraint backgroundCornerRadius) {
         this.backgroundCornerRadius = backgroundCornerRadius;
         return this;

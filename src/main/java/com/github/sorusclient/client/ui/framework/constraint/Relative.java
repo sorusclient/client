@@ -29,12 +29,14 @@ public class Relative implements Constraint {
 
     @Override
     public double getWidthValue(Component.Runtime componentRuntime) {
-        return componentRuntime.getParent().getWidth() * this.percent;
+        double size = this.otherSide ? componentRuntime.getParent().getHeight() : componentRuntime.getParent().getWidth();
+        return size * this.percent;
     }
 
     @Override
     public double getHeightValue(Component.Runtime componentRuntime) {
-        return componentRuntime.getParent().getHeight() * this.percent;
+        double size = this.otherSide ? componentRuntime.getParent().getWidth() : componentRuntime.getParent().getHeight();
+        return size * this.percent;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class Relative implements Constraint {
 
     @Override
     public double getCornerRadiusValue(Component.Runtime componentRuntime) {
-        return componentRuntime.getParent().getWidth() * this.percent;
+        return this.getPaddingValue(componentRuntime);
     }
 
 }

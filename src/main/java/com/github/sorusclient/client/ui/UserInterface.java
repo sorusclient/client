@@ -7,7 +7,6 @@ import com.github.sorusclient.client.adapter.ScreenType;
 import com.github.sorusclient.client.event.EventManager;
 import com.github.sorusclient.client.adapter.event.KeyEvent;
 import com.github.sorusclient.client.adapter.event.RenderEvent;
-import com.github.sorusclient.client.module.Module;
 import com.github.sorusclient.client.module.ModuleData;
 import com.github.sorusclient.client.module.ModuleManager;
 import com.github.sorusclient.client.setting.Setting;
@@ -17,6 +16,7 @@ import com.github.sorusclient.client.ui.framework.constraint.*;
 import com.github.sorusclient.client.util.Color;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserInterface {
@@ -63,19 +63,27 @@ public class UserInterface {
             switch (setting.getType()) {
                 case TOGGLE:
                     container.addChild(new Container()
-                            .setHeight(new Absolute(20))
+                            .setHeight(new Absolute(15))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
+                                    .setX(new Side(Side.NEGATIVE)))
                             .addChild(new Text()
                                     .setFontRenderer(new Absolute("minecraft"))
                                     .setText(new Absolute(setting.getDisplayName()))
+                                    .setScale(new Relative(0.0025))
+                                    .setX(new Side(Side.NEGATIVE)))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
                                     .setX(new Side(Side.NEGATIVE)))
                             .addChild(new Container()
                                     .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy())
+                                    .setWidth(new Copy(2))
                                     .setHeight(new Relative(0.6))
+                                    .setBackgroundCornerRadius(new Relative(0.01))
                                     .setPadding(new Relative(0.2, true))
                                     .setBackgroundColor(new Dependent(state1 -> {
                                         boolean toggled = (Boolean) setting.getSetting().getValue();
-                                        return toggled ? Color.fromRGB(0, 255, 0, 255) : Color.fromRGB(255, 0, 0, 255);
+                                        return toggled ? Color.fromRGB(20, 118, 188, 255) : Color.fromRGB(20, 118, 188, 125);
                                     }))
                                     .setOnClick(state1 -> {
                                         if (!setting.getSetting().isForcedValue()) {
@@ -83,7 +91,14 @@ public class UserInterface {
                                             state1.put("toggled", toggled);
                                             setting.getSetting().setValueRaw(toggled);
                                         }
-                                    }))
+                                    })
+                                    .addChild(new Container()
+                                            .setWidth(new Copy())
+                                            .setHeight(new Relative(0.8))
+                                            .setPadding(new Relative(0.1, true))
+                                            .setX(new Dependent(state -> new Side((boolean) state.get("toggled") ? 1 : -1)))
+                                            .setBackgroundColor(Color.WHITE)
+                                            .setBackgroundCornerRadius(new Relative(0.1))))
                             .apply(container2 -> {
                                 container2.addStoredState("toggled");
                                 container2.getRuntime().setState("toggled", setting.getSetting().getValue());
@@ -91,17 +106,25 @@ public class UserInterface {
                     break;
                 case SLIDER:
                     container.addChild(new Container()
-                            .setHeight(new Absolute(20))
+                            .setHeight(new Absolute(15))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
+                                    .setX(new Side(Side.NEGATIVE)))
                             .addChild(new Text()
                                     .setFontRenderer(new Absolute("minecraft"))
                                     .setText(new Absolute(setting.getDisplayName()))
+                                    .setScale(new Relative(0.0025))
+                                    .setX(new Side(Side.NEGATIVE)))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
                                     .setX(new Side(Side.NEGATIVE)))
                             .addChild(new Container()
                                     .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(2))
-                                    .setHeight(new Relative(0.6))
+                                    .setWidth(new Copy(35))
+                                    .setHeight(new Relative(0.1))
                                     .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Absolute(Color.WHITE))
+                                    .setBackgroundColor(new Absolute(Color.fromRGB(255, 255, 255, 155)))
+                                    .setBackgroundCornerRadius(new Relative(0.05, true))
                                     .setOnDrag(state1 -> {
                                         if (!setting.getSetting().isForcedValue()) {
                                             Object[] bounds = setting.getArguments();
@@ -120,12 +143,30 @@ public class UserInterface {
                                         }
                                     })
                                     .addChild(new Container()
+                                        .setX(new Side(Side.NEGATIVE))
+                                        .setWidth(new Dependent(state -> {
+                                            Object[] bounds = setting.getArguments();
+                                            return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]));
+                                        }))
+                                        .setBackgroundColor(Color.fromRGB(20, 118, 188, 255))
+                                        .setBackgroundCornerRadius(new Relative(0.5, true)))
+                                    .addChild(new Container()
+                                            .setWidth(new Copy())
+                                            .setHeight(new Relative(2))
+                                            .setX(new Dependent(state -> {
+                                                Object[] bounds = setting.getArguments();
+                                                return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]) - 0.5);
+                                            }))
+                                            .setY(new Relative(0))
+                                            .setBackgroundColor(Color.WHITE)
+                                            .setBackgroundCornerRadius(new Relative(1, true))))
+                                    /*.addChild(new Container()
                                             .setX(new Dependent(state1 -> {
                                                 Object[] bounds = setting.getArguments();
                                                 return new Relative((((Number) setting.getSetting().getValue()).doubleValue() - (double) bounds[0]) / ((double) bounds[1] - (double) bounds[0]) - 0.5);
                                             }))
                                             .setWidth(new Absolute(1))
-                                            .setBackgroundColor(new Absolute(Color.BLACK))))
+                                            .setBackgroundColor(new Absolute(Color.BLACK))))*/
                             .apply(container2 -> {
                                 container2.addStoredState("value");
 
@@ -167,24 +208,60 @@ public class UserInterface {
                 case CLICK_THROUGH:
                     container.addChild(new Container()
                             .setHeight(new Absolute(20))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
+                                    .setX(new Side(Side.NEGATIVE)))
                             .addChild(new Text()
                                     .setFontRenderer(new Absolute("minecraft"))
                                     .setText(new Absolute(setting.getDisplayName()))
+                                    .setScale(new Relative(0.0025))
+                                    .setX(new Side(Side.NEGATIVE)))
+                            .addChild(new Container()
+                                    .setWidth(new Relative(0.05))
                                     .setX(new Side(Side.NEGATIVE)))
                             .addChild(new Container()
                                     .setX(new Side(Side.NEGATIVE))
-                                    .setWidth(new Copy(2))
+                                    .setWidth(new Copy(5))
                                     .setHeight(new Relative(0.6))
                                     .setPadding(new Relative(0.2, true))
-                                    .setBackgroundColor(new Absolute(Color.WHITE))
+                                    .setBackgroundColor(new Absolute(Color.fromRGB(20, 118, 188, 255)))
                                     .addChild(new Container()
+                                            .setX(new Side(Side.NEGATIVE))
+                                            .setWidth(new Copy())
+                                            .setHeight(new Relative(0.6))
+                                            .setPadding(new Relative(0.15, true))
+                                            .setBackgroundImage(new Absolute("arrow_left.png"))
+                                            .setOnClick(state1 -> {
+                                                int newValue = Math.max(0, (int) state1.get("value") - 1);
+                                                state1.put("value", newValue);
+                                            }))
+                                    /*.addChild(new Container()
                                             .setX(new Side(Side.NEGATIVE))
                                             .setWidth(new Relative(0.5))
                                             .setOnClick(state1 -> {
                                                 int newValue = Math.max(0, (int) state1.get("value") - 1);
                                                 state1.put("value", newValue);
-                                            }))
+                                            }))*/
                                     .addChild(new Container()
+                                            .setX(new Side(Side.POSITIVE))
+                                            .setWidth(new Copy())
+                                            .setHeight(new Relative(0.6))
+                                            .setPadding(new Relative(0.15, true))
+                                            .setBackgroundImage(new Absolute("arrow_right.png"))
+                                            .setOnClick(state1 -> {
+                                                int valuesLength = 0;
+                                                try {
+                                                    valuesLength = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null)).length;
+                                                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                if ((int) state1.get("value") + 1 >= valuesLength) {
+                                                    state1.put("value", 0);
+                                                } else {
+                                                    state1.put("value", (int) state1.get("value") + 1);
+                                                }
+                                            }))
+                                    /*.addChild(new Container()
                                             .setX(new Side(Side.POSITIVE))
                                             .setWidth(new Relative(0.5))
                                             .setOnClick(state1 -> {
@@ -199,11 +276,12 @@ public class UserInterface {
                                                 } else {
                                                     state1.put("value", (int) state1.get("value") + 1);
                                                 }
-                                            }))
+                                            }))*/
                                     .addChild(new Text()
                                             .setText(new Dependent(state1 -> setting.getSetting().getValue().toString()))
                                             .setFontRenderer(new Absolute("minecraft"))
-                                            .setTextColor(new Absolute(Color.BLACK)))
+                                            .setScale(new Relative(0.01))
+                                            .setTextColor(new Absolute(Color.WHITE)))
                                     .addOnStateUpdate("value", state1 -> {
                                         try {
                                             Object[] values = ((Object[]) setting.getSetting().getType().getDeclaredMethod("values").invoke(null));
@@ -731,54 +809,113 @@ public class UserInterface {
     }
 
     private void addModulesScreen(Container container) {
-        container.addChild(new Container()
-                        .setY(new Side(Side.NEGATIVE))
-                        .setWidth(new Relative(0.53))
-                        .setPadding(new Relative(0.01))
-                        .setBackgroundCornerRadius(new Relative(0.0075))
-                        .setBackgroundColor(Color.fromRGB(26, 26, 26, 230))
-                        .addChild(new Container()
+        container.addChild(new TabHolder()
+                        .addChild("main", new Container()
+                            .setY(new Side(Side.NEGATIVE))
+                            .setWidth(new Relative(0.53))
+                            .setPadding(new Relative(0.01))
+                            .setBackgroundCornerRadius(new Relative(0.0075))
+                            .setBackgroundColor(Color.fromRGB(26, 26, 26, 230))
+                            .addChild(new Container()
+                                    .setY(new Side(Side.NEGATIVE))
+                                    .setHeight(new Copy(0.04))
+                                    .setPadding(new Relative(0.005))
+                                    .addChild(new Text()
+                                            .setFontRenderer(new Absolute("minecraft"))
+                                            .setPadding(new Relative(0.01))
+                                            .setText(new Absolute("Modules"))
+                                            .setScale(new Relative(0.003))
+                                            .setX(new Side(Side.NEGATIVE))))
+                            .addChild(new List(List.VERTICAL)
+                                    .apply(container1 -> {
+                                        for (ModuleData module : Sorus.getInstance().get(ModuleManager.class).getModules()) {
+                                            container1.addChild(new Container()
+                                                    .setHeight(new Copy(0.1))
+                                                    .setPadding(new Relative(0.01))
+                                                    .setBackgroundCornerRadius(new Relative(0.01))
+                                                    .setBackgroundColor(Color.fromRGB(24, 24, 24, 255))
+                                                    .addChild(new Container()
+                                                            .setX(new Side(Side.NEGATIVE))
+                                                            .setWidth(new Copy())
+                                                            .setHeight(new Relative(0.6))
+                                                            .setPadding(new Relative(0.2, true))
+                                                            .setBackgroundCornerRadius(new Relative(0.01))
+                                                            .setBackgroundColor(Color.fromRGB(255, 255, 255, 200)))
+                                                    .addChild(new Text()
+                                                            .setText(new Absolute(module.getName()))
+                                                            .setFontRenderer(new Absolute("minecraft"))
+                                                            .setScale(new Relative(0.003))
+                                                            .setPadding(new Relative(0.175, true))
+                                                            .setX(new Side(Side.NEGATIVE))
+                                                            .setY(new Side(Side.NEGATIVE)))
+                                                    .addChild(new Text()
+                                                            .setText(new Absolute(module.getDescription()))
+                                                            .setFontRenderer(new Absolute("minecraft"))
+                                                            .setScale(new Relative(0.003))
+                                                            .setTextColor(new Absolute(Color.fromRGB(255, 255, 255, 80)))
+                                                            .setPadding(new Relative(0.175, true))
+                                                            .setX(new Side(Side.NEGATIVE))
+                                                            .setY(new Side(Side.POSITIVE)))
+                                                    .addChild(new Container()
+                                                            .setBackgroundImage(new Absolute("gear.png"))
+                                                            .setX(new Side(Side.POSITIVE))
+                                                            .setY(new Side(Side.ZERO))
+                                                            .setWidth(new Copy())
+                                                            .setHeight(new Relative(0.4))
+                                                            .setPadding(new Relative(0.3, true))
+                                                            .setBackgroundColor(Color.fromRGB(255, 255, 255, 75))
+                                                            .setOnClick(state -> {
+                                                                state.put("moduleScreen", "edit");
+                                                                state.put("currentEditingModule", module);
+                                                            })));
+                                        }
+                                    })))
+                        .addChild("edit", new Container()
                                 .setY(new Side(Side.NEGATIVE))
-                                .setHeight(new Copy(0.04))
-                                .setPadding(new Relative(0.005))
-                                .addChild(new Text()
-                                        .setFontRenderer(new Absolute("minecraft"))
-                                        .setPadding(new Relative(0.01))
-                                        .setText(new Absolute("Modules"))
-                                        .setScale(new Relative(0.003))
-                                        .setX(new Side(Side.NEGATIVE))))
-                        .addChild(new List(List.VERTICAL)
-                                .apply(container1 -> {
-                                    for (ModuleData module : Sorus.getInstance().get(ModuleManager.class).getModules()) {
-                                        container1.addChild(new Container()
-                                                .setHeight(new Copy(0.1))
-                                                .setPadding(new Relative(0.01))
-                                                .setBackgroundCornerRadius(new Relative(0.01))
-                                                .setBackgroundColor(Color.fromRGB(24, 24, 24, 255))
-                                                .addChild(new Container()
-                                                        .setX(new Side(Side.NEGATIVE))
-                                                        .setWidth(new Copy())
-                                                        .setHeight(new Relative(0.6))
-                                                        .setPadding(new Relative(0.2, true))
-                                                        .setBackgroundCornerRadius(new Relative(0.01))
-                                                        .setBackgroundColor(Color.fromRGB(255, 255, 255, 200)))
-                                                .addChild(new Text()
-                                                        .setText(new Absolute(module.getName()))
-                                                        .setFontRenderer(new Absolute("minecraft"))
-                                                        .setScale(new Relative(0.003))
-                                                        .setPadding(new Relative(0.175, true))
-                                                        .setX(new Side(Side.NEGATIVE))
-                                                        .setY(new Side(Side.NEGATIVE)))
-                                                .addChild(new Text()
-                                                        .setText(new Absolute(module.getDescription()))
-                                                        .setFontRenderer(new Absolute("minecraft"))
-                                                        .setScale(new Relative(0.003))
-                                                        .setTextColor(new Absolute(Color.fromRGB(255, 255, 255, 80)))
-                                                        .setPadding(new Relative(0.175, true))
-                                                        .setX(new Side(Side.NEGATIVE))
-                                                        .setY(new Side(Side.POSITIVE))));
-                                    }
-                                })))
+                                .setWidth(new Relative(0.53))
+                                .setPadding(new Relative(0.01))
+                                .setBackgroundCornerRadius(new Relative(0.0075))
+                                .setBackgroundColor(Color.fromRGB(26, 26, 26, 230))
+                                .setOnInit(state -> {
+                                    Container container1 = state.getFirst();
+
+                                    ModuleData moduleData = (ModuleData) state.getSecond().get("currentEditingModule");
+
+                                    java.util.List<SettingConfigurableData> settings = new ArrayList<>();
+
+                                    moduleData.getModule().addSettings(settings);
+
+                                    container1
+                                            .clear()
+                                            .addChild(new Container()
+                                                    .setY(new Side(Side.NEGATIVE))
+                                                    .setHeight(new Copy(0.04))
+                                                    .setPadding(new Relative(0.005))
+                                                    .addChild(new Text()
+                                                            .setFontRenderer(new Absolute("minecraft"))
+                                                            .setPadding(new Relative(0.01))
+                                                            .setText(new Absolute("Modules"))
+                                                            .setScale(new Relative(0.003))
+                                                            .setX(new Side(Side.NEGATIVE))))
+                                            .addChild(new Container()
+                                                    .setX(new Side(Side.POSITIVE))
+                                                    .setY(new Side(Side.POSITIVE))
+                                                    .setWidth(new Absolute(25))
+                                                    .setHeight(new Absolute(25))
+                                                    .setBackgroundColor(new Absolute(Color.WHITE))
+                                                    .setOnClick(state1 -> state1.put("currentModuleTab", "main")));
+
+                                    container1.addChild(new List(List.VERTICAL)
+                                            .setHeight(new Relative(0.6))
+                                            .setY(new Side(Side.NEGATIVE))
+                                            .apply(container2 -> this.addSettingsList(container2, settings)));
+                                }))
+                        .setStateId("moduleScreen")
+                        .setOnInit(state -> {
+                            state.getFirst().addStoredState("moduleScreen");
+                            state.getFirst().addStoredState("currentEditingModule");
+                            state.getSecond().put("moduleScreen", "main");
+                        }))
                 .addChild(new Container()
                         .setX(new Side(Side.NEGATIVE))
                         .setPadding(new Relative(0.01))

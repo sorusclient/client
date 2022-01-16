@@ -8,6 +8,7 @@ import java.util.List;
 
 public class EnvironmentChanger extends ModuleDisableable {
 
+    //TODO: Make world lighting reflect time of day
     private final Setting<Boolean> modifyTime;
     private final Setting<Long> time;
     private final Setting<Boolean> modifyWeather;
