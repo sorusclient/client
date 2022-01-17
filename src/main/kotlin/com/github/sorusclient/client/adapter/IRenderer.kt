@@ -7,7 +7,10 @@ interface IRenderer {
     fun setColor(color: Color)
     fun setLineThickness(thickness: Double)
     fun drawRectangle(x: Double, y: Double, width: Double, height: Double, color: Color) {
-        this.drawRectangle(x, y, width, height, 0.0, color, color, color, color)
+        this.drawRectangle(x, y, width, height, 0.0, color)
+    }
+    fun drawRectangle(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, color: Color) {
+        this.drawRectangle(x, y, width, height, cornerRadius, color, color, color, color)
     }
 
     fun drawRectangle(

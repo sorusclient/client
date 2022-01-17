@@ -4,6 +4,7 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.*
+import com.github.sorusclient.client.event.EventCancelable
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.hud.impl.armor.Armor
 import com.github.sorusclient.client.hud.impl.bossbar.BossBar
@@ -47,27 +48,13 @@ object HUDManager : SettingContainer {
         initializePossibleElements()
         setupDefaultHud()
         val eventManager = EventManager
-        eventManager.register(
-            ArmorBarRenderEvent::class.java
-        ) { event: ArmorBarRenderEvent -> event.isCanceled = true }
-        eventManager.register(
-            BossBarRenderEvent::class.java
-        ) { event: BossBarRenderEvent -> event.isCanceled = true }
-        eventManager.register(
-            ExperienceBarRenderEvent::class.java
-        ) { event: ExperienceBarRenderEvent -> event.isCanceled = true }
-        eventManager.register(
-            HealthBarRenderEvent::class.java
-        ) { event: HealthBarRenderEvent -> event.isCanceled = true }
-        eventManager.register(
-            HotBarRenderEvent::class.java
-        ) { event: HotBarRenderEvent -> event.isCanceled = true }
-        eventManager.register(
-            HungerBarRenderEvent::class.java
-        ) { event: HungerBarRenderEvent -> event.isCanceled = true }
-        eventManager.register(
-            SideBarRenderEvent::class.java
-        ) { event: SideBarRenderEvent -> event.isCanceled = true }
+        eventManager.register { event: ArmorBarRenderEvent -> event.canceled = true }
+        eventManager.register { event: BossBarRenderEvent -> event.canceled = true }
+        eventManager.register { event: ExperienceBarRenderEvent -> event.canceled = true }
+        eventManager.register { event: HealthBarRenderEvent -> event.canceled = true }
+        eventManager.register { event: HotBarRenderEvent -> event.canceled = true }
+        eventManager.register { event: HungerBarRenderEvent -> event.canceled = true }
+        eventManager.register { event: SideBarRenderEvent -> event.canceled = true }
     }
 
     private fun setupDefaultHud() {
@@ -111,9 +98,9 @@ object HUDManager : SettingContainer {
 
     fun initialize() {
         val eventManager = EventManager
-        eventManager.register(RenderInGameEvent::class.java) { render() }
-        eventManager.register(MouseEvent::class.java) { event: MouseEvent -> onClick(event) }
-        eventManager.register(KeyEvent::class.java) { event: KeyEvent -> onKey(event) }
+        eventManager.register { _: RenderInGameEvent -> render() }
+        eventManager.register(this::onClick)
+        eventManager.register(this::onKey)
         SettingManager.register(this)
     }
 

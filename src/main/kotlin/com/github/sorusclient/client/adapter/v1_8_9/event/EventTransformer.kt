@@ -97,7 +97,7 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(VarInsnNode(Opcodes.ASTORE, index))
                         methodNode.maxLocals++
                         insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                         insnList.add(JumpInsnNode(Opcodes.IFNE, labelNode))
                     }))
                 findMethodCalls(methodNode, swap)
@@ -123,7 +123,7 @@ class EventTransformer : Transformer(), Listener {
                         methodNode.maxLocals++
                         val labelNode = LabelNode()
                         insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                         insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
                         insnList.add(InsnNode(Opcodes.RETURN))
                         insnList.add(labelNode)
@@ -142,7 +142,7 @@ class EventTransformer : Transformer(), Listener {
                     methodNode.maxLocals++
                     val labelNode = LabelNode()
                     insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                     insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
                     insnList.add(InsnNode(Opcodes.RETURN))
                     insnList.add(labelNode)
@@ -162,7 +162,7 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(VarInsnNode(Opcodes.ASTORE, index))
                         methodNode.maxLocals++
                         insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                         insnList.add(JumpInsnNode(Opcodes.IFNE, labelNode))
                     }))
                 findFieldReferences(methodNode, vehicle, FieldReferenceType.GET)
@@ -185,7 +185,7 @@ class EventTransformer : Transformer(), Listener {
                     methodNode.maxLocals++
                     val labelNode = LabelNode()
                     insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                     insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
                     insnList.add(InsnNode(Opcodes.RETURN))
                     insnList.add(labelNode)
@@ -203,7 +203,7 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(VarInsnNode(Opcodes.ASTORE, index))
                         methodNode.maxLocals++
                         insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                        insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                         insnList.add(JumpInsnNode(Opcodes.IFNE, labelNode))
                     }))
                 findMethodCalls(methodNode, swap)
@@ -227,7 +227,7 @@ class EventTransformer : Transformer(), Listener {
                     methodNode.maxLocals++
                     val labelNode = LabelNode()
                     insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                     insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
                     insnList.add(InsnNode(Opcodes.RETURN))
                     insnList.add(labelNode)
@@ -262,7 +262,7 @@ class EventTransformer : Transformer(), Listener {
                     methodNode.maxLocals++
                     val labelNode = LabelNode()
                     insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "isCanceled", "()Z"))
+                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
                     insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
                     insnList.add(InsnNode(Opcodes.RETURN))
                     insnList.add(labelNode)

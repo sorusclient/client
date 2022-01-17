@@ -8,10 +8,10 @@ import com.github.sorusclient.client.ui.framework.constraint.Side
 import java.util.function.Consumer
 
 abstract class Component {
-    protected var x: Constraint = Side(Side.ZERO)
-    protected var y: Constraint = Side(Side.ZERO)
-    protected var width: Constraint = Flexible()
-    protected var height: Constraint = Flexible()
+    var x: Constraint = Side(Side.ZERO)
+    var y: Constraint = Side(Side.ZERO)
+    var width: Constraint = Flexible()
+    var height: Constraint = Flexible()
     lateinit var runtime: Runtime
     var parent: Container? = null
     private val storedState: MutableList<String> = ArrayList()

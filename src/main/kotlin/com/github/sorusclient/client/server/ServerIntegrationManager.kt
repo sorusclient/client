@@ -19,13 +19,9 @@ object ServerIntegrationManager {
 
     init {
         val eventManager = EventManager
-        eventManager.register(GameJoinEvent::class.java) { event: GameJoinEvent -> onGameJoin(event) }
-        eventManager.register(GameLeaveEvent::class.java) { event: GameLeaveEvent -> onGameLeave(event) }
-        eventManager.register(SorusCustomPacketEvent::class.java) { event: SorusCustomPacketEvent ->
-            onCustomPacket(
-                event
-            )
-        }
+        eventManager.register(this::onGameJoin)
+        eventManager.register(this::onGameLeave)
+        eventManager.register(this::onCustomPacket)
     }
 
     private fun onGameJoin(event: GameJoinEvent) {

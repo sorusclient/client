@@ -29,7 +29,7 @@ object UserInterface {
     fun initialize() {
         initializeUserInterface()
         val eventManager = EventManager
-        eventManager.register(KeyEvent::class.java) { event: KeyEvent ->
+        eventManager.register { event: KeyEvent ->
             val adapter = AdapterManager.getAdapter()
             if (!event.isRepeat) {
                 if (event.key === Key.P && event.isPressed && adapter.openScreen === ScreenType.IN_GAME) {
@@ -41,12 +41,14 @@ object UserInterface {
                 }
             }
         }
-        eventManager.register(RenderEvent::class.java) {
+
+        eventManager.register<RenderEvent> {
             if (guiOpened.get()) {
                 ContainerRenderer.render(mainGui)
             }
         }
-        eventManager.register(KeyEvent::class.java) { event: KeyEvent ->
+
+        eventManager.register { event: KeyEvent ->
             if (event.isPressed && !event.isRepeat && event.key === Key.U) {
                 initializeUserInterface()
             }
@@ -572,53 +574,58 @@ object UserInterface {
 
     private fun addNavBar(container: Container, tabs: Array<String>) {
         container.addChild(
-            Container()
-                .setY(Side(Side.POSITIVE))
-                .setWidth(Relative(0.53))
-                .setHeight(Relative(0.09))
-                .setPadding(Relative(0.01))
-                .setBackgroundCornerRadius(Relative(0.0075))
-                .setBackgroundColor(Color.fromRGB(26, 26, 26, 230))
-                .addChild(
-                    Container()
-                        .setX(Side(Side.NEGATIVE))
-                        .setWidth(Copy())
-                        .setHeight(Relative(0.7))
-                        .setPadding(Relative(0.02))
-                        .setBackgroundImage(Absolute("sorus.png"))
-                )
-                .addChild(
-                    List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL)
-                        .setX(Side(Side.ZERO))
-                        .setY(Side(Side.ZERO))
-                        .setHeight(Relative(0.7))
-                        .apply { list: Container ->
-                            for (tab in tabs) {
-                                list.addChild(Container()
-                                    .setWidth(Copy())
-                                    .setPadding(Relative(0.01))
-                                    .setBackgroundCornerRadius(Relative(0.0075))
-                                    .setOnClick { state: MutableMap<String, Any> -> state["currentTab"] = tab }
-                                    .setBackgroundColor(Dependent(Function { state: Map<String, Any> ->
-                                        return@Function if (state["currentTab"] == tab) {
-                                            Color.fromRGB(20, 118, 188, 255)
-                                        } else {
-                                            Color.fromRGB(24, 24, 24, 255)
-                                        }
-                                    }))
-                                    .addChild(
-                                        Container()
-                                            .setWidth(Relative(0.5))
-                                            .setHeight(Relative(0.5))
-                                            .setBackgroundImage(Absolute("$tab.png"))
-                                    )
-                                )
-                                    .addChild(
-                                        Container()
-                                            .setWidth(Copy(0.1))
-                                    )
+            Container().apply2 {
+                    y = Side.POSITIVE.toSide()
+                    width = 0.53.toRelative()
+                    height = 0.09.toRelative()
+                    padding = 0.01.toRelative()
+
+                    backgroundCornerRadius = 0.0075.toRelative()
+                    backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
+
+                    children += Container().apply2 {
+                        x = Side.NEGATIVE.toSide()
+                        width = Copy()
+                        height = 0.7.toRelative()
+                        padding = 0.02.toRelative()
+                        backgroundImage = "sorus.png".toAbsolute()
+                    }
+
+                    children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL).apply2 {
+                        x = Side.ZERO.toSide()
+                        y = Side.ZERO.toSide()
+                        height = 0.7.toRelative()
+
+                        for (tab in tabs) {
+                            children += Container().apply2 {
+                                width = Copy()
+                                padding = 0.01.toRelative()
+                                backgroundCornerRadius = 0.0075.toRelative()
+                                backgroundColor = Function { state: Map<String, Any> ->
+                                    return@Function if (state["currentTab"] == tab) {
+                                        Color.fromRGB(20, 118, 188, 255)
+                                    } else {
+                                        Color.fromRGB(24, 24, 24, 255)
+                                    }
+                                }.toDependent()
+
+                                onClick = { state ->
+                                    state["currentTab"] = tab
+                                }
+
+                                children += Container().apply2 {
+                                    width = 0.5.toRelative()
+                                    height = 0.5.toRelative()
+                                    backgroundImage = "$tab.png".toAbsolute()
+                                }
                             }
-                        })
+
+                            children += Container().apply2 {
+                                width = 0.1.toCopy()
+                            }
+                        }
+                    }
+                }
         )
     }
 

@@ -21,9 +21,7 @@ class Perspective : ModuleDisableable("perspective") {
 
     init {
         register("key", Setting(Key.F).also { key = it })
-        EventManager.register(
-            KeyEvent::class.java
-        ) { event: KeyEvent -> onKey(event) }
+        EventManager.register(this::onKey)
     }
 
     private fun onKey(event: KeyEvent) {

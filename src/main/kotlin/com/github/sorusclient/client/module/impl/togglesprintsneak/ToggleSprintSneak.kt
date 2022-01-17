@@ -28,9 +28,7 @@ class ToggleSprintSneak : ModuleDisableable("toggleSprintSneak") {
         register("toggleSneak", Setting(false).also { toggleSneak = it })
         register("useCustomSneakKey", Setting(false).also { useCustomSneakKey = it })
         register("customSneakKey", Setting(Key.CONTROL_LEFT).also { customSneakKey = it })
-        EventManager.register(
-            KeyEvent::class.java
-        ) { event: KeyEvent -> onKey(event) }
+        EventManager.register(this::onKey)
     }
 
     private fun onKey(event: KeyEvent) {

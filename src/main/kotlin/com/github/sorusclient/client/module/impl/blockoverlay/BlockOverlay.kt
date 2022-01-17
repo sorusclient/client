@@ -22,9 +22,7 @@ class BlockOverlay : ModuleDisableable("blockOverlay") {
         register("borderColor", Setting(Color.BLACK).also { borderColor = it })
         register("borderThickness", Setting(1.0).also { borderThickness = it })
         register("fillColor", Setting(Color.fromRGB(0, 0, 0, 0)).also { fillColor = it })
-        EventManager.register(
-            BlockOutlineRenderEvent::class.java
-        ) { event: BlockOutlineRenderEvent -> preRenderBlockOutline(event) }
+        EventManager.register(this::preRenderBlockOutline)
     }
 
     private fun preRenderBlockOutline(event: BlockOutlineRenderEvent) {

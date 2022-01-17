@@ -13,15 +13,18 @@ import java.util.function.Consumer
 import kotlin.collections.List
 
 open class Container : Component() {
-    private var backgroundCornerRadius: Constraint = Absolute(0.0)
+    var backgroundCornerRadius: Constraint = Absolute(0.0)
+
+    var backgroundColor: Constraint? = null
     private var topLeftBackgroundColor: Constraint? = null
     private var bottomLeftBackgroundColor: Constraint? = null
     private var bottomRightBackgroundColor: Constraint? = null
     private var topRightBackgroundColor: Constraint? = null
-    private var backgroundImage: Constraint? = null
-    private var padding: Constraint = Absolute(0.0)
-    protected val children: MutableList<Component> = ArrayList()
-    private var onClick: Consumer<MutableMap<String, Any>>? = null
+
+    var backgroundImage: Constraint? = null
+    var padding: Constraint = Absolute(0.0)
+    val children: MutableList<Component> = ArrayList()
+    var onClick: ((MutableMap<String, Any>) -> Unit)? = null
     private var onDoubleClick: Consumer<Map<String, Any>>? = null
     private var onDrag: Consumer<Pair<MutableMap<String, Any>, Pair<Double, Double>>>? = null
     private var onKey: Consumer<Pair<MutableMap<String, Any>, Key>>? = null
@@ -57,7 +60,8 @@ open class Container : Component() {
     }
 
     fun setBackgroundColor(backgroundColor: Color): Container {
-        return this.setBackgroundColor(Absolute(backgroundColor))
+        this.backgroundColor = Absolute(backgroundColor)
+        return this
     }
 
     fun setBackgroundColor(backgroundColor: Constraint): Container {
@@ -114,7 +118,7 @@ open class Container : Component() {
         return this
     }
 
-    fun setOnClick(onClick: Consumer<MutableMap<String, Any>>): Container {
+    fun setOnClick(onClick: (MutableMap<String, Any>) -> Unit): Container {
         this.onClick = onClick
         return this
     }
@@ -153,6 +157,11 @@ open class Container : Component() {
         return this
     }
 
+    /*fun apply2(consumer: (Container) -> Unit): Container {
+        consumer(this)
+        return this
+    }*/
+
     open inner class Runtime : Component.Runtime() {
         private var widthInternal = 0.0
         private var heightInternal = 0.0
@@ -171,6 +180,10 @@ open class Container : Component() {
         private var heldClick = false
 
         override fun render(x: Double, y: Double, width: Double, height: Double) {
+            for (child in children) {
+                child.parent = this@Container
+            }
+
             placedComponents.clear()
             placedComponents2.clear()
             val container = this@Container
@@ -221,6 +234,15 @@ open class Container : Component() {
                     container.bottomLeftBackgroundColor!!.getColorValue(this),
                     container.bottomRightBackgroundColor!!.getColorValue(this),
                     container.topRightBackgroundColor!!.getColorValue(this)
+                )
+            } else if (container.backgroundColor != null) {
+                renderer.drawRectangle(
+                    x - width / 2,
+                    y - height / 2,
+                    width,
+                    height,
+                    container.backgroundCornerRadius.getCornerRadiusValue(this),
+                    container.backgroundColor!!.getColorValue(this)
                 )
             }
             placedComponents.add(Pair(null, doubleArrayOf(width / 2 + 0.5, 0.0, 1.0, height + 1, 0.0)))
@@ -319,7 +341,7 @@ open class Container : Component() {
                 if (event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2) {
                     if (onClick != null) {
                         handled = true
-                        onClick!!.accept(state)
+                        onClick!!(state)
                     }
                     heldClick = true
                     if (System.currentTimeMillis() - prevClick < 400) {

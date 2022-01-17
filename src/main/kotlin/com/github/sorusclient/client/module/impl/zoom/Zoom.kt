@@ -23,9 +23,7 @@ class Zoom : ModuleDisableable("zoom") {
         register("fov", Setting(30.0).also { fov = it })
         register("sensitivity", Setting(0.5).also { sensitivity = it })
         register("cinematicCamera", Setting(false).also { cinematicCamera = it })
-        EventManager.register(
-            KeyEvent::class.java
-        ) { event: KeyEvent -> onKey(event) }
+        EventManager.register(this::onKey)
     }
 
     private fun onKey(event: KeyEvent) {
