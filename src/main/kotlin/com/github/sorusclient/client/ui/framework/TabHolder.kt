@@ -5,7 +5,7 @@ import kotlin.collections.List
 class TabHolder : Container() {
     private val tabs: MutableMap<String?, Component?> = HashMap()
     private var defaultTab: String? = null
-    private var stateId: String? = null
+    var stateId: String? = null
 
     init {
         runtime = Runtime()

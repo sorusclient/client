@@ -1,13 +1,13 @@
 package com.github.sorusclient.client.ui.framework
 
-import com.github.sorusclient.client.util.Pair
-
 class Scroll(type: Int) : List(type) {
     init {
         runtime = Runtime()
-        addStoredState("scroll")
-        setOnInit { state: Pair<Container, MutableMap<String, Any>> -> state.second["scroll"] = 0.0 }
-        setOnScroll { state: Pair<Double, MutableMap<String, Any>> ->
+        storedState += "scroll"
+        onInit = { state ->
+            state.second["scroll"] = 0.0
+        }
+        onScroll = { state ->
             state.second["scroll"] = state.second["scroll"] as Double + state.first * 3
         }
     }

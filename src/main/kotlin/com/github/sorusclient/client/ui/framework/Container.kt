@@ -16,90 +16,25 @@ open class Container : Component() {
     var backgroundCornerRadius: Constraint = Absolute(0.0)
 
     var backgroundColor: Constraint? = null
-    private var topLeftBackgroundColor: Constraint? = null
-    private var bottomLeftBackgroundColor: Constraint? = null
-    private var bottomRightBackgroundColor: Constraint? = null
-    private var topRightBackgroundColor: Constraint? = null
+    var topLeftBackgroundColor: Constraint? = null
+    var bottomLeftBackgroundColor: Constraint? = null
+    var bottomRightBackgroundColor: Constraint? = null
+    var topRightBackgroundColor: Constraint? = null
 
     var backgroundImage: Constraint? = null
     var padding: Constraint = Absolute(0.0)
     val children: MutableList<Component> = ArrayList()
     var onClick: ((MutableMap<String, Any>) -> Unit)? = null
     private var onDoubleClick: Consumer<Map<String, Any>>? = null
-    private var onDrag: Consumer<Pair<MutableMap<String, Any>, Pair<Double, Double>>>? = null
-    private var onKey: Consumer<Pair<MutableMap<String, Any>, Key>>? = null
-    private var onInit: Consumer<Pair<Container, MutableMap<String, Any>>>? = null
-    private var onScroll: Consumer<Pair<Double, MutableMap<String, Any>>>? = null
-    private val onUpdate: MutableList<Consumer<MutableMap<String, Any>>> = ArrayList()
-    private var scissor = false
+    var onDrag: ((Pair<MutableMap<String, Any>, Pair<Double, Double>>) -> Unit)? = null
+    var onKey: ((Pair<MutableMap<String, Any>, Key>) -> Unit)? = null
+    var onInit: ((Pair<Container, MutableMap<String, Any>>) -> Unit)? = null
+    var onScroll: ((Pair<Double, MutableMap<String, Any>>) -> Unit)? = null
+    val onUpdate: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
+    var scissor = false
 
     init {
         runtime = Runtime()
-    }
-
-    override fun setX(x: Constraint): Container {
-        return super.setX(x) as Container
-    }
-
-    override fun setY(y: Constraint): Container {
-        return super.setY(y) as Container
-    }
-
-    override fun setWidth(width: Constraint): Container {
-        return super.setWidth(width) as Container
-    }
-
-    override fun setHeight(height: Constraint): Container {
-        return super.setHeight(height) as Container
-    }
-
-    //TODO: Make it max out at width / height so now weird looking shapes
-    fun setBackgroundCornerRadius(backgroundCornerRadius: Constraint): Container {
-        this.backgroundCornerRadius = backgroundCornerRadius
-        return this
-    }
-
-    fun setBackgroundColor(backgroundColor: Color): Container {
-        this.backgroundColor = Absolute(backgroundColor)
-        return this
-    }
-
-    fun setBackgroundColor(backgroundColor: Constraint): Container {
-        topLeftBackgroundColor = backgroundColor
-        bottomLeftBackgroundColor = backgroundColor
-        bottomRightBackgroundColor = backgroundColor
-        topRightBackgroundColor = backgroundColor
-        return this
-    }
-
-    fun setTopLeftBackgroundColor(topLeftBackgroundColor: Constraint): Container {
-        this.topLeftBackgroundColor = topLeftBackgroundColor
-        return this
-    }
-
-    fun setBottomLeftBackgroundColor(bottomLeftBackgroundColor: Constraint): Container {
-        this.bottomLeftBackgroundColor = bottomLeftBackgroundColor
-        return this
-    }
-
-    fun setBottomRightBackgroundColor(bottomRightBackgroundColor: Constraint): Container {
-        this.bottomRightBackgroundColor = bottomRightBackgroundColor
-        return this
-    }
-
-    fun setTopRightBackgroundColor(topRightBackgroundColor: Constraint): Container {
-        this.topRightBackgroundColor = topRightBackgroundColor
-        return this
-    }
-
-    fun setBackgroundImage(backgroundImage: Constraint): Container {
-        this.backgroundImage = backgroundImage
-        return this
-    }
-
-    fun setPadding(padding: Constraint): Container {
-        this.padding = padding
-        return this
     }
 
     open fun addChild(child: Component): Container {
@@ -108,59 +43,10 @@ open class Container : Component() {
         return this
     }
 
-    fun apply(consumer: Consumer<Container>): Container {
-        consumer.accept(this)
-        return this
-    }
-
-    fun setOnDoubleClick(onDoubleClick: Consumer<Map<String, Any>>): Container {
-        this.onDoubleClick = onDoubleClick
-        return this
-    }
-
-    fun setOnClick(onClick: (MutableMap<String, Any>) -> Unit): Container {
-        this.onClick = onClick
-        return this
-    }
-
-    fun setOnDrag(onDrag: Consumer<Pair<MutableMap<String, Any>, Pair<Double, Double>>>): Container {
-        this.onDrag = onDrag
-        return this
-    }
-
-    fun setOnKey(onKey: Consumer<Pair<MutableMap<String, Any>, Key>>): Container {
-        this.onKey = onKey
-        return this
-    }
-
-    fun setOnInit(onInit: Consumer<Pair<Container, MutableMap<String, Any>>>): Container {
-        this.onInit = onInit
-        return this
-    }
-
-    fun setOnScroll(onScroll: Consumer<Pair<Double, MutableMap<String, Any>>>) {
-        this.onScroll = onScroll
-    }
-
-    fun addOnUpdate(onUpdate: Consumer<MutableMap<String, Any>>): Container {
-        this.onUpdate.add(onUpdate)
-        return this
-    }
-
-    fun setScissor(scissor: Boolean): Container {
-        this.scissor = scissor
-        return this
-    }
-
     fun clear(): Container {
         children.clear()
         return this
     }
-
-    /*fun apply2(consumer: (Container) -> Unit): Container {
-        consumer(this)
-        return this
-    }*/
 
     open inner class Runtime : Component.Runtime() {
         private var widthInternal = 0.0
@@ -180,10 +66,6 @@ open class Container : Component() {
         private var heldClick = false
 
         override fun render(x: Double, y: Double, width: Double, height: Double) {
-            for (child in children) {
-                child.parent = this@Container
-            }
-
             placedComponents.clear()
             placedComponents2.clear()
             val container = this@Container
@@ -194,15 +76,20 @@ open class Container : Component() {
             if (!(getState("hasInit") as Boolean)) {
                 if (onInit != null) {
                     val state = this.availableState
-                    onInit!!.accept(Pair(this@Container, state))
+                    onInit!!(Pair(this@Container, state))
                     this.availableState = state
                 }
                 setState("selected", false)
                 setState("hasInit", true)
             }
+
+            for (child in getChildren()) {
+                child.parent = this@Container
+            }
+
             val state = this.availableState
             for (onUpdate in onUpdate) {
-                onUpdate.accept(state)
+                onUpdate(state)
             }
             this.availableState = state
             if (getState("hidden") as Boolean) {
@@ -325,6 +212,7 @@ open class Container : Component() {
             if (event.isPressed && event.button === Button.PRIMARY) {
                 state["selected"] = event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2
             }
+
             var handled = false
             for (component in placedComponents2) {
                 handled = component.runtime.handleMouseEvent(event)
@@ -332,11 +220,13 @@ open class Container : Component() {
                     return true
                 }
             }
+
             if (event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2) {
                 if (event.wheel != 0.0 && onScroll != null) {
-                    onScroll!!.accept(Pair(event.wheel, state))
+                    onScroll!!(Pair(event.wheel, state))
                 }
             }
+
             if (event.isPressed && event.button === Button.PRIMARY) {
                 if (event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2) {
                     if (onClick != null) {
@@ -358,10 +248,11 @@ open class Container : Component() {
             } else if (!event.isPressed && event.button === Button.PRIMARY) {
                 heldClick = false
             }
+
             if (heldClick) {
                 if (onDrag != null) {
                     handled = true
-                    onDrag!!.accept(
+                    onDrag!!(
                         Pair(
                             state,
                             Pair(
@@ -380,7 +271,7 @@ open class Container : Component() {
             if (getState("selected") as Boolean) {
                 if (onKey != null) {
                     val state = this.availableState
-                    onKey!!.accept(Pair(state, event.key))
+                    onKey!!(Pair(state, event.key))
                     this.availableState = state
                 }
             }

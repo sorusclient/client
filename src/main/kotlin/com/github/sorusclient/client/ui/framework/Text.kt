@@ -8,11 +8,11 @@ import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.util.Color
 
 class Text : Component() {
-    private var padding: Constraint = Absolute(0.0)
-    private var fontRenderer: Constraint? = null
-    private var text: Constraint? = null
-    private var scale: Constraint = Absolute(1.0)
-    private var textColor: Constraint = Absolute(Color.WHITE)
+    var padding: Constraint = Absolute(0.0)
+    var fontRenderer: Constraint? = null
+    var text: Constraint? = null
+    var scale: Constraint = Absolute(1.0)
+    var textColor: Constraint = Absolute(Color.WHITE)
 
     init {
         runtime = Runtime()

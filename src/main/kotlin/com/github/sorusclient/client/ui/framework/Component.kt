@@ -14,43 +14,13 @@ abstract class Component {
     var height: Constraint = Flexible()
     lateinit var runtime: Runtime
     var parent: Container? = null
-    private val storedState: MutableList<String> = ArrayList()
-    private val onStateUpdates: MutableMap<String, Consumer<MutableMap<String, Any>>> = HashMap()
+    val storedState: MutableList<String> = ArrayList()
+    val onStateUpdate: MutableMap<String, (MutableMap<String, Any>) -> Unit> = HashMap()
 
     init {
-        addStoredState("selected")
-        addStoredState("hasInit")
-        addStoredState("hidden")
-    }
-
-    open fun setX(x: Constraint): Component {
-        this.x = x
-        return this
-    }
-
-    open fun setY(y: Constraint): Component {
-        this.y = y
-        return this
-    }
-
-    open fun setWidth(width: Constraint): Component {
-        this.width = width
-        return this
-    }
-
-    open fun setHeight(height: Constraint): Component {
-        this.height = height
-        return this
-    }
-
-    fun addStoredState(storedState: String): Component {
-        this.storedState.add(storedState)
-        return this
-    }
-
-    fun addOnStateUpdate(state: String, onStateUpdate: Consumer<MutableMap<String, Any>>): Component {
-        onStateUpdates[state] = onStateUpdate
-        return this
+        storedState += "selected"
+        storedState += "hasInit"
+        storedState += "hidden"
     }
 
     abstract inner class Runtime {
@@ -82,10 +52,10 @@ abstract class Component {
         }
 
         open fun onStateUpdate(id: String, value: Any) {
-            val onStateUpdate = onStateUpdates[id]
+            val onStateUpdate = onStateUpdate[id]
             if (onStateUpdate != null) {
                 val state = availableState
-                onStateUpdate.accept(state)
+                onStateUpdate(state)
                 availableState = state
             }
         }

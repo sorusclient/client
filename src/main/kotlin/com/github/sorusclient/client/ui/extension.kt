@@ -2,7 +2,6 @@ package com.github.sorusclient.client.ui
 
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.util.Color
-import org.omg.CORBA.Object
 import java.util.function.Function
 
 inline fun <T> T.apply2(block: T.() -> Unit): T {
@@ -34,6 +33,6 @@ fun Double.toCopy(): Copy {
     return Copy(this)
 }
 
-fun <T: Any> Function<Map<String, Any>, T>.toDependent(): Dependent {
-    return Dependent(this as Function<Map<String, Any>, Any>)
+fun <T: Any> ((Map<String, Any>) -> T).toDependent(): Dependent {
+    return Dependent(this)
 }

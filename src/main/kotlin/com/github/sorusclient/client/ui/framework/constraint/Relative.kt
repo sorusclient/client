@@ -14,20 +14,17 @@ class Relative @JvmOverloads constructor(private val percent: Double, private va
     }
 
     override fun getWidthValue(componentRuntime: Component.Runtime): Double {
-        val size = if (otherSide) componentRuntime.getParent()!!
-            .height else componentRuntime.getParent()!!.width
+        val size = if (otherSide) componentRuntime.getParent()!!.height else componentRuntime.getParent()!!.width
         return size * percent
     }
 
     override fun getHeightValue(componentRuntime: Component.Runtime): Double {
-        val size = if (otherSide) componentRuntime.getParent()!!
-            .width else componentRuntime.getParent()!!.height
+        val size = if (otherSide) componentRuntime.getParent()!!.width else componentRuntime.getParent()!!.height
         return size * percent
     }
 
     override fun getPaddingValue(componentRuntime: Component.Runtime): Double {
-        val size = if (otherSide) componentRuntime.getParent()!!
-            .height else componentRuntime.getParent()!!.width
+        val size = if (otherSide) componentRuntime.getParent()!!.height else componentRuntime.getParent()!!.width
         return size * percent
     }
 
