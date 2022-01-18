@@ -8,6 +8,7 @@ import v1_8_9.net.minecraft.util.hit.HitResult
 
 object OldAnimationsHook {
 
+    @JvmStatic
     fun getPartialTicks(partialTicks: Float): Float {
         val oldAnimations = ModuleManager.get<OldAnimations>()
         return if (oldAnimations.isEnabled() && oldAnimations.isOldBlockHitValue()) {

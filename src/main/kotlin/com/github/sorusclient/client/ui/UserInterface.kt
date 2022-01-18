@@ -184,7 +184,7 @@ object UserInterface {
                                                 actualSetting.setValueRaw(valueToSet.toLong())
                                             }
                                             else -> {
-                                                println("Strange Type on Slider")
+                                                error("Strange Type on Slider")
                                             }
                                         }
                                     }

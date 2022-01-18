@@ -3,6 +3,7 @@ package com.github.sorusclient.client.adapter.v1_8_9.event
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.event.EventManager
+import com.mojang.realmsclient.gui.ChatFormatting
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
@@ -167,4 +168,12 @@ object EventHook {
         EventManager.call(event)
         return event
     }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onChatReceived(message: String) {
+        val event = ChatReceivedEvent(message)
+        EventManager.call(event)
+    }
+
 }

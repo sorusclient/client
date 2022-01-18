@@ -11,7 +11,9 @@ import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
+@Suppress("UNUSED")
 class EventTransformer : Transformer(), Listener {
+
     override fun run() {
         GlassLoader.getInstance().registerTransformer(EventTransformer::class.java)
     }
@@ -37,6 +39,11 @@ class EventTransformer : Transformer(), Listener {
         }
         register("v1_8_9/net/minecraft/client/render/WorldRenderer") { classNode: ClassNode ->
             transformWorldRenderer(
+                classNode
+            )
+        }
+        register("v1_8_9/net/minecraft/client/gui/hud/ChatHud") { classNode: ClassNode ->
+            transformChatHud(
                 classNode
             )
         }
@@ -269,4 +276,17 @@ class EventTransformer : Transformer(), Listener {
                 }
             })
     }
+
+    private fun transformChatHud(classNode: ClassNode) {
+        val render = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/ChatHud#addToMessageHistory(Ljava/lang/String;)V")
+        findMethod(classNode, render)
+            .apply { methodNode ->
+                findReturns(methodNode)
+                    .apply(InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                        insnList.add(this.getHook("onChatReceived"))
+                    }))
+            }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.module
 
+import com.github.sorusclient.client.module.impl.autogg.AutoGG
 import com.github.sorusclient.client.module.impl.blockoverlay.BlockOverlay
 import com.github.sorusclient.client.module.impl.enhancements.Enhancements
 import com.github.sorusclient.client.module.impl.environmentchanger.EnvironmentChanger
@@ -19,6 +20,7 @@ object ModuleManager {
     }
 
     private fun registerInternalModules() {
+        register(AutoGG(), "AutoGG", "test")
         register(BlockOverlay(), "Block Overlay", "test")
         register(Enhancements(), "Enhancements", "test")
         register(EnvironmentChanger(), "Environment Changer", "test")

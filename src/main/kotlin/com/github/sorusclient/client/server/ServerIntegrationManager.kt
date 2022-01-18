@@ -17,11 +17,15 @@ object ServerIntegrationManager {
     private const val baseServersUrl = "https://raw.githubusercontent.com/sorusclient/asset/main/server"
     private const val serversJsonUrl = "$baseServersUrl/servers.json"
 
+    val listeners: MutableMap<String, (Any) -> Unit> = HashMap()
+
     init {
         val eventManager = EventManager
         eventManager.register(this::onGameJoin)
         eventManager.register(this::onGameLeave)
         eventManager.register(this::onCustomPacket)
+
+        listeners["modules"] = this::handleModule
     }
 
     private fun onGameJoin(event: GameJoinEvent) {
@@ -69,15 +73,21 @@ object ServerIntegrationManager {
     private fun applyServerConfiguration(json: String) {
         val jsonObject = JSONObject(json).toMap()
         try {
-            val modules = jsonObject["module"] as Map<String, Any>?
-            if (modules != null) {
-                for ((key, value) in modules) {
-                    val module = ModuleManager[key]
-                    module!!.loadForced(value as Map<String, Any>)
+            for ((key, value) in jsonObject) {
+                if (listeners[key] != null) {
+                    listeners[key]?.let { it(value) }
                 }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
+        }
+    }
+
+    private fun handleModule(json: Any) {
+        val modules = json as JSONObject
+        for ((key, value) in modules.toMap()) {
+            val module = ModuleManager[key]
+            module!!.loadForced(value as Map<String, Any>)
         }
     }
 

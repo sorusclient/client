@@ -12,5 +12,7 @@ interface IAdapter {
     var perspective: PerspectiveMode
     val currentServer: IServer?
     fun getKeyBind(type: KeyBindType): IKeyBind
+    fun sendPlayerMessage(message: String)
+
     val renderer: IRenderer
 }

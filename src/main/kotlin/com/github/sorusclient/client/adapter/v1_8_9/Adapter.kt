@@ -105,6 +105,14 @@ class Adapter : Listener, IAdapter {
         return KeyBindImpl(keyBinding)
     }
 
+    override fun sendPlayerMessage(message: String) {
+        if (MinecraftClient.getInstance().player != null) {
+            MinecraftClient.getInstance().player.sendChatMessage(message)
+        } else {
+            error("Attempted to send player message but player was null")
+        }
+    }
+
     override val renderer: IRenderer
         get() = RendererImpl()
 }
