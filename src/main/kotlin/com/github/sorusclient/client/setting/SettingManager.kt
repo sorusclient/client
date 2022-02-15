@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.setting
 
+import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
 
@@ -12,12 +13,22 @@ object SettingManager {
         private set
     private val allProfiles: MutableList<Profile?> = ArrayList()
 
+    init {
+        profileFile.mkdirs()
+    }
+
     fun register(settingContainer: SettingContainer) {
         settingContainers[settingContainer.id] = settingContainer
     }
 
     fun loadProfiles() {
-        mainProfile = Profile.Companion.read(File(profileFile, "main"))
+        val mainProfileFolder = File(profileFile, "main")
+        if (!mainProfileFolder.exists()) {
+            mainProfileFolder.mkdirs()
+            FileUtils.write(File(mainProfileFolder, "settings.json"), "{}")
+        }
+
+        mainProfile = Profile.read(mainProfileFolder)
         addAllProfiles(mainProfile)
     }
 

@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.module.impl.oldanimations.v1_8_9
 
-import com.github.glassmc.loader.GlassLoader
-import com.github.glassmc.loader.Listener
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.glassmc.loader.api.Listener
 import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes

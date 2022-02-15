@@ -3,6 +3,9 @@ package com.github.sorusclient.client.module.impl.zoom
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
+import com.github.sorusclient.client.adapter.event.GetFOVEvent
+import com.github.sorusclient.client.adapter.event.GetSensitivityEvent
+import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.module.ModuleDisableable
@@ -24,6 +27,24 @@ class Zoom : ModuleDisableable("zoom") {
         register("sensitivity", Setting(0.5).also { sensitivity = it })
         register("cinematicCamera", Setting(false).also { cinematicCamera = it })
         EventManager.register(this::onKey)
+
+        EventManager.register<GetFOVEvent> { event ->
+            if (applyZoom()) {
+                event.fov = fov.value
+            }
+        }
+
+        EventManager.register<GetSensitivityEvent> { event ->
+            if (applyZoom()) {
+                event.sensitivity = event.sensitivity * sensitivity.value
+            }
+        }
+
+        EventManager.register<GetUseCinematicCamera> { event ->
+            if (applyZoom()) {
+                event.useCinematicCamera = cinematicCamera.value
+            }
+        }
     }
 
     private fun onKey(event: KeyEvent) {
@@ -36,10 +57,6 @@ class Zoom : ModuleDisableable("zoom") {
 
     fun applyZoom(): Boolean {
         return isEnabled() && toggled
-    }
-
-    fun getFovValue(): Double {
-        return fov.value
     }
 
     fun getSensitivityValue(): Double {

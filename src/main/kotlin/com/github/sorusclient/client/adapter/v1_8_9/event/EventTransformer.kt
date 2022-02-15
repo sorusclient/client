@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.adapter.v1_8_9.event
 
-import com.github.glassmc.loader.GlassLoader
-import com.github.glassmc.loader.Listener
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.glassmc.loader.api.Listener
 import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.transform.Applier.Insert
@@ -47,6 +47,11 @@ class EventTransformer : Transformer(), Listener {
                 classNode
             )
         }
+        register("v1_8_9/net/minecraft/client/ClientBrandRetriever") { classNode: ClassNode ->
+            transformClientBrandRetriever(
+                    classNode
+            )
+        }
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {
@@ -56,6 +61,60 @@ class EventTransformer : Transformer(), Listener {
                 findReturns(methodNode)
                     .apply(InsertBefore(methodNode, this.getHook("onRender")))
             }
+
+        val getFov = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#getFov(FZ)F")
+
+        findMethod(classNode, getFov)
+                .apply { methodNode ->
+                    findReturns(methodNode)
+                            .apply(InsertBefore(methodNode, createList { insnList ->
+                                insnList.add(this.getHook("onGetFOV"))
+                            }))
+                }
+
+        findMethod(classNode, render)
+                .apply { methodNode ->
+                    findVarReferences(methodNode, 5, VarReferenceType.STORE)
+                            .nth(0)
+                            .apply(InsertBefore(methodNode, createList { insnList ->
+                                insnList.add(this.getHook("onGetSensitivity"))
+                            }))
+                }
+
+
+        val updateLightmap = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#updateLightmap(F)V")
+
+        findMethod(classNode, updateLightmap)
+                .apply { methodNode ->
+                    findVarReferences(methodNode, 17, VarReferenceType.STORE)
+                            .nth(2)
+                            .apply(InsertBefore(methodNode, createList { insnList ->
+                                insnList.add(this.getHook("onGetGamma"))
+                            }))
+                }
+
+        val tick = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#tick()V")
+        val smoothCameraEnabled = Identifier.parse("v1_8_9/net/minecraft/client/options/GameOptions#smoothCameraEnabled")
+        for (methodNode in classNode.methods) {
+            if (methodNode.name == render.methodName && methodNode.desc == render.methodDesc) {
+                for (node in methodNode.instructions.toArray()) {
+                    if (node is FieldInsnNode && node.owner == smoothCameraEnabled.className && node.name == smoothCameraEnabled.fieldName) {
+                        insertZoomCinematicCheck(methodNode, node)
+                    }
+                }
+            }
+            if (methodNode.name == tick.methodName && methodNode.desc == tick.methodDesc) {
+                for (node in methodNode.instructions.toArray()) {
+                    if (node is FieldInsnNode && node.owner == smoothCameraEnabled.className && node.name == smoothCameraEnabled.fieldName) {
+                        insertZoomCinematicCheck(methodNode, node)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun insertZoomCinematicCheck(methodNode: MethodNode, node: AbstractInsnNode) {
+        methodNode.instructions.insert(node, this.getHook("onGetUseCinematicCamera"))
     }
 
     private fun transformMinecraftClient(classNode: ClassNode) {
@@ -287,6 +346,18 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(this.getHook("onChatReceived"))
                     }))
             }
+    }
+
+    private fun transformClientBrandRetriever(classNode: ClassNode) {
+        val getClientModName = Identifier.parse("v1_8_9/net/minecraft/client/ClientBrandRetriever#getClientModName()Ljava/lang/String;")
+
+        findMethod(classNode, getClientModName)
+                .apply { methodNode ->
+                    findReturns(methodNode)
+                            .apply(InsertBefore(methodNode, createList { insnList ->
+                                insnList.add(this.getHook("onGetClientBrand"))
+                            }))
+                }
     }
 
 }

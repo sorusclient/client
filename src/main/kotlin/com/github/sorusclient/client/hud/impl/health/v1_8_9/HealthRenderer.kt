@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.hud.impl.health.v1_8_9
 
-import com.github.glassmc.loader.GlassLoader
-import com.github.glassmc.loader.Listener
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.BackgroundType
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.HeartType

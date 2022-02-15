@@ -176,4 +176,44 @@ object EventHook {
         EventManager.call(event)
     }
 
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetClientBrand(brand: String): String {
+        val event = GetClientBrandEvent(brand)
+        EventManager.call(event)
+        return event.brand
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetFOV(fov: Float): Float {
+        val event = GetFOVEvent(fov.toDouble())
+        EventManager.call(event)
+        return event.fov.toFloat()
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetSensitivity(sensitivity: Float): Float {
+        val event = GetSensitivityEvent(sensitivity.toDouble())
+        EventManager.call(event)
+        return event.sensitivity.toFloat()
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetUseCinematicCamera(useCinematicCamera: Boolean): Boolean {
+        val event = GetUseCinematicCamera(useCinematicCamera)
+        EventManager.call(event)
+        return event.useCinematicCamera
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetGamma(gamma: Float): Float {
+        val event = GetGammaEvent(gamma.toDouble())
+        EventManager.call(event)
+        return event.gamma.toFloat()
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.github.sorusclient.client.transform
 
-import com.github.glassmc.loader.loader.ITransformer
 import com.github.glassmc.loader.util.Identifier
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
@@ -9,7 +8,7 @@ import org.objectweb.asm.Type
 import org.objectweb.asm.tree.*
 import java.util.function.Consumer
 
-open class Transformer : ITransformer {
+open class Transformer : com.github.glassmc.loader.api.loader.Transformer {
 
     private var hookClass: Class<*>? = null
     private val transformers: MutableMap<String, Consumer<ClassNode>> = HashMap()
@@ -48,7 +47,7 @@ open class Transformer : ITransformer {
     protected fun findReturns(methodNode: MethodNode): Result<InsnNode> {
         val results: MutableList<InsnNode> = ArrayList()
         for (node in methodNode.instructions) {
-            if (node.opcode == Opcodes.RETURN) {
+            if (node.opcode >= Opcodes.IRETURN && node.opcode <= Opcodes.RETURN) {
                 results.add(node as InsnNode)
             }
         }

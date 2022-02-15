@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.glassmc:kiln:v0.5.14")
+        classpath("com.github.glassmc:kiln:v0.6.12")
     }
 }
 
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.glassmc:loader:v0.6.5"
+    implementation "com.github.glassmc:loader:v0.8.2"
 
     shadowImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
@@ -37,4 +37,6 @@ dependencies {
     shadowImplementation "org.json:json:20211205"
 
     compileOnly minecraft("client", "1.8.9", "yarn")
+
+    implementation(files("run/shards/api-mapped.jar"))
 }

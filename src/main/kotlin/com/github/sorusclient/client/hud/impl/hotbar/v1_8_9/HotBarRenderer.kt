@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.hud.impl.hotbar.v1_8_9
 
-import com.github.glassmc.loader.GlassLoader
-import com.github.glassmc.loader.Listener
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.hud.impl.hotbar.IHotBarRenderer
 import org.lwjgl.opengl.GL11

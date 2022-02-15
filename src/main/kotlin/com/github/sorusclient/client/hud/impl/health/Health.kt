@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.hud.impl.health
 
-import com.github.glassmc.loader.GlassLoader
+import com.github.glassmc.loader.api.GlassLoader
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.ILivingEntity
 import com.github.sorusclient.client.adapter.IPotionEffect

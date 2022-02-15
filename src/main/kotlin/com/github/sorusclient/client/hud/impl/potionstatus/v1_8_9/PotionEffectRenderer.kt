@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.hud.impl.potionstatus.v1_8_9
 
-import com.github.glassmc.loader.GlassLoader
-import com.github.glassmc.loader.Listener
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
 import com.github.sorusclient.client.hud.impl.potionstatus.IPotionEffectRenderer
 import org.lwjgl.opengl.GL11

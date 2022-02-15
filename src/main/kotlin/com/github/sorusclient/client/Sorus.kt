@@ -1,8 +1,9 @@
 package com.github.sorusclient.client
 
-import com.github.glassmc.loader.GlassLoader
-import com.github.glassmc.loader.Listener
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IAdapter
+import com.github.sorusclient.client.adapter.event.GetClientBrandEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.module.ModuleManager
@@ -21,7 +22,7 @@ class Sorus : Listener {
         sorus.initialize()
     }
 
-    val components: MutableMap<Class<*>, Any> = HashMap()
+    private val components: MutableMap<Class<*>, Any> = HashMap()
 
     private fun initialize() {
         this.register(ModuleManager)
@@ -45,6 +46,10 @@ class Sorus : Listener {
         Runtime.getRuntime().addShutdownHook(Thread {
             SettingManager.saveCurrent()
         })
+
+        EventManager.register<GetClientBrandEvent> { event ->
+            event.brand = "sorus"
+        }
     }
 
     fun register(component: Any) {
@@ -54,9 +59,6 @@ class Sorus : Listener {
     fun register(clazz: Class<*>, component: Any) {
         components[clazz] = component
     }
-
-    val clientBrand: String
-        get() = "sorus"
 
     companion object {
         val instance: Sorus

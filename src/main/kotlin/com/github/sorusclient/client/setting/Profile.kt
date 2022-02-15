@@ -87,6 +87,7 @@ class Profile private constructor(
     companion object {
         fun read(folder: File): Profile {
             val children: MutableMap<String, Profile?> = HashMap()
+
             for (file in Objects.requireNonNull(folder.listFiles())) {
                 if (file.name != "settings.json") {
                     children[file.name] = read(File(folder, file.name))

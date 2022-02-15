@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.adapter
 
-import com.github.glassmc.loader.GlassLoader
+import com.github.glassmc.loader.api.GlassLoader
 
 object AdapterManager {
 
