@@ -113,6 +113,5 @@ class Adapter : Listener, IAdapter {
         }
     }
 
-    override val renderer: IRenderer
-        get() = RendererImpl()
+    override val renderer: IRenderer = RendererImpl()
 }

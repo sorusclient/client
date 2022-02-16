@@ -5,20 +5,27 @@ import com.github.sorusclient.client.adapter.IRenderer
 import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.RenderBuffer.DrawMode
 import com.github.sorusclient.client.util.Color
+import org.apache.commons.io.IOUtils
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL30
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.render.Tessellator
 import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.client.util.Window
-import v1_8_9.net.minecraft.util.Identifier
-import kotlin.math.cos
-import kotlin.math.sin
+import java.io.IOException
+import java.io.InputStream
+import java.nio.ByteBuffer
+import java.util.*
+import javax.imageio.ImageIO
 
 class RendererImpl : IRenderer {
+
     override fun draw(buffer: RenderBuffer) {
-        val mode: Int
-        mode = when (buffer.drawMode) {
+        val mode: Int = when (buffer.drawMode) {
             DrawMode.QUAD -> GL11.GL_QUADS
             else -> -1
         }
@@ -42,6 +49,113 @@ class RendererImpl : IRenderer {
         GL11.glLineWidth(thickness.toFloat())
     }
 
+    private var createdPrograms = false
+
+    private var imageProgram = 0
+    private var imageVao = 0
+
+    private var roundedRectangleProgram = 0
+    private var roundedRectangleVao = 0
+
+    private var roundedRectangleBorderProgram = 0
+    private var roundedRectangleBorderVao = 0
+
+    private fun createProgram(vertexShaderPath: String, fragmentShaderPath: String): Int {
+        val program = GL20.glCreateProgram()
+        val vertexShader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER)
+        try {
+            GL20.glShaderSource(vertexShader, IOUtils.toString(Objects.requireNonNull(RendererImpl::class.java.classLoader.getResourceAsStream(vertexShaderPath))))
+            GL20.glCompileShader(vertexShader)
+            val compiled = GL20.glGetShaderi(vertexShader, GL20.GL_COMPILE_STATUS)
+            if (compiled == 0) {
+                System.err.println(GL20.glGetShaderInfoLog(vertexShader, GL20.glGetShaderi(vertexShader, GL20.GL_INFO_LOG_LENGTH)))
+                throw IllegalStateException("Failed to compile shader")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        GL20.glAttachShader(program, vertexShader)
+        val fragmentShader = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER)
+        try {
+            GL20.glShaderSource(fragmentShader, IOUtils.toString(Objects.requireNonNull(RendererImpl::class.java.classLoader.getResourceAsStream(fragmentShaderPath))))
+            GL20.glCompileShader(fragmentShader)
+            val compiled = GL20.glGetShaderi(fragmentShader, GL20.GL_COMPILE_STATUS)
+            if (compiled == 0) {
+                System.err.println(GL20.glGetShaderInfoLog(fragmentShader, GL20.glGetShaderi(fragmentShader, GL20.GL_INFO_LOG_LENGTH)))
+                throw IllegalStateException("Failed to compile shader")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        GL20.glAttachShader(program, fragmentShader)
+        GL20.glLinkProgram(program)
+        val linked = GL20.glGetProgrami(program, GL20.GL_LINK_STATUS)
+        if (linked == 0) {
+            System.err.println(GL20.glGetProgramInfoLog(program, GL20.glGetProgrami(program, GL20.GL_INFO_LOG_LENGTH)))
+            throw IllegalStateException("Shader failed to link")
+        }
+        return program
+    }
+
+    private fun createPrograms() {
+        if (createdPrograms) return
+        createdPrograms = true
+        roundedRectangleProgram = createProgram("rounded_rectangle_vertex.glsl", "rectangle_fragment.glsl")
+        run {
+            roundedRectangleVao = GL30.glGenVertexArrays()
+            GL30.glBindVertexArray(roundedRectangleVao)
+            val vertices = floatArrayOf(
+                    1f, 1f,
+                    1f, 0f,
+                    0f, 0f,
+                    0f, 1f)
+
+            val verticesBuffer = BufferUtils.createFloatBuffer(vertices.size)
+            verticesBuffer.put(vertices).flip()
+            val vboID = GL15.glGenBuffers()
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
+            GL30.glBindVertexArray(0)
+        }
+        roundedRectangleBorderProgram = createProgram("rectangle_border_vertex.glsl", "rounded_rectangle_border_fragment.glsl")
+        run {
+            roundedRectangleBorderVao = GL30.glGenVertexArrays()
+            GL30.glBindVertexArray(roundedRectangleBorderVao)
+            val vertices = floatArrayOf(
+                    1f, 1f,
+                    1f, 0f,
+                    0f, 0f,
+                    0f, 1f)
+            val verticesBuffer = BufferUtils.createFloatBuffer(vertices.size)
+            verticesBuffer.put(vertices).flip()
+            val vboID = GL15.glGenBuffers()
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
+            GL30.glBindVertexArray(0)
+        }
+        imageProgram = createProgram("image_vertex.glsl", "image_fragment.glsl")
+        run {
+            imageVao = GL30.glGenVertexArrays()
+            GL30.glBindVertexArray(imageVao)
+            val vertices = floatArrayOf(
+                    1f, 1f,
+                    1f, 0f,
+                    0f, 0f,
+                    0f, 1f)
+            val verticesBuffer = BufferUtils.createFloatBuffer(vertices.size)
+            verticesBuffer.put(vertices).flip()
+            val vboID = GL15.glGenBuffers()
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
+            GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0)
+            GL30.glBindVertexArray(0)
+            GL30.glBindVertexArray(1)
+        }
+    }
+
     override fun drawRectangle(
         x: Double,
         y: Double,
@@ -53,7 +167,7 @@ class RendererImpl : IRenderer {
         bottomRightColor: Color,
         topRightColor: Color
     ) {
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
+        /*GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glEnable(GL11.GL_BLEND)
         GlStateManager.shadeModel(GL11.GL_SMOOTH)
         val tessellator = Tessellator.getInstance()
@@ -161,23 +275,122 @@ class RendererImpl : IRenderer {
                 bottomLeftColor.alpha.toFloat()
             ).next()
         }
-        tessellator.draw()
+        tessellator.draw()*/
+
+        this.createPrograms()
+
+        GL11.glEnable(GL11.GL_BLEND)
+
+        GL20.glUseProgram(roundedRectangleProgram)
+
+        GL30.glBindVertexArray(roundedRectangleVao)
+        GL20.glEnableVertexAttribArray(0)
+
+        val window = Window(MinecraftClient.getInstance())
+
+        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+        //TODO: Make colors vary for different corners
+        GL20.glUniform4f(2, topLeftColor.red.toFloat(), topLeftColor.green.toFloat(), topLeftColor.blue.toFloat(), topLeftColor.alpha.toFloat())
+        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+        GL20.glUniform1f(4, cornerRadius.toFloat())
+
+        GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
+
+        GL20.glDisableVertexAttribArray(0)
+        GL30.glBindVertexArray(0)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+
+        GL20.glUseProgram(0)
     }
 
-    //TODO: rounded images, probably could be done with just calculating x and y texture positions
-    override fun drawImage(imagePath: String?, x: Double, y: Double, width: Double, height: Double, color: Color) {
-        MinecraftClient.getInstance().textureManager.bindTexture(Identifier(imagePath))
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
+    private val textures: MutableMap<String, Int> = HashMap()
+
+    private fun getTexture(id: String): Int {
+        var texture = textures[id] ?: -1
+        if (texture == -1) {
+            createTexture(id)
+            GL11.glEnable(GL11.GL_POINT_SMOOTH)
+            texture = textures[id]!!
+        }
+        return texture
+    }
+
+    private fun setupTexture(inputStream: InputStream, antialias: Boolean): Int {
+        var glId = -1
+        try {
+            val bufferedImage = ImageIO.read(inputStream)
+            glId = GL11.glGenTextures()
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, glId)
+            val filter1: Int
+            val filter2: Int
+            if (antialias) {
+                filter1 = GL11.GL_LINEAR
+                filter2 = GL11.GL_LINEAR_MIPMAP_LINEAR
+            } else {
+                filter1 = GL11.GL_NEAREST
+                filter2 = GL11.GL_NEAREST_MIPMAP_NEAREST
+            }
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter1.toFloat())
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter2.toFloat())
+            val buffer = ByteBuffer.allocateDirect(bufferedImage.width * bufferedImage.height * 4)
+            val rgba = IntArray(bufferedImage.width * bufferedImage.height)
+            bufferedImage.getRGB(0, 0, bufferedImage.width, bufferedImage.height, rgba, 0, bufferedImage.width)
+            for (pixelY in 0 until bufferedImage.height) {
+                for (pixelX in 0 until bufferedImage.width) {
+                    val rgb = rgba[bufferedImage.width * pixelY + pixelX]
+                    var red = rgb shr 16 and 0xFF
+                    var green = rgb shr 8 and 0xFF
+                    var blue = rgb and 0xFF
+                    val alpha = rgb shr 24 and 0xFF
+                    if (red == 0 && green == 0 && blue == 0 && alpha == 0) {
+                        red = 255
+                        green = 255
+                        blue = 255
+                    }
+                    buffer.put(red.toByte())
+                    buffer.put(green.toByte())
+                    buffer.put(blue.toByte())
+                    buffer.put(alpha.toByte())
+                }
+            }
+            buffer.flip()
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, bufferedImage.width, bufferedImage.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
+            GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return glId
+    }
+
+    override fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, antialias: Boolean, color: Color) {
+        val glId: Int = getTexture(id)
+        GlStateManager.bindTexture(glId)
+        createPrograms()
         GL11.glEnable(GL11.GL_BLEND)
-        GL11.glColor4d(color.red, color.green, color.blue, color.alpha)
-        val tessellator = Tessellator.getInstance()
-        val bufferBuilder = tessellator.buffer
-        bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE)
-        bufferBuilder.vertex(x, y + height, 0.0).texture(0.0, 1.0).next()
-        bufferBuilder.vertex(x + width, y + height, 0.0).texture(1.0, 1.0).next()
-        bufferBuilder.vertex(x + width, y, 0.0).texture(1.0, 0.0).next()
-        bufferBuilder.vertex(x, y, 0.0).texture(0.0, 0.0).next()
-        tessellator.draw()
+        GL20.glUseProgram(imageProgram)
+        GL30.glBindVertexArray(imageVao)
+        GL20.glEnableVertexAttribArray(0)
+        GL20.glEnableVertexAttribArray(1)
+        val window = Window(MinecraftClient.getInstance())
+        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+        GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+        GL20.glUniform1f(4, cornerRadius.toFloat())
+        GL20.glUniform4f(5, 0f, 0f, 1f, 1f)
+        GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
+        GL20.glDisableVertexAttribArray(0)
+        GL20.glDisableVertexAttribArray(1)
+        GL30.glBindVertexArray(0)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        GL20.glUseProgram(0)
+        GlStateManager.bindTexture( 0)
+    }
+
+    override fun createTexture(id: String, inputStream: InputStream, antialias: Boolean) {
+        if (this.textures.getOrDefault(id, -1) != -1) return
+        val texture = setupTexture(inputStream, antialias)
+        this.textures[id] = texture
     }
 
     override fun scissor(x: Double, y: Double, width: Double, height: Double) {
@@ -209,4 +422,5 @@ class RendererImpl : IRenderer {
                 else -> null
             }
     }
+
 }

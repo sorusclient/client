@@ -139,8 +139,7 @@ class EventTransformer : Transformer(), Listener {
 
     private fun transformInGameHud(classNode: ClassNode) {
         val render = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#render(F)V")
-        val setupHudMatrixMode =
-            Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#setupHudMatrixMode()V")
+        val setupHudMatrixMode = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#setupHudMatrixMode()V")
 
         findMethod(classNode, render)
             .apply { methodNode: MethodNode ->
@@ -148,8 +147,7 @@ class EventTransformer : Transformer(), Listener {
                     .apply(InsertAfter(methodNode, this.getHook("onInGameRender")))
             }
 
-        val renderStatusBars =
-            Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderStatusBars(Lv1_8_9/net/minecraft/client/util/Window;)V")
+        val renderStatusBars = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderStatusBars(Lv1_8_9/net/minecraft/client/util/Window;)V")
         val push = Identifier.parse("v1_8_9/net/minecraft/util/profiler/Profiler#push(Ljava/lang/String;)V")
         val swap = Identifier.parse("v1_8_9/net/minecraft/util/profiler/Profiler#swap(Ljava/lang/String;)V")
         findMethod(classNode, renderStatusBars)

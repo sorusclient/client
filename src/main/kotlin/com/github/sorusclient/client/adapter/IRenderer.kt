@@ -1,6 +1,10 @@
 package com.github.sorusclient.client.adapter
 
 import com.github.sorusclient.client.util.Color
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
+import java.util.*
 
 interface IRenderer {
     fun draw(buffer: RenderBuffer)
@@ -25,7 +29,30 @@ interface IRenderer {
         topRightColor: Color
     )
 
-    fun drawImage(imagePath: String?, x: Double, y: Double, width: Double, height: Double, color: Color)
+    fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, color: Color) {
+        drawImage(id, x, y, width, height, true, color)
+    }
+
+    fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, antialias: Boolean, color: Color) {
+        drawImage(id, x, y, width, height, 0.0, antialias, color)
+    }
+
+    fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, antialias: Boolean, color: Color)
+
+    fun createTexture(path: String) {
+        createTexture(path, Objects.requireNonNull(IRenderer::class.java.classLoader.getResource(path)))
+    }
+
+    fun createTexture(id: String, url: URL) {
+        try {
+            createTexture(id, url.openStream(), true)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun createTexture(id: String, inputStream: InputStream, antialias: Boolean)
+
     fun scissor(x: Double, y: Double, width: Double, height: Double)
     fun endScissor()
     fun getFontRenderer(id: String): IFontRenderer?

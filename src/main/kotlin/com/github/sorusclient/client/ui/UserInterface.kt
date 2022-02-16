@@ -339,7 +339,7 @@ object UserInterface {
                                         height = 0.6.toRelative()
                                         padding = Relative(0.15, true)
 
-                                        backgroundImage = "arrow_left.png".toAbsolute()
+                                        backgroundImage = "assets/minecraft/arrow_left.png".toAbsolute()
 
                                         onClick = { state ->
                                             val newValue = 0.coerceAtLeast(state["value"] as Int - 1)
@@ -354,7 +354,7 @@ object UserInterface {
                                         height = 0.6.toRelative()
                                         padding = Relative(0.15, true)
 
-                                        backgroundImage = "arrow_right.png".toAbsolute()
+                                        backgroundImage = "assets/minecraft/arrow_right.png".toAbsolute()
 
                                         onClick = { state ->
                                             var valuesLength = 0
@@ -498,7 +498,7 @@ object UserInterface {
                                         height = 0.85.toRelative()
                                         padding = Relative(0.1, true)
 
-                                        backgroundImage = "color_range.png".toAbsolute()
+                                        backgroundImage = "assets/minecraft/color_range.png".toAbsolute()
 
                                         onDrag = { state ->
                                             val colorData = state.first["value"] as FloatArray
@@ -703,7 +703,7 @@ object UserInterface {
                         width = Copy()
                         height = 0.7.toRelative()
                         padding = 0.02.toRelative()
-                        backgroundImage = "sorus.png".toAbsolute()
+                        backgroundImage = "assets/minecraft/sorus.png".toAbsolute()
                     }
 
                     children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL).apply2 {
@@ -731,7 +731,7 @@ object UserInterface {
                                 children += Container().apply2 {
                                     width = 0.5.toRelative()
                                     height = 0.5.toRelative()
-                                    backgroundImage = "$tab.png".toAbsolute()
+                                    backgroundImage = "assets/minecraft/$tab.png".toAbsolute()
                                 }
                             }
 
@@ -821,7 +821,7 @@ object UserInterface {
                                                     height = 0.4.toRelative()
                                                     padding = Relative(0.3, true)
 
-                                                    backgroundImage = "gear.png".toAbsolute()
+                                                    backgroundImage = "assets/minecraft/gear.png".toAbsolute()
                                                     backgroundColor = Color.fromRGB(255, 255, 255, 75).toAbsolute()
 
                                                     onClick =  { state ->
