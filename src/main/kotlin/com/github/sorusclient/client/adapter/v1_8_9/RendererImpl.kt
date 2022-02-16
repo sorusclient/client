@@ -16,6 +16,8 @@ import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.render.Tessellator
 import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.client.util.Window
+import java.awt.*
+import java.awt.image.BufferedImage
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
@@ -421,6 +423,157 @@ class RendererImpl : IRenderer {
                 }
                 else -> null
             }
+    }
+
+    private val fonts: MutableMap<String, FontData?> = HashMap()
+
+    class FontData {
+        var glId = 0
+        lateinit var characterData: Array<CharacterData?>
+        var ascent = 0.0
+
+        class CharacterData {
+            var textureX = 0.0
+            var textureY = 0.0
+            var textureWidth = 0.0
+            var textureHeight = 0.0
+        }
+    }
+
+    private fun getFont(id: String): FontData? {
+        var fontData = fonts[id]
+        if (fontData == null) {
+            createFont(id)
+            fontData = fonts[id]
+        }
+        return fontData
+    }
+
+    override fun drawText(id: String, text: String, x: Double, y: Double, scale: Double, color: Color) {
+        val fontData = getFont(id)
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontData!!.glId)
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
+        GL11.glEnable(GL11.GL_BLEND)
+        createPrograms()
+        GL11.glEnable(GL11.GL_BLEND)
+        GL20.glUseProgram(imageProgram)
+        GL30.glBindVertexArray(imageVao)
+        GL20.glEnableVertexAttribArray(0)
+        GL20.glEnableVertexAttribArray(1)
+        val window = Window(MinecraftClient.getInstance())
+        val factor = 100 * scale.toFloat()
+        var xOffset = 0.0
+        for (character in text.toCharArray()) {
+            GL20.glUniform4f(1, (xOffset + x).toFloat(), y.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat() * factor, fontData.characterData[character.code]!!.textureHeight.toFloat() * factor)
+            GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+            GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+            GL20.glUniform1f(4, 0f)
+            GL20.glUniform4f(5, fontData.characterData[character.code]!!.textureX.toFloat(), fontData.characterData[character.code]!!.textureY.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat(), fontData.characterData[character.code]!!.textureHeight.toFloat())
+            xOffset += fontData.characterData[character.code]!!.textureWidth * factor
+            GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
+        }
+        GL20.glDisableVertexAttribArray(0)
+        GL30.glBindVertexArray(0)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        GL20.glUseProgram(0)
+    }
+
+    override fun getTextWidth(fontId: String, text: String): Double {
+        val fontData = fonts[fontId]
+        var width = 0.0
+        val factor = 100.0
+        for (character in text.toCharArray()) {
+            width += fontData!!.characterData[character.code]!!.textureWidth * factor
+        }
+        return width
+    }
+
+    override fun getTextHeight(fontId: String): Double {
+        val fontData = fonts[fontId]
+        val factor = 100.0
+        return fontData!!.ascent * factor
+    }
+
+    private fun setupFont(inputStream: InputStream): FontData {
+        val fontData = FontData()
+        try {
+            var font = Font.createFont(Font.TRUETYPE_FONT, inputStream)
+            font = font.deriveFont(400f)
+            val bufferedImage = BufferedImage(4096, 4096, BufferedImage.TYPE_INT_ARGB)
+            val graphics = bufferedImage.graphics as Graphics2D
+            val rh = RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+            graphics.setRenderingHints(rh)
+            graphics.color = Color(255, 255, 255, 0)
+            graphics.drawRect(0, 0, bufferedImage.width, bufferedImage.height)
+            graphics.font = font
+            val fontMetrics = graphics.fontMetrics
+            graphics.color = Color(255, 255, 255, 255)
+            var textX = 0
+            var textY = 0
+            var maxHeight = 0
+            fontData.characterData = arrayOfNulls(255)
+            fontData.ascent = fontMetrics.ascent.toDouble() / bufferedImage.height
+            for (i in 0..254) {
+                val character = i.toChar()
+                val weirdAscent = fontMetrics.ascent
+                val bounds = fontMetrics.getStringBounds(character.toString(), graphics)
+                graphics.drawString(character.toString(), textX, textY + weirdAscent)
+                val characterData = FontData.CharacterData()
+                characterData.textureX = textX.toDouble() / bufferedImage.width
+                characterData.textureY = textY.toDouble() / bufferedImage.height
+                characterData.textureWidth = bounds.width / bufferedImage.width
+                characterData.textureHeight = bounds.height / bufferedImage.height
+                fontData.characterData[i] = characterData
+                textX += (bounds.width + 15).toInt()
+                maxHeight = maxHeight.toDouble().coerceAtLeast(bounds.height).toInt()
+                if (textX > 4096 - 300) {
+                    textX = 15
+                    textY += maxHeight
+                    maxHeight = 0
+                }
+            }
+            fontData.glId = GL11.glGenTextures()
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontData.glId)
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR.toFloat())
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR.toFloat())
+            val buffer = ByteBuffer.allocateDirect(bufferedImage.width * bufferedImage.height * 4)
+            val rgba = IntArray(bufferedImage.width * bufferedImage.height)
+            bufferedImage.getRGB(0, 0, bufferedImage.width, bufferedImage.height, rgba, 0, bufferedImage.width)
+            for (pixelY in 0 until bufferedImage.height) {
+                for (pixelX in 0 until bufferedImage.width) {
+                    val rgb = rgba[bufferedImage.width * pixelY + pixelX]
+                    var red = rgb shr 16 and 0xFF
+                    var green = rgb shr 8 and 0xFF
+                    var blue = rgb and 0xFF
+                    val alpha = rgb shr 24 and 0xFF
+                    if (red == 0 && green == 0 && blue == 0 && alpha == 0) {
+                        red = 255
+                        green = 255
+                        blue = 255
+                    }
+                    buffer.put(red.toByte())
+                    buffer.put(green.toByte())
+                    buffer.put(blue.toByte())
+                    buffer.put(alpha.toByte())
+                }
+            }
+            buffer.flip()
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, bufferedImage.width, bufferedImage.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
+            GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0)
+        } catch (e: FontFormatException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return fontData
+    }
+
+    override fun createFont(id: String, inputStream: InputStream) {
+        if (fonts[id] != null) return
+        val fontData = setupFont(inputStream)
+        fonts[id] = fontData
     }
 
 }

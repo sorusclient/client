@@ -6,7 +6,8 @@ import org.lwjgl.opengl.GL11
 import v1_8_9.net.minecraft.client.font.TextRenderer
 
 class MinecraftFontRenderer(private val textRenderer: TextRenderer) : IFontRenderer {
-    override fun drawString(text: String?, x: Double, y: Double, scale: Double, color: Color) {
+
+    override fun drawString(text: String, x: Double, y: Double, scale: Double, color: Color) {
         GL11.glPushMatrix()
         GL11.glTranslated(x, y, 0.0)
         GL11.glScaled(scale, scale, 1.0)
@@ -18,10 +19,12 @@ class MinecraftFontRenderer(private val textRenderer: TextRenderer) : IFontRende
         GL11.glPopMatrix()
     }
 
-    override fun getWidth(text: String?): Double {
+    override fun getWidth(text: String): Double {
         return (textRenderer.getStringWidth(text) - 1).toDouble()
     }
 
-    override val height: Double
-        get() = (textRenderer.fontHeight - 1).toDouble()
+    override fun getHeight(): Double {
+        return (textRenderer.fontHeight - 1).toDouble()
+    }
+
 }

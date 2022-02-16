@@ -61,7 +61,7 @@ class Armor : HUDElement("armor") {
                             scale,
                             Color.WHITE
                         )
-                        textY += (5 + fontRenderer.height * 2) * scale
+                        textY += (5 + fontRenderer.getHeight() * 2) * scale
                     }
                 }
             }
@@ -147,7 +147,7 @@ class Armor : HUDElement("armor") {
                         index.set(index.get() + 1)
                         display
                     }.collect(Collectors.toList())
-                    if (armor.size == 0) 0.0 else 3 + armor.size * (5 + fontRenderer.height * 2)
+                    if (armor.size == 0) 0.0 else 3 + armor.size * (5 + fontRenderer.getHeight() * 2)
                 }
                 Mode.TOTAL -> 11.0
             }

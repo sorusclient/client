@@ -44,19 +44,24 @@ class Text : Component() {
     }
 
     inner class Runtime : Component.Runtime() {
+
+        var cachedFontId: String? = null
+
         override var padding = 0.0
             private set
 
         override fun render(x: Double, y: Double, width: Double, height: Double) {
-            val fontRenderer = AdapterManager.getAdapter().renderer.getFontRenderer(
-                fontRenderer!!.getStringValue(this)
-            )
-            fontRenderer!!.drawString(
-                text!!.getStringValue(this),
-                x - this.width / 2,
-                y - this.height / 2,
-                scale.getPaddingValue(this),
-                textColor.getColorValue(this)
+            if (cachedFontId != fontRenderer!!.getStringValue(this)) {
+                cachedFontId = fontRenderer!!.getStringValue(this)
+                AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
+            }
+            AdapterManager.getAdapter().renderer.drawText(
+                    cachedFontId!!,
+                    text!!.getStringValue(this),
+                    x - this.width / 2,
+                    y - this.height / 2,
+                    scale.getPaddingValue(this),
+                    textColor.getColorValue(this)
             )
         }
 
@@ -79,18 +84,20 @@ class Text : Component() {
 
         override val width: Double
             get() {
-                val fontRenderer = AdapterManager.getAdapter().renderer.getFontRenderer(
-                    fontRenderer!!.getStringValue(this)
-                )
-                return fontRenderer!!.getWidth(text!!.getStringValue(this)) * scale.getPaddingValue(this)
+                if (cachedFontId != fontRenderer!!.getStringValue(this)) {
+                    cachedFontId = fontRenderer!!.getStringValue(this)
+                    AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
+                }
+                return AdapterManager.getAdapter().renderer.getTextWidth(cachedFontId!!, text!!.getStringValue(this)) * scale.getPaddingValue(this)
             }
 
         override val height: Double
             get() {
-                val fontRenderer = AdapterManager.getAdapter().renderer.getFontRenderer(
-                    fontRenderer!!.getStringValue(this)
-                )
-                return fontRenderer!!.height * scale.getPaddingValue(this)
+                if (cachedFontId != fontRenderer!!.getStringValue(this)) {
+                    cachedFontId = fontRenderer!!.getStringValue(this)
+                    AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
+                }
+                return AdapterManager.getAdapter().renderer.getTextHeight(cachedFontId!!) * scale.getPaddingValue(this)
             }
 
         override fun handleMouseEvent(event: MouseEvent): Boolean {

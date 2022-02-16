@@ -27,7 +27,7 @@ class Potions : HUDElement("potionStatus") {
             val renderer = AdapterManager.getAdapter().renderer
             val fontRenderer = renderer.getFontRenderer("minecraft")!!
             val effects = effects
-            return if (effects.isEmpty()) 0.0 else 3 + effects.size * (5 + fontRenderer.height * 2)
+            return if (effects.isEmpty()) 0.0 else 3 + effects.size * (5 + fontRenderer.getHeight() * 2)
         }
 
     override fun render(x: Double, y: Double, scale: Double) {
@@ -50,11 +50,11 @@ class Potions : HUDElement("potionStatus") {
             fontRenderer.drawString(
                 effect.duration,
                 x + 24 * scale,
-                textY + 2 * scale + fontRenderer.height * scale,
+                textY + 2 * scale + fontRenderer.getHeight() * scale,
                 scale,
                 Color.WHITE
             )
-            textY += (5 + fontRenderer.height * 2) * scale
+            textY += (5 + fontRenderer.getHeight() * 2) * scale
         }
     }
 

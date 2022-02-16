@@ -80,7 +80,7 @@ object UserInterface {
                         children += Text()
                             .apply2 {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "minecraft".toAbsolute()
+                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -147,7 +147,7 @@ object UserInterface {
                         children += Text()
                             .apply2 {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "minecraft".toAbsolute()
+                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -243,7 +243,7 @@ object UserInterface {
                         children += Text()
                             .apply2 {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "minecraft".toAbsolute()
+                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -271,7 +271,7 @@ object UserInterface {
 
                                 children += Text()
                                     .apply2 {
-                                        fontRenderer = "minecraft".toAbsolute()
+                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         text = { state: Map<String, Any> ->
                                             if (state["selected"] as Boolean) {
                                                 "..."
@@ -312,7 +312,7 @@ object UserInterface {
                         children += Text()
                             .apply2 {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "minecraft".toAbsolute()
+                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -377,7 +377,7 @@ object UserInterface {
 
                                 children += Text()
                                     .apply2 {
-                                        fontRenderer = "minecraft".toAbsolute()
+                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         text = { _: Map<String, Any> ->
                                             setting.setting.value.toString()
                                         }.toDependent()
@@ -432,7 +432,7 @@ object UserInterface {
                                 children += Text()
                                     .apply2 {
                                         x = Side.NEGATIVE.toSide()
-                                        fontRenderer = "minecraft".toAbsolute()
+                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         text = setting.displayName.toAbsolute()
                                         scale = 0.0025.toRelative()
                                     }
@@ -578,7 +578,7 @@ object UserInterface {
                                 children += Text()
                                     .apply2 {
                                         x = Side.NEGATIVE.toSide()
-                                        fontRenderer = "minecraft".toAbsolute()
+                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         text = setting.displayName.toAbsolute()
                                         scale = 0.0025.toRelative()
                                     }
@@ -757,13 +757,13 @@ object UserInterface {
                         children += Container()
                             .apply2 {
                                 y = Side.NEGATIVE.toSide()
-                                height = 0.04.toCopy()
+                                height = 0.05.toCopy()
                                 padding = 0.005.toRelative()
 
                                 children += Text()
                                     .apply2 {
                                         x = Side.NEGATIVE.toSide()
-                                        fontRenderer = "minecraft".toAbsolute()
+                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         padding = 0.01.toRelative()
                                         text = "Module".toAbsolute()
                                         scale = 0.003.toRelative()
@@ -794,10 +794,10 @@ object UserInterface {
                                                 .apply2 {
                                                     x = Side.NEGATIVE.toSide()
                                                     y = Side.NEGATIVE.toSide()
-                                                    padding = Relative(0.175, true)
+                                                    padding = Relative(0.15, true)
 
                                                     text = module.name.toAbsolute()
-                                                    fontRenderer = "minecraft".toAbsolute()
+                                                    fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                                     scale = 0.003.toRelative()
                                                 }
 
@@ -805,11 +805,11 @@ object UserInterface {
                                                 .apply2 {
                                                     x = Side.NEGATIVE.toSide()
                                                     y = Side.POSITIVE.toSide()
-                                                    padding = Relative(0.175, true)
+                                                    padding = Relative(0.15, true)
 
                                                     text = module.description.toAbsolute()
-                                                    fontRenderer = "minecraft".toAbsolute()
-                                                    scale = 0.003.toRelative()
+                                                    fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                                    scale = 0.0025.toRelative()
                                                     textColor = Color.fromRGB(255, 255, 255, 80).toAbsolute()
                                                 }
 
@@ -864,7 +864,7 @@ object UserInterface {
                                                 x = Side.NEGATIVE.toSide()
                                                 padding = 0.01.toRelative()
 
-                                                fontRenderer = "minecraft".toAbsolute()
+                                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                                 text = moduleData.name.toAbsolute()
                                                 scale = 0.003.toRelative()
                                             }

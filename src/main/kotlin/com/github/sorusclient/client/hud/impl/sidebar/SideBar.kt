@@ -46,7 +46,7 @@ class Sidebar : HUDElement("sideBar") {
             val renderer = AdapterManager.getAdapter().renderer
             val fontRenderer = renderer.getFontRenderer("minecraft")!!
             val sidebarObjective = sidebarObjective ?: return 0.0
-            return (sidebarObjective.scores.size + 1) * (fontRenderer.height + 1) + 1
+            return (sidebarObjective.scores.size + 1) * (fontRenderer.getHeight() + 1) + 1
         }
 
     init {
@@ -67,7 +67,7 @@ class Sidebar : HUDElement("sideBar") {
             scale,
             Color.WHITE
         )
-        var yOffset = (fontRenderer.height + 2) * scale
+        var yOffset = (fontRenderer.getHeight() + 2) * scale
         for (score in sidebarObjective.scores) {
             fontRenderer.drawString(score.name, x + 2 * scale, y + yOffset, scale, Color.WHITE)
             val scoreString = score.score.toString()
@@ -80,7 +80,7 @@ class Sidebar : HUDElement("sideBar") {
                     Color.fromRGB(255, 85, 85, 255)
                 )
             }
-            yOffset += (fontRenderer.height + 1) * scale
+            yOffset += (fontRenderer.getHeight() + 1) * scale
         }
     }
 

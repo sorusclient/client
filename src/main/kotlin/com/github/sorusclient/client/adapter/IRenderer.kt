@@ -56,4 +56,22 @@ interface IRenderer {
     fun scissor(x: Double, y: Double, width: Double, height: Double)
     fun endScissor()
     fun getFontRenderer(id: String): IFontRenderer?
+
+    fun drawText(id: String, text: String, x: Double, y: Double, scale: Double, color: Color)
+    fun getTextWidth(fontId: String, text: String): Double
+    fun getTextHeight(fontId: String): Double
+
+    fun createFont(path: String) {
+        createFont(path, Objects.requireNonNull(IRenderer::class.java.classLoader.getResource(path)))
+    }
+
+    fun createFont(id: String, url: URL) {
+        try {
+            createFont(id, url.openStream())
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun createFont(id: String, inputStream: InputStream)
 }

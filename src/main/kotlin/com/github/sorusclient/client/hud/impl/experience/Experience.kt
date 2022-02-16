@@ -27,7 +27,7 @@ class Experience : HUDElement("experience") {
             minecraftFontRenderer,
             experienceLevel,
             x + width / 2 * scale - minecraftFontRenderer.getWidth(experienceLevel) / 2 * scale,
-            y - 1 * scale - minecraftFontRenderer.height / 2 * scale,
+            y - 1 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
             scale
         )
     }

@@ -29,7 +29,7 @@ class HotBar : HUDElement("hotBar") {
                     minecraftFontRenderer.drawStringShadowed(
                         itemCount,
                         x + 20 * scale + i * 20 * scale - minecraftFontRenderer.getWidth(itemCount) * scale,
-                        y + 21 * scale - minecraftFontRenderer.height * scale,
+                        y + 21 * scale - minecraftFontRenderer.getHeight() * scale,
                         scale,
                         Color.WHITE,
                         Color.fromRGB(70, 70, 70, 255)

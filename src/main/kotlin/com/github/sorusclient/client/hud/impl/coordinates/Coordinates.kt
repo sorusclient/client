@@ -54,14 +54,14 @@ class Coordinates : HUDElement("coordinates") {
                 fontRenderer,
                 getText("X", String.format("%.0f", player.x)), x + 3 * scale, textY, scale
             )
-            textY += (3 + fontRenderer.height) * scale
+            textY += (3 + fontRenderer.getHeight()) * scale
         }
         if (showY.value) {
             renderText(
                 fontRenderer,
                 getText("Y", String.format("%.0f", player.y)), x + 3 * scale, textY, scale
             )
-            textY += (3 + fontRenderer.height) * scale
+            textY += (3 + fontRenderer.getHeight()) * scale
         }
         if (showZ.value) {
             renderText(

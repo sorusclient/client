@@ -22,11 +22,11 @@ class BossBar : HUDElement("bossBar") {
         bossBarRenderer.renderBossBar(x + 1 * scale, y + 11 * scale, scale, percent)
         val renderer = AdapterManager.getAdapter().renderer
         val minecraftFontRenderer = renderer.getFontRenderer("minecraft")!!
-        val bossBarName = bossBar.name
+        val bossBarName = bossBar.name!!
         minecraftFontRenderer.drawString(
             bossBarName,
             x + width / 2 * scale - minecraftFontRenderer.getWidth(bossBarName) / 2 * scale,
-            y + 5.5 * scale - minecraftFontRenderer.height / 2 * scale,
+            y + 5.5 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
             scale,
             Color.WHITE
         )
