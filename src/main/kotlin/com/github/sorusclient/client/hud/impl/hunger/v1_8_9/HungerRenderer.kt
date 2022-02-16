@@ -11,6 +11,7 @@ import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.util.Identifier
 
 class HungerRenderer : Listener, IHungerRenderer {
+
     override fun run() {
         GlassLoader.getInstance().registerInterface(IHungerRenderer::class.java, this)
     }

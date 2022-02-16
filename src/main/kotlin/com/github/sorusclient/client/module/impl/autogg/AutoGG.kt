@@ -9,6 +9,7 @@ import com.github.sorusclient.client.server.ServerIntegrationManager
 class AutoGG: ModuleDisableable("autogg") {
 
     private var autoggTriggers: MutableList<Regex> = ArrayList()
+    private var command: String? = null
 
     init {
         ServerIntegrationManager.listeners["autogg"] = { json ->
@@ -16,6 +17,9 @@ class AutoGG: ModuleDisableable("autogg") {
             val triggers = autogg["triggers"] as List<*>
             autoggTriggers.clear()
             autoggTriggers.addAll(triggers.map { string -> string.toString().toRegex() }.toList())
+
+            println(autogg)
+            command = autogg["command"] as String
         }
 
         EventManager.register { event: ChatReceivedEvent ->

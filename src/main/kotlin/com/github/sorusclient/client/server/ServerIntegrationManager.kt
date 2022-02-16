@@ -25,7 +25,7 @@ object ServerIntegrationManager {
         eventManager.register(this::onGameLeave)
         eventManager.register(this::onCustomPacket)
 
-        listeners["modules"] = this::handleModule
+        listeners["module"] = this::handleModule
     }
 
     private fun onGameJoin(event: GameJoinEvent) {
@@ -84,8 +84,8 @@ object ServerIntegrationManager {
     }
 
     private fun handleModule(json: Any) {
-        val modules = json as JSONObject
-        for ((key, value) in modules.toMap()) {
+        val modules = json as Map<String, Any>
+        for ((key, value) in modules) {
             val module = ModuleManager[key]
             module!!.loadForced(value as Map<String, Any>)
         }

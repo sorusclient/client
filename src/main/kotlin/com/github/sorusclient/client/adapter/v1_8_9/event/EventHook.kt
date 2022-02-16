@@ -3,7 +3,6 @@ package com.github.sorusclient.client.adapter.v1_8_9.event
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.event.EventManager
-import com.mojang.realmsclient.gui.ChatFormatting
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
@@ -12,6 +11,7 @@ import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.client.world.ClientWorld
 import v1_8_9.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
+import v1_8_9.net.minecraft.text.Text
 import v1_8_9.net.minecraft.util.math.Box
 
 object EventHook {
@@ -171,9 +171,10 @@ object EventHook {
 
     @JvmStatic
     @Suppress("Unused")
-    fun onChatReceived(message: String) {
-        val event = ChatReceivedEvent(message)
+    fun onChatReceived(text: Text): Text {
+        val event = ChatReceivedEvent(text.asFormattedString(), Util.textToApiText(text))
         EventManager.call(event)
+        return Util.apiTextToText(event.text)
     }
 
     @JvmStatic
