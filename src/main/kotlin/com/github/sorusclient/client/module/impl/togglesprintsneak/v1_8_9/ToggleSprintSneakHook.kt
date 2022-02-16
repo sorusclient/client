@@ -5,6 +5,7 @@ import com.github.sorusclient.client.module.impl.togglesprintsneak.ToggleSprintS
 
 object ToggleSprintSneakHook {
 
+    @Suppress("UNUSED")
     @JvmStatic
     fun modifyIsSprintPressed(keyPressed: Boolean): Boolean {
         val toggleSprintSneak = ModuleManager.get<ToggleSprintSneak>()
@@ -15,6 +16,7 @@ object ToggleSprintSneakHook {
         }
     }
 
+    @Suppress("UNUSED")
     @JvmStatic
     fun modifyIsSneakPressed(keyPressed: Boolean): Boolean {
         val toggleSprintSneak = ModuleManager.get<ToggleSprintSneak>()
