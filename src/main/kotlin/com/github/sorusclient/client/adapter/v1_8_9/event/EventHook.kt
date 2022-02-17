@@ -217,4 +217,11 @@ object EventHook {
         return event.gamma.toFloat()
     }
 
+    @JvmStatic
+    @Suppress("Unused")
+    fun onInitialize() {
+        val event = InitializeEvent()
+        EventManager.call(event)
+    }
+
 }

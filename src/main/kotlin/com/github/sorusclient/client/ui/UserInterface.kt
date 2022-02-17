@@ -3,6 +3,7 @@ package com.github.sorusclient.client.ui
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
+import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.adapter.event.RenderEvent
 import com.github.sorusclient.client.event.EventManager
@@ -26,7 +27,6 @@ object UserInterface {
     private val guiOpened = AtomicBoolean(false)
 
     fun initialize() {
-        initializeUserInterface()
         val eventManager = EventManager
         eventManager.register { event: KeyEvent ->
             val adapter = AdapterManager.getAdapter()
@@ -51,6 +51,12 @@ object UserInterface {
             if (event.isPressed && !event.isRepeat && event.key === Key.U) {
                 initializeUserInterface()
             }
+        }
+
+        eventManager.register { _: InitializeEvent ->
+            initializeUserInterface()
+            //AdapterManager.getAdapter().renderer.drawRectangle(0.0, 0.0, 50.0, 50.0, Color.WHITE)
+            //AdapterManager.getAdapter().renderer.createFont("Quicksand-Medium.ttf")
         }
     }
 

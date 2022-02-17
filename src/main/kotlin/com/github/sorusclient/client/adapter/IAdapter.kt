@@ -13,6 +13,8 @@ interface IAdapter {
     val currentServer: IServer?
     fun getKeyBind(type: KeyBindType): IKeyBind
     fun sendPlayerMessage(message: String)
+    fun setDisplayTitle(title: String)
+    val version: String
 
     val renderer: IRenderer
 }

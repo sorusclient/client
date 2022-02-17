@@ -32,7 +32,7 @@ class Relative @JvmOverloads constructor(private val percent: Double, private va
         return null!!
     }
 
-    override fun getStringValue(componentRuntime: Component.Runtime): String {
+    override fun getStringValue(componentRuntime: Component.Runtime?): String {
         return null!!
     }
 

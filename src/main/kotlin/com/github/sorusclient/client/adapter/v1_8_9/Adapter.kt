@@ -113,5 +113,11 @@ class Adapter : Listener, IAdapter {
         }
     }
 
+    override fun setDisplayTitle(title: String) {
+        Display.setTitle(title)
+    }
+
+    override val version = "1.8.9"
+
     override val renderer: IRenderer = RendererImpl()
 }

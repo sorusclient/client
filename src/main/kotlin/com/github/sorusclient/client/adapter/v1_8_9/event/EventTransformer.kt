@@ -119,8 +119,7 @@ class EventTransformer : Transformer(), Listener {
 
     private fun transformMinecraftClient(classNode: ClassNode) {
         val handleKeyInput = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#handleKeyInput()V")
-        val connect =
-            Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#connect(Lv1_8_9/net/minecraft/client/world/ClientWorld;Ljava/lang/String;)V")
+        val connect = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#connect(Lv1_8_9/net/minecraft/client/world/ClientWorld;Ljava/lang/String;)V")
         findMethod(classNode, handleKeyInput)
             .apply(Insert(this.getHook("onKey")))
         findMethod(classNode, connect)
@@ -129,6 +128,16 @@ class EventTransformer : Transformer(), Listener {
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 2))
                 insnList.add(this.getHook("onConnect"))
             }))
+
+        val initializeGame = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#initializeGame()V")
+        val createContext = Identifier.parse("v1_8_9/com/mojang/blaze3d/platform/GLX#createContext()V")
+        findMethod(classNode, initializeGame)
+                .apply { methodNode ->
+                    findMethodCalls(methodNode, createContext)
+                            .apply(InsertBefore(methodNode, createList { insnList ->
+                                insnList.add(this.getHook("onInitialize"))
+                            }))
+                }
     }
 
     private fun transformScreen(classNode: ClassNode) {

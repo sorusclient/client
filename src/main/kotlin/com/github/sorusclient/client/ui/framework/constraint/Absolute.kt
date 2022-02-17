@@ -36,7 +36,7 @@ class Absolute private constructor(private val value: Any) : Constraint {
         return value as Color
     }
 
-    override fun getStringValue(componentRuntime: Component.Runtime): String {
+    override fun getStringValue(componentRuntime: Component.Runtime?): String {
         return value as String
     }
 }

@@ -64,7 +64,7 @@ class Flexible : Constraint {
         return null!!
     }
 
-    override fun getStringValue(componentRuntime: Component.Runtime): String {
+    override fun getStringValue(componentRuntime: Component.Runtime?): String {
         return null!!
     }
 

@@ -74,7 +74,7 @@ class Side(private val side: Int) : Constraint {
         return null!!
     }
 
-    override fun getStringValue(componentRuntime: Component.Runtime): String {
+    override fun getStringValue(componentRuntime: Component.Runtime?): String {
         return null!!
     }
 

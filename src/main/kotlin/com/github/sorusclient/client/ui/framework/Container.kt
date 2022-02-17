@@ -22,6 +22,10 @@ open class Container : Component() {
     var topRightBackgroundColor: Constraint? = null
 
     var backgroundImage: Constraint? = null
+        set(value) {
+            AdapterManager.getAdapter().renderer.createTexture(value!!.getStringValue(null))
+            field = value
+        }
     var padding: Constraint = Absolute(0.0)
     val children: MutableList<Component> = ArrayList()
     var onClick: ((MutableMap<String, Any>) -> Unit)? = null

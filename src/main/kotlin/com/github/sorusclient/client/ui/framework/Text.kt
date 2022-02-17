@@ -10,6 +10,10 @@ import com.github.sorusclient.client.util.Color
 class Text : Component() {
     var padding: Constraint = Absolute(0.0)
     var fontRenderer: Constraint? = null
+        set(value) {
+            AdapterManager.getAdapter().renderer.createFont(value!!.getStringValue(null))
+            field = value
+        }
     var text: Constraint? = null
     var scale: Constraint = Absolute(1.0)
     var textColor: Constraint = Absolute(Color.WHITE)

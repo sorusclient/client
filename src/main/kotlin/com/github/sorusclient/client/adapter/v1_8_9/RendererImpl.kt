@@ -158,135 +158,18 @@ class RendererImpl : IRenderer {
         }
     }
 
-    override fun drawRectangle(
-        x: Double,
-        y: Double,
-        width: Double,
-        height: Double,
-        cornerRadius: Double,
-        topLeftColor: Color,
-        bottomLeftColor: Color,
-        bottomRightColor: Color,
-        topRightColor: Color
-    ) {
-        /*GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_BLEND)
-        GlStateManager.shadeModel(GL11.GL_SMOOTH)
-        val tessellator = Tessellator.getInstance()
-        val bufferBuilder = tessellator.buffer
-        bufferBuilder.begin(GL11.GL_POLYGON, VertexFormats.POSITION_COLOR)
-        bufferBuilder.vertex(x + cornerRadius, y + height, 0.0).color(
-            bottomLeftColor.red.toFloat(),
-            bottomLeftColor.green.toFloat(),
-            bottomLeftColor.blue.toFloat(),
-            bottomLeftColor.alpha.toFloat()
-        ).next()
-        bufferBuilder.vertex(x + width - cornerRadius, y + height, 0.0).color(
-            bottomRightColor.red.toFloat(),
-            bottomRightColor.green.toFloat(),
-            bottomRightColor.blue.toFloat(),
-            bottomRightColor.alpha.toFloat()
-        ).next()
-        for (i in 0..89) {
-            bufferBuilder.vertex(
-                x + width - cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
-                y + height - cornerRadius + cos(
-                    Math.toRadians(i.toDouble())
-                ) * cornerRadius,
-                0.0
-            ).color(
-                bottomRightColor.red.toFloat(),
-                bottomRightColor.green.toFloat(),
-                bottomRightColor.blue.toFloat(),
-                bottomRightColor.alpha.toFloat()
-            ).next()
-        }
-        bufferBuilder.vertex(x + width, y + height - cornerRadius, 0.0).color(
-            bottomRightColor.red.toFloat(),
-            bottomRightColor.green.toFloat(),
-            bottomRightColor.blue.toFloat(),
-            bottomRightColor.alpha.toFloat()
-        ).next()
-        bufferBuilder.vertex(x + width, y + cornerRadius, 0.0).color(
-            topRightColor.red.toFloat(),
-            topRightColor.green.toFloat(),
-            topRightColor.blue.toFloat(),
-            topRightColor.alpha.toFloat()
-        ).next()
-        for (i in 90..179) {
-            bufferBuilder.vertex(
-                x + width - cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
-                y + cornerRadius + cos(
-                    Math.toRadians(i.toDouble())
-                ) * cornerRadius,
-                0.0
-            ).color(
-                topRightColor.red.toFloat(),
-                topRightColor.green.toFloat(),
-                topRightColor.blue.toFloat(),
-                topRightColor.alpha.toFloat()
-            ).next()
-        }
-        bufferBuilder.vertex(x + width - cornerRadius, y, 0.0).color(
-            topRightColor.red.toFloat(),
-            topRightColor.green.toFloat(),
-            topRightColor.blue.toFloat(),
-            topRightColor.alpha.toFloat()
-        ).next()
-        bufferBuilder.vertex(x + cornerRadius, y, 0.0).color(
-            topLeftColor.red.toFloat(),
-            topLeftColor.green.toFloat(),
-            topLeftColor.blue.toFloat(),
-            topLeftColor.alpha.toFloat()
-        ).next()
-        for (i in 180..269) {
-            bufferBuilder.vertex(
-                x + cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius, y + cornerRadius + cos(
-                    Math.toRadians(i.toDouble())
-                ) * cornerRadius, 0.0
-            ).color(
-                topLeftColor.red.toFloat(),
-                topLeftColor.green.toFloat(),
-                topLeftColor.blue.toFloat(),
-                topLeftColor.alpha.toFloat()
-            ).next()
-        }
-        bufferBuilder.vertex(x, y + cornerRadius, 0.0).color(
-            topLeftColor.red.toFloat(),
-            topLeftColor.green.toFloat(),
-            topLeftColor.blue.toFloat(),
-            topLeftColor.alpha.toFloat()
-        ).next()
-        bufferBuilder.vertex(x, y + height - cornerRadius, 0.0).color(
-            bottomLeftColor.red.toFloat(),
-            bottomLeftColor.green.toFloat(),
-            bottomLeftColor.blue.toFloat(),
-            bottomLeftColor.alpha.toFloat()
-        ).next()
-        for (i in 270..359) {
-            bufferBuilder.vertex(
-                x + cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
-                y + height - cornerRadius + cos(
-                    Math.toRadians(i.toDouble())
-                ) * cornerRadius,
-                0.0
-            ).color(
-                bottomLeftColor.red.toFloat(),
-                bottomLeftColor.green.toFloat(),
-                bottomLeftColor.blue.toFloat(),
-                bottomLeftColor.alpha.toFloat()
-            ).next()
-        }
-        tessellator.draw()*/
-
+    override fun drawRectangle(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, topLeftColor: Color, bottomLeftColor: Color, bottomRightColor: Color, topRightColor: Color) {
         this.createPrograms()
 
         GL11.glEnable(GL11.GL_BLEND)
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
 
         GL20.glUseProgram(roundedRectangleProgram)
 
         GL30.glBindVertexArray(roundedRectangleVao)
         GL20.glEnableVertexAttribArray(0)
+
+        GL11.glColor4f(1f, 1f, 1f, 1f)
 
         val window = Window(MinecraftClient.getInstance())
 
@@ -303,6 +186,38 @@ class RendererImpl : IRenderer {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
 
         GL20.glUseProgram(0)
+
+        GL11.glDisable(GL11.GL_BLEND)
+        GL11.glEnable(GL11.GL_TEXTURE_2D)
+    }
+
+    override fun drawRectangleBorder(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, thickness: Double, color: Color) {
+        // Used to make sure the background rectangle is not showing in front of border
+        var x = x
+        var y = y
+        var width = width
+        var height = height
+
+        x -= 0.1
+        y -= 0.1
+        width += 0.2
+        height += 0.2
+        createPrograms()
+        GL11.glEnable(GL11.GL_BLEND)
+        GL20.glUseProgram(roundedRectangleBorderProgram)
+        GL30.glBindVertexArray(roundedRectangleBorderVao)
+        GL20.glEnableVertexAttribArray(0)
+        val window = Window(MinecraftClient.getInstance())
+        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+        GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+        GL20.glUniform1f(4, cornerRadius.toFloat())
+        GL20.glUniform1f(5, thickness.toFloat())
+        GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
+        GL20.glDisableVertexAttribArray(0)
+        GL30.glBindVertexArray(0)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        GL20.glUseProgram(0)
     }
 
     private val textures: MutableMap<String, Int> = HashMap()
@@ -311,7 +226,6 @@ class RendererImpl : IRenderer {
         var texture = textures[id] ?: -1
         if (texture == -1) {
             createTexture(id)
-            GL11.glEnable(GL11.GL_POINT_SMOOTH)
             texture = textures[id]!!
         }
         return texture
@@ -461,7 +375,7 @@ class RendererImpl : IRenderer {
         GL20.glEnableVertexAttribArray(0)
         GL20.glEnableVertexAttribArray(1)
         val window = Window(MinecraftClient.getInstance())
-        val factor = 100 * scale.toFloat()
+        val factor = 200 * scale.toFloat()
         var xOffset = 0.0
         for (character in text.toCharArray()) {
             GL20.glUniform4f(1, (xOffset + x).toFloat(), y.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat() * factor, fontData.characterData[character.code]!!.textureHeight.toFloat() * factor)
@@ -498,11 +412,10 @@ class RendererImpl : IRenderer {
         val fontData = FontData()
         try {
             var font = Font.createFont(Font.TRUETYPE_FONT, inputStream)
-            font = font.deriveFont(400f)
+            font = font.deriveFont(200f)
             val bufferedImage = BufferedImage(4096, 4096, BufferedImage.TYPE_INT_ARGB)
             val graphics = bufferedImage.graphics as Graphics2D
-            val rh = RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
-                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+            val rh = RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
             graphics.setRenderingHints(rh)
             graphics.color = Color(255, 255, 255, 0)
             graphics.drawRect(0, 0, bufferedImage.width, bufferedImage.height)
@@ -533,13 +446,17 @@ class RendererImpl : IRenderer {
                     maxHeight = 0
                 }
             }
+
             fontData.glId = GL11.glGenTextures()
+
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontData.glId)
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR.toFloat())
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR.toFloat())
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST.toFloat())
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST.toFloat())
+
             val buffer = ByteBuffer.allocateDirect(bufferedImage.width * bufferedImage.height * 4)
             val rgba = IntArray(bufferedImage.width * bufferedImage.height)
             bufferedImage.getRGB(0, 0, bufferedImage.width, bufferedImage.height, rgba, 0, bufferedImage.width)
+
             for (pixelY in 0 until bufferedImage.height) {
                 for (pixelX in 0 until bufferedImage.width) {
                     val rgb = rgba[bufferedImage.width * pixelY + pixelX]
@@ -559,8 +476,10 @@ class RendererImpl : IRenderer {
                 }
             }
             buffer.flip()
+
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, bufferedImage.width, bufferedImage.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
+
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0)
         } catch (e: FontFormatException) {
             e.printStackTrace()

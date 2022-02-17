@@ -32,7 +32,7 @@ class Copy @JvmOverloads constructor(private val multiplier: Double = 1.0) : Con
         return null!!
     }
 
-    override fun getStringValue(componentRuntime: Component.Runtime): String {
+    override fun getStringValue(componentRuntime: Component.Runtime?): String {
         return null!!
     }
 }

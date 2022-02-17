@@ -16,9 +16,12 @@ class AutoGG: ModuleDisableable("autogg") {
             val autogg = json as HashMap<*, *>
             val triggers = autogg["triggers"] as List<*>
             autoggTriggers.clear()
-            autoggTriggers.addAll(triggers.map { string -> string.toString().toRegex() }.toList())
+            println(triggers)
+            autoggTriggers.addAll(triggers.map { string ->
+                println(string)
+                string.toString().toRegex()
+            }.toList())
 
-            println(autogg)
             command = autogg["command"] as String
         }
 
@@ -33,6 +36,7 @@ class AutoGG: ModuleDisableable("autogg") {
 
     private fun isAutoGGTrigger(message: String): Boolean {
         for (trigger in autoggTriggers) {
+            //println(trigger)
             if (trigger.containsMatchIn(message)) {
                 return true
             }

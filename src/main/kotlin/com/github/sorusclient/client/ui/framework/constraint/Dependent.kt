@@ -53,11 +53,11 @@ class Dependent(private val function: Function<Map<String, Any>, Any>) : Constra
         return this.apply(componentRuntime) as Color
     }
 
-    override fun getStringValue(componentRuntime: Component.Runtime): String {
+    override fun getStringValue(componentRuntime: Component.Runtime?): String {
         return this.apply(componentRuntime) as String
     }
 
-    private fun apply(componentRuntime: Component.Runtime): Any {
-        return function.apply(componentRuntime.availableState)
+    private fun apply(componentRuntime: Component.Runtime?): Any {
+        return function.apply(componentRuntime?.availableState!!)
     }
 }
