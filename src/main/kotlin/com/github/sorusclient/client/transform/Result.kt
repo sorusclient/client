@@ -14,4 +14,8 @@ class Result<T>(private val results: List<T>) {
         return Result(listOf(results[index]))
     }
 
+    fun nth(indices: IntRange)  {
+        Result(listOf(results.subList(indices.first, indices.last)))
+    }
+
 }

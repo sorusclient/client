@@ -224,4 +224,11 @@ object EventHook {
         EventManager.call(event)
     }
 
+    @JvmStatic
+    @Suppress("Unused")
+    fun onTick() {
+        val event = TickEvent()
+        EventManager.call(event)
+    }
+
 }

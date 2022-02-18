@@ -27,6 +27,7 @@ class HealthRenderer : Listener, IHealthRenderer {
         GL11.glTranslated(x, y, 0.0)
         GL11.glScaled(scale, scale, 1.0)
         GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
+        GL11.glEnable(GL11.GL_BLEND)
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
         val xLocation = if (heartType == HeartType.HEALTH) 52 else 52 + 12 * 9
         if (heartRenderType == IHealthRenderer.HeartRenderType.FULL) {
@@ -49,6 +50,7 @@ class HealthRenderer : Listener, IHealthRenderer {
         GL11.glTranslated(x, y, 0.0)
         GL11.glScaled(scale, scale, 1.0)
         GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
+        GL11.glEnable(GL11.GL_BLEND)
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
         when (backgroundType) {
             BackgroundType.STANDARD -> drawTexture(0, 0, 16.0, 0.0, 9, 9)

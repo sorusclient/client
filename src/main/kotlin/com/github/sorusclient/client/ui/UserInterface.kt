@@ -171,7 +171,7 @@ object UserInterface {
                                 height = 0.1.toRelative()
                                 padding = Relative(0.2, true)
 
-                                backgroundColor = Color.fromRGB(255, 0, 0, 255).toAbsolute()
+                                backgroundColor = Color.fromRGB(155, 155, 155, 255).toAbsolute()
                                 backgroundCornerRadius = Relative(0.05, true)
 
                                 onDrag = { state ->

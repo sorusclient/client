@@ -395,7 +395,7 @@ class RendererImpl : IRenderer {
     override fun getTextWidth(fontId: String, text: String): Double {
         val fontData = fonts[fontId]
         var width = 0.0
-        val factor = 100.0
+        val factor = 200.0
         for (character in text.toCharArray()) {
             width += fontData!!.characterData[character.code]!!.textureWidth * factor
         }
@@ -404,7 +404,7 @@ class RendererImpl : IRenderer {
 
     override fun getTextHeight(fontId: String): Double {
         val fontData = fonts[fontId]
-        val factor = 100.0
+        val factor = 200.0
         return fontData!!.ascent * factor
     }
 

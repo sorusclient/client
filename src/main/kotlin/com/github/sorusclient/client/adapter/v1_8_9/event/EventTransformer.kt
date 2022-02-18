@@ -138,6 +138,12 @@ class EventTransformer : Transformer(), Listener {
                                 insnList.add(this.getHook("onInitialize"))
                             }))
                 }
+
+        val tick = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#tick()V")
+        findMethod(classNode, tick)
+                .apply(Insert(createList { insnList ->
+                    insnList.add(this.getHook("onTick"))
+                }))
     }
 
     private fun transformScreen(classNode: ClassNode) {

@@ -12,11 +12,11 @@ class MinecraftFontRenderer(private val textRenderer: TextRenderer) : IFontRende
         GL11.glPushMatrix()
         //GL11.glTranslated(x.roundToInt().toDouble(), y.roundToInt().toDouble(), 0.0)
         //GL11.glScaled(scale, scale, 1.0)
-        //GL11.glDisable(GL11.GL_DEPTH_TEST)
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
         GL11.glEnable(GL11.GL_TEXTURE_2D)
         //GL11.glEnable(GL11.GL_BLEND)\
         textRenderer.draw(text, (x / scale).toFloat(), (y / scale).toFloat(), color.rgb, false)
-        //GL11.glEnable(GL11.GL_DEPTH_TEST)
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
         GL11.glPopMatrix()
     }
 
