@@ -7,6 +7,7 @@ import com.github.sorusclient.client.module.impl.environmentchanger.EnvironmentC
 import com.github.sorusclient.client.module.impl.fullbright.FullBright
 import com.github.sorusclient.client.module.impl.itemphysics.ItemPhysics
 import com.github.sorusclient.client.module.impl.oldanimations.OldAnimations
+import com.github.sorusclient.client.module.impl.particles.Particles
 import com.github.sorusclient.client.module.impl.perspective.Perspective
 import com.github.sorusclient.client.module.impl.togglesprintsneak.ToggleSprintSneak
 import com.github.sorusclient.client.module.impl.zoom.Zoom
@@ -27,6 +28,7 @@ object ModuleManager {
         register(FullBright(), "Fullbright", "test")
         register(ItemPhysics(), "Item Physics", "test")
         register(OldAnimations(), "Old Animations", "test")
+        register(Particles(), "Particles" ,"test")
         register(Perspective(), "Perspective", "test")
         register(ToggleSprintSneak(), "Toggle Sprint & Sneak", "test")
         register(Zoom(), "Zoom", "test")

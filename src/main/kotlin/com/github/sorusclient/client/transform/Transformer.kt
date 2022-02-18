@@ -54,6 +54,19 @@ open class Transformer : com.github.glassmc.loader.api.loader.Transformer {
         return Result(results)
     }
 
+    protected fun findValues(methodNode: MethodNode, value: Any): Result<AbstractInsnNode> {
+        val results: MutableList<AbstractInsnNode> = ArrayList()
+        for (node in methodNode.instructions) {
+            if (node is IntInsnNode && node.opcode == Opcodes.BIPUSH && node.operand == value) {
+                results.add(node)
+            }
+            if (node is LdcInsnNode && node.cst == value) {
+                results.add(node)
+            }
+        }
+        return Result(results)
+    }
+
     private fun getHook(hookMethodName: String, hookMethodDesc: String?): MethodInsnNode {
         return MethodInsnNode(Opcodes.INVOKESTATIC, hookClass!!.name.replace(".", "/"), hookMethodName, hookMethodDesc)
     }

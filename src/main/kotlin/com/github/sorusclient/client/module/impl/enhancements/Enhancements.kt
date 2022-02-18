@@ -7,8 +7,9 @@ import com.github.sorusclient.client.setting.ConfigurableData.Toggle
 import com.github.sorusclient.client.setting.Setting
 
 class Enhancements : ModuleDisableable("enhancements") {
-    private var fireHeight: Setting<Double>
-    private var centeredInventory: Setting<Boolean>
+
+    private val fireHeight: Setting<Double>
+    private val centeredInventory: Setting<Boolean>
 
     init {
         register("fireHeight", Setting(0.0).also { fireHeight = it })

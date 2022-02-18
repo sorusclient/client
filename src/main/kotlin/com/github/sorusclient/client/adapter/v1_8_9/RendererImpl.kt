@@ -450,8 +450,8 @@ class RendererImpl : IRenderer {
             fontData.glId = GL11.glGenTextures()
 
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontData.glId)
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST.toFloat())
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST.toFloat())
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR.toFloat())
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST.toFloat())
 
             val buffer = ByteBuffer.allocateDirect(bufferedImage.width * bufferedImage.height * 4)
             val rgba = IntArray(bufferedImage.width * bufferedImage.height)
