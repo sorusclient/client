@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.ui.framework
 
 open class List(private val type: Int) : Container() {
-    private var columns = 0
+    var columns = 0
 
     init {
         if (type == VERTICAL) {

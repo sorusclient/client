@@ -8,7 +8,7 @@ import java.util.*
 class Profile private constructor(
     private val settingsFile: File,
     private val idInner: String,
-    val children: MutableMap<String, Profile?>
+    val children: MutableMap<String, Profile>
 ) {
     var parent: Profile? = null
 
@@ -86,7 +86,7 @@ class Profile private constructor(
 
     companion object {
         fun read(folder: File): Profile {
-            val children: MutableMap<String, Profile?> = HashMap()
+            val children: MutableMap<String, Profile> = HashMap()
 
             for (file in Objects.requireNonNull(folder.listFiles())) {
                 if (file.name != "settings.json") {
@@ -95,7 +95,7 @@ class Profile private constructor(
             }
             val profile = Profile(File(folder, "settings.json"), folder.name, children)
             for (childProfile in profile.children.values) {
-                childProfile!!.parent = profile
+                childProfile.parent = profile
             }
             return profile
         }

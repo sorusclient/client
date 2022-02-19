@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.module
 
-import com.github.sorusclient.client.setting.ConfigurableData
-import com.github.sorusclient.client.setting.ConfigurableData.Toggle
+import com.github.sorusclient.client.setting.DisplayedSetting
+import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
 import com.github.sorusclient.client.setting.Setting
 
 open class ModuleDisableable(id: String) : Module(id) {
@@ -20,7 +20,7 @@ open class ModuleDisableable(id: String) : Module(id) {
         return enabled.value
     }
 
-    override fun addSettings(settings: MutableList<ConfigurableData>) {
+    override fun addSettings(settings: MutableList<DisplayedSetting>) {
         super.addSettings(settings)
         settings.add(Toggle("Enabled", enabled))
     }

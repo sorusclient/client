@@ -27,7 +27,7 @@ object Util {
         } else if (jsonSetting is Double) {
             return jsonSetting as T
         } else if (jsonSetting is BigDecimal) {
-            if (wantedClass == Double::class.java) {
+            if (wantedClass == java.lang.Double::class.java) {
                 return jsonSetting.toDouble() as T
             } else if (wantedClass == Double::class.javaPrimitiveType) {
                 return jsonSetting.toDouble() as T
@@ -96,39 +96,39 @@ object Util {
         return null
     }
 
-    fun toData(`object`: Any): Any {
-        return `object` as? Boolean
-            ?: (`object` as? Int
-                ?: (`object` as? Long
-                    ?: (`object` as? Double
-                        ?: (`object` as? Float
-                            ?: (`object` as? String
-                                ?: if (`object` is Enum<*>) {
-                                    `object`.name
-                                } else if (`object` is List<*>) {
+    fun toData(any: Any): Any {
+        return any as? Boolean
+            ?: (any as? Int
+                ?: (any as? Long
+                    ?: (any as? Double
+                        ?: (any as? Float
+                            ?: (any as? String
+                                ?: if (any is Enum<*>) {
+                                    any.name
+                                } else if (any is List<*>) {
                                     val data: MutableList<Any> = ArrayList()
-                                    for (inData in `object`) {
+                                    for (inData in any) {
                                         data.add(toData(inData!!))
                                     }
                                     data
-                                } else if (`object` is Map<*, *>) {
+                                } else if (any is Map<*, *>) {
                                     val data: MutableMap<String, Any> = HashMap()
-                                    for ((key, value) in `object` as Map<String, Any>) {
+                                    for ((key, value) in any as Map<String, Any>) {
                                         data[key] = toData(value)
                                     }
                                     data
                                 } else {
                                     val data: MutableMap<String, Any> = HashMap()
-                                    for (field in `object`.javaClass.declaredFields) {
+                                    for (field in any.javaClass.declaredFields) {
                                         if (Modifier.isStatic(field.modifiers)) continue
                                         try {
                                             field.isAccessible = true
-                                            data[field.name] = toData(field[`object`])
+                                            data[field.name] = toData(field[any])
                                         } catch (e: IllegalAccessException) {
                                             e.printStackTrace()
                                         }
                                     }
-                                    data["class"] = `object`.javaClass.name
+                                    data["class"] = any.javaClass.name
                                     data
                                 })))))
     }

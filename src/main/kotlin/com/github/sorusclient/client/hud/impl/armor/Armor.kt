@@ -5,9 +5,9 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.github.sorusclient.client.hud.HUDElement
-import com.github.sorusclient.client.setting.ConfigurableData
-import com.github.sorusclient.client.setting.ConfigurableData.ClickThrough
-import com.github.sorusclient.client.setting.ConfigurableData.Toggle
+import com.github.sorusclient.client.setting.DisplayedSetting
+import com.github.sorusclient.client.setting.DisplayedSetting.ClickThrough
+import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.util.Color
@@ -153,7 +153,7 @@ class Armor : HUDElement("armor") {
             }
         }
 
-    override fun addSettings(settings: MutableList<ConfigurableData>) {
+    override fun addSettings(settings: MutableList<DisplayedSetting>) {
         super.addSettings(settings)
         settings.add(ClickThrough("Mode", mode))
         settings.add(Toggle("Show Helmet", showHelmet))

@@ -8,10 +8,12 @@ object SettingManager {
 
     private val profileFile = File("sorus/profile")
     private val settingContainers: MutableMap<String?, SettingContainer> = HashMap()
-    private lateinit var mainProfile: Profile
+    lateinit var mainProfile: Profile
     var currentProfile: Profile? = null
         private set
-    private val allProfiles: MutableList<Profile?> = ArrayList()
+    private val allProfiles: MutableList<Profile> = ArrayList()
+
+    val mainCategory: DisplayedCategory = DisplayedCategory("Main")
 
     init {
         profileFile.mkdirs()
@@ -32,20 +34,18 @@ object SettingManager {
         addAllProfiles(mainProfile)
     }
 
-    private fun addAllProfiles(profile: Profile?) {
+    private fun addAllProfiles(profile: Profile) {
         allProfiles.add(profile)
-        allProfiles.addAll(profile!!.children.values)
+        allProfiles.addAll(profile.children.values)
     }
 
     fun load(profileId: String) {
-        if (currentProfile != null) {
-            save(currentProfile)
-        }
         val profile = mainProfile.getProfile(profileId)!!
         load(profile)
     }
 
-    private fun load(profile: Profile) {
+    fun load(profile: Profile) {
+        currentProfile?.let { save(it) }
         currentProfile = profile
         loadInternal(profile)
     }
@@ -58,47 +58,28 @@ object SettingManager {
     }
 
     private fun loadInternal(profile: Profile) {
-        if (profile.parent != null) {
-            loadInternal(profile.parent!!)
-        }
         val profileSettings = profile.readSettings()
         val settingsJson = JSONObject(profileSettings)
-        for ((key, value) in settingsJson.toMap()) {
-            val settingContainer = settingContainers[key]
-            if (settingContainer != null) {
-                val jsonObject1 = value as Map<String, Any>
-                settingContainer.shared = profile === mainProfile
-                settingContainer.load(jsonObject1)
-            }
+
+        var profile = profile.parent
+        while (profile != null) {
+            mainCategory.load(JSONObject(profile.readSettings()).toMap(), false)
+            profile = profile.parent
         }
+
+        mainCategory.load(settingsJson.toMap(), true)
     }
 
-    fun getAllProfiles(): List<Profile?> {
+    fun getAllProfiles(): List<Profile> {
         return allProfiles
     }
 
     fun saveCurrent() {
-        save(currentProfile)
+        save(currentProfile!!)
     }
 
-    private fun save(profile: Profile?) {
-        val isMainProfile = profile == mainProfile
-        val settingsJsonParent = JSONObject(mainProfile.readSettings()).toMap()
-        val settingsJson: MutableMap<String?, Any?> = HashMap()
-        for ((key, value) in settingContainers) {
-            if (value.shared && !isMainProfile) {
-                settingsJsonParent[key] = value.save()
-            } else {
-                settingsJson[key] = value.save()
-            }
-        }
-        val jsonObject = JSONObject(settingsJson)
-        profile!!.writeSettings(jsonObject.toString(2))
-        if (!isMainProfile) {
-            val jsonObjectParent = JSONObject(settingsJsonParent)
-            profile.parent?.writeSettings(jsonObjectParent.toString(2))
-            updateProfile(mainProfile)
-        }
+    private fun save(profile: Profile) {
+        profile.writeSettings(JSONObject(mainCategory.save() as Map<*, *>).toString(2))
     }
 
     private fun updateProfile(profile: Profile?) {

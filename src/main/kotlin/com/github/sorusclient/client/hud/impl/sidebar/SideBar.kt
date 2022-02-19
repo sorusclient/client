@@ -5,8 +5,8 @@ import com.github.sorusclient.client.adapter.IScoreboard
 import com.github.sorusclient.client.adapter.IScoreboardObjective
 import com.github.sorusclient.client.adapter.IScoreboardScore
 import com.github.sorusclient.client.hud.HUDElement
-import com.github.sorusclient.client.setting.ConfigurableData
-import com.github.sorusclient.client.setting.ConfigurableData.Toggle
+import com.github.sorusclient.client.setting.DisplayedSetting
+import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.util.Color
@@ -84,7 +84,7 @@ class Sidebar : HUDElement("sideBar") {
         }
     }
 
-    override fun addSettings(settings: MutableList<ConfigurableData>) {
+    override fun addSettings(settings: MutableList<DisplayedSetting>) {
         super.addSettings(settings)
         settings.add(Toggle("Show Scores", showScores))
     }

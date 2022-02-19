@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.module
 
-import com.github.sorusclient.client.setting.ConfigurableData
-import com.github.sorusclient.client.setting.ConfigurableData.Toggle
+import com.github.sorusclient.client.setting.DisplayedSetting
+import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingContainer
 import com.github.sorusclient.client.setting.Util
@@ -51,7 +51,7 @@ open class Module(override val id: String) : SettingContainer {
         return settingsMap
     }
 
-    open fun addSettings(settings: MutableList<ConfigurableData>) {
+    open fun addSettings(settings: MutableList<DisplayedSetting>) {
         settings.add(Toggle("Shared", sharedInternal))
     }
 

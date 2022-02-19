@@ -7,6 +7,10 @@ import com.github.sorusclient.client.adapter.IAdapter
 import com.github.sorusclient.client.adapter.event.GetClientBrandEvent
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.feature.FeatureManager
+import com.github.sorusclient.client.feature.impl.autogg.AutoGG
+import com.github.sorusclient.client.feature.impl.blockoverlay.BlockOverlay
+import com.github.sorusclient.client.feature.impl.zoom.Zoom
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.module.ModuleManager
 import com.github.sorusclient.client.plugin.PluginManager
@@ -30,6 +34,7 @@ class Sorus : Listener {
         this.register(ModuleManager)
         this.register(ContainerRenderer)
         this.register(EventManager)
+        this.register(FeatureManager)
         this.register(HUDManager)
         this.register(IAdapter::class.java, GlassLoader.getInstance().getInterface(IAdapter::class.java))
         this.register(PluginManager)

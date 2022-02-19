@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.hud
 
 import com.github.sorusclient.client.adapter.AdapterManager
-import com.github.sorusclient.client.setting.ConfigurableData
+import com.github.sorusclient.client.setting.DisplayedSetting
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingContainer
 import com.github.sorusclient.client.setting.Util
@@ -238,6 +238,6 @@ abstract class HUDElement(override val id: String) : SettingContainer {
     override var shared: Boolean = false
         get() = false
 
-    open fun addSettings(settings: MutableList<ConfigurableData>) {}
+    open fun addSettings(settings: MutableList<DisplayedSetting>) {}
 
 }
