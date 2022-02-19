@@ -46,9 +46,7 @@ class Sorus : Listener {
         ModuleManager.initialize()
         ContainerRenderer.initialize()
 
-        val settingManager = SettingManager
-        settingManager.loadProfiles()
-        settingManager.load("/")
+        SettingManager.initialize()
         UserInterface.initialize()
         Runtime.getRuntime().addShutdownHook(Thread {
             SettingManager.saveCurrent()

@@ -2,6 +2,7 @@ package com.github.sorusclient.client.setting
 
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.util.Color
+import java.util.Collections
 
 sealed class DisplayedSetting: Displayed() {
 
@@ -22,6 +23,19 @@ sealed class DisplayedSetting: Displayed() {
 
         override fun load(any: Any, isPrimary: Boolean) {
             Util.toJava(setting.type, any)?.let { setting.setValueRaw(it, isPrimary) }
+        }
+
+        override fun loadForced(any: Any) {
+            val javaData = Util.toJava(setting.type, any)
+            if (javaData is List<*>) {
+                javaData.let { setting.setForcedValueRaw(it as List<Any>) }
+            } else {
+                javaData?.let { setting.setForcedValueRaw(ArrayList(Collections.singletonList(javaData))) }
+            }
+        }
+
+        override fun clearForced() {
+            setting.setForcedValueRaw(null)
         }
 
     }
@@ -62,6 +76,14 @@ sealed class DisplayedSetting: Displayed() {
 
         override fun load(any: Any, isPrimary: Boolean) {
             configurableData.load(any, isPrimary)
+        }
+
+        override fun loadForced(any: Any) {
+            configurableData.loadForced(any)
+        }
+
+        override fun clearForced() {
+            configurableData.clearForced()
         }
 
     }

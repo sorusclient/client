@@ -6,6 +6,7 @@ import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.SorusCustomPacketEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.module.ModuleManager
+import com.github.sorusclient.client.setting.SettingManager
 import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.json.JSONObject
@@ -17,15 +18,14 @@ object ServerIntegrationManager {
     private const val baseServersUrl = "https://raw.githubusercontent.com/sorusclient/asset/main/server"
     private const val serversJsonUrl = "$baseServersUrl/servers.json"
 
-    val listeners: MutableMap<String, (Any) -> Unit> = HashMap()
+    val joinListeners: MutableMap<String, (Any) -> Unit> = HashMap()
+    val leaveListeners: MutableList<() -> Unit> = ArrayList()
 
     init {
         val eventManager = EventManager
         eventManager.register(this::onGameJoin)
         eventManager.register(this::onGameLeave)
         eventManager.register(this::onCustomPacket)
-
-        listeners["module"] = this::handleModule
     }
 
     private fun onGameJoin(event: GameJoinEvent) {
@@ -41,7 +41,9 @@ object ServerIntegrationManager {
     }
 
     private fun onGameLeave(event: GameLeaveEvent) {
-        removeServerConfiguration()
+        for (listener in leaveListeners) {
+            listener()
+        }
     }
 
     private fun onCustomPacket(event: SorusCustomPacketEvent) {
@@ -74,27 +76,12 @@ object ServerIntegrationManager {
         val jsonObject = JSONObject(json).toMap()
         try {
             for ((key, value) in jsonObject) {
-                if (listeners[key] != null) {
-                    listeners[key]?.let { it(value) }
+                if (joinListeners[key] != null) {
+                    joinListeners[key]?.let { it(value) }
                 }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
-        }
-    }
-
-    private fun handleModule(json: Any) {
-        val modules = json as Map<String, Any>
-        for ((key, value) in modules) {
-            val module = ModuleManager[key]
-            module!!.loadForced(value as Map<String, Any>)
-        }
-    }
-
-    private fun removeServerConfiguration() {
-        for (moduleData in ModuleManager.modules.values) {
-            val module = moduleData.module
-            module.removeForced()
         }
     }
 

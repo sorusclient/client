@@ -3,7 +3,6 @@ package com.github.sorusclient.client.feature.impl.autogg
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.event.ChatReceivedEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.module.ModuleDisableable
 import com.github.sorusclient.client.server.ServerIntegrationManager
 import com.github.sorusclient.client.setting.DisplayedCategory
 import com.github.sorusclient.client.setting.DisplayedSetting
@@ -25,7 +24,7 @@ class AutoGG {
                     }
             }
 
-        ServerIntegrationManager.listeners["autogg"] = { json ->
+        ServerIntegrationManager.joinListeners["autogg"] = { json ->
             val autogg = json as HashMap<*, *>
             val triggers = autogg["triggers"] as List<*>
             autoggTriggers.clear()

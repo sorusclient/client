@@ -6,5 +6,7 @@ abstract class Displayed {
 
     abstract fun save(): Any?
     abstract fun load(any: Any, isPrimary: Boolean)
+    abstract fun loadForced(any: Any)
+    abstract fun clearForced()
 
 }

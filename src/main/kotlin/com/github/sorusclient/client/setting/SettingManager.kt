@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.setting
 
+import com.github.sorusclient.client.server.ServerIntegrationManager
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
@@ -17,6 +18,22 @@ object SettingManager {
 
     init {
         profileFile.mkdirs()
+    }
+
+    fun initialize() {
+        loadProfiles()
+        load("/")
+        ServerIntegrationManager.joinListeners["settings"] = this::handleJoinForced
+        ServerIntegrationManager.leaveListeners.add(this::handleLeaveForced)
+    }
+
+    private fun handleJoinForced(json: Any) {
+        println(json)
+        mainCategory.loadForced(json)
+    }
+
+    private fun handleLeaveForced() {
+        mainCategory.clearForced()
     }
 
     fun register(settingContainer: SettingContainer) {
@@ -58,16 +75,16 @@ object SettingManager {
     }
 
     private fun loadInternal(profile: Profile) {
-        val profileSettings = profile.readSettings()
-        val settingsJson = JSONObject(profileSettings)
-
-        var profile = profile.parent
-        while (profile != null) {
-            mainCategory.load(JSONObject(profile.readSettings()).toMap(), false)
-            profile = profile.parent
+        val profiles: MutableList<Profile> = ArrayList()
+        var tempProfile: Profile? = profile
+        while (tempProfile != null) {
+            profiles.add(0, tempProfile)
+            tempProfile = tempProfile.parent
         }
 
-        mainCategory.load(settingsJson.toMap(), true)
+        for (profileParent in profiles) {
+            mainCategory.load(JSONObject(profileParent.readSettings()).toMap(), profileParent == profile)
+        }
     }
 
     fun getAllProfiles(): List<Profile> {
@@ -100,7 +117,7 @@ object SettingManager {
     fun createNewProfile() {
         val currentNames: MutableList<String> = ArrayList()
         for (profile in allProfiles) {
-            if (profile!!.id.length > 1) {
+            if (profile.id.length > 1) {
                 currentNames.add(profile.id.substring(1, profile.id.length - 1))
             }
         }

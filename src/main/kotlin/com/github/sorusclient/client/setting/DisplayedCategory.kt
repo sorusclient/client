@@ -34,4 +34,17 @@ class DisplayedCategory(override val id: String): Displayed() {
         }
     }
 
+    override fun loadForced(any: Any) {
+        val loadedMap = any as Map<String, Any>
+        for (displayed in this.displayed) {
+            loadedMap[displayed.id]?.let { displayed.loadForced(it) }
+        }
+    }
+
+    override fun clearForced() {
+        for (displayed in this.displayed) {
+            displayed.clearForced()
+        }
+    }
+
 }
