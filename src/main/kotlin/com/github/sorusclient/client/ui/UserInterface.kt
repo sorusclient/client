@@ -15,7 +15,6 @@ import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.ui.framework.*
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.util.Color
-import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.List
 import kotlin.collections.set
@@ -70,7 +69,7 @@ object UserInterface {
         when (setting) {
             is Toggle -> {
                 return Container()
-                    .apply2 {
+                    .apply {
                         height = 15.0.toAbsolute()
 
                         onUpdate += { state ->
@@ -78,13 +77,13 @@ object UserInterface {
                         }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 0.05.toRelative()
                             }
 
                         children += Text()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
@@ -92,13 +91,13 @@ object UserInterface {
                             }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 0.05.toRelative()
                             }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 2.0.toCopy()
                                 height = 0.6.toRelative()
@@ -119,7 +118,7 @@ object UserInterface {
                                 }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = { _: Map<String, Any> ->
                                             Side(if (setting.setting.value) 1 else -1)
                                         }.toDependent()
@@ -138,20 +137,20 @@ object UserInterface {
             }
             is Slider -> {
                 return Container()
-                    .apply2 {
+                    .apply {
                         height = 15.0.toAbsolute()
                         onUpdate += { state ->
                             state["hidden"] = false
                         }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 0.05.toRelative()
                             }
 
                         children += Text()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
@@ -159,13 +158,13 @@ object UserInterface {
                             }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 0.05.toRelative()
                             }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 35.0.toCopy()
                                 height = 0.1.toRelative()
@@ -197,7 +196,7 @@ object UserInterface {
                                 }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = { _: Map<String, Any> ->
                                             val minimum = setting.minimum
@@ -210,7 +209,7 @@ object UserInterface {
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = { _: Map<String, Any> ->
                                             val minimum = setting.minimum
                                             val maximum = setting.maximum
@@ -234,20 +233,20 @@ object UserInterface {
             }
             is KeyBind -> {
                 return Container()
-                    .apply2 {
+                    .apply {
                         height = 15.0.toAbsolute()
                         onUpdate += { state ->
                             state["hidden"] = false
                         }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 0.05.toRelative()
                             }
 
                         children += Text()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
@@ -255,13 +254,13 @@ object UserInterface {
                             }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 0.05.toRelative()
                             }
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 x = Side.NEGATIVE.toSide()
                                 width = 5.0.toCopy()
                                 height = 0.6.toRelative()
@@ -276,7 +275,7 @@ object UserInterface {
                                 }
 
                                 children += Text()
-                                    .apply2 {
+                                    .apply {
                                         fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         text = { state: Map<String, Any> ->
                                             if (state["selected"] as Boolean) {
@@ -301,7 +300,7 @@ object UserInterface {
                         runtime.setState("value", setting.setting.value)
                     }
             }
-            is ClickThrough -> {
+            /*is ClickThrough -> {
                 return Container()
                     .apply2 {
                         height = 15.0.toAbsolute()
@@ -419,24 +418,108 @@ object UserInterface {
                         storedState += "value"
                         runtime.setState("value", setting.setting.value.ordinal)
                     }
+            }*/
+            is ClickThrough -> {
+                return Container()
+                        .apply {
+                            height = 15.0.toAbsolute()
+                            onUpdate += { state ->
+                                state["hidden"] = false
+                            }
+
+                            children += Container()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.05.toRelative()
+                                    }
+
+                            children += Text()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                        text = setting.displayName.toAbsolute()
+                                        scale = 0.0025.toRelative()
+                                    }
+
+                            children += Container()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.05.toRelative()
+                                    }
+
+                            children += TabHolder()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 5.0.toCopy()
+                                        height = 0.6.toRelative()
+                                        padding = Relative(0.2, true)
+
+                                        addChild("view", Container()
+                                                .apply {
+                                                    backgroundColor = Color.fromRGB(255, 0, 0, 255).toAbsolute()
+                                                })
+
+                                        addChild("edit", Container()
+                                                .apply {
+                                                    val values = (setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>)
+
+                                                    children += Container()
+                                                            .apply {
+                                                                y = ((values.size).toDouble() / 2).toRelative()
+                                                                width = 1.0.toRelative()
+
+                                                                height = (values.size + 1).toDouble().toRelative()
+
+                                                                backgroundColor = Color.fromRGB(0, 255, 0, 255).toAbsolute()
+                                                            }
+
+                                                    for (value in values) {
+                                                        val value = value as Enum<*>
+
+                                                        children += Text()
+                                                                .apply {
+                                                                    x = 0.0.toRelative()
+                                                                    y = (1.0 + value.ordinal).toRelative()
+                                                                    text = value.name.toAbsolute()
+                                                                    fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                                                    scale = 0.015.toRelative()
+                                                                }
+                                                    }
+                                                })
+
+                                        stateId = "state"
+
+                                        storedState += "state"
+
+                                        onInit = {
+                                            it.second["state"] = "view"
+                                        }
+
+                                        onStateUpdate["selected"] = { state ->
+                                            if (state["selected"] != null) {
+                                                state["state"] = if (state["selected"] as Boolean) { "edit" } else { "view" }
+                                            }
+                                        }
+                                    }
+                        }
             }
             is ColorPicker -> {
                 return TabHolder()
-                    .apply2 {
+                    .apply {
                         addChild("edit", Container()
-                            .apply2 {
+                            .apply {
                                 onUpdate += { state ->
                                     state["hidden"] = false
                                 }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = 0.05.toRelative()
                                     }
 
                                 children += Text()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         text = setting.displayName.toAbsolute()
@@ -444,13 +527,13 @@ object UserInterface {
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = 0.05.toRelative()
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = Copy()
                                         height = 0.85.toRelative()
@@ -478,7 +561,7 @@ object UserInterface {
                                         }
 
                                         children += Container()
-                                            .apply2 {
+                                            .apply {
                                                 x = { state: Map<String, Any> ->
                                                     val colorData = state["value"] as FloatArray
                                                     Relative(colorData[1] - 0.5)
@@ -498,7 +581,7 @@ object UserInterface {
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = 0.25.toCopy()
                                         height = 0.85.toRelative()
@@ -518,7 +601,7 @@ object UserInterface {
                                         }
 
                                         children += Container()
-                                            .apply2 {
+                                            .apply {
                                                 x = 0.0.toRelative()
                                                 y = { state: Map<String, Any> ->
                                                     Relative((state["value"] as FloatArray)[0].toDouble() - 0.5)
@@ -532,7 +615,7 @@ object UserInterface {
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = 0.25.toCopy()
                                         height = 0.85.toRelative()
@@ -555,7 +638,7 @@ object UserInterface {
                                         }
 
                                         children += Container()
-                                            .apply2 {
+                                            .apply {
                                                 x = 0.0.toRelative()
                                                 y = { state: Map<String, Any> ->
                                                     Relative((1 - (state["value"] as FloatArray)[3]).toDouble() - 0.5)
@@ -570,19 +653,19 @@ object UserInterface {
                             })
 
                         addChild("view", Container()
-                            .apply2 {
+                            .apply {
                                 onUpdate += { state ->
                                     state["hidden"] = false
                                 }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = 0.05.toRelative()
                                     }
 
                                 children += Text()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         text = setting.displayName.toAbsolute()
@@ -590,13 +673,13 @@ object UserInterface {
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = 0.05.toRelative()
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         width = Copy()
                                         height = 0.6.toRelative()
@@ -653,7 +736,7 @@ object UserInterface {
             }
             is ConfigurableData.Dependent<*> -> {
                 return (getSetting(setting.configurableData) as Container)
-                    .apply2 {
+                    .apply {
                         onUpdate += { state ->
                             if (setting.setting.value != setting.expectedValue) {
                                 state["hidden"] = true
@@ -667,7 +750,7 @@ object UserInterface {
 
     private fun initializeUserInterface() {
         mainGui = TabHolder()
-            .apply2 {
+            .apply {
                 stateId = "currentTab"
 
                 val tabs = arrayOf("home", "hudEdit", "moduleEdit", "pluginEdit", "profileEdit")
@@ -695,7 +778,7 @@ object UserInterface {
 
     private fun addNavBar(container: Container, tabs: Array<String>) {
         container.addChild(
-            Container().apply2 {
+            Container().apply {
                     y = Side.POSITIVE.toSide()
                     width = 0.53.toRelative()
                     height = 0.09.toRelative()
@@ -704,7 +787,7 @@ object UserInterface {
                     backgroundCornerRadius = 0.0075.toRelative()
                     backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
 
-                    children += Container().apply2 {
+                    children += Container().apply {
                         x = Side.NEGATIVE.toSide()
                         width = Copy()
                         height = 0.7.toRelative()
@@ -712,13 +795,13 @@ object UserInterface {
                         backgroundImage = "assets/minecraft/sorus.png".toAbsolute()
                     }
 
-                    children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL).apply2 {
+                    children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL).apply {
                         x = Side.ZERO.toSide()
                         y = Side.ZERO.toSide()
                         height = 0.7.toRelative()
 
                         for (tab in tabs) {
-                            children += Container().apply2 {
+                            children += Container().apply {
                                 width = Copy()
                                 padding = 0.01.toRelative()
                                 backgroundCornerRadius = 0.0075.toRelative()
@@ -734,14 +817,14 @@ object UserInterface {
                                     state["currentTab"] = tab
                                 }
 
-                                children += Container().apply2 {
+                                children += Container().apply {
                                     width = 0.5.toRelative()
                                     height = 0.5.toRelative()
                                     backgroundImage = "assets/minecraft/$tab.png".toAbsolute()
                                 }
                             }
 
-                            children += Container().apply2 {
+                            children += Container().apply {
                                 width = 0.1.toCopy()
                             }
                         }
@@ -750,10 +833,10 @@ object UserInterface {
     }
 
     private fun addModulesScreen(container: Container) {
-        container.apply2 {
-            children += TabHolder().apply2 {
+        container.apply {
+            children += TabHolder().apply {
                 addChild("main", Container()
-                    .apply2 {
+                    .apply {
                         y = Side.NEGATIVE.toSide()
                         width = 0.53.toRelative()
                         padding = 0.01.toRelative()
@@ -761,13 +844,13 @@ object UserInterface {
                         backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
 
                         children += Container()
-                            .apply2 {
+                            .apply {
                                 y = Side.NEGATIVE.toSide()
                                 height = 0.05.toCopy()
                                 padding = 0.005.toRelative()
 
                                 children += Text()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.NEGATIVE.toSide()
                                         fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                         padding = 0.01.toRelative()
@@ -777,17 +860,17 @@ object UserInterface {
                             }
 
                         children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                            .apply2 {
+                            .apply {
                                 for (module in ModuleManager.modules.values) {
                                     children += Container()
-                                        .apply2 {
+                                        .apply {
                                             height = 0.1.toCopy()
                                             padding = 0.01.toRelative()
                                             backgroundCornerRadius = 0.01.toRelative()
                                             backgroundColor = Color.fromRGB(24, 24, 24, 255).toAbsolute()
 
                                             children += Container()
-                                                .apply2 {
+                                                .apply {
                                                     x = Side.NEGATIVE.toSide()
                                                     width = Copy()
                                                     height = 0.6.toRelative()
@@ -797,7 +880,7 @@ object UserInterface {
                                                 }
 
                                             children += Text()
-                                                .apply2 {
+                                                .apply {
                                                     x = Side.NEGATIVE.toSide()
                                                     y = Side.NEGATIVE.toSide()
                                                     padding = Relative(0.15, true)
@@ -808,7 +891,7 @@ object UserInterface {
                                                 }
 
                                             children += Text()
-                                                .apply2 {
+                                                .apply {
                                                     x = Side.NEGATIVE.toSide()
                                                     y = Side.POSITIVE.toSide()
                                                     padding = Relative(0.15, true)
@@ -820,7 +903,7 @@ object UserInterface {
                                                 }
 
                                             children += Container()
-                                                .apply2 {
+                                                .apply {
                                                     x = Side.POSITIVE.toSide()
                                                     y = Side.ZERO.toSide()
                                                     width = Copy()
@@ -843,7 +926,7 @@ object UserInterface {
                     })
 
                 addChild("edit", Container()
-                    .apply2 {
+                    .apply {
                         y = Side.NEGATIVE.toSide()
                         width = 0.53.toRelative()
                         padding = 0.01.toRelative()
@@ -856,17 +939,17 @@ object UserInterface {
 
                             moduleData.module.addSettings(settings)
 
-                            state.first.apply2 {
+                            state.first.apply {
                                 clear()
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         y = Side.NEGATIVE.toSide()
-                                        height = 0.04.toCopy()
+                                        height = 0.05.toCopy()
                                         padding = 0.005.toRelative()
 
                                         children += Text()
-                                            .apply2 {
+                                            .apply {
                                                 x = Side.NEGATIVE.toSide()
                                                 padding = 0.01.toRelative()
 
@@ -877,7 +960,7 @@ object UserInterface {
                                     }
 
                                 children += Container()
-                                    .apply2 {
+                                    .apply {
                                         x = Side.POSITIVE.toSide()
                                         y = Side.POSITIVE.toSide()
                                         width = 25.0.toAbsolute()
@@ -890,7 +973,7 @@ object UserInterface {
                                     }
 
                                 children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                    .apply2 {
+                                    .apply {
                                         y = Side.NEGATIVE.toSide()
                                         scissor = true
 
@@ -910,7 +993,7 @@ object UserInterface {
             }
 
             children += Container()
-                .apply2 {
+                .apply {
                     x = Side.NEGATIVE.toSide()
                     padding = 0.01.toRelative()
                     backgroundCornerRadius = 0.0075.toRelative()

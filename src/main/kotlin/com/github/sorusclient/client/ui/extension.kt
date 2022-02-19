@@ -2,9 +2,8 @@ package com.github.sorusclient.client.ui
 
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.util.Color
-import java.util.function.Function
 
-inline fun <T> T.apply2(block: T.() -> Unit): T {
+inline fun <T> T.apply(block: T.() -> Unit): T {
     this.run(block)
     return this
 }
