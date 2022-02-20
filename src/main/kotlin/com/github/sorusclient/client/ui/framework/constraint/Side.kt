@@ -4,22 +4,27 @@ import com.github.sorusclient.client.ui.framework.Component
 import com.github.sorusclient.client.util.Color
 
 class Side(private val side: Int) : Constraint {
+
     override fun getXValue(componentRuntime: Component.Runtime): Double {
         val placedComponents = componentRuntime.getParent()!!.placedComponents
         var maxLeft = -Double.MAX_VALUE
         var maxRight = Double.MAX_VALUE
         for (component in placedComponents) {
-            val padding = componentRuntime.padding.coerceAtLeast(component.second[4])
-            val intersectingY =
-                componentRuntime.y + componentRuntime.height / 2 + padding > component.second[1] - component.second[3] / 2 + 1 && componentRuntime.y - componentRuntime.height / 2 + 1 < component.second[1] + component.second[3] / 2 + padding
-            val canInteractLeft = component.second[0] < componentRuntime.x + componentRuntime.width / 2
+            val bottomPadding = componentRuntime.bottomPadding.coerceAtLeast(component.second[6])
+            val topPadding = componentRuntime.topPadding.coerceAtLeast(component.second[7])
+            val intersectingY = componentRuntime.y + componentRuntime.height / 2 + bottomPadding > component.second[1] - component.second[3] / 2 + 1 && componentRuntime.y - componentRuntime.height / 2 + 1 < component.second[1] + component.second[3] / 2 + topPadding
+
+            val leftPadding = componentRuntime.leftPadding.coerceAtLeast(component.second[5])
+            val canInteractLeft = component.second[0] < componentRuntime.x
             if (intersectingY && canInteractLeft) {
-                val componentRight = component.second[0] + component.second[2] / 2 + padding
+                val componentRight = component.second[0] + component.second[2] / 2 + leftPadding
                 maxLeft = maxLeft.coerceAtLeast(componentRight)
             }
-            val canInteractRight = component.second[0] > componentRuntime.x - componentRuntime.width / 2
+
+            val rightPadding = componentRuntime.rightPadding.coerceAtLeast(component.second[4])
+            val canInteractRight = component.second[0] > componentRuntime.x
             if (intersectingY && canInteractRight) {
-                val componentLeft = component.second[0] - component.second[2] / 2 - padding
+                val componentLeft = component.second[0] - component.second[2] / 2 - rightPadding
                 maxRight = maxRight.coerceAtMost(componentLeft)
             }
         }
@@ -36,17 +41,22 @@ class Side(private val side: Int) : Constraint {
         var maxTop = -Double.MAX_VALUE
         var maxBottom = Double.MAX_VALUE
         for (component in placedComponents) {
-            val padding = componentRuntime.padding.coerceAtLeast(component.second[4])
-            val intersectingX =
-                componentRuntime.x + componentRuntime.width / 2 + padding > component.second[0] - component.second[2] / 2 + 1 && componentRuntime.x - componentRuntime.width / 2 + 1 < component.second[0] + component.second[2] / 2 + padding
-            val canInteractTop = component.second[1] < componentRuntime.y + componentRuntime.height / 2
+            val rightPadding = componentRuntime.rightPadding.coerceAtLeast(component.second[4])
+            val leftPadding = componentRuntime.leftPadding.coerceAtLeast(component.second[5])
+
+            val intersectingX = componentRuntime.x + componentRuntime.width / 2 + rightPadding > component.second[0] - component.second[2] / 2 + 1 && componentRuntime.x - componentRuntime.width / 2 + 1 < component.second[0] + component.second[2] / 2 + leftPadding
+
+            val topPadding = componentRuntime.topPadding.coerceAtLeast(component.second[7])
+            val canInteractTop = component.second[1] < componentRuntime.y
             if (intersectingX && canInteractTop) {
-                val componentBottom = component.second[1] + component.second[3] / 2 + padding
+                val componentBottom = component.second[1] + component.second[3] / 2 + topPadding
                 maxTop = maxTop.coerceAtLeast(componentBottom)
             }
-            val canInteractBottom = component.second[1] > componentRuntime.y - componentRuntime.height / 2
+
+            val bottomPadding = componentRuntime.bottomPadding.coerceAtLeast(component.second[6])
+            val canInteractBottom = component.second[1] > componentRuntime.y
             if (intersectingX && canInteractBottom) {
-                val componentTop = component.second[1] - component.second[3] / 2 - padding
+                val componentTop = component.second[1] - component.second[3] / 2 - bottomPadding
                 maxBottom = maxBottom.coerceAtMost(componentTop)
             }
         }

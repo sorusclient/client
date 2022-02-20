@@ -30,7 +30,11 @@ open class Container : Component() {
             AdapterManager.getAdapter().renderer.createTexture(value!!.getStringValue(null))
             field = value
         }
-    var padding: Constraint = Absolute(0.0)
+    var paddingLeft: Constraint = Absolute(0.0)
+    var paddingRight: Constraint = Absolute(0.0)
+    var paddingTop: Constraint = Absolute(0.0)
+    var paddingBottom: Constraint = Absolute(0.0)
+
     val children: MutableList<Component> = ArrayList()
     var onClick: ((MutableMap<String, Any>) -> Unit)? = null
     private var onDoubleClick: Consumer<Map<String, Any>>? = null
@@ -49,6 +53,13 @@ open class Container : Component() {
             state.second["hovered"] = false
             state.second["selected"] = false
         }
+    }
+
+    fun setPadding(padding: Constraint) {
+        paddingLeft = padding
+        paddingRight = padding
+        paddingBottom = padding
+        paddingTop = padding
     }
 
     open fun addChild(child: Component): Container {
@@ -71,7 +82,16 @@ open class Container : Component() {
         override val height: Double
             get() = heightInternal
 
-        final override var padding = 0.0
+        final override var leftPadding = 0.0
+            private set
+
+        final override var rightPadding = 0.0
+            private set
+
+        final override var topPadding = 0.0
+            private set
+
+        final override var bottomPadding = 0.0
             private set
 
         val placedComponents: MutableList<Pair<Component?, DoubleArray>> = ArrayList()
@@ -166,10 +186,10 @@ open class Container : Component() {
                 renderer.drawRectangleBorder(x - width / 2, y - height / 2, width, height, container.backgroundCornerRadius.getCornerRadiusValue(this), container.borderThickness!!.getPaddingValue(this), container.borderColor!!.getColorValue(this))
             }
 
-            placedComponents.add(Pair(null, doubleArrayOf(width / 2 + 0.5, 0.0, 1.0, height + 1, 0.0)))
-            placedComponents.add(Pair(null, doubleArrayOf(-width / 2 - 0.5, 0.0, 1.0, height + 1, 0.0)))
-            placedComponents.add(Pair(null, doubleArrayOf(0.0, height / 2 + 0.5, width + 1, 1.0, 0.0)))
-            placedComponents.add(Pair(null, doubleArrayOf(0.0, -height / 2 - 0.5, width + 1, 1.0, 0.0)))
+            placedComponents.add(Pair(null, doubleArrayOf(width / 2 + 0.5, 0.0, 1.0, height + 1, 0.0, 0.0, 0.0, 0.0)))
+            placedComponents.add(Pair(null, doubleArrayOf(-width / 2 - 0.5, 0.0, 1.0, height + 1, 0.0, 0.0, 0.0, 0.0)))
+            placedComponents.add(Pair(null, doubleArrayOf(0.0, height / 2 + 0.5, width + 1, 1.0, 0.0, 0.0, 0.0, 0.0)))
+            placedComponents.add(Pair(null, doubleArrayOf(0.0, -height / 2 - 0.5, width + 1, 1.0, 0.0, 0.0, 0.0, 0.0)))
 
             if (scissor) {
                 renderer.scissor(x - width / 2, y - height / 2, width, height)
@@ -220,19 +240,27 @@ open class Container : Component() {
 
         override val calculatedPosition: DoubleArray
             get() {
-                this.padding = 0.0
+                this.leftPadding = 0.0
+                this.rightPadding = 0.0
+                this.topPadding = 0.0
+                this.bottomPadding = 0.0
+
                 this.x = 0.0
                 this.y = 0.0
                 this.widthInternal = 0.0
                 this.heightInternal = 0.0
                 for (i in 0..2) {
-                    this.padding = this@Container.padding.getPaddingValue(this)
+                    this.leftPadding = this@Container.paddingLeft.getPaddingValue(this)
+                    this.rightPadding = this@Container.paddingRight.getPaddingValue(this)
+                    this.topPadding = this@Container.paddingTop.getPaddingValue(this)
+                    this.bottomPadding = this@Container.paddingBottom.getPaddingValue(this)
+
                     this.x = this@Container.x.getXValue(this)
                     this.y = this@Container.y.getYValue(this)
                     this.widthInternal = this@Container.width.getWidthValue(this)
                     this.heightInternal = this@Container.height.getHeightValue(this)
                 }
-                return doubleArrayOf(this.x, this.y, this.width, this.height, this.padding)
+                return doubleArrayOf(this.x, this.y, this.width, this.height, this.leftPadding, this.rightPadding, this.topPadding, this.bottomPadding)
             }
 
         override fun onStateUpdate(id: String, value: Any) {
@@ -310,6 +338,9 @@ open class Container : Component() {
                     )
                 }
             }
+
+            state["interacted"] = heldClick
+
             this.availableState = state
             return handled
         }

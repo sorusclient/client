@@ -90,7 +90,7 @@ object UserInterface {
                                 x = Side.NEGATIVE.toSide()
                                 width = 2.0.toCopy()
                                 height = 0.6.toRelative()
-                                padding = Relative(0.2, true)
+                                setPadding(Relative(0.2, true))
 
                                 backgroundColor = Dependent { state ->
                                     val toggled = setting.setting.value
@@ -128,7 +128,7 @@ object UserInterface {
                                         }.toDependent()
                                         width = Copy()
                                         height = 0.7.toRelative()
-                                        padding = Relative(0.15, true)
+                                        setPadding(Relative(0.15, true))
 
                                         backgroundCornerRadius = 0.075.toRelative()
                                         backgroundColor = Color.WHITE.toAbsolute()
@@ -170,12 +170,21 @@ object UserInterface {
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                width = 35.0.toCopy()
-                                height = 0.1.toRelative()
-                                padding = Relative(0.2, true)
+                                width = 5.0.toCopy()
+                                height = 0.6.toRelative()
+                                setPadding(Relative(0.2, true))
 
-                                backgroundColor = Color.WHITE.toAbsolute()
-                                backgroundCornerRadius = Relative(0.05, true)
+                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+
+                                borderThickness = 0.4.toAbsolute()
+                                borderColor = Dependent { state ->
+                                    if (state["hovered"] as Boolean || state["interacted"] as Boolean) {
+                                        Color.fromRGB(60, 75, 250, 255)
+                                    } else {
+                                        Color.fromRGB(0, 0, 0, 100)
+                                    }
+                                }
+                                backgroundCornerRadius = 0.01.toRelative()
 
                                 onDrag = { state ->
                                     if (!setting.setting.isForcedValue) {
@@ -211,8 +220,8 @@ object UserInterface {
                                         }.toDependent()
                                         height = 1.1.toRelative()
 
-                                        backgroundColor = Color.fromRGB(60, 75, 250, 255).toAbsolute()
-                                        backgroundCornerRadius = Relative(0.5, true)
+                                        //backgroundColor = Color.fromRGB(60, 75, 250, 255).toAbsolute()
+                                        //backgroundCornerRadius = Relative(0.5, true)
                                     }
 
                                 children += Container()
@@ -224,10 +233,11 @@ object UserInterface {
                                         }.toDependent()
                                         y = 0.0.toRelative()
                                         width = Copy()
-                                        height = 2.0.toRelative()
+                                        height = 1.0.toRelative()
 
                                         backgroundColor = Color.WHITE.toAbsolute()
-                                        backgroundCornerRadius = Relative(1.0, true)
+
+                                        backgroundCornerRadius = Relative(0.25, true)
                                     }
                             }
 
@@ -271,7 +281,7 @@ object UserInterface {
                                 x = Side.NEGATIVE.toSide()
                                 width = 5.0.toCopy()
                                 height = 0.6.toRelative()
-                                padding = Relative(0.2, true)
+                                setPadding(Relative(0.2, true))
 
                                 backgroundColor = Dependent { state ->
                                     if (state["clicked"] != null && state["clicked"] as Boolean) {
@@ -356,7 +366,7 @@ object UserInterface {
                                 x = Side.NEGATIVE.toSide()
                                 width = 5.0.toCopy()
                                 height = 0.6.toRelative()
-                                padding = Relative(0.2, true)
+                                setPadding(Relative(0.2, true))
 
                                 backgroundColor = Dependent { state ->
                                     if (state["clicked"] != null && state["clicked"] as Boolean) {
@@ -380,7 +390,7 @@ object UserInterface {
                                         x = Side.NEGATIVE.toSide()
                                         width = Copy()
                                         height = 0.6.toRelative()
-                                        padding = Relative(0.15, true)
+                                        setPadding(Relative(0.15, true))
 
                                         backgroundImage = "assets/minecraft/arrow_left.png".toAbsolute()
 
@@ -399,7 +409,7 @@ object UserInterface {
                                         x = Side.POSITIVE.toSide()
                                         width = Copy()
                                         height = 0.6.toRelative()
-                                        padding = Relative(0.15, true)
+                                        setPadding(Relative(0.15, true))
 
                                         backgroundImage = "assets/minecraft/arrow_right.png".toAbsolute()
 
@@ -498,7 +508,7 @@ object UserInterface {
                                         x = Side.NEGATIVE.toSide()
                                         width = 5.0.toCopy()
                                         height = 0.6.toRelative()
-                                        padding = Relative(0.2, true)
+                                        setPadding(Relative(0.2, true)
 
                                         addChild("view", Container()
                                                 .apply {
@@ -594,7 +604,7 @@ object UserInterface {
                                                     .apply {
                                                         width = Copy()
                                                         height = 0.85.toRelative()
-                                                        padding = Relative(0.1, true)
+                                                        setPadding(Relative(0.1, true))
 
                                                         topLeftBackgroundColor = Color.WHITE.toAbsolute()
                                                         bottomLeftBackgroundColor = Color.BLACK.toAbsolute()
@@ -643,7 +653,7 @@ object UserInterface {
                                                     .apply {
                                                         width = 0.25.toCopy()
                                                         height = 0.85.toRelative()
-                                                        padding = Relative(0.1, true)
+                                                        setPadding(Relative(0.1, true))
 
                                                         backgroundImage = "assets/minecraft/color_range.png".toAbsolute()
 
@@ -679,7 +689,7 @@ object UserInterface {
                                                         x = Side.NEGATIVE.toSide()
                                                         width = 0.25.toCopy()
                                                         height = 0.85.toRelative()
-                                                        padding = Relative(0.1, true)
+                                                        setPadding(Relative(0.1, true))
 
                                                         topLeftBackgroundColor = Color.WHITE.toAbsolute()
                                                         topRightBackgroundColor = Color.WHITE.toAbsolute()
@@ -831,7 +841,7 @@ object UserInterface {
                                 x = Side.NEGATIVE.toSide()
                                 width = 0.12.toCopy()
                                 backgroundCornerRadius = 0.0155.toRelative()
-                                padding = 0.0125.toRelative()
+                                setPadding(0.0125.toRelative())
 
                                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
                                 borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
@@ -843,7 +853,7 @@ object UserInterface {
                                             .apply {
                                                 width = 0.6.toRelative()
                                                 height = 1.0.toCopy()
-                                                padding = 0.2.toRelative()
+                                                setPadding(0.2.toRelative())
 
                                                 backgroundImage = "sorus/ui/sorus.png".toAbsolute()
                                             })
@@ -852,7 +862,7 @@ object UserInterface {
                                             .apply {
                                                 width = 0.8.toRelative()
                                                 height = 0.6.toAbsolute()
-                                                padding = 0.1.toRelative()
+                                                setPadding(0.1.toRelative())
 
                                                 backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                             })
@@ -864,7 +874,7 @@ object UserInterface {
                                                 .apply {
                                                     width = 0.65.toRelative()
                                                     height = 1.0.toCopy()
-                                                    padding = 0.175.toRelative()
+                                                    setPadding(0.175.toRelative())
 
                                                     backgroundCornerRadius = 0.15.toRelative()
 
@@ -917,7 +927,8 @@ object UserInterface {
                                                 width = 0.3.toRelative()
 
                                                 backgroundCornerRadius = 0.0155.toRelative()
-                                                padding = 0.0125.toRelative()
+                                                setPadding(0.0125.toRelative())
+                                                paddingLeft = 0.0.toAbsolute()
 
                                                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
                                                 borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
@@ -930,7 +941,7 @@ object UserInterface {
                                                         .apply {
                                                             y = Side.NEGATIVE.toSide()
                                                             height = 0.035.toRelative()
-                                                            padding = 0.05.toRelative()
+                                                            setPadding(0.05.toRelative())
 
                                                             children += Text()
                                                                 .apply {
@@ -946,7 +957,7 @@ object UserInterface {
                                                         .apply {
                                                             y = Side.NEGATIVE.toSide()
                                                             height = 0.125.toRelative()
-                                                            padding = 0.05.toRelative()
+                                                            setPadding(0.05.toRelative())
 
                                                             children += Container()
                                                                 .apply {
@@ -954,7 +965,7 @@ object UserInterface {
 
                                                                     width = 1.0.toCopy()
                                                                     height = 0.8.toRelative()
-                                                                    padding = Relative(0.1, true)
+                                                                    setPadding(Relative(0.1, true))
 
                                                                     backgroundCornerRadius = 0.03.toRelative()
                                                                     backgroundImage = "sorus/ui/sorus2.png".toAbsolute()
@@ -971,7 +982,7 @@ object UserInterface {
                                                                     x = Side.NEGATIVE.toSide()
                                                                     y = Side.NEGATIVE.toSide()
 
-                                                                    padding = Relative(0.1, true)
+                                                                    setPadding(Relative(0.1, true))
                                                                     scale = 0.009.toRelative()
                                                                     fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
 
@@ -991,7 +1002,7 @@ object UserInterface {
                                                         .apply {
                                                             y = Side.NEGATIVE.toSide()
                                                             height = 0.06125.toRelative()
-                                                            padding = 0.05.toRelative()
+                                                            setPadding(0.05.toRelative())
 
                                                             children += Container()
                                                                 .apply {
@@ -1020,7 +1031,7 @@ object UserInterface {
                                                                             x = Side.NEGATIVE.toSide()
                                                                             width = 1.0.toCopy()
                                                                             height = 0.5.toRelative()
-                                                                            padding = Relative(0.2, true)
+                                                                            setPadding(Relative(0.2, true))
 
                                                                             backgroundImage = "sorus/ui/profiles/create.png".toAbsolute()
                                                                         }
@@ -1028,7 +1039,7 @@ object UserInterface {
                                                                     children += Text()
                                                                         .apply {
                                                                             x = Side.NEGATIVE.toSide()
-                                                                            padding = Relative(0.2, true)
+                                                                            setPadding(Relative(0.2, true))
 
                                                                             scale = 0.012.toRelative()
                                                                             fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
@@ -1068,7 +1079,7 @@ object UserInterface {
                                                                             x = Side.NEGATIVE.toSide()
                                                                             width = 1.0.toCopy()
                                                                             height = 0.5.toRelative()
-                                                                            padding = Relative(0.2, true)
+                                                                            setPadding(Relative(0.2, true))
 
                                                                             backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
                                                                         }
@@ -1077,7 +1088,7 @@ object UserInterface {
                                                                         .apply {
                                                                             x = Side.NEGATIVE.toSide()
                                                                             y = Side.ZERO.toSide()
-                                                                            padding = Relative(0.2, true)
+                                                                            setPadding(Relative(0.2, true))
 
                                                                             scale = 0.012.toRelative()
                                                                             fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
@@ -1096,14 +1107,14 @@ object UserInterface {
                                                             y = Side.NEGATIVE.toSide()
                                                             width = 0.8.toRelative()
                                                             height = 0.6.toAbsolute()
-                                                            padding = 0.05.toRelative()
+                                                            setPadding(0.05.toRelative())
 
                                                             backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                                         }
 
                                                     children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
                                                         .apply {
-                                                            padding = 0.075.toRelative()
+                                                            setPadding(0.075.toRelative())
 
                                                             onInit += {
                                                                 clear()
@@ -1114,7 +1125,7 @@ object UserInterface {
                                                                 for (profile in profiles) {
                                                                     addChild(Container()
                                                                         .apply {
-                                                                            height = 0.2.toCopy()
+                                                                            height = 0.15.toCopy()
 
                                                                             children += Container()
                                                                                 .apply {
@@ -1124,7 +1135,7 @@ object UserInterface {
                                                                                     backgroundCornerRadius = 0.035.toRelative()
                                                                                     borderThickness = 0.4.toAbsolute()
 
-                                                                                    backgroundColor = Dependent { state ->
+                                                                                    backgroundColor = Dependent {
                                                                                         return@Dependent if (SettingManager.currentProfile == profile.first) {
                                                                                             Color.fromRGB(60, 75, 250, 65)
                                                                                         } else {
@@ -1145,7 +1156,7 @@ object UserInterface {
                                                                                             x = Side.NEGATIVE.toSide()
                                                                                             width = 1.0.toCopy()
                                                                                             height = 0.6.toRelative()
-                                                                                            padding = Relative(0.2, true)
+                                                                                            setPadding(Relative(0.2, true))
 
                                                                                             backgroundCornerRadius = 0.02.toRelative()
                                                                                             backgroundImage = "sorus/ui/sorus2.png".toAbsolute()
@@ -1207,7 +1218,7 @@ object UserInterface {
                                         children += Container()
                                             .apply {
                                                 backgroundCornerRadius = 0.0155.toRelative()
-                                                padding = 0.0125.toRelative()
+                                                setPadding(0.0125.toRelative())
 
                                                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
                                                 borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
@@ -1236,7 +1247,7 @@ object UserInterface {
                                                         .apply {
                                                             y = Side.NEGATIVE.toSide()
                                                             height = 0.05.toRelative()
-                                                            padding = 0.025.toRelative()
+                                                            setPadding(0.025.toRelative())
 
                                                             children += Container()
                                                                 .apply {
@@ -1262,7 +1273,7 @@ object UserInterface {
                                                                         height = 0.98.toRelative()
 
                                                                         backgroundCornerRadius = 0.005.toRelative()
-                                                                        padding = Relative(0.01, true)
+                                                                        setPadding(Relative(0.01, true))
 
                                                                         backgroundColor = Dependent { state ->
                                                                             if (state["clicked"] != null && state["clicked"] as Boolean) {
@@ -1317,10 +1328,9 @@ object UserInterface {
                                                                                 .apply {
                                                                                     width = 0.30666.toRelative()
                                                                                     height = 0.2.toCopy()
-                                                                                    padding = 0.02.toRelative()
 
                                                                                     backgroundCornerRadius = 0.0155.toRelative()
-                                                                                    padding = 0.0125.toRelative()
+                                                                                    setPadding(0.0125.toRelative())
 
                                                                                     backgroundColor = Dependent { state ->
                                                                                         if (state["clicked"] != null && state["clicked"] as Boolean) {
@@ -1344,7 +1354,7 @@ object UserInterface {
                                                                                             x = Side.NEGATIVE.toSide()
                                                                                             width = 1.0.toCopy()
                                                                                             height = 0.6.toRelative()
-                                                                                            padding = Relative(0.2, true)
+                                                                                            setPadding(Relative(0.2, true))
 
                                                                                             //backgroundImage = "sorus/ui/grass_block.png".toAbsolute()
                                                                                         }
@@ -1386,7 +1396,7 @@ object UserInterface {
                                                                                     height = 0.225.toCopy()
 
                                                                                     backgroundCornerRadius = 0.01.toRelative()
-                                                                                    padding = 0.1.toRelative()
+                                                                                    setPadding(0.1.toRelative())
 
                                                                                     backgroundColor = Dependent { state ->
                                                                                         if (state["clicked"] != null && state["clicked"] as Boolean) {
@@ -1484,7 +1494,7 @@ object UserInterface {
                     y = Side.POSITIVE.toSide()
                     width = 0.53.toRelative()
                     height = 0.09.toRelative()
-                    padding = 0.01.toRelative()
+                    setPadding(0.01.toRelative()
 
                     backgroundCornerRadius = 0.0075.toRelative()
                     backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
@@ -1493,7 +1503,7 @@ object UserInterface {
                         x = Side.NEGATIVE.toSide()
                         width = Copy()
                         height = 0.7.toRelative()
-                        padding = 0.02.toRelative()
+                        setPadding(0.02.toRelative()
                         backgroundImage = "assets/minecraft/sorus.png".toAbsolute()
                     }
 
@@ -1505,7 +1515,7 @@ object UserInterface {
                         for (tab in tabs) {
                             children += Container().apply {
                                 width = Copy()
-                                padding = 0.01.toRelative()
+                                setPadding(0.01.toRelative()
                                 backgroundCornerRadius = 0.0075.toRelative()
                                 backgroundColor = { state: Map<String, Any> ->
                                     if (state["currentTab"] == tab) {
@@ -1554,7 +1564,7 @@ object UserInterface {
                         .apply {
                             y = Side.NEGATIVE.toSide()
                             width = 0.53.toRelative()
-                            padding = 0.01.toRelative()
+                            setPadding(0.01.toRelative()
                             backgroundCornerRadius = 0.0075.toRelative()
                             backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
 
@@ -1568,13 +1578,13 @@ object UserInterface {
                                 .apply {
                                     y = Side.NEGATIVE.toSide()
                                     height = 0.05.toCopy()
-                                    padding = 0.005.toRelative()
+                                    setPadding(0.005.toRelative()
 
                                     children += Text()
                                         .apply {
                                             x = Side.NEGATIVE.toSide()
                                             fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                            padding = 0.01.toRelative()
+                                            setPadding(0.01.toRelative()
                                             text = "Settings".toAbsolute()
                                             scale = 0.003.toRelative()
                                         }
@@ -1585,7 +1595,7 @@ object UserInterface {
                                                 x = Side.POSITIVE.toSide()
                                                 width = 1.0.toCopy()
 
-                                                padding = 0.01.toRelative()
+                                                setPadding(0.01.toRelative()
 
                                                 backgroundColor = Color.fromRGB(255, 255, 255, 200).toAbsolute()
 
@@ -1604,7 +1614,7 @@ object UserInterface {
                                     children += List(com.github.sorusclient.client.ui.framework.List.GRID)
                                         .apply {
                                             columns = 3
-                                            padding = 0.005.toRelative()
+                                            setPadding(0.005.toRelative()
 
                                             var count = 0;
                                             for (setting in category.displayed) {
@@ -1623,7 +1633,7 @@ object UserInterface {
 
                                                             width = 0.25.toRelative()
                                                             height = 0.4.toCopy()
-                                                            padding = 0.005.toRelative()
+                                                            setPadding(0.005.toRelative()
 
                                                             onClick = { state ->
                                                                 state["hasInitMain"] = false
@@ -1643,7 +1653,7 @@ object UserInterface {
 
                                     children += List(com.github.sorusclient.client.ui.framework.List.VERTICAL)
                                         .apply {
-                                            padding = 0.005.toRelative()
+                                            setPadding(0.005.toRelative()
 
                                             for (setting in category.displayed) {
                                                 if (setting is DisplayedSetting) {
@@ -1685,7 +1695,7 @@ object UserInterface {
                     children += Container()
                         .apply {
                             x = Side.NEGATIVE.toSide()
-                            padding = 0.01.toRelative()
+                            setPadding(0.01.toRelative()
                             backgroundCornerRadius = 0.0075.toRelative()
                             backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
 
@@ -1693,13 +1703,13 @@ object UserInterface {
                                 .apply {
                                     y = Side.NEGATIVE.toSide()
                                     height = 0.15.toCopy()
-                                    padding = 0.012.toRelative()
+                                    setPadding(0.012.toRelative()
 
                                     children += Text()
                                         .apply {
                                             x = Side.NEGATIVE.toSide()
                                             fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                            padding = 0.03.toRelative()
+                                            setPadding(0.03.toRelative()
                                             text = "Profiles".toAbsolute()
                                             scale = 0.008.toRelative()
                                         }
@@ -1744,7 +1754,7 @@ object UserInterface {
             children += Container()
                 .apply {
                     x = Side.NEGATIVE.toSide()
-                    padding = 0.01.toRelative()
+                    setPadding(0.01.toRelative()
                     backgroundCornerRadius = 0.0075.toRelative()
                     backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
                 }
@@ -1758,7 +1768,7 @@ object UserInterface {
                     .apply {
                         y = Side.NEGATIVE.toSide()
                         width = 0.53.toRelative()
-                        padding = 0.01.toRelative()
+                        setPadding(0.01.toRelative()
                         backgroundCornerRadius = 0.0075.toRelative()
                         backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
 
@@ -1766,13 +1776,13 @@ object UserInterface {
                             .apply {
                                 y = Side.NEGATIVE.toSide()
                                 height = 0.05.toCopy()
-                                padding = 0.005.toRelative()
+                                setPadding(0.005.toRelative()
 
                                 children += Text()
                                     .apply {
                                         x = Side.NEGATIVE.toSide()
                                         fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                        padding = 0.01.toRelative()
+                                        setPadding(0.01.toRelative()
                                         text = "Module".toAbsolute()
                                         scale = 0.003.toRelative()
                                     }
@@ -1784,7 +1794,7 @@ object UserInterface {
                                     children += Container()
                                         .apply {
                                             height = 0.1.toCopy()
-                                            padding = 0.01.toRelative()
+                                            setPadding(0.01.toRelative()
                                             backgroundCornerRadius = 0.01.toRelative()
                                             backgroundColor = Color.fromRGB(24, 24, 24, 255).toAbsolute()
 
@@ -1793,7 +1803,7 @@ object UserInterface {
                                                     x = Side.NEGATIVE.toSide()
                                                     width = Copy()
                                                     height = 0.6.toRelative()
-                                                    padding = Relative(0.2, true)
+                                                    setPadding(Relative(0.2, true)
                                                     backgroundCornerRadius = 0.01.toRelative()
                                                     backgroundColor = Color.fromRGB(255, 255, 255, 200).toAbsolute()
                                                 }
@@ -1802,7 +1812,7 @@ object UserInterface {
                                                 .apply {
                                                     x = Side.NEGATIVE.toSide()
                                                     y = Side.NEGATIVE.toSide()
-                                                    padding = Relative(0.15, true)
+                                                    setPadding(Relative(0.15, true)
 
                                                     text = module.name.toAbsolute()
                                                     fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
@@ -1813,7 +1823,7 @@ object UserInterface {
                                                 .apply {
                                                     x = Side.NEGATIVE.toSide()
                                                     y = Side.POSITIVE.toSide()
-                                                    padding = Relative(0.15, true)
+                                                    setPadding(Relative(0.15, true)
 
                                                     text = module.description.toAbsolute()
                                                     fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
@@ -1827,7 +1837,7 @@ object UserInterface {
                                                     y = Side.ZERO.toSide()
                                                     width = Copy()
                                                     height = 0.4.toRelative()
-                                                    padding = Relative(0.3, true)
+                                                    setPadding(Relative(0.3, true)
 
                                                     backgroundImage = "assets/minecraft/gear.png".toAbsolute()
                                                     backgroundColor = Color.fromRGB(255, 255, 255, 75).toAbsolute()
@@ -1848,7 +1858,7 @@ object UserInterface {
                     .apply {
                         y = Side.NEGATIVE.toSide()
                         width = 0.53.toRelative()
-                        padding = 0.01.toRelative()
+                        setPadding(0.01.toRelative()
                         backgroundCornerRadius = 0.0075.toRelative()
                         backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
 
@@ -1865,12 +1875,12 @@ object UserInterface {
                                     .apply {
                                         y = Side.NEGATIVE.toSide()
                                         height = 0.05.toCopy()
-                                        padding = 0.005.toRelative()
+                                        setPadding(0.005.toRelative()
 
                                         children += Text()
                                             .apply {
                                                 x = Side.NEGATIVE.toSide()
-                                                padding = 0.01.toRelative()
+                                                setPadding(0.01.toRelative()
 
                                                 fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
                                                 text = moduleData.name.toAbsolute()
@@ -1914,7 +1924,7 @@ object UserInterface {
             children += Container()
                 .apply {
                     x = Side.NEGATIVE.toSide()
-                    padding = 0.01.toRelative()
+                    setPadding(0.01.toRelative()
                     backgroundCornerRadius = 0.0075.toRelative()
                     backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
                 }

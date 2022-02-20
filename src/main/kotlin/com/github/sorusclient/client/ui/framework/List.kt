@@ -37,18 +37,18 @@ open class List(private val type: Int) : Container() {
             val childRuntime = child.runtime
             xIndex++
             if (type and HORIZONTAL != 0) {
-                val position = xLocation + childRuntime.width / 2 + childRuntime.padding
+                val position = xLocation + childRuntime.width / 2 + childRuntime.leftPadding
                 array[0] = position
-                xLocation += childRuntime.width + childRuntime.padding
+                xLocation += childRuntime.width + childRuntime.leftPadding
                 if (xIndex >= columns) {
                     xLocation = -this.width / 2
                 }
             }
             if (type and VERTICAL != 0) {
-                val position = yLocation + childRuntime.height / 2 + childRuntime.padding
+                val position = yLocation + childRuntime.height / 2 + childRuntime.topPadding
                 array[1] = position
                 if (xIndex >= columns) {
-                    yLocation += childRuntime.height + childRuntime.padding
+                    yLocation += childRuntime.height + childRuntime.topPadding
                 }
             }
             if (xIndex >= columns) {

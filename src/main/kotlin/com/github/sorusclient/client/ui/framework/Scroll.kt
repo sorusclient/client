@@ -30,7 +30,7 @@ class Scroll(type: Int) : List(type) {
             height: Double
         ) {
             var scroll = getState("scroll") as Double
-            scroll = Math.max(scroll, -(prevYLocation - this.height + children[0].runtime.padding))
+            scroll = Math.max(scroll, -(prevYLocation - this.height + children[0].runtime.topPadding))
             scroll = Math.min(scroll, 0.0)
             setState("scroll", scroll)
             super.renderChild(childRuntime, x, y + scroll, width, height)

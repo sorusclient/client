@@ -51,7 +51,13 @@ class Text : Component() {
 
         var cachedFontId: String? = null
 
-        override var padding = 0.0
+        override var leftPadding = 0.0
+            private set
+        override var rightPadding = 0.0
+            private set
+        override var topPadding = 0.0
+            private set
+        override var bottomPadding = 0.0
             private set
 
         override fun render(x: Double, y: Double, width: Double, height: Double) {
@@ -80,15 +86,23 @@ class Text : Component() {
 
         override val calculatedPosition: DoubleArray
             get() {
-                this.padding = 0.0
+                this.leftPadding = 0.0
+                this.rightPadding = 0.0
+                this.topPadding = 0.0
+                this.bottomPadding = 0.0
+
                 this.x = 0.0
                 this.y = 0.0
                 for (i in 0..2) {
-                    this.padding = this@Text.padding.getPaddingValue(this)
+                    this.leftPadding = this@Text.padding.getPaddingValue(this)
+                    this.rightPadding = this@Text.padding.getPaddingValue(this)
+                    this.topPadding = this@Text.padding.getPaddingValue(this)
+                    this.bottomPadding = this@Text.padding.getPaddingValue(this)
+
                     this.x = this@Text.x.getXValue(this)
                     this.y = this@Text.y.getYValue(this)
                 }
-                return doubleArrayOf(this.x, this.y, width, height, this.padding)
+                return doubleArrayOf(this.x, this.y, this.width, this.height, this.leftPadding, this.rightPadding, this.topPadding, this.bottomPadding)
             }
 
         override val width: Double

@@ -6,6 +6,7 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import v1_8_9.net.minecraft.text.*
 import v1_8_9.net.minecraft.util.Formatting
+import java.util.Objects
 
 object Util {
     fun getIdByItemType(itemType: ItemType?): Int {

@@ -23,6 +23,7 @@ abstract class Component {
         storedState += "hidden"
         storedState += "clicked"
         storedState += "hovered"
+        storedState += "interacted"
     }
 
     abstract inner class Runtime {
@@ -34,7 +35,10 @@ abstract class Component {
         var x: Double = 0.0
         var y: Double = 0.0
 
-        abstract val padding: Double
+        abstract val leftPadding: Double
+        abstract val rightPadding: Double
+        abstract val topPadding: Double
+        abstract val bottomPadding: Double
 
         abstract val width: Double
         abstract val height: Double
@@ -44,6 +48,7 @@ abstract class Component {
             setState("hidden", false)
             setState("clicked", false)
             setState("hovered", false)
+            setState("interacted", false)
         }
 
         abstract fun onInit()
