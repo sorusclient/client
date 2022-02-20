@@ -12,7 +12,7 @@ class ItemPhysics {
     init {
         SettingManager.mainCategory
             .apply {
-                registerDisplayed(DisplayedCategory("ItemPhysics"))
+                registerDisplayed(DisplayedCategory("Item Physics"))
                     .apply {
                         registerDisplayed(DisplayedSetting.Toggle("Enabled", Setting(false).also { enabled = it }))
                     }

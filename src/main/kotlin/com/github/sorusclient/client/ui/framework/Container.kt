@@ -7,6 +7,7 @@ import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.ui.framework.constraint.Absolute
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
+import com.github.sorusclient.client.ui.toAbsolute
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.Pair
 import java.util.function.Consumer
@@ -21,6 +22,9 @@ open class Container : Component() {
     var bottomRightBackgroundColor: Constraint? = null
     var topRightBackgroundColor: Constraint? = null
 
+    var borderThickness: Constraint? = 1.0.toAbsolute()
+    var borderColor: Constraint? = null
+
     var backgroundImage: Constraint? = null
         set(value) {
             AdapterManager.getAdapter().renderer.createTexture(value!!.getStringValue(null))
@@ -32,7 +36,7 @@ open class Container : Component() {
     private var onDoubleClick: Consumer<Map<String, Any>>? = null
     var onDrag: ((Pair<MutableMap<String, Any>, Pair<Double, Double>>) -> Unit)? = null
     var onKey: ((Pair<MutableMap<String, Any>, Key>) -> Unit)? = null
-    var onInit: ((Pair<Container, MutableMap<String, Any>>) -> Unit)? = null
+    val onInit: MutableList<((Pair<Container, MutableMap<String, Any>>) -> Unit)> = ArrayList()
     var onScroll: ((Pair<Double, MutableMap<String, Any>>) -> Unit)? = null
     val onUpdate: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
     var scissor = false
@@ -78,9 +82,9 @@ open class Container : Component() {
             this.widthInternal = width
             this.heightInternal = height
             if (!(getState("hasInit") as Boolean)) {
-                if (onInit != null) {
+                for (onInit in this@Container.onInit) {
                     val state = this.availableState
-                    onInit!!(Pair(this@Container, state))
+                    onInit(Pair(this@Container, state))
                     this.availableState = state
                 }
                 setState("selected", false)
@@ -97,6 +101,9 @@ open class Container : Component() {
             }
             this.availableState = state
             if (getState("hidden") as Boolean) {
+                setState("clicked", false)
+                setState("hovered", false)
+                setState("selected", false)
                 return
             }
 
@@ -112,6 +119,8 @@ open class Container : Component() {
                     y - height / 2,
                     width,
                     height,
+                    container.backgroundCornerRadius.getCornerRadiusValue(this),
+                    true,
                     color
                 )
             } else if (container.topLeftBackgroundColor != null) {
@@ -136,6 +145,11 @@ open class Container : Component() {
                     container.backgroundColor!!.getColorValue(this)
                 )
             }
+
+            if (container.borderColor != null) {
+                renderer.drawRectangleBorder(x - width / 2, y - height / 2, width, height, container.backgroundCornerRadius.getCornerRadiusValue(this), container.borderThickness!!.getPaddingValue(this), container.borderColor!!.getColorValue(this))
+            }
+
             placedComponents.add(Pair(null, doubleArrayOf(width / 2 + 0.5, 0.0, 1.0, height + 1, 0.0)))
             placedComponents.add(Pair(null, doubleArrayOf(-width / 2 - 0.5, 0.0, 1.0, height + 1, 0.0)))
             placedComponents.add(Pair(null, doubleArrayOf(0.0, height / 2 + 0.5, width + 1, 1.0, 0.0)))
@@ -229,6 +243,10 @@ open class Container : Component() {
                 if (event.wheel != 0.0 && onScroll != null) {
                     onScroll!!(Pair(event.wheel, state))
                 }
+
+                state["hovered"] = true
+            } else {
+                state["hovered"] = false
             }
 
             if (event.isPressed && event.button === Button.PRIMARY) {
@@ -246,11 +264,13 @@ open class Container : Component() {
                     }
                     prevClick = System.currentTimeMillis()
                     state["selected"] = true
+                    state["clicked"] = true
                 } else {
                     state["selected"] = false
                 }
             } else if (!event.isPressed && event.button === Button.PRIMARY) {
                 heldClick = false
+                state["clicked"] = false
             }
 
             if (heldClick) {

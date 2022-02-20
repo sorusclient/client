@@ -21,6 +21,8 @@ abstract class Component {
         storedState += "selected"
         storedState += "hasInit"
         storedState += "hidden"
+        storedState += "clicked"
+        storedState += "hovered"
     }
 
     abstract inner class Runtime {
@@ -40,6 +42,8 @@ abstract class Component {
         init {
             setState("hasInit", false)
             setState("hidden", false)
+            setState("clicked", false)
+            setState("hovered", false)
         }
 
         fun setState(id: String, value: Any) {

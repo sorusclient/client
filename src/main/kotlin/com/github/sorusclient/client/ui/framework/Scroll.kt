@@ -1,19 +1,22 @@
 package com.github.sorusclient.client.ui.framework
 
 class Scroll(type: Int) : List(type) {
+
     init {
         runtime = Runtime()
         storedState += "scroll"
-        onInit = { state ->
+        onInit += { state ->
             state.second["scroll"] = 0.0
         }
         onScroll = { state ->
             state.second["scroll"] = state.second["scroll"] as Double + state.first * 3
         }
+        scissor = true
     }
 
     inner class Runtime : List.Runtime() {
         private var prevYLocation = 0.0
+
         override fun render(x: Double, y: Double, width: Double, height: Double) {
             super.render(x, y, width, height)
             prevYLocation = yLocation + height / 2

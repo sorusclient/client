@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.adapter.v1_8_9
 
+import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.IRenderer
 import com.github.sorusclient.client.adapter.RenderBuffer
@@ -23,6 +24,8 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
 import javax.imageio.ImageIO
+import kotlin.math.cos
+import kotlin.math.sin
 
 class RendererImpl : IRenderer {
 
@@ -159,36 +162,154 @@ class RendererImpl : IRenderer {
     }
 
     override fun drawRectangle(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, topLeftColor: Color, bottomLeftColor: Color, bottomRightColor: Color, topRightColor: Color) {
-        this.createPrograms()
+        if (topLeftColor.rgb == topRightColor.rgb && topRightColor.rgb == bottomRightColor.rgb) {
+            this.createPrograms()
 
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
+            GL11.glEnable(GL11.GL_BLEND)
+            GL11.glDisable(GL11.GL_TEXTURE_2D)
 
-        GL20.glUseProgram(roundedRectangleProgram)
+            GL20.glUseProgram(roundedRectangleProgram)
 
-        GL30.glBindVertexArray(roundedRectangleVao)
-        GL20.glEnableVertexAttribArray(0)
+            GL30.glBindVertexArray(roundedRectangleVao)
+            GL20.glEnableVertexAttribArray(0)
 
-        GL11.glColor4f(1f, 1f, 1f, 1f)
+            GL11.glColor4f(1f, 1f, 1f, 1f)
 
-        val window = Window(MinecraftClient.getInstance())
+            val window = Window(MinecraftClient.getInstance())
 
-        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
-        //TODO: Make colors vary for different corners
-        GL20.glUniform4f(2, topLeftColor.red.toFloat(), topLeftColor.green.toFloat(), topLeftColor.blue.toFloat(), topLeftColor.alpha.toFloat())
-        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-        GL20.glUniform1f(4, cornerRadius.toFloat())
+            GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+            //TODO: Make colors vary for different corners
+            GL20.glUniform4f(
+                2,
+                topLeftColor.red.toFloat(),
+                topLeftColor.green.toFloat(),
+                topLeftColor.blue.toFloat(),
+                topLeftColor.alpha.toFloat()
+            )
+            GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+            GL20.glUniform1f(4, cornerRadius.toFloat())
 
-        GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
+            GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
 
-        GL20.glDisableVertexAttribArray(0)
-        GL30.glBindVertexArray(0)
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+            GL20.glDisableVertexAttribArray(0)
+            GL30.glBindVertexArray(0)
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
 
-        GL20.glUseProgram(0)
+            GL20.glUseProgram(0)
 
-        GL11.glDisable(GL11.GL_BLEND)
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
+            GL11.glDisable(GL11.GL_BLEND)
+            GL11.glEnable(GL11.GL_TEXTURE_2D)
+        } else {
+            GL11.glDisable(GL11.GL_TEXTURE_2D)
+            GL11.glEnable(GL11.GL_BLEND)
+            GlStateManager.shadeModel(GL11.GL_SMOOTH)
+            val tessellator = Tessellator.getInstance()
+            val bufferBuilder = tessellator.buffer
+            bufferBuilder.begin(GL11.GL_POLYGON, VertexFormats.POSITION_COLOR)
+            bufferBuilder.vertex(x + cornerRadius, y + height, 0.0).color(
+                bottomLeftColor.red.toFloat(),
+                bottomLeftColor.green.toFloat(),
+                bottomLeftColor.blue.toFloat(),
+                bottomLeftColor.alpha.toFloat()
+            ).next()
+            bufferBuilder.vertex(x + width - cornerRadius, y + height, 0.0).color(
+                bottomRightColor.red.toFloat(),
+                bottomRightColor.green.toFloat(),
+                bottomRightColor.blue.toFloat(),
+                bottomRightColor.alpha.toFloat()
+            ).next()
+            for (i in 0..89) {
+                bufferBuilder.vertex(
+                    x + width - cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
+                    y + height - cornerRadius + cos(
+                        Math.toRadians(i.toDouble())
+                    ) * cornerRadius,
+                    0.0
+                ).color(
+                    bottomRightColor.red.toFloat(),
+                    bottomRightColor.green.toFloat(),
+                    bottomRightColor.blue.toFloat(),
+                    bottomRightColor.alpha.toFloat()
+                ).next()
+            }
+            bufferBuilder.vertex(x + width, y + height - cornerRadius, 0.0).color(
+                bottomRightColor.red.toFloat(),
+                bottomRightColor.green.toFloat(),
+                bottomRightColor.blue.toFloat(),
+                bottomRightColor.alpha.toFloat()
+            ).next()
+            bufferBuilder.vertex(x + width, y + cornerRadius, 0.0).color(
+                topRightColor.red.toFloat(),
+                topRightColor.green.toFloat(),
+                topRightColor.blue.toFloat(),
+                topRightColor.alpha.toFloat()
+            ).next()
+            for (i in 90..179) {
+                bufferBuilder.vertex(
+                    x + width - cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
+                    y + cornerRadius + cos(
+                        Math.toRadians(i.toDouble())
+                    ) * cornerRadius,
+                    0.0
+                ).color(
+                    topRightColor.red.toFloat(),
+                    topRightColor.green.toFloat(),
+                    topRightColor.blue.toFloat(),
+                    topRightColor.alpha.toFloat()
+                ).next()
+            }
+            bufferBuilder.vertex(x + width - cornerRadius, y, 0.0).color(
+                topRightColor.red.toFloat(),
+                topRightColor.green.toFloat(),
+                topRightColor.blue.toFloat(),
+                topRightColor.alpha.toFloat()
+            ).next()
+            bufferBuilder.vertex(x + cornerRadius, y, 0.0).color(
+                topLeftColor.red.toFloat(),
+                topLeftColor.green.toFloat(),
+                topLeftColor.blue.toFloat(),
+                topLeftColor.alpha.toFloat()
+            ).next()
+            for (i in 180..269) {
+                bufferBuilder.vertex(
+                    x + cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius, y + cornerRadius + cos(
+                        Math.toRadians(i.toDouble())
+                    ) * cornerRadius, 0.0
+                ).color(
+                    topLeftColor.red.toFloat(),
+                    topLeftColor.green.toFloat(),
+                    topLeftColor.blue.toFloat(),
+                    topLeftColor.alpha.toFloat()
+                ).next()
+            }
+            bufferBuilder.vertex(x, y + cornerRadius, 0.0).color(
+                topLeftColor.red.toFloat(),
+                topLeftColor.green.toFloat(),
+                topLeftColor.blue.toFloat(),
+                topLeftColor.alpha.toFloat()
+            ).next()
+            bufferBuilder.vertex(x, y + height - cornerRadius, 0.0).color(
+                bottomLeftColor.red.toFloat(),
+                bottomLeftColor.green.toFloat(),
+                bottomLeftColor.blue.toFloat(),
+                bottomLeftColor.alpha.toFloat()
+            ).next()
+            for (i in 270..359) {
+                bufferBuilder.vertex(
+                    x + cornerRadius + kotlin.math.sin(Math.toRadians(i.toDouble())) * cornerRadius,
+                    y + height - cornerRadius + cos(
+                        Math.toRadians(i.toDouble())
+                    ) * cornerRadius,
+                    0.0
+                ).color(
+                    bottomLeftColor.red.toFloat(),
+                    bottomLeftColor.green.toFloat(),
+                    bottomLeftColor.blue.toFloat(),
+                    bottomLeftColor.alpha.toFloat()
+                ).next()
+            }
+            tessellator.draw()
+        }
     }
 
     override fun drawRectangleBorder(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, thickness: Double, color: Color) {
@@ -300,7 +421,7 @@ class RendererImpl : IRenderer {
         GL30.glBindVertexArray(0)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
         GL20.glUseProgram(0)
-        GlStateManager.bindTexture( 0)
+        GlStateManager.bindTexture(0)
     }
 
     override fun createTexture(id: String, inputStream: InputStream, antialias: Boolean) {
@@ -364,6 +485,8 @@ class RendererImpl : IRenderer {
     }
 
     override fun drawText(id: String, text: String, x: Double, y: Double, scale: Double, color: Color) {
+        var y = y - 1
+
         val fontData = getFont(id)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontData!!.glId)
         GL11.glDisable(GL11.GL_TEXTURE_2D)

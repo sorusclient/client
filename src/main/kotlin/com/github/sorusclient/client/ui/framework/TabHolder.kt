@@ -4,7 +4,7 @@ import kotlin.collections.List
 
 class TabHolder : Container() {
     private val tabs: MutableMap<String?, Component?> = HashMap()
-    private var defaultTab: String? = null
+    var defaultTab: String? = null
     var stateId: String? = null
 
     init {
@@ -39,8 +39,10 @@ class TabHolder : Container() {
             if (currentTab == null) {
                 currentTab = defaultTab
             }
+
             if (prevCurrentTab != null && prevCurrentTab != currentTab) {
-                tabs[prevCurrentTab]!!.runtime.setHasInit(false)
+                //made a question mark instead of exclamation point, not sure if this will kill me in the future
+                tabs[prevCurrentTab]?.runtime?.setHasInit(false)
             }
             prevCurrentTab = currentTab
             return if (tabs[currentTab] == null) emptyList() else listOf(tabs[currentTab]!!)

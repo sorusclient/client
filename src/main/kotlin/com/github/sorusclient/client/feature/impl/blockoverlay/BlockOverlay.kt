@@ -22,7 +22,7 @@ class BlockOverlay {
     init {
         SettingManager.mainCategory
             .apply {
-                registerDisplayed(DisplayedCategory("BlockOverlay"))
+                registerDisplayed(DisplayedCategory("Block Overlay"))
                     .apply {
                         registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
                         registerDisplayed(ColorPicker("Border Color", Setting(Color.BLACK).also { borderColor = it }))

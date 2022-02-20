@@ -68,9 +68,15 @@ object SettingManager {
 
     fun delete(profile: Profile) {
         if (profile === mainProfile) return
-        this.load(mainProfile)
+        this.load(profile.parent!!)
         allProfiles.remove(profile)
         profile.delete()
+
+        for (entry in HashMap(profile.parent!!.children)) {
+            if (entry.value == profile) {
+                profile.parent!!.children.remove(entry.key)
+            }
+        }
     }
 
     private fun loadInternal(profile: Profile) {
@@ -113,9 +119,9 @@ object SettingManager {
         }
     }
 
-    fun createNewProfile() {
+    fun createNewProfile(profile: Profile) {
         val currentNames: MutableList<String> = ArrayList()
-        for (profile in allProfiles) {
+        for (profile in profile.children.values) {
             if (profile.id.length > 1) {
                 currentNames.add(profile.id.substring(1, profile.id.length - 1))
             }
@@ -123,9 +129,9 @@ object SettingManager {
         var newProfile: Profile? = null
         var i = 0
         while (newProfile == null) {
-            val id = "profile$i"
+            val id = "Profile$i"
             if (!currentNames.contains(id)) {
-                newProfile = mainProfile.createProfile("/$id/")
+                newProfile = profile.createProfile("/$id/")
             }
             i++
         }
