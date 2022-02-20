@@ -40,9 +40,15 @@ open class Container : Component() {
     var onScroll: ((Pair<Double, MutableMap<String, Any>>) -> Unit)? = null
     val onUpdate: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
     var scissor = false
+    var consumeClicks = true
 
     init {
         runtime = Runtime()
+
+        onInit += { state ->
+            state.second["hovered"] = false
+            state.second["selected"] = false
+        }
     }
 
     open fun addChild(child: Component): Container {
@@ -73,6 +79,22 @@ open class Container : Component() {
         private var prevClick: Long = 0
         private var heldClick = false
 
+        override fun onInit() {
+            for (child in getChildren()) {
+                child.parent = this@Container
+            }
+
+            for (onInit in this@Container.onInit) {
+                val state = this.availableState
+                onInit(Pair(this@Container, state))
+                this.availableState = state
+            }
+
+            for (component in getChildren()) {
+                component.runtime.onInit()
+            }
+        }
+
         override fun render(x: Double, y: Double, width: Double, height: Double) {
             placedComponents.clear()
             placedComponents2.clear()
@@ -81,18 +103,12 @@ open class Container : Component() {
             this.y = y
             this.widthInternal = width
             this.heightInternal = height
+
             if (!(getState("hasInit") as Boolean)) {
-                for (onInit in this@Container.onInit) {
-                    val state = this.availableState
-                    onInit(Pair(this@Container, state))
-                    this.availableState = state
-                }
+                onInit()
+
                 setState("selected", false)
                 setState("hasInit", true)
-            }
-
-            for (child in getChildren()) {
-                child.parent = this@Container
             }
 
             val state = this.availableState
@@ -161,6 +177,7 @@ open class Container : Component() {
 
             for (child in getChildren()) {
                 if (!(child.runtime.getState("hidden") as Boolean)) {
+                    child.parent = this@Container
                     val wantedPosition = getOtherCalculatedPosition(child)
                     val childX = wantedPosition[0]
                     val childY = wantedPosition[1]
@@ -226,17 +243,17 @@ open class Container : Component() {
         }
 
         override fun handleMouseEvent(event: MouseEvent): Boolean {
-            val state = this.availableState
-            if (event.isPressed && event.button === Button.PRIMARY) {
-                state["selected"] = event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2
-            }
-
             var handled = false
             for (component in placedComponents2) {
                 handled = component.runtime.handleMouseEvent(event)
                 if (handled) {
                     return true
                 }
+            }
+
+            val state = this.availableState
+            if (event.isPressed && event.button === Button.PRIMARY) {
+                state["selected"] = event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2
             }
 
             if (event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2) {
@@ -252,13 +269,17 @@ open class Container : Component() {
             if (event.isPressed && event.button === Button.PRIMARY) {
                 if (event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2) {
                     if (onClick != null) {
-                        handled = true
+                        if (consumeClicks) {
+                            handled = true
+                        }
                         onClick!!(state)
                     }
                     heldClick = true
                     if (System.currentTimeMillis() - prevClick < 400) {
                         if (onDoubleClick != null) {
-                            handled = true
+                            if (consumeClicks) {
+                                handled = true
+                            }
                             onDoubleClick!!.accept(state)
                         }
                     }
@@ -275,7 +296,9 @@ open class Container : Component() {
 
             if (heldClick) {
                 if (onDrag != null) {
-                    handled = true
+                    if (consumeClicks) {
+                        handled = true
+                    }
                     onDrag!!(
                         Pair(
                             state,

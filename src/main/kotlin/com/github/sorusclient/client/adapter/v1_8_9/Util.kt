@@ -66,6 +66,7 @@ object Util {
         keyMap[48] = Key.B
         keyMap[49] = Key.N
         keyMap[50] = Key.M
+        keyMap[54] = Key.SHIFT_RIGHT
     }
 
     fun getKey(id: Int): Key {

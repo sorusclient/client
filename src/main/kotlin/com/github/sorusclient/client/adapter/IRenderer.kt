@@ -100,4 +100,8 @@ interface IRenderer {
     }
 
     fun createFont(id: String, inputStream: InputStream)
+
+    fun loadBlur()
+    fun unloadBlur()
+
 }

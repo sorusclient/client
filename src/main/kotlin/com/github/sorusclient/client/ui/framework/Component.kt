@@ -46,6 +46,8 @@ abstract class Component {
             setState("hovered", false)
         }
 
+        abstract fun onInit()
+
         fun setState(id: String, value: Any) {
             if (storedState.contains(id)) {
                 state[id] = value

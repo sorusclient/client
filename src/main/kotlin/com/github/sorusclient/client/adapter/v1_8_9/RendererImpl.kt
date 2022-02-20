@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
+import v1_8_9.net.minecraft.client.render.GameRenderer
 import v1_8_9.net.minecraft.client.render.Tessellator
 import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.client.util.Window
@@ -21,6 +22,7 @@ import java.awt.*
 import java.awt.image.BufferedImage
 import java.io.IOException
 import java.io.InputStream
+import java.lang.reflect.Method
 import java.nio.ByteBuffer
 import java.util.*
 import javax.imageio.ImageIO
@@ -485,8 +487,6 @@ class RendererImpl : IRenderer {
     }
 
     override fun drawText(id: String, text: String, x: Double, y: Double, scale: Double, color: Color) {
-        var y = y - 1
-
         val fontData = getFont(id)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontData!!.glId)
         GL11.glDisable(GL11.GL_TEXTURE_2D)
@@ -549,7 +549,7 @@ class RendererImpl : IRenderer {
             var textY = 0
             var maxHeight = 0
             fontData.characterData = arrayOfNulls(255)
-            fontData.ascent = fontMetrics.ascent.toDouble() / bufferedImage.height
+            fontData.ascent = fontMetrics.getLineMetrics("T", graphics).height.toDouble() / bufferedImage.height
             for (i in 0..254) {
                 val character = i.toChar()
                 val weirdAscent = fontMetrics.ascent
@@ -616,6 +616,22 @@ class RendererImpl : IRenderer {
         if (fonts[id] != null) return
         val fontData = setupFont(inputStream)
         fonts[id] = fontData
+    }
+
+    val loadShader: Method
+
+    init {
+        val loadShader = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#loadShader(Lv1_8_9/net/minecraft/util/Identifier;)V")
+        this.loadShader = GameRenderer::class.java.getDeclaredMethod(loadShader.methodName, v1_8_9.net.minecraft.util.Identifier::class.java)
+        this.loadShader.isAccessible = true
+    }
+
+    override fun loadBlur() {
+        loadShader.invoke(MinecraftClient.getInstance().gameRenderer, v1_8_9.net.minecraft.util.Identifier("sorus/shaders/blur.json"))
+    }
+
+    override fun unloadBlur() {
+        MinecraftClient.getInstance().gameRenderer.disableShader()
     }
 
 }

@@ -3,12 +3,19 @@ package com.github.sorusclient.client.ui.framework
 import kotlin.collections.List
 
 class TabHolder : Container() {
+
     private val tabs: MutableMap<String?, Component?> = HashMap()
     var defaultTab: String? = null
     var stateId: String? = null
 
     init {
         runtime = Runtime()
+
+        onInit += { state ->
+            if (stateId != null && defaultTab != null) {
+                state.second[stateId!!] = defaultTab!!
+            }
+        }
     }
 
     fun setStateId(stateId: String): TabHolder {

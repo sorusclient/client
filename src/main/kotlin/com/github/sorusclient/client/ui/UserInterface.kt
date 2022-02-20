@@ -15,14 +15,13 @@ import com.github.sorusclient.client.ui.framework.constraint.Dependent
 import com.github.sorusclient.client.util.Color
 import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.collections.List
 import kotlin.collections.set
 import kotlin.math.ceil
 
 object UserInterface {
 
     private val hudEditScreenOpen = AtomicBoolean(false)
-    private var mainGui: Container? = null
+    private lateinit var mainGui: Container
     private val guiOpened = AtomicBoolean(false)
 
     fun initialize() {
@@ -30,21 +29,19 @@ object UserInterface {
         eventManager.register { event: KeyEvent ->
             val adapter = AdapterManager.getAdapter()
             if (!event.isRepeat) {
-                if (event.key === Key.P && event.isPressed && adapter.openScreen === ScreenType.IN_GAME) {
+                if (event.key === Key.SHIFT_RIGHT && event.isPressed && adapter.openScreen === ScreenType.IN_GAME) {
                     adapter.openScreen(ScreenType.DUMMY)
-                    guiOpened.set(true)
+                    ContainerRenderer.open(mainGui)
+                    AdapterManager.getAdapter().renderer.loadBlur()
                 } else if (event.key === Key.ESCAPE && event.isPressed && adapter.openScreen === ScreenType.DUMMY) {
                     adapter.openScreen(ScreenType.IN_GAME)
                     guiOpened.set(false)
+                    ContainerRenderer.close()
+                    AdapterManager.getAdapter().renderer.unloadBlur()
                 }
             }
         }
 
-        eventManager.register<RenderEvent> {
-            if (guiOpened.get()) {
-                ContainerRenderer.render(mainGui)
-            }
-        }
 
         eventManager.register { event: KeyEvent ->
             if (event.isPressed && !event.isRepeat && event.key === Key.U) {
@@ -54,12 +51,6 @@ object UserInterface {
 
         eventManager.register { _: InitializeEvent ->
             initializeUserInterface()
-        }
-    }
-
-    private fun addSettingsList(container: Container, settings: List<DisplayedSetting?>) {
-        for (setting in settings) {
-            container.addChild(getSetting(setting))
         }
     }
 
@@ -101,11 +92,24 @@ object UserInterface {
                                 height = 0.6.toRelative()
                                 padding = Relative(0.2, true)
 
-                                backgroundCornerRadius = 0.01.toRelative()
-                                backgroundColor = { _: Map<String, Any> ->
+                                backgroundColor = Dependent { state ->
                                     val toggled = setting.setting.value
-                                    if (toggled) Color.fromRGB(20, 118, 188, 255) else Color.fromRGB(20, 118, 188, 125)
-                                }.toDependent()
+                                    if (toggled) {
+                                        Color.fromRGB(60, 75, 250, 65)
+                                    } else {
+                                        Color.fromRGB(0, 0, 0, 65)
+                                    }
+                                }
+                                borderThickness = 0.4.toAbsolute()
+                                borderColor = Dependent { state ->
+                                    val toggled = setting.setting.value
+                                    if (state["hovered"] as Boolean || toggled) {
+                                        Color.fromRGB(60, 75, 250, 255)
+                                    } else {
+                                        Color.fromRGB(0, 0, 0, 100)
+                                    }
+                                }
+                                backgroundCornerRadius = 0.01.toRelative()
 
                                 onClick = { state ->
                                     if (!setting.setting.isForcedValue) {
@@ -123,10 +127,10 @@ object UserInterface {
                                             Side(if (setting.setting.value) 1 else -1)
                                         }.toDependent()
                                         width = Copy()
-                                        height = 0.8.toRelative()
-                                        padding = Relative(0.1, true)
+                                        height = 0.7.toRelative()
+                                        padding = Relative(0.15, true)
 
-                                        backgroundCornerRadius = 0.1.toRelative()
+                                        backgroundCornerRadius = 0.075.toRelative()
                                         backgroundColor = Color.WHITE.toAbsolute()
                                     }
                             }
@@ -170,7 +174,7 @@ object UserInterface {
                                 height = 0.1.toRelative()
                                 padding = Relative(0.2, true)
 
-                                backgroundColor = Color.fromRGB(155, 155, 155, 255).toAbsolute()
+                                backgroundColor = Color.WHITE.toAbsolute()
                                 backgroundCornerRadius = Relative(0.05, true)
 
                                 onDrag = { state ->
@@ -205,8 +209,9 @@ object UserInterface {
                                             val maximum = setting.maximum
                                             Relative((setting.setting.value.toDouble() - minimum) / (maximum - minimum))
                                         }.toDependent()
+                                        height = 1.1.toRelative()
 
-                                        backgroundColor = Color.fromRGB(20, 118, 188, 255).toAbsolute()
+                                        backgroundColor = Color.fromRGB(60, 75, 250, 255).toAbsolute()
                                         backgroundCornerRadius = Relative(0.5, true)
                                     }
 
@@ -268,7 +273,22 @@ object UserInterface {
                                 height = 0.6.toRelative()
                                 padding = Relative(0.2, true)
 
-                                backgroundColor = Color.fromRGB(20, 118, 188, 255).toAbsolute()
+                                backgroundColor = Dependent { state ->
+                                    if (state["clicked"] != null && state["clicked"] as Boolean) {
+                                        Color.fromRGB(60, 75, 250, 65)
+                                    } else {
+                                        Color.fromRGB(0, 0, 0, 65)
+                                    }
+                                }
+                                borderThickness = 0.4.toAbsolute()
+                                borderColor = Dependent { state ->
+                                    if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
+                                        Color.fromRGB(60, 75, 250, 255)
+                                    } else {
+                                        Color.fromRGB(0, 0, 0, 100)
+                                    }
+                                }
+                                backgroundCornerRadius = 0.01.toRelative()
 
                                 onKey = { state ->
                                     state.first["value"] = state.second
@@ -338,7 +358,22 @@ object UserInterface {
                                 height = 0.6.toRelative()
                                 padding = Relative(0.2, true)
 
-                                backgroundColor = Color.fromRGB(20, 118, 188, 255).toAbsolute()
+                                backgroundColor = Dependent { state ->
+                                    if (state["clicked"] != null && state["clicked"] as Boolean) {
+                                        Color.fromRGB(60, 75, 250, 65)
+                                    } else {
+                                        Color.fromRGB(0, 0, 0, 65)
+                                    }
+                                }
+                                borderThickness = 0.4.toAbsolute()
+                                borderColor = Dependent { state ->
+                                    if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
+                                        Color.fromRGB(60, 75, 250, 255)
+                                    } else {
+                                        Color.fromRGB(0, 0, 0, 100)
+                                    }
+                                }
+                                backgroundCornerRadius = 0.01.toRelative()
 
                                 children += Container()
                                     .apply {
@@ -350,11 +385,13 @@ object UserInterface {
                                         backgroundImage = "assets/minecraft/arrow_left.png".toAbsolute()
 
                                         onClick = { state ->
-                                            val newValue = 0.coerceAtLeast(state["value"] as Int - 1)
-                                            state["value"] = newValue
+                                            val newValue = 0.coerceAtLeast(state["clickThroughValue"] as Int - 1)
+                                            state["clickThroughValue"] = newValue
 
                                             setting.setting.overriden = true
                                         }
+
+                                        consumeClicks = false
                                     }
 
                                 children += Container()
@@ -377,14 +414,16 @@ object UserInterface {
                                             } catch (e: NoSuchMethodException) {
                                                 e.printStackTrace()
                                             }
-                                            if (state["value"] as Int + 1 >= valuesLength) {
-                                                state["value"] = 0
+                                            if (state["clickThroughValue"] as Int + 1 >= valuesLength) {
+                                                state["clickThroughValue"] = 0
                                             } else {
-                                                state["value"] = state["value"] as Int + 1
+                                                state["clickThroughValue"] = state["clickThroughValue"] as Int + 1
                                             }
 
                                             setting.setting.overriden = true
                                         }
+
+                                        consumeClicks = false
                                     }
 
                                 children += Text()
@@ -397,15 +436,15 @@ object UserInterface {
                                         textColor = Color.WHITE.toAbsolute()
                                     }
 
-                                onStateUpdate["value"] = { state ->
+                                onStateUpdate["clickThroughValue"] = { state ->
                                     val values = setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>
                                     val setting1: Setting<*> = setting.setting
                                     if (setting1.isForcedValue) {
-                                        var index = state["value"] as Int
+                                        var index = state["clickThroughValue"] as Int
                                         while (index != -1) {
                                             if (setting1.forcedValues!!.contains(values[index])) {
                                                 setting1.setValueRaw(values[index]!!)
-                                                state["value"] = index
+                                                state["clickThroughValue"] = index
                                                 index = -1
                                             } else {
                                                 index++
@@ -415,15 +454,15 @@ object UserInterface {
                                             }
                                         }
                                     } else {
-                                        if (state["value"] != null) {
-                                            state["value"].let { setting1.setValueRaw(values[it as Int]!!) }
+                                        if (state["clickThroughValue"] != null) {
+                                            state["clickThroughValue"].let { setting1.setValueRaw(values[it as Int]!!) }
                                         }
                                     }
                                 }
                             }
 
-                        storedState += "value"
-                        runtime.setState("value", setting.setting.value.ordinal)
+                        storedState += "clickThroughValue"
+                        runtime.setState("clickThroughValue", setting.setting.value.ordinal)
                     }
             }
             /*is ClickThrough -> {
@@ -543,6 +582,14 @@ object UserInterface {
 
                                         children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL)
                                             .apply {
+                                                x = Side.NEGATIVE.toSide()
+                                                width = Relative(1.7, true)
+
+                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                borderThickness = 0.4.toAbsolute()
+                                                borderColor = Color.fromRGB(0, 0, 0, 100).toAbsolute()
+                                                backgroundCornerRadius = 0.015.toRelative()
+
                                                 addChild(Container()
                                                     .apply {
                                                         width = Copy()
@@ -666,10 +713,6 @@ object UserInterface {
                                                             }
                                                     })
                                             }
-
-                                        /*children +=
-
-                                        children += */
                                     })
 
                                 addChild("view", Container()
@@ -707,6 +750,8 @@ object UserInterface {
                                                 backgroundColor = { _: Map<String, Any> ->
                                                     setting.setting.value
                                                 }.toDependent()
+
+                                                backgroundCornerRadius = 0.01.toRelative()
                                             }
                                     })
 
@@ -789,7 +834,7 @@ object UserInterface {
                                 padding = 0.0125.toRelative()
 
                                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                borderColor = Color.fromRGB(10, 10, 10, 255).toAbsolute()
+                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                 borderThickness = 0.4.toAbsolute()
 
                                 children += List(com.github.sorusclient.client.ui.framework.List.VERTICAL)
@@ -809,7 +854,7 @@ object UserInterface {
                                                 height = 0.6.toAbsolute()
                                                 padding = 0.1.toRelative()
 
-                                                backgroundColor = Color.fromRGB(10, 10, 10, 255).toAbsolute()
+                                                backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                             })
 
                                         val tabs = arrayOf("home", "settings")
@@ -835,7 +880,7 @@ object UserInterface {
                                                         return@Dependent if (state["tab"] == tab || (tab == "home" && state["tab"] == null) || state["hovered"] as Boolean) {
                                                             Color.fromRGB(60, 75, 250, 255)
                                                         } else {
-                                                            Color.fromRGB(10, 10, 10, 255)
+                                                            Color.fromRGB(10, 10, 10, 150)
                                                         }
                                                     }
 
@@ -860,9 +905,9 @@ object UserInterface {
                         children += TabHolder()
                             .apply {
                                 stateId = "tab"
-                                defaultTab = "main"
+                                defaultTab = "home"
 
-                                addChild("main", Container())
+                                addChild("home", Container())
 
                                 addChild("settings", Container()
                                     .apply {
@@ -875,7 +920,7 @@ object UserInterface {
                                                 padding = 0.0125.toRelative()
 
                                                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                                borderColor = Color.fromRGB(10, 10, 10, 255).toAbsolute()
+                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                                 borderThickness = 0.4.toAbsolute()
 
                                                 onInit += {
@@ -966,7 +1011,7 @@ object UserInterface {
                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                                             Color.fromRGB(60, 75, 250, 255)
                                                                         } else {
-                                                                            Color.fromRGB(0, 0, 0, 255)
+                                                                            Color.fromRGB(0, 0, 0, 100)
                                                                         }
                                                                     }
 
@@ -985,7 +1030,7 @@ object UserInterface {
                                                                             x = Side.NEGATIVE.toSide()
                                                                             padding = Relative(0.2, true)
 
-                                                                            scale = 0.009.toRelative()
+                                                                            scale = 0.012.toRelative()
                                                                             fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                             text = "Create".toAbsolute()
                                                                         }
@@ -1014,7 +1059,7 @@ object UserInterface {
                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                                             Color.fromRGB(60, 75, 250, 255)
                                                                         } else {
-                                                                            Color.fromRGB(0, 0, 0, 255)
+                                                                            Color.fromRGB(0, 0, 0, 100)
                                                                         }
                                                                     }
 
@@ -1053,7 +1098,7 @@ object UserInterface {
                                                             height = 0.6.toAbsolute()
                                                             padding = 0.05.toRelative()
 
-                                                            backgroundColor = Color.fromRGB(10, 10, 10, 255).toAbsolute()
+                                                            backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                                         }
 
                                                     children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
@@ -1091,7 +1136,7 @@ object UserInterface {
                                                                                         return@Dependent if (SettingManager.currentProfile == profile.first || state["hovered"] as Boolean) {
                                                                                             Color.fromRGB(60, 75, 250, 255)
                                                                                         } else {
-                                                                                            Color.fromRGB(10, 10, 10, 255)
+                                                                                            Color.fromRGB(10, 10, 10, 150)
                                                                                         }
                                                                                     }
 
@@ -1165,7 +1210,7 @@ object UserInterface {
                                                 padding = 0.0125.toRelative()
 
                                                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                                borderColor = Color.fromRGB(10, 10, 10, 255).toAbsolute()
+                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                                 borderThickness = 0.4.toAbsolute()
 
                                                 storedState += "hasInitSettings"
@@ -1231,7 +1276,7 @@ object UserInterface {
                                                                             if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                                                 Color.fromRGB(60, 75, 250, 255)
                                                                             } else {
-                                                                                Color.fromRGB(0, 0, 0, 255)
+                                                                                Color.fromRGB(0, 0, 0, 100)
                                                                             }
                                                                         }
 
@@ -1285,12 +1330,12 @@ object UserInterface {
                                                                                         }
                                                                                     }
                                                                                     borderThickness = 0.4.toAbsolute()
-                                                                                    borderColor = Color.fromRGB(10, 10, 10, 255).toAbsolute()
+                                                                                    borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                                                                     borderColor = Dependent { state ->
                                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                                                             Color.fromRGB(60, 75, 250, 255)
                                                                                         } else {
-                                                                                            Color.fromRGB(0, 0, 0, 255)
+                                                                                            Color.fromRGB(0, 0, 0, 100)
                                                                                         }
                                                                                     }
 
@@ -1324,10 +1369,10 @@ object UserInterface {
 
                                                             addChild(Container()
                                                                 .apply {
-                                                                    width = 0.8.toRelative()
+                                                                    width = 0.9.toRelative()
                                                                     height = 0.6.toAbsolute()
 
-                                                                    backgroundColor = Color.fromRGB(10, 10, 10, 255).toAbsolute()
+                                                                    backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                                                 })
 
                                                             for (displayed in category.displayed) {
@@ -1355,7 +1400,7 @@ object UserInterface {
                                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                                                             Color.fromRGB(60, 75, 250, 255)
                                                                                         } else {
-                                                                                            Color.fromRGB(0, 0, 0, 255)
+                                                                                            Color.fromRGB(0, 0, 0, 100)
                                                                                         }
                                                                                     }
 
@@ -1391,9 +1436,7 @@ object UserInterface {
                                     })
                             }
 
-                        onInit += {
-                            storedState += "tab"
-                        }
+                        storedState += "tab"
                     }
             }
     }

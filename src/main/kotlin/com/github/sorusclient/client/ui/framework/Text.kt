@@ -59,6 +59,7 @@ class Text : Component() {
                 cachedFontId = fontRenderer!!.getStringValue(this)
                 AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
             }
+
             AdapterManager.getAdapter().renderer.drawText(
                     cachedFontId!!,
                     text!!.getStringValue(this),
@@ -67,6 +68,10 @@ class Text : Component() {
                     scale.getPaddingValue(this),
                     textColor.getColorValue(this)
             )
+        }
+
+        override fun onInit() {
+
         }
 
         override fun getParent(): Container.Runtime {
