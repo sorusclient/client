@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.feature.impl.particles
 
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting.*
+import com.github.sorusclient.client.setting.Category
+import com.github.sorusclient.client.setting.SettingConfigure.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 
@@ -13,14 +13,25 @@ class Particles {
     private val alwaysEnchantmentParticles: Setting<Boolean>
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("Particles"))
+                put("particles", HashMap<String, Any>()
                     .apply {
-                        registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
-                        registerDisplayed(Slider("Multiplier", Setting(1.0).also { multiplier = it }, 0.5, 5.0))
-                        registerDisplayed(Toggle("Allows Show Critical Particles", Setting(false).also { alwaysCriticalParticles = it }))
-                        registerDisplayed(Toggle("Allows Show Enchantment Particles", Setting(false).also { alwaysEnchantmentParticles = it }))
+                        put("enabled", Setting(false).also { enabled = it })
+                        put("multiplier", Setting(1.0).also { multiplier = it })
+                        put("alwaysCriticalParticles", Setting(false).also { alwaysCriticalParticles = it })
+                        put("alwaysEnchantmentParticles", Setting(false).also { alwaysEnchantmentParticles = it })
+                    })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("Particles"))
+                    .apply {
+                        add(Toggle(enabled, "Enabled"))
+                        add(Slider(multiplier, "Multiplier", 0.5, 5.0))
+                        add(Toggle(alwaysCriticalParticles, "Allows Show Critical Particles", ))
+                        add(Toggle(alwaysEnchantmentParticles, "Allows Show Enchantment Particles", ))
                     }
             }
     }

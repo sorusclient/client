@@ -5,8 +5,8 @@ import com.github.sorusclient.client.adapter.IKeyBind
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting.*
+import com.github.sorusclient.client.setting.Category
+import com.github.sorusclient.client.setting.SettingConfigure.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 
@@ -23,17 +23,31 @@ class ToggleSprintSneak {
     private var sneakToggled = false
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("Toggle Sprint & Sneak"))
+                put("toggleSprintSneak", HashMap<String, Any>()
                     .apply {
-                        registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
-                        registerDisplayed(Toggle("Toggle Sprint", Setting(false).also { toggleSprint = it }))
-                        registerDisplayed(Dependent(Toggle("Use Custom Sprint Key", Setting(false).also { useCustomSprintKey = it }), toggleSprint, true))
-                        registerDisplayed(Dependent(Dependent(KeyBind("Custom Sprint Key", Setting(Key.SHIFT_LEFT).also { customSprintKey = it }), toggleSprint, true), useCustomSprintKey, true))
-                        registerDisplayed(Toggle("Toggle Sneak", Setting(false).also { toggleSneak = it }))
-                        registerDisplayed(Dependent(Toggle("Use Custom Sneak Key", Setting(false).also { useCustomSneakKey = it }), toggleSneak, true))
-                        registerDisplayed(Dependent(Dependent(KeyBind("Custom Sneak Key", Setting(Key.SHIFT_LEFT).also { customSneakKey = it }), toggleSneak, true), useCustomSneakKey, true))
+                        put("enabled", Setting(false).also { enabled = it })
+                        put("toggleSprint", Setting(false).also { toggleSprint = it })
+                        put("useCustomSprintKey", Setting(false).also { useCustomSprintKey = it })
+                        put("customSprintKey", Setting(Key.SHIFT_LEFT).also { customSprintKey = it })
+                        put("toggleSneak", Setting(false).also { toggleSneak = it })
+                        put("useCustomSneakKey", Setting(false).also { useCustomSneakKey = it })
+                        put("customSneakKey", Setting(Key.SHIFT_LEFT).also { customSneakKey = it })
+                    })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("Toggle Sprint & Sneak"))
+                    .apply {
+                        add(Toggle(enabled, "Enabled"))
+                        add(Toggle(toggleSprint, "Toggle Sprint"))
+                        add(Dependent(Toggle(useCustomSprintKey, "Use Custom Sprint Key"), toggleSprint, true))
+                        add(Dependent(Dependent(KeyBind(customSprintKey, "Custom Sprint Key"), toggleSprint, true), useCustomSprintKey, true))
+                        add(Toggle(toggleSneak, "Toggle Sneak"))
+                        add(Dependent(Toggle(useCustomSneakKey, "Use Custom Sneak Key"), toggleSneak, true))
+                        add(Dependent(Dependent(KeyBind(customSneakKey, "Custom Sneak Key"), toggleSneak, true), useCustomSneakKey, true))
                     }
             }
 

@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.feature.impl.oldanimations
 
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
+import com.github.sorusclient.client.setting.Category
+import com.github.sorusclient.client.setting.SettingConfigure.Toggle
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 
@@ -12,13 +12,23 @@ class OldAnimations {
     private var showArmorDamage: Setting<Boolean>
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("Old Animations"))
+                put("oldAnimations", HashMap<String, Any>()
                     .apply {
-                        registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
-                        registerDisplayed(Toggle("Old Block Hit", Setting(false).also { oldBlockHit = it }))
-                        registerDisplayed(Toggle("Show Armor Damage", Setting(false).also { showArmorDamage = it }))
+                        put("enabled", Setting(false).also { enabled = it })
+                        put("oldBlockHit", Setting(false).also { oldBlockHit = it })
+                        put("showArmorDamage", Setting(false).also { showArmorDamage = it })
+                    })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("Old Animations"))
+                    .apply {
+                        add(Toggle(enabled, "Enabled"))
+                        add(Toggle(oldBlockHit, "Old Block Hit"))
+                        add(Toggle(showArmorDamage, "Show Armor Damage"))
                     }
             }
     }

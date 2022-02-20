@@ -6,8 +6,8 @@ import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.Vertex
 import com.github.sorusclient.client.adapter.event.BlockOutlineRenderEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting.*
+import com.github.sorusclient.client.setting.Category
+import com.github.sorusclient.client.setting.SettingConfigure.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.util.Color
@@ -20,14 +20,25 @@ class BlockOverlay {
     private var fillColor: Setting<Color>
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("Block Overlay"))
+                put("blockOverlay", HashMap<String, Any>()
                     .apply {
-                        registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
-                        registerDisplayed(ColorPicker("Border Color", Setting(Color.BLACK).also { borderColor = it }))
-                        registerDisplayed(Slider("Border Thickness", Setting(1.0).also { borderThickness = it }, 0.0, 5.0))
-                        registerDisplayed(ColorPicker("Fill Color", Setting(Color.fromRGB(0, 0, 0, 0)).also { fillColor = it }))
+                        put("enabled", Setting(false).also { enabled = it })
+                        put("borderColor", Setting(Color.BLACK).also { borderColor = it })
+                        put("borderThickness", Setting(1.0).also { borderThickness = it })
+                        put("fillColor", Setting(Color.fromRGB(0, 0, 0, 0)).also { fillColor = it })
+                    })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("Block Overlay"))
+                    .apply {
+                        add(Toggle(enabled, "Enabled"))
+                        add(ColorPicker(borderColor, "Border Color", ))
+                        add(Slider(borderThickness, "Border Thickness", 0.0, 5.0))
+                        add(ColorPicker(fillColor, "Fill Color", ))
                     }
             }
 

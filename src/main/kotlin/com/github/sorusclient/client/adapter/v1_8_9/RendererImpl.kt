@@ -536,33 +536,44 @@ class RendererImpl : IRenderer {
         try {
             var font = Font.createFont(Font.TRUETYPE_FONT, inputStream)
             font = font.deriveFont(200f)
+
             val bufferedImage = BufferedImage(4096, 4096, BufferedImage.TYPE_INT_ARGB)
             val graphics = bufferedImage.graphics as Graphics2D
             val rh = RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+
             graphics.setRenderingHints(rh)
             graphics.color = Color(255, 255, 255, 0)
             graphics.drawRect(0, 0, bufferedImage.width, bufferedImage.height)
             graphics.font = font
+
             val fontMetrics = graphics.fontMetrics
             graphics.color = Color(255, 255, 255, 255)
+
             var textX = 0
             var textY = 0
             var maxHeight = 0
+
             fontData.characterData = arrayOfNulls(255)
-            fontData.ascent = fontMetrics.getLineMetrics("T", graphics).height.toDouble() / bufferedImage.height
+
+            fontData.ascent = fontMetrics.ascent.toDouble() / bufferedImage.height * 9 / 12
+
             for (i in 0..254) {
                 val character = i.toChar()
-                val weirdAscent = fontMetrics.ascent
+                val weirdAscent = (fontMetrics.ascent.toDouble() * 9 / 12).toInt()
                 val bounds = fontMetrics.getStringBounds(character.toString(), graphics)
+
                 graphics.drawString(character.toString(), textX, textY + weirdAscent)
+
                 val characterData = FontData.CharacterData()
                 characterData.textureX = textX.toDouble() / bufferedImage.width
                 characterData.textureY = textY.toDouble() / bufferedImage.height
                 characterData.textureWidth = bounds.width / bufferedImage.width
                 characterData.textureHeight = bounds.height / bufferedImage.height
+
                 fontData.characterData[i] = characterData
+
                 textX += (bounds.width + 15).toInt()
-                maxHeight = maxHeight.toDouble().coerceAtLeast(bounds.height).toInt()
+                maxHeight = maxHeight.toDouble().coerceAtLeast(bounds.height * 6 / 5).toInt()
                 if (textX > 4096 - 300) {
                     textX = 15
                     textY += maxHeight

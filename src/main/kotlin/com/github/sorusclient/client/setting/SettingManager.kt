@@ -4,6 +4,9 @@ import com.github.sorusclient.client.server.ServerIntegrationManager
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object SettingManager {
 
@@ -14,7 +17,8 @@ object SettingManager {
         private set
     private val allProfiles: MutableList<Profile> = ArrayList()
 
-    val mainCategory: DisplayedCategory = DisplayedCategory("Main")
+    val settingsCategory: MutableMap<String, Any> = HashMap()
+    val mainUICategory: Category = Category("Main")
 
     init {
         profileFile.mkdirs()
@@ -28,11 +32,36 @@ object SettingManager {
     }
 
     private fun handleJoinForced(json: Any) {
-        mainCategory.loadForced(json)
+        handleJoinForced(settingsCategory, json)
+    }
+
+    private fun handleJoinForced(setting: Any, json: Any) {
+        if (setting is Map<*, *>) {
+            for (entry in setting) {
+                (json as Map<*, *>)[entry.key]?.let { handleJoinForced(entry.value as Any, it) }
+            }
+        } else if (setting is Setting<*>) {
+            val javaData = Util.toJava(setting.type, json)
+            if (javaData is List<*>) {
+                javaData.let { setting.setForcedValueRaw(it as List<Any>) }
+            } else {
+                javaData?.let { setting.setForcedValueRaw(ArrayList(Collections.singletonList(javaData))) }
+            }
+        }
     }
 
     private fun handleLeaveForced() {
-        mainCategory.clearForced()
+        handleLeaveForced(settingsCategory)
+    }
+
+    private fun handleLeaveForced(setting: Any) {
+        if (setting is Map<*, *>) {
+            for (entry in setting) {
+                handleLeaveForced(entry.value!!)
+            }
+        } else if (setting is Setting<*>) {
+            setting.setForcedValueRaw(null)
+        }
     }
 
     fun register(settingContainer: SettingContainer) {
@@ -88,7 +117,21 @@ object SettingManager {
         }
 
         for (profileParent in profiles) {
-            mainCategory.load(JSONObject(profileParent.readSettings()).toMap(), profileParent == profile)
+            load(JSONObject(profileParent.readSettings()).toMap(), profileParent == profile)
+        }
+    }
+
+    private fun load(json: Any, isPrimary: Boolean) {
+        load(settingsCategory, json, isPrimary)
+    }
+
+    private fun load(setting: Any, json: Any, isPrimary: Boolean) {
+        if (setting is Map<*, *>) {
+            for (entry in setting) {
+                (json as Map<*, *>)[entry.key]?.let { load(entry.value as Any, it, isPrimary) }
+            }
+        } else if (setting is Setting<*>) {
+            Util.toJava(setting.type, json)?.let { setting.setValueRaw(it, isPrimary) }
         }
     }
 
@@ -101,7 +144,28 @@ object SettingManager {
     }
 
     private fun save(profile: Profile) {
-        profile.writeSettings(JSONObject(mainCategory.save() as Map<*, *>).toString(2))
+        profile.writeSettings(JSONObject(save() as Map<*, *>).toString(2))
+    }
+
+    private fun save(): Any? {
+        return handleSave(settingsCategory)
+    }
+
+    private fun handleSave(setting: Any): Any? {
+        if (setting is Map<*, *>) {
+            val map: HashMap<String, Any> = HashMap()
+            for (entry in setting) {
+                handleSave(entry.value as Any)?.let { map[entry.key as String] = it }
+            }
+            return map
+        } else if (setting is Setting<*>) {
+            return if (setting.overriden) {
+                Util.toData(setting.realValue!!)
+            } else {
+                null
+            }
+        }
+        return null
     }
 
     private fun updateProfile(profile: Profile?) {

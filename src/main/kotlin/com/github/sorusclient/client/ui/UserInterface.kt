@@ -5,10 +5,8 @@ import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
-import com.github.sorusclient.client.adapter.event.RenderEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
-import com.github.sorusclient.client.setting.DisplayedSetting.*
 import com.github.sorusclient.client.ui.framework.*
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.ui.framework.constraint.Dependent
@@ -54,9 +52,9 @@ object UserInterface {
         }
     }
 
-    private fun getSetting(setting: DisplayedSetting?): Container {
+    private fun getSetting(setting: SettingConfigure): Container {
         when (setting) {
-            is Toggle -> {
+            is SettingConfigure.Toggle -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -74,7 +72,7 @@ object UserInterface {
                         children += Text()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -92,7 +90,7 @@ object UserInterface {
                                 height = 0.6.toRelative()
                                 setPadding(Relative(0.2, true))
 
-                                backgroundColor = Dependent { state ->
+                                backgroundColor = Dependent {
                                     val toggled = setting.setting.value
                                     if (toggled) {
                                         Color.fromRGB(60, 75, 250, 65)
@@ -139,7 +137,7 @@ object UserInterface {
                         runtime.setState("toggled", setting.setting.value)
                     }
             }
-            is Slider -> {
+            is SettingConfigure.Slider -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -156,7 +154,7 @@ object UserInterface {
                         children += Text()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -248,7 +246,7 @@ object UserInterface {
                         )
                     }
             }
-            is KeyBind -> {
+            is SettingConfigure.KeyBind -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -265,7 +263,7 @@ object UserInterface {
                         children += Text()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -309,7 +307,7 @@ object UserInterface {
 
                                 children += Text()
                                     .apply {
-                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                        fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                         text = { state: Map<String, Any> ->
                                             if (state["selected"] as Boolean) {
                                                 "..."
@@ -333,7 +331,7 @@ object UserInterface {
                         runtime.setState("value", setting.setting.value)
                     }
             }
-            is ClickThrough -> {
+            is SettingConfigure.ClickThrough -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -350,7 +348,7 @@ object UserInterface {
                         children += Text()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                fontRenderer = "soprus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }
@@ -438,7 +436,7 @@ object UserInterface {
 
                                 children += Text()
                                     .apply {
-                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                        fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                         text = { _: Map<String, Any> ->
                                             setting.setting.value.toString()
                                         }.toDependent()
@@ -559,7 +557,7 @@ object UserInterface {
                                     }
                         }
             }*/
-            is ColorPicker -> {
+            is SettingConfigure.ColorPicker -> {
                 return Container()
                     .apply {
                         children += TabHolder()
@@ -579,7 +577,7 @@ object UserInterface {
                                         children += Text()
                                             .apply {
                                                 x = Side.NEGATIVE.toSide()
-                                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                 text = setting.displayName.toAbsolute()
                                                 scale = 0.0033.toRelative()
                                             }
@@ -740,7 +738,7 @@ object UserInterface {
                                         children += Text()
                                             .apply {
                                                 x = Side.NEGATIVE.toSide()
-                                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
+                                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                 text = setting.displayName.toAbsolute()
                                                 scale = 0.0033.toRelative()
                                             }
@@ -814,7 +812,7 @@ object UserInterface {
                         }.toDependent()
                     }
             }
-            is DisplayedSetting.Dependent<*> -> {
+            is SettingConfigure.Dependent<*> -> {
                 return (getSetting(setting.configurableData))
                     .apply {
                         onUpdate += { state ->
@@ -1197,7 +1195,9 @@ object UserInterface {
                                                                 }
                                                             }
 
-                                                            onInit[1](com.github.sorusclient.client.util.Pair(this, HashMap()))
+                                                            for (onInit in onInit) {
+                                                                onInit(com.github.sorusclient.client.util.Pair(this, HashMap()))
+                                                            }
 
                                                             onStateUpdate["hasInitProfiles"] = { state ->
                                                                 if (state["hasInitProfiles"] == false) {
@@ -1236,10 +1236,10 @@ object UserInterface {
 
                                                 onInit += { state ->
                                                     if (state.second["currentSettingsCategory"] == null) {
-                                                        state.second["currentSettingsCategory"] = SettingManager.mainCategory
+                                                        state.second["currentSettingsCategory"] = SettingManager.mainUICategory
                                                     }
 
-                                                    val category = state.second["currentSettingsCategory"] as DisplayedCategory
+                                                    val category = state.second["currentSettingsCategory"] as Category
 
                                                     children.clear()
 
@@ -1249,21 +1249,26 @@ object UserInterface {
                                                             height = 0.05.toRelative()
                                                             setPadding(0.025.toRelative())
 
-                                                            children += Container()
+                                                            children += Text()
+                                                                .apply {
+                                                                    x = Side.NEGATIVE.toSide()
+                                                                    y = Side.NEGATIVE.toSide()
+
+                                                                    fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
+                                                                    scale = 0.0031.toRelative()
+                                                                    text = "Settings | ${category.displayName}".toAbsolute()
+                                                                }
+
+                                                            /*children += Container()
                                                                 .apply {
                                                                     x = Side.NEGATIVE.toSide()
                                                                     width = 0.5.toRelative()
                                                                     height = 0.7.toRelative()
 
-                                                                    children += Text()
-                                                                        .apply {
-                                                                            x = Side.NEGATIVE.toSide()
 
-                                                                            fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
-                                                                            scale = 0.0062.toRelative()
-                                                                            text = "Settings | ${category.id}".toAbsolute()
-                                                                        }
-                                                                }
+
+                                                                    backgroundColor = Color.WHITE.toAbsolute()
+                                                                }*/
 
                                                             if (category.parent != null) {
                                                                 children += Container()
@@ -1314,16 +1319,16 @@ object UserInterface {
                                                                     columns = 3
 
                                                                     var count = 0
-                                                                    for (displayed in category.displayed) {
-                                                                        if (displayed is DisplayedCategory) {
+                                                                    for (displayed in category.components) {
+                                                                        if (displayed is Category) {
                                                                             count++
                                                                         }
                                                                     }
 
                                                                     height = Relative(ceil(count / 3.0) * 0.06 + (ceil(count / 3.0) + 1) * 0.015, true)
 
-                                                                    for (displayed in category.displayed) {
-                                                                        if (displayed is DisplayedCategory) {
+                                                                    for (displayed in category.components) {
+                                                                        if (displayed is Category) {
                                                                             addChild(Container()
                                                                                 .apply {
                                                                                     width = 0.30666.toRelative()
@@ -1355,8 +1360,6 @@ object UserInterface {
                                                                                             width = 1.0.toCopy()
                                                                                             height = 0.6.toRelative()
                                                                                             setPadding(Relative(0.2, true))
-
-                                                                                            //backgroundImage = "sorus/ui/grass_block.png".toAbsolute()
                                                                                         }
 
                                                                                     children += Text()
@@ -1365,7 +1368,7 @@ object UserInterface {
 
                                                                                             scale = 0.006.toRelative()
                                                                                             fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
-                                                                                            text = displayed.id.toAbsolute()
+                                                                                            text = displayed.displayName.toAbsolute()
                                                                                         }
 
                                                                                     onClick = { state ->
@@ -1385,9 +1388,9 @@ object UserInterface {
                                                                     backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                                                 })
 
-                                                            for (displayed in category.displayed) {
-                                                                if (displayed is DisplayedSetting) {
-                                                                    addChild(getSetting(displayed)
+                                                            for (setting in category.components) {
+                                                                if (setting is SettingConfigure) {
+                                                                    addChild(getSetting(setting)
                                                                         .apply {
                                                                             children += Container()
                                                                                 .apply {
@@ -1422,14 +1425,24 @@ object UserInterface {
                                                                                         }
 
                                                                                     onUpdate += { state ->
-                                                                                        if (displayed is ConfigurableDataSingleSetting<*>) {
-                                                                                            state["hidden"] = !displayed.setting.overriden || SettingManager.currentProfile == SettingManager.mainProfile
+                                                                                        var setting = setting
+                                                                                        while (setting is SettingConfigure.Dependent<*>) {
+                                                                                            setting = setting.configurableData
+                                                                                        }
+
+                                                                                        if (setting is SettingConfigure.ConfigurableDataSingleSetting<*>) {
+                                                                                            state["hidden"] = !setting.setting.overriden || SettingManager.currentProfile == SettingManager.mainProfile
                                                                                         }
                                                                                     }
 
                                                                                     onClick = {
-                                                                                        if (displayed is ConfigurableDataSingleSetting<*>) {
-                                                                                            displayed.setting.overriden = false
+                                                                                        var setting = setting
+                                                                                        while (setting is SettingConfigure.Dependent<*>) {
+                                                                                            setting = (setting as SettingConfigure.Dependent<*>).configurableData
+                                                                                        }
+
+                                                                                        if (setting is SettingConfigure.ConfigurableDataSingleSetting<*>) {
+                                                                                            (setting as SettingConfigure.ConfigurableDataSingleSetting<*>).setting.overriden = false
                                                                                         }
                                                                                     }
                                                                                 }

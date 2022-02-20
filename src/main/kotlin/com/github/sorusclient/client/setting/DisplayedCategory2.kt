@@ -1,14 +1,14 @@
 package com.github.sorusclient.client.setting
 
-class DisplayedCategory(override val id: String): Displayed() {
+class DisplayedCategory2(override val id: String): Displayed() {
 
     val displayed: MutableList<Displayed> = ArrayList()
-    var parent: DisplayedCategory? = null
+    var parent: DisplayedCategory2? = null
 
     fun <T: Displayed> registerDisplayed(displayed: T): T {
         this.displayed.add(displayed)
 
-        if (displayed is DisplayedCategory) {
+        if (displayed is DisplayedCategory2) {
             displayed.parent = this
         }
 

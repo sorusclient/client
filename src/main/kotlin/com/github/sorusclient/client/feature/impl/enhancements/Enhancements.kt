@@ -1,8 +1,7 @@
 package com.github.sorusclient.client.feature.impl.enhancements
 
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting.Slider
-import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
+import com.github.sorusclient.client.setting.Category
+import com.github.sorusclient.client.setting.SettingConfigure.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 
@@ -13,13 +12,23 @@ class Enhancements {
     private val centeredInventory: Setting<Boolean>
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("Enhancements"))
+                put("enhancements", HashMap<String, Any>()
                     .apply {
-                        registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
-                        registerDisplayed(Slider("Fire Height", Setting(0.0).also { fireHeight = it }, 0.0, 1.0))
-                        registerDisplayed(Toggle("Centered Inventory", Setting(false).also { centeredInventory = it }))
+                        put("enabled", Setting(false).also { enabled = it })
+                        put("fireHeight", Setting(0.0).also { fireHeight = it })
+                        put("centeredInventory", Setting(false).also { centeredInventory = it })
+                    })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("Enhancements"))
+                    .apply {
+                        add(Toggle(enabled, "Enabled"))
+                        add(Slider(fireHeight, "Fire Height", 0.0, 1.0))
+                        add(Toggle(centeredInventory, "Centered Inventory"))
                     }
             }
     }

@@ -61,15 +61,6 @@ class Sorus : Listener {
         EventManager.register<InitializeEvent> {
             AdapterManager.getAdapter().setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
         }
-
-        SettingManager.mainCategory
-            .apply {
-                registerDisplayed(DisplayedSetting.Toggle("Toggle", Setting(false)))
-                registerDisplayed(DisplayedSetting.Slider("Slider", Setting(0.5), 0.0, 1.0))
-                registerDisplayed(DisplayedSetting.ClickThrough("ClickThrough", Setting(Test.FIRST)))
-                registerDisplayed(DisplayedSetting.KeyBind("KeyBind", Setting(Key.A)))
-                registerDisplayed(DisplayedSetting.ColorPicker("Color Picker", Setting(Color.fromRGB(255, 0, 0, 255))))
-            }
     }
 
     enum class Test {

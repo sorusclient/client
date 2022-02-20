@@ -8,10 +8,8 @@ import com.github.sorusclient.client.adapter.event.GetSensitivityEvent
 import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting.*
-import com.github.sorusclient.client.setting.Setting
-import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.SettingConfigure.*
 
 class Zoom {
 
@@ -23,16 +21,28 @@ class Zoom {
     private var toggled = false
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("Zoom"))
+                put("zoom", HashMap<String, Any>()
+                        .apply {
+                            put("enabled", Setting(false).also { enabled = it })
+                            put("key", Setting(Key.C).also { key = it })
+                            put("fov", Setting(30.0).also { fov = it })
+                            put("sensitivity", Setting(0.5).also { sensitivity = it })
+                            put("cinematicCamera", Setting(false).also { cinematicCamera = it })
+                        })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("Zoom")
                     .apply {
-                        registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
-                        registerDisplayed(KeyBind("Key", Setting(Key.C).also { key = it }))
-                        registerDisplayed(Slider("FOV", Setting(30.0).also { fov = it }, 15.0, 100.0))
-                        registerDisplayed(Slider("Sensitivity", Setting(0.5).also { sensitivity = it }, 0.25, 1.0))
-                        registerDisplayed(Toggle("Cinematic Camera", Setting(false).also { cinematicCamera = it }))
-                    }
+                        add(Toggle(enabled, "Enabled"))
+                        add(KeyBind(key, "Key"))
+                        add(Slider(fov, "FOV", 15.0, 100.0))
+                        add(Slider(sensitivity, "Sensitivity", 0.25, 1.0))
+                        add(Toggle(cinematicCamera, "Cinematic Camera"))
+                    })
             }
 
         EventManager.register(this::onKey)

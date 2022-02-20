@@ -7,8 +7,8 @@ import com.github.sorusclient.client.adapter.PerspectiveMode
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting.*
+import com.github.sorusclient.client.setting.Category
+import com.github.sorusclient.client.setting.SettingConfigure.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 
@@ -16,17 +16,27 @@ class Perspective {
 
     private val enabled: Setting<Boolean>
     private val key: Setting<Key>
+
     var isToggled = false
         private set
     private var previousPerspective: PerspectiveMode = PerspectiveMode.FIRST_PERSON
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("Perspective"))
+                put("perspective", HashMap<String, Any>()
                     .apply {
-                        registerDisplayed(Toggle("Enabled", Setting(false).also { enabled = it }))
-                        registerDisplayed(KeyBind("Key", Setting(Key.F).also { key = it }))
+                        put("enabled", Setting(false).also { enabled = it })
+                        put("key", Setting(Key.F).also { key = it })
+                    })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("Perspective"))
+                    .apply {
+                        add(Toggle(enabled, "Enabled"))
+                        add(KeyBind(key, "Key"))
                     }
             }
 

@@ -4,10 +4,8 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.event.ChatReceivedEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.server.ServerIntegrationManager
-import com.github.sorusclient.client.setting.DisplayedCategory
-import com.github.sorusclient.client.setting.DisplayedSetting
-import com.github.sorusclient.client.setting.Setting
-import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.SettingConfigure.*
 
 class AutoGG {
 
@@ -16,12 +14,20 @@ class AutoGG {
     private var command: String? = null
 
     init {
-        SettingManager.mainCategory
+        SettingManager.settingsCategory
             .apply {
-                registerDisplayed(DisplayedCategory("AutoGG"))
+                put("autogg", HashMap<String, Any>()
                     .apply {
-                        registerDisplayed(DisplayedSetting.Toggle("Enabled", Setting(false).also { enabled = it }))
-                    }
+                        put("enabled", Setting(false).also { enabled = it })
+                    })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(Category("AutoGG")
+                    .apply {
+                        add(Toggle(enabled, "Enabled"))
+                    })
             }
 
         ServerIntegrationManager.joinListeners["autogg"] = { json ->
