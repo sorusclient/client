@@ -214,12 +214,12 @@ object UserInterface {
                                         width = { _: Map<String, Any> ->
                                             val minimum = setting.minimum
                                             val maximum = setting.maximum
-                                            Relative((setting.setting.value.toDouble() - minimum) / (maximum - minimum))
+                                            Flexible((setting.setting.value.toDouble() - minimum) / (maximum - minimum))
                                         }.toDependent()
-                                        height = 1.1.toRelative()
+                                        setPadding(Relative(0.1, true))
 
-                                        //backgroundColor = Color.fromRGB(60, 75, 250, 255).toAbsolute()
-                                        //backgroundCornerRadius = Relative(0.5, true)
+                                        backgroundColor = Color.WHITE.toAbsolute()
+                                        backgroundCornerRadius = Relative(0.2, true)
                                     }
 
                                 children += Container()
@@ -233,7 +233,7 @@ object UserInterface {
                                         width = Copy()
                                         height = 1.0.toRelative()
 
-                                        backgroundColor = Color.WHITE.toAbsolute()
+                                        //backgroundColor = Color.WHITE.toAbsolute()
 
                                         backgroundCornerRadius = Relative(0.25, true)
                                     }
@@ -348,7 +348,7 @@ object UserInterface {
                         children += Text()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                fontRenderer = "soprus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
                             }

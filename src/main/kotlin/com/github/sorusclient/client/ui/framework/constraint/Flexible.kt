@@ -3,7 +3,8 @@ package com.github.sorusclient.client.ui.framework.constraint
 import com.github.sorusclient.client.ui.framework.Component
 import com.github.sorusclient.client.util.Color
 
-class Flexible : Constraint {
+class Flexible(val multiplier: Double = 1.0) : Constraint {
+
     override fun getXValue(componentRuntime: Component.Runtime): Double {
         return 0.0
     }
@@ -35,7 +36,7 @@ class Flexible : Constraint {
                 maxRight = maxRight.coerceAtMost(componentLeft)
             }
         }
-        return 0.0.coerceAtLeast(maxRight - maxLeft)
+        return 0.0.coerceAtLeast(maxRight - maxLeft) * multiplier
     }
 
     override fun getHeightValue(componentRuntime: Component.Runtime): Double {
@@ -62,7 +63,7 @@ class Flexible : Constraint {
                 maxBottom = maxBottom.coerceAtMost(componentTop)
             }
         }
-        return 0.0.coerceAtLeast(maxBottom - maxTop)
+        return 0.0.coerceAtLeast(maxBottom - maxTop) * multiplier
     }
 
     override fun getPaddingValue(componentRuntime: Component.Runtime): Double {
