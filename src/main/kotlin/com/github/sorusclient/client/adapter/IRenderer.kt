@@ -65,8 +65,6 @@ interface IRenderer {
 
         var color: Color? = Color.WHITE
 
-        println(text)
-
         while (index < text.length) {
             if (text[index] == '§') {
                 drawText(id, tempText, x, y, scale, color!!)

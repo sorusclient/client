@@ -28,7 +28,6 @@ object SettingManager {
     }
 
     private fun handleJoinForced(json: Any) {
-        println(json)
         mainCategory.loadForced(json)
     }
 

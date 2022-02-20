@@ -53,18 +53,10 @@ object UserInterface {
             if (event.isPressed && !event.isRepeat && event.key === Key.U) {
                 initializeUserInterface()
             }
-
-            if (event.isPressed && !event.isRepeat && event.key === Key.I) {
-                val serialized: Map<String, Any> = SettingManager.mainCategory.save() as Map<String, Any>
-
-                println(JSONObject(serialized).toString(2))
-            }
         }
 
         eventManager.register { _: InitializeEvent ->
             initializeUserInterface()
-            //AdapterManager.getAdapter().renderer.drawRectangle(0.0, 0.0, 50.0, 50.0, Color.WHITE)
-            //AdapterManager.getAdapter().renderer.createFont("Quicksand-Medium.ttf")
         }
     }
 
