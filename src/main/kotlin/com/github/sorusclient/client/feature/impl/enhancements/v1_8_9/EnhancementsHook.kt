@@ -1,7 +1,6 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
 import com.github.sorusclient.client.feature.FeatureManager
-import com.github.sorusclient.client.module.ModuleManager
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import org.lwjgl.opengl.GL11
 import v1_8_9.net.minecraft.client.MinecraftClient

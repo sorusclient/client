@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.setting
 
+import com.sun.org.apache.xpath.internal.operations.Mod
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Modifier
 import java.math.BigDecimal
@@ -120,10 +121,10 @@ object Util {
                                 } else {
                                     val data: MutableMap<String, Any> = HashMap()
                                     for (field in any.javaClass.declaredFields) {
-                                        if (Modifier.isStatic(field.modifiers)) continue
+                                        if (Modifier.isStatic(field.modifiers) || Modifier.isTransient(field.modifiers)) continue
                                         try {
                                             field.isAccessible = true
-                                            data[field.name] = toData(field[any])
+                                            data[field.name] = toData(field.get(any))
                                         } catch (e: IllegalAccessException) {
                                             e.printStackTrace()
                                         }

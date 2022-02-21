@@ -5,6 +5,7 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IPotionEffect
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
 import com.github.sorusclient.client.hud.HUDElement
+import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.hud.impl.potionstatus.IPotionEffectRenderer
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.util.Color
@@ -71,7 +72,7 @@ class Potions : HUDElement("potionStatus") {
     private val effects: List<IPotionEffect>
         get() {
             val adapter = AdapterManager.getAdapter()
-            val editing = UserInterface.isHudEditScreenOpen()
+            val editing = HUDManager.isHudEditScreenOpen.get()
             val realEffects = adapter.player!!.effects
             return if (!editing || realEffects.isNotEmpty()) {
                 realEffects

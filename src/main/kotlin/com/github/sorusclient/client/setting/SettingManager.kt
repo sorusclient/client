@@ -1,6 +1,8 @@
 package com.github.sorusclient.client.setting
 
 import com.github.sorusclient.client.server.ServerIntegrationManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
@@ -11,14 +13,13 @@ import kotlin.collections.HashMap
 object SettingManager {
 
     private val profileFile = File("sorus/profile")
-    private val settingContainers: MutableMap<String?, SettingContainer> = HashMap()
     lateinit var mainProfile: Profile
     var currentProfile: Profile? = null
         private set
     private val allProfiles: MutableList<Profile> = ArrayList()
 
-    val settingsCategory: MutableMap<String, Any> = HashMap()
-    val mainUICategory: Category = Category("Main")
+    val settingsCategory: CategoryData = CategoryData()
+    val mainUICategory: DisplayedCategory = DisplayedCategory("Main")
 
     init {
         profileFile.mkdirs()
@@ -32,43 +33,14 @@ object SettingManager {
     }
 
     private fun handleJoinForced(json: Any) {
-        handleJoinForced(settingsCategory, json)
-    }
-
-    private fun handleJoinForced(setting: Any, json: Any) {
-        if (setting is Map<*, *>) {
-            for (entry in setting) {
-                (json as Map<*, *>)[entry.key]?.let { handleJoinForced(entry.value as Any, it) }
-            }
-        } else if (setting is Setting<*>) {
-            val javaData = Util.toJava(setting.type, json)
-            if (javaData is List<*>) {
-                javaData.let { setting.setForcedValueRaw(it as List<Any>) }
-            } else {
-                javaData?.let { setting.setForcedValueRaw(ArrayList(Collections.singletonList(javaData))) }
-            }
-        }
+        settingsCategory.loadForced(json)
     }
 
     private fun handleLeaveForced() {
-        handleLeaveForced(settingsCategory)
+        settingsCategory.clearForced()
     }
 
-    private fun handleLeaveForced(setting: Any) {
-        if (setting is Map<*, *>) {
-            for (entry in setting) {
-                handleLeaveForced(entry.value!!)
-            }
-        } else if (setting is Setting<*>) {
-            setting.setForcedValueRaw(null)
-        }
-    }
-
-    fun register(settingContainer: SettingContainer) {
-        settingContainers[settingContainer.id] = settingContainer
-    }
-
-    fun loadProfiles() {
+    private fun loadProfiles() {
         val mainProfileFolder = File(profileFile, "main")
         if (!mainProfileFolder.exists()) {
             mainProfileFolder.mkdirs()
@@ -84,7 +56,7 @@ object SettingManager {
         allProfiles.addAll(profile.children.values)
     }
 
-    fun load(profileId: String) {
+    private fun load(profileId: String) {
         val profile = mainProfile.getProfile(profileId)!!
         load(profile)
     }
@@ -122,17 +94,7 @@ object SettingManager {
     }
 
     private fun load(json: Any, isPrimary: Boolean) {
-        load(settingsCategory, json, isPrimary)
-    }
-
-    private fun load(setting: Any, json: Any, isPrimary: Boolean) {
-        if (setting is Map<*, *>) {
-            for (entry in setting) {
-                (json as Map<*, *>)[entry.key]?.let { load(entry.value as Any, it, isPrimary) }
-            }
-        } else if (setting is Setting<*>) {
-            Util.toJava(setting.type, json)?.let { setting.setValueRaw(it, isPrimary) }
-        }
+        settingsCategory.load(json, isPrimary)
     }
 
     fun getAllProfiles(): List<Profile> {
@@ -147,40 +109,8 @@ object SettingManager {
         profile.writeSettings(JSONObject(save() as Map<*, *>).toString(2))
     }
 
-    private fun save(): Any? {
-        return handleSave(settingsCategory)
-    }
-
-    private fun handleSave(setting: Any): Any? {
-        if (setting is Map<*, *>) {
-            val map: HashMap<String, Any> = HashMap()
-            for (entry in setting) {
-                handleSave(entry.value as Any)?.let { map[entry.key as String] = it }
-            }
-            return map
-        } else if (setting is Setting<*>) {
-            return if (setting.overriden) {
-                Util.toData(setting.realValue!!)
-            } else {
-                null
-            }
-        }
-        return null
-    }
-
-    private fun updateProfile(profile: Profile?) {
-        val settings = JSONObject(profile!!.readSettings())
-        val newSettings: MutableMap<String?, Any?> = HashMap()
-        for ((key, value) in settings.toMap()) {
-            val settingContainer = settingContainers[key]
-            if (profile === mainProfile || settingContainer == null || !settingContainer.shared) {
-                newSettings[key] = value
-            }
-        }
-        profile.writeSettings(JSONObject(newSettings).toString(2))
-        for (profile1 in profile.children.values) {
-            updateProfile(profile1)
-        }
+    private fun save(): Any {
+        return settingsCategory.save()
     }
 
     fun createNewProfile(profile: Profile) {

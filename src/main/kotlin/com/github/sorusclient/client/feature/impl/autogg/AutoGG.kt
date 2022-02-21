@@ -5,7 +5,10 @@ import com.github.sorusclient.client.adapter.event.ChatReceivedEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.server.ServerIntegrationManager
 import com.github.sorusclient.client.setting.*
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
 
 class AutoGG {
 
@@ -16,15 +19,15 @@ class AutoGG {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("autogg", HashMap<String, Any>()
+                data["autogg"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("AutoGG")
+                add(DisplayedCategory("AutoGG")
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                     })

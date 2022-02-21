@@ -5,10 +5,10 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.github.sorusclient.client.hud.HUDElement
-import com.github.sorusclient.client.setting.DisplayedSetting
-import com.github.sorusclient.client.setting.DisplayedSetting.ClickThrough
-import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
+import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.setting.Setting
+import com.github.sorusclient.client.setting.display.DisplayedSetting
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.util.Color
 import java.util.*
@@ -113,7 +113,7 @@ class Armor : HUDElement("armor") {
     private val armor: List<IItem>
         get() {
             val adapter = AdapterManager.getAdapter()
-            val editing = UserInterface.isHudEditScreenOpen()
+            val editing = HUDManager.isHudEditScreenOpen.get()
             val realArmor = adapter.player!!.armor
             return if (!editing || realArmor.stream().anyMatch { o: IItem? ->
                     Objects.nonNull(
@@ -155,11 +155,11 @@ class Armor : HUDElement("armor") {
 
     override fun addSettings(settings: MutableList<DisplayedSetting>) {
         super.addSettings(settings)
-        settings.add(ClickThrough("Mode", mode))
-        settings.add(Toggle("Show Helmet", showHelmet))
-        settings.add(Toggle("Show Chestplate", showChestplate))
-        settings.add(Toggle("Show Leggings", showLeggings))
-        settings.add(Toggle("Show Boots", showBoots))
+        settings.add(ClickThrough(mode, "Mode"))
+        settings.add(Toggle(showHelmet, "Show Helmet"))
+        settings.add(Toggle(showChestplate, "Show Chestplate"))
+        settings.add(Toggle(showLeggings, "Show Leggings"))
+        settings.add(Toggle(showBoots, "Show Boots"))
     }
 
     private class FakeArmorItem(

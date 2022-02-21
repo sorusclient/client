@@ -1,9 +1,11 @@
 package com.github.sorusclient.client.feature.impl.particles
 
-import com.github.sorusclient.client.setting.Category
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 
 class Particles {
 
@@ -15,18 +17,18 @@ class Particles {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("particles", HashMap<String, Any>()
+                data["particles"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                        put("multiplier", Setting(1.0).also { multiplier = it })
-                        put("alwaysCriticalParticles", Setting(false).also { alwaysCriticalParticles = it })
-                        put("alwaysEnchantmentParticles", Setting(false).also { alwaysEnchantmentParticles = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                        data["multiplier"] = SettingData(Setting(1.0).also { multiplier = it })
+                        data["alwaysCriticalParticles"] = SettingData(Setting(false).also { alwaysCriticalParticles = it })
+                        data["alwaysEnchantmentParticles"] = SettingData(Setting(false).also { alwaysEnchantmentParticles = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Particles"))
+                add(DisplayedCategory("Particles"))
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(Slider(multiplier, "Multiplier", 0.5, 5.0))

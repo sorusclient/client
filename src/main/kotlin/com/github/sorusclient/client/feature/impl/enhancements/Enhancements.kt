@@ -1,9 +1,11 @@
 package com.github.sorusclient.client.feature.impl.enhancements
 
-import com.github.sorusclient.client.setting.Category
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 
 class Enhancements {
 
@@ -14,17 +16,17 @@ class Enhancements {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("enhancements", HashMap<String, Any>()
+                data["enhancements"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                        put("fireHeight", Setting(0.0).also { fireHeight = it })
-                        put("centeredInventory", Setting(false).also { centeredInventory = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                        data["fireHeight"] = SettingData(Setting(0.0).also { fireHeight = it })
+                        data["centeredInventory"] = SettingData(Setting(false).also { centeredInventory = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Enhancements"))
+                add(DisplayedCategory("Enhancements"))
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(Slider(fireHeight, "Fire Height", 0.0, 1.0))

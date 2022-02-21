@@ -1,7 +1,6 @@
 package com.github.sorusclient.client.feature.impl.particles.v1_8_9
 
 import com.github.sorusclient.client.feature.FeatureManager
-import com.github.sorusclient.client.module.ModuleManager
 import com.github.sorusclient.client.feature.impl.particles.Particles
 import kotlin.math.roundToInt
 

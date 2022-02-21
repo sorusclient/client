@@ -22,9 +22,11 @@ open class List(private val type: Int) : Container() {
     }
 
     open inner class Runtime : Container.Runtime() {
+
         private var xIndex = 0
         private var xLocation = 0.0
         protected var yLocation = 0.0
+
         override fun render(x: Double, y: Double, width: Double, height: Double) {
             xIndex = 0
             xLocation = -width / 2

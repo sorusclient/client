@@ -9,7 +9,10 @@ import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
 
 class Zoom {
 
@@ -23,19 +26,19 @@ class Zoom {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("zoom", HashMap<String, Any>()
+                data["zoom"] = CategoryData()
                         .apply {
-                            put("enabled", Setting(false).also { enabled = it })
-                            put("key", Setting(Key.C).also { key = it })
-                            put("fov", Setting(30.0).also { fov = it })
-                            put("sensitivity", Setting(0.5).also { sensitivity = it })
-                            put("cinematicCamera", Setting(false).also { cinematicCamera = it })
-                        })
+                            data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                            data["key"] = SettingData(Setting(Key.C).also { key = it })
+                            data["fov"] = SettingData(Setting(30.0).also { fov = it })
+                            data["sensitivity"] = SettingData(Setting(0.5).also { sensitivity = it })
+                            data["cinematicCamera"] = SettingData(Setting(false).also { cinematicCamera = it })
+                        }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Zoom")
+                add(DisplayedCategory("Zoom")
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(KeyBind(key, "Key"))

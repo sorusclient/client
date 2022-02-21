@@ -2,9 +2,10 @@ package com.github.sorusclient.client.feature.impl.fullbright
 
 import com.github.sorusclient.client.adapter.event.GetGammaEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.SettingData
 
 class FullBright {
 
@@ -13,7 +14,7 @@ class FullBright {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("fullBright", Setting(false).also { enabled = it })
+                data["fullBright"] = SettingData(Setting(false).also { enabled = it })
             }
 
         SettingManager.mainUICategory

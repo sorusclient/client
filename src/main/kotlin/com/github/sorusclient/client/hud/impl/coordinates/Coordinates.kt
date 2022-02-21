@@ -4,9 +4,9 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IEntity
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.hud.HUDElement
-import com.github.sorusclient.client.setting.DisplayedSetting
-import com.github.sorusclient.client.setting.DisplayedSetting.*
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
+import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.Pair
 
@@ -96,20 +96,20 @@ class Coordinates : HUDElement("coordinates") {
     ) {
         var partialX = 0.0
         for (pair in text) {
-            fontRenderer.drawString(pair.first, x + partialX, y, scale, pair.second!!)
+            fontRenderer.drawString(pair.first, x + partialX, y, scale, pair.second)
             partialX += fontRenderer.getWidth(pair.first) * scale + 1
         }
     }
 
     override fun addSettings(settings: MutableList<DisplayedSetting>) {
         super.addSettings(settings)
-        settings.add(Toggle("Show X", showX))
-        settings.add(Toggle("Show Y", showY))
-        settings.add(Toggle("Show Z", showZ))
-        settings.add(ColorPicker("Identifier Color", identifierColor))
-        settings.add(ColorPicker("Other Color", otherColor))
-        settings.add(ColorPicker("Value Color", valueColor))
-        settings.add(ClickThrough("Mode", mode))
+        settings.add(Toggle(showX, "Show X"))
+        settings.add(Toggle(showY, "Show Y"))
+        settings.add(Toggle(showZ, "Show Z"))
+        settings.add(ColorPicker(identifierColor, "Identifier Color"))
+        settings.add(ColorPicker(otherColor, "Other Color"))
+        settings.add(ColorPicker(valueColor, "Value Color"))
+        settings.add(ClickThrough(mode, "Mode"))
     }
 
     enum class Mode {

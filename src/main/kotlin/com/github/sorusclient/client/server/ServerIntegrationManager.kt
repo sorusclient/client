@@ -5,8 +5,6 @@ import com.github.sorusclient.client.adapter.event.GameJoinEvent
 import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.SorusCustomPacketEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.module.ModuleManager
-import com.github.sorusclient.client.setting.SettingManager
 import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.json.JSONObject
@@ -23,12 +21,12 @@ object ServerIntegrationManager {
 
     init {
         val eventManager = EventManager
-        eventManager.register(this::onGameJoin)
-        eventManager.register(this::onGameLeave)
+        eventManager.register<GameJoinEvent> { onGameJoin() }
+        eventManager.register<GameLeaveEvent> { onGameLeave() }
         eventManager.register(this::onCustomPacket)
     }
 
-    private fun onGameJoin(event: GameJoinEvent) {
+    private fun onGameJoin() {
         val server = AdapterManager.getAdapter().currentServer
         if (server != null) {
             Thread {
@@ -40,7 +38,7 @@ object ServerIntegrationManager {
         }
     }
 
-    private fun onGameLeave(event: GameLeaveEvent) {
+    private fun onGameLeave() {
         for (listener in leaveListeners) {
             listener()
         }

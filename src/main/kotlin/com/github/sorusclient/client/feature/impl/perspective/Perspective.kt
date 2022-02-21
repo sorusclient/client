@@ -7,10 +7,12 @@ import com.github.sorusclient.client.adapter.PerspectiveMode
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.Category
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 
 class Perspective {
 
@@ -24,16 +26,16 @@ class Perspective {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("perspective", HashMap<String, Any>()
+                data["perspective"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                        put("key", Setting(Key.F).also { key = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                        data["key"] = SettingData(Setting(Key.F).also { key = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Perspective"))
+                add(DisplayedCategory("Perspective"))
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(KeyBind(key, "Key"))

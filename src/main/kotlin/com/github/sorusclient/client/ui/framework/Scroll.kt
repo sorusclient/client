@@ -5,11 +5,8 @@ class Scroll(type: Int) : List(type) {
     init {
         runtime = Runtime()
         storedState += "scroll"
-        onInit += { state ->
-            state.second["scroll"] = 0.0
-        }
         onScroll = { state ->
-            state.second["scroll"] = state.second["scroll"] as Double + state.first * 3
+            state.second["scroll"] = state.second.getOrDefault("scroll", 0.0) as Double + state.first * 3
         }
         scissor = true
     }
@@ -29,7 +26,10 @@ class Scroll(type: Int) : List(type) {
             width: Double,
             height: Double
         ) {
-            var scroll = getState("scroll") as Double
+            var scroll = getState("scroll") as Double?
+            if (scroll == null || scroll.isNaN()) {
+                scroll = 0.0
+            }
             scroll = Math.max(scroll, -(prevYLocation - this.height + children[0].runtime.topPadding))
             scroll = Math.min(scroll, 0.0)
             setState("scroll", scroll)

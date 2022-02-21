@@ -6,10 +6,12 @@ import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.Vertex
 import com.github.sorusclient.client.adapter.event.BlockOutlineRenderEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.Category
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.util.Color
 
 class BlockOverlay {
@@ -22,18 +24,18 @@ class BlockOverlay {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("blockOverlay", HashMap<String, Any>()
+                data["blockOverlay"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                        put("borderColor", Setting(Color.BLACK).also { borderColor = it })
-                        put("borderThickness", Setting(1.0).also { borderThickness = it })
-                        put("fillColor", Setting(Color.fromRGB(0, 0, 0, 0)).also { fillColor = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                        data["borderColor"] = SettingData(Setting(Color.BLACK).also { borderColor = it })
+                        data["borderThickness"] = SettingData(Setting(1.0).also { borderThickness = it })
+                        data["fillColor"] = SettingData(Setting(Color.fromRGB(0, 0, 0, 0)).also { fillColor = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Block Overlay"))
+                add(DisplayedCategory("Block Overlay"))
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(ColorPicker(borderColor, "Border Color", ))

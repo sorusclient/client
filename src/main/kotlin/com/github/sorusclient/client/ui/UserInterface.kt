@@ -7,6 +7,8 @@ import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.ui.framework.*
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.ui.framework.constraint.Dependent
@@ -18,7 +20,6 @@ import kotlin.math.ceil
 
 object UserInterface {
 
-    private val hudEditScreenOpen = AtomicBoolean(false)
     private lateinit var mainGui: Container
     private val guiOpened = AtomicBoolean(false)
 
@@ -52,9 +53,9 @@ object UserInterface {
         }
     }
 
-    private fun getSetting(setting: SettingConfigure): Container {
+    private fun getSetting(setting: DisplayedSetting): Container {
         when (setting) {
-            is SettingConfigure.Toggle -> {
+            is DisplayedSetting.Toggle -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -137,7 +138,7 @@ object UserInterface {
                         runtime.setState("toggled", setting.setting.value)
                     }
             }
-            is SettingConfigure.Slider -> {
+            is DisplayedSetting.Slider -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -233,8 +234,6 @@ object UserInterface {
                                         width = Copy()
                                         height = 1.0.toRelative()
 
-                                        //backgroundColor = Color.WHITE.toAbsolute()
-
                                         backgroundCornerRadius = Relative(0.25, true)
                                     }
                             }
@@ -246,7 +245,7 @@ object UserInterface {
                         )
                     }
             }
-            is SettingConfigure.KeyBind -> {
+            is DisplayedSetting.KeyBind -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -331,7 +330,7 @@ object UserInterface {
                         runtime.setState("value", setting.setting.value)
                     }
             }
-            is SettingConfigure.ClickThrough -> {
+            is DisplayedSetting.ClickThrough -> {
                 return Container()
                     .apply {
                         height = 15.0.toAbsolute()
@@ -557,7 +556,7 @@ object UserInterface {
                                     }
                         }
             }*/
-            is SettingConfigure.ColorPicker -> {
+            is DisplayedSetting.ColorPicker -> {
                 return Container()
                     .apply {
                         children += TabHolder()
@@ -812,7 +811,7 @@ object UserInterface {
                         }.toDependent()
                     }
             }
-            is SettingConfigure.Dependent<*> -> {
+            is DisplayedSetting.Dependent<*> -> {
                 return (getSetting(setting.configurableData))
                     .apply {
                         onUpdate += { state ->
@@ -919,6 +918,22 @@ object UserInterface {
 
                                 addChild("settings", Container()
                                     .apply {
+                                        storedState += "currentSettingsCategory"
+
+                                        onUpdate += { state ->
+                                            val displayedCategory = state["currentSettingsCategory"] as DisplayedCategory
+
+                                            state["hidden"] = !displayedCategory.showUI
+
+                                            if (displayedCategory.`return`) {
+                                                displayedCategory.onHide()
+                                                state["currentSettingsCategory"] = displayedCategory.parent!!
+                                                state["hasInit"] = false
+
+                                                displayedCategory.`return` = false
+                                            }
+                                        }
+
                                         children += Container()
                                             .apply {
                                                 x = Side.NEGATIVE.toSide()
@@ -1225,7 +1240,6 @@ object UserInterface {
                                                 borderThickness = 0.4.toAbsolute()
 
                                                 storedState += "hasInitSettings"
-                                                storedState += "currentSettingsCategory"
 
                                                 onStateUpdate["hasInitSettings"] = { state ->
                                                     if (state["hasInitSettings"] == false) {
@@ -1239,7 +1253,7 @@ object UserInterface {
                                                         state.second["currentSettingsCategory"] = SettingManager.mainUICategory
                                                     }
 
-                                                    val category = state.second["currentSettingsCategory"] as Category
+                                                    val category = state.second["currentSettingsCategory"] as DisplayedCategory
 
                                                     children.clear()
 
@@ -1307,6 +1321,7 @@ object UserInterface {
                                                                         onClick = { state ->
                                                                             state["currentSettingsCategory"] = category.parent!!
                                                                             state["hasInitSettings"] = false
+                                                                            category.onHide()
                                                                         }
                                                                     }
                                                             }
@@ -1320,7 +1335,7 @@ object UserInterface {
 
                                                                     var count = 0
                                                                     for (displayed in category.components) {
-                                                                        if (displayed is Category) {
+                                                                        if (displayed is DisplayedCategory) {
                                                                             count++
                                                                         }
                                                                     }
@@ -1328,7 +1343,7 @@ object UserInterface {
                                                                     height = Relative(ceil(count / 3.0) * 0.06 + (ceil(count / 3.0) + 1) * 0.015, true)
 
                                                                     for (displayed in category.components) {
-                                                                        if (displayed is Category) {
+                                                                        if (displayed is DisplayedCategory) {
                                                                             addChild(Container()
                                                                                 .apply {
                                                                                     width = 0.30666.toRelative()
@@ -1372,6 +1387,7 @@ object UserInterface {
                                                                                         }
 
                                                                                     onClick = { state ->
+                                                                                        displayed.onShow()
                                                                                         state["currentSettingsCategory"] = displayed
                                                                                         state["hasInitSettings"] = false
                                                                                     }
@@ -1389,7 +1405,7 @@ object UserInterface {
                                                                 })
 
                                                             for (setting in category.components) {
-                                                                if (setting is SettingConfigure) {
+                                                                if (setting is DisplayedSetting) {
                                                                     addChild(getSetting(setting)
                                                                         .apply {
                                                                             children += Container()
@@ -1426,23 +1442,23 @@ object UserInterface {
 
                                                                                     onUpdate += { state ->
                                                                                         var setting = setting
-                                                                                        while (setting is SettingConfigure.Dependent<*>) {
+                                                                                        while (setting is DisplayedSetting.Dependent<*>) {
                                                                                             setting = setting.configurableData
                                                                                         }
 
-                                                                                        if (setting is SettingConfigure.ConfigurableDataSingleSetting<*>) {
+                                                                                        if (setting is DisplayedSetting.ConfigurableDataSingleSetting<*>) {
                                                                                             state["hidden"] = !setting.setting.overriden || SettingManager.currentProfile == SettingManager.mainProfile
                                                                                         }
                                                                                     }
 
                                                                                     onClick = {
                                                                                         var setting = setting
-                                                                                        while (setting is SettingConfigure.Dependent<*>) {
-                                                                                            setting = (setting as SettingConfigure.Dependent<*>).configurableData
+                                                                                        while (setting is DisplayedSetting.Dependent<*>) {
+                                                                                            setting = (setting as DisplayedSetting.Dependent<*>).configurableData
                                                                                         }
 
-                                                                                        if (setting is SettingConfigure.ConfigurableDataSingleSetting<*>) {
-                                                                                            (setting as SettingConfigure.ConfigurableDataSingleSetting<*>).setting.overriden = false
+                                                                                        if (setting is DisplayedSetting.ConfigurableDataSingleSetting<*>) {
+                                                                                            (setting as DisplayedSetting.ConfigurableDataSingleSetting<*>).setting.overriden = false
                                                                                         }
                                                                                     }
                                                                                 }
@@ -1944,7 +1960,4 @@ object UserInterface {
         }
     }*/
 
-    fun isHudEditScreenOpen(): Boolean {
-        return hudEditScreenOpen.get() && guiOpened.get()
-    }
 }

@@ -1,9 +1,11 @@
 package com.github.sorusclient.client.feature.impl.oldanimations
 
-import com.github.sorusclient.client.setting.Category
-import com.github.sorusclient.client.setting.SettingConfigure.Toggle
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.Toggle
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 
 class OldAnimations {
 
@@ -14,17 +16,17 @@ class OldAnimations {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("oldAnimations", HashMap<String, Any>()
+                data["oldAnimations"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                        put("oldBlockHit", Setting(false).also { oldBlockHit = it })
-                        put("showArmorDamage", Setting(false).also { showArmorDamage = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                        data["oldBlockHit"] = SettingData(Setting(false).also { oldBlockHit = it })
+                        data["showArmorDamage"] = SettingData(Setting(false).also { showArmorDamage = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Old Animations"))
+                add(DisplayedCategory("Old Animations"))
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(Toggle(oldBlockHit, "Old Block Hit"))

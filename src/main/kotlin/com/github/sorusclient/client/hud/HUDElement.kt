@@ -1,13 +1,13 @@
 package com.github.sorusclient.client.hud
 
 import com.github.sorusclient.client.adapter.AdapterManager
-import com.github.sorusclient.client.setting.DisplayedSetting
-import com.github.sorusclient.client.setting.Setting
-import com.github.sorusclient.client.setting.SettingContainer
-import com.github.sorusclient.client.setting.Util
+import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.Axis
 
-abstract class HUDElement(override val id: String) : SettingContainer {
+abstract class HUDElement(val id: String) {
 
     private val settings: MutableMap<String, Setting<*>> = HashMap()
     var attached: Setting<MutableMap<String, MutableList<AttachType>>>
@@ -18,26 +18,27 @@ abstract class HUDElement(override val id: String) : SettingContainer {
     var scale: Setting<Double>
     var internalId: Setting<String>
 
+    val category = CategoryData()
+
     init {
-        register("x", Setting(0.0).also { x = it })
-        register("y", Setting(0.0).also { y = it })
-        register("offsetX", Setting(-1.0).also {
-            offsetX = it
-        })
-        register("offsetY", Setting(-1.0).also {
-            offsetY = it
-        })
-        register("scale", Setting(1.0).also {
-            scale = it
-        })
-        register("internalId", Setting("").also {
-            internalId = it
-        })
-        register("attached", Setting(
-            MutableMap::class.java as Class<MutableMap<String, MutableList<AttachType>>>, HashMap()
-        ).also {
-            attached = it
-        })
+        category
+            .apply {
+                data["x"] = SettingData(Setting(0.0).also { x = it })
+                data["y"] = SettingData(Setting(0.0).also { y = it })
+                data["offsetX"] = SettingData(Setting(-1.0).also { offsetX = it })
+                data["offsetY"] = SettingData(Setting(-1.0).also { offsetY = it })
+                data["scale"] = SettingData(Setting(1.0).also { scale = it })
+                data["internalId"] = SettingData(Setting("$id-${System.nanoTime() % 1000}").also { internalId = it })
+                data["attached"] = SettingData(Setting(MutableMap::class.java as Class<MutableMap<String, MutableList<AttachType>>>, HashMap()).also { attached = it })
+            }
+
+        /*SettingManager.settingsCategory
+            .apply {
+                put("hud", HashMap<String, Any>()
+                    .apply {
+                        put("elements", Setting<MutableList<String>>(ArrayList()).also { HUDManager.elements2 = it })
+                    })
+            }*/
     }
 
     protected fun register(id: String, setting: Setting<*>) {
@@ -65,6 +66,7 @@ abstract class HUDElement(override val id: String) : SettingContainer {
             alreadyUpdated.add(this)
             var attachTypeX: AttachType? = null
             var attachTypeY: AttachType? = null
+
             for (attachType in attached.value[attachedElement?.getInternalId() ?: "null"]!!) {
                 if (attachType.axis === Axis.X) {
                     attachTypeX = attachType
@@ -89,7 +91,7 @@ abstract class HUDElement(override val id: String) : SettingContainer {
                 newY,
                 screenDimensions
             )
-            for (hudId in attached.value.keys) {
+            for (hudId in this.attached.value.keys) {
                 val hud = HUDManager.getById(hudId) ?: continue
                 hud.updatePosition(this, screenDimensions, alreadyUpdated)
             }
@@ -195,48 +197,6 @@ abstract class HUDElement(override val id: String) : SettingContainer {
     fun isAttachedTo(other: HUDElement): Boolean {
         return getAttached().contains(other.getInternalId())
     }
-
-    override fun load(settings: Map<String, Any>) {
-        for ((key, value) in settings) {
-            val setting1 = this.settings[key]
-            Util.toJava(setting1?.type, value)?.let { setting1?.setValueRaw(it) }
-        }
-    }
-
-    override fun loadForced(settings: Map<String, Any>) {
-        for ((key, value) in settings) {
-            val setting1 = this.settings[key]
-            if (setting1 != null) {
-                val forcedValues: MutableList<Any> = ArrayList()
-                if (value is List<*>) {
-                    for (element in value) {
-                        forcedValues.add(Util.toJava(setting1.type, element)!!)
-                    }
-                } else {
-                    forcedValues.add(Util.toJava(setting1.type, value)!!)
-                }
-                setting1.setForcedValueRaw(forcedValues)
-            }
-        }
-    }
-
-    override fun removeForced() {
-        for (setting in settings.values) {
-            setting.setForcedValueRaw(null)
-        }
-    }
-
-    override fun save(): Map<String, Any> {
-        val settingsMap: MutableMap<String, Any> = HashMap()
-        for ((key, value) in settings) {
-            settingsMap[key] = Util.toData(value.realValue!!)
-        }
-        settingsMap["class"] = this.javaClass.name
-        return settingsMap
-    }
-
-    override var shared: Boolean = false
-        get() = false
 
     open fun addSettings(settings: MutableList<DisplayedSetting>) {}
 

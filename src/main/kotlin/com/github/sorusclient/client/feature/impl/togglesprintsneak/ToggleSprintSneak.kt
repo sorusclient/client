@@ -5,10 +5,12 @@ import com.github.sorusclient.client.adapter.IKeyBind
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.Category
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 
 class ToggleSprintSneak {
 
@@ -25,21 +27,21 @@ class ToggleSprintSneak {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("toggleSprintSneak", HashMap<String, Any>()
+                data["toggleSprintSneak"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                        put("toggleSprint", Setting(false).also { toggleSprint = it })
-                        put("useCustomSprintKey", Setting(false).also { useCustomSprintKey = it })
-                        put("customSprintKey", Setting(Key.SHIFT_LEFT).also { customSprintKey = it })
-                        put("toggleSneak", Setting(false).also { toggleSneak = it })
-                        put("useCustomSneakKey", Setting(false).also { useCustomSneakKey = it })
-                        put("customSneakKey", Setting(Key.SHIFT_LEFT).also { customSneakKey = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                        data["toggleSprint"] = SettingData(Setting(false).also { toggleSprint = it })
+                        data["useCustomSprintKey"] = SettingData(Setting(false).also { useCustomSprintKey = it })
+                        data["customSprintKey"] = SettingData(Setting(Key.SHIFT_LEFT).also { customSprintKey = it })
+                        data["toggleSneak"] = SettingData(Setting(false).also { toggleSneak = it })
+                        data["useCustomSneakKey"] = SettingData(Setting(false).also { useCustomSneakKey = it })
+                        data["customSneakKey"] = SettingData(Setting(Key.SHIFT_LEFT).also { customSneakKey = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Toggle Sprint & Sneak"))
+                add(DisplayedCategory("Toggle Sprint & Sneak"))
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(Toggle(toggleSprint, "Toggle Sprint"))

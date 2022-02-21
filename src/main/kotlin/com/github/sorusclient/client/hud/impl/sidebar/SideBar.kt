@@ -5,8 +5,9 @@ import com.github.sorusclient.client.adapter.IScoreboard
 import com.github.sorusclient.client.adapter.IScoreboardObjective
 import com.github.sorusclient.client.adapter.IScoreboardScore
 import com.github.sorusclient.client.hud.HUDElement
-import com.github.sorusclient.client.setting.DisplayedSetting
-import com.github.sorusclient.client.setting.DisplayedSetting.Toggle
+import com.github.sorusclient.client.hud.HUDManager
+import com.github.sorusclient.client.setting.display.DisplayedSetting
+import com.github.sorusclient.client.setting.display.DisplayedSetting.Toggle
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.util.Color
@@ -19,7 +20,7 @@ class Sidebar : HUDElement("sideBar") {
         get() {
             val scoreboard = AdapterManager.getAdapter().world.scoreboard
             val sidebarObjective = scoreboard.getObjective(IScoreboard.Slot.SIDEBAR)
-            val editing = UserInterface.isHudEditScreenOpen()
+            val editing = HUDManager.isHudEditScreenOpen.get()
             return if (sidebarObjective != null || !editing) {
                 sidebarObjective
             } else {
@@ -86,7 +87,7 @@ class Sidebar : HUDElement("sideBar") {
 
     override fun addSettings(settings: MutableList<DisplayedSetting>) {
         super.addSettings(settings)
-        settings.add(Toggle("Show Scores", showScores))
+        settings.add(Toggle(showScores, "Show Scores"))
     }
 
     private class FakeScoreboardObjective(override val scores: List<IScoreboardScore>, override val name: String) : IScoreboardObjective

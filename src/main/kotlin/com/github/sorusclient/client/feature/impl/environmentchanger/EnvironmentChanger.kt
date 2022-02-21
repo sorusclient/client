@@ -1,9 +1,11 @@
 package com.github.sorusclient.client.feature.impl.environmentchanger
 
-import com.github.sorusclient.client.setting.Category
-import com.github.sorusclient.client.setting.SettingConfigure.*
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 
 class EnvironmentChanger {
 
@@ -17,19 +19,19 @@ class EnvironmentChanger {
     init {
         SettingManager.settingsCategory
             .apply {
-                put("environmentChanger", HashMap<String, Any>()
+                data["environmentChanger"] = CategoryData()
                     .apply {
-                        put("enabled", Setting(false).also { enabled = it })
-                        put("modifyTime", Setting(false).also { modifyTime = it })
-                        put("time", Setting(5000L).also { time = it })
-                        put("modifyWeather", Setting(false).also { modifyWeather = it })
-                        put("weather", Setting(Weather.CLEAR).also { weather = it })
-                    })
+                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
+                        data["modifyTime"] = SettingData(Setting(false).also { modifyTime = it })
+                        data["time"] = SettingData(Setting(5000L).also { time = it })
+                        data["modifyWeather"] = SettingData(Setting(false).also { modifyWeather = it })
+                        data["weather"] = SettingData(Setting(Weather.CLEAR).also { weather = it })
+                    }
             }
 
         SettingManager.mainUICategory
             .apply {
-                add(Category("Environment Changer"))
+                add(DisplayedCategory("Environment Changer"))
                     .apply {
                         add(Toggle(enabled, "Enabled"))
                         add(Toggle(modifyTime, "Modify Time"))

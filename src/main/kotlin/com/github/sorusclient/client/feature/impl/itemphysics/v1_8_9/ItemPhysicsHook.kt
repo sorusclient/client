@@ -1,7 +1,6 @@
 package com.github.sorusclient.client.feature.impl.itemphysics.v1_8_9
 
 import com.github.sorusclient.client.feature.FeatureManager
-import com.github.sorusclient.client.module.ModuleManager
 import com.github.sorusclient.client.feature.impl.itemphysics.ItemPhysics
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -44,7 +43,7 @@ object ItemPhysicsHook {
             }
             GlStateManager.rotatef(90f, 1f, 0f, 0f)
             if (!entity.onGround) {
-                val startTime = entityStartTimes.computeIfAbsent(entity) { k: Any? -> System.currentTimeMillis() }
+                val startTime = entityStartTimes.computeIfAbsent(entity) { System.currentTimeMillis() }
                 val travelled = System.currentTimeMillis() - startTime
                 GlStateManager.rotatef(travelled * entity.velocityX.toFloat() * -2, 0f, 1f, 0f)
                 GlStateManager.rotatef(travelled * entity.velocityZ.toFloat() * 2, 1f, 0f, 0f)

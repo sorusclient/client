@@ -4,22 +4,16 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IAdapter
-import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.GetClientBrandEvent
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.hud.HUDManager
-import com.github.sorusclient.client.module.ModuleManager
 import com.github.sorusclient.client.plugin.PluginManager
 import com.github.sorusclient.client.server.ServerIntegrationManager
-import com.github.sorusclient.client.setting.DisplayedSetting
-import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.ui.UserInterface
-import com.github.sorusclient.client.ui.apply
 import com.github.sorusclient.client.ui.framework.ContainerRenderer
-import com.github.sorusclient.client.util.Color
 import java.util.*
 
 class Sorus : Listener {
@@ -33,7 +27,6 @@ class Sorus : Listener {
     private val components: MutableMap<Class<*>, Any> = HashMap()
 
     private fun initialize() {
-        this.register(ModuleManager)
         this.register(ContainerRenderer)
         this.register(EventManager)
         this.register(FeatureManager)
@@ -45,7 +38,6 @@ class Sorus : Listener {
         this.register(UserInterface)
 
         HUDManager.initialize()
-        ModuleManager.initialize()
         ContainerRenderer.initialize()
 
         SettingManager.initialize()
@@ -61,11 +53,6 @@ class Sorus : Listener {
         EventManager.register<InitializeEvent> {
             AdapterManager.getAdapter().setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
         }
-    }
-
-    enum class Test {
-        FIRST,
-        SECOND
     }
 
     fun register(component: Any) {

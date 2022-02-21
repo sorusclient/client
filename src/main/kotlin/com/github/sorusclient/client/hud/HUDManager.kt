@@ -4,7 +4,6 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.*
-import com.github.sorusclient.client.event.EventCancelable
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.hud.impl.armor.Armor
 import com.github.sorusclient.client.hud.impl.bossbar.BossBar
@@ -15,23 +14,23 @@ import com.github.sorusclient.client.hud.impl.hotbar.HotBar
 import com.github.sorusclient.client.hud.impl.hunger.Hunger
 import com.github.sorusclient.client.hud.impl.potions.Potions
 import com.github.sorusclient.client.hud.impl.sidebar.Sidebar
-import com.github.sorusclient.client.setting.Setting
-import com.github.sorusclient.client.setting.SettingContainer
 import com.github.sorusclient.client.setting.SettingManager
-import com.github.sorusclient.client.ui.UserInterface
+import com.github.sorusclient.client.setting.data.AbstractData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.util.Axis
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.Pair
 import org.lwjgl.opengl.GL11
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-object HUDManager : SettingContainer {
+object HUDManager {
 
     //TODO: elements resizing does not affect attached elements
     private val possibleHuds: MutableList<HUDData> = ArrayList()
-    private val elements: MutableMap<String, HUDElement> = HashMap()
+    private val huds: MutableList<HUDElement> = ArrayList()
     private var prevClickTime: Long = 0
     private var draggedHud: HUDElement? = null
     private var interactType: InteractType? = null
@@ -41,10 +40,83 @@ object HUDManager : SettingContainer {
     private var initialHudY = 0.0
     private var initialScale = 0.0
     private var snapped: Array<Pair<*, *>> = emptyArray()
-    private val sharedInternal: Setting<Boolean> = Setting(false)
     private var hudToOpenSettings: HUDElement? = null
 
+    private var hoveredCloseButton = false
+
+    var isHudEditScreenOpen = AtomicBoolean(false)
+
+    class HudCategoryData(val huds: MutableList<HUDElement>): AbstractData() {
+
+        override fun loadForced(json: Any) {
+
+        }
+
+        override fun clearForced() {
+
+        }
+
+        override fun load(json: Any, isPrimary: Boolean) {
+            this.huds.clear()
+
+            val json = json as Map<String, Any>
+            val huds: List<String> = json["huds"] as List<String>
+
+            for (hudId in huds) {
+                val hudData = json[hudId] as Map<String, Any>
+                val hud = Class.forName(hudData["class"] as String?).getConstructor().newInstance() as HUDElement
+                hud.category.load(hudData, isPrimary)
+
+                this.huds.add(hud)
+            }
+        }
+
+        override fun save(): Any {
+            val map: MutableMap<String, Any> = HashMap()
+            val list: MutableList<String> = ArrayList()
+            map["huds"] = list
+
+            for (hud in huds) {
+                list.add(hud.internalId.value)
+                map[hud.internalId.value] = hud.category.save()
+                (map[hud.internalId.value] as MutableMap<String, Any>)
+                    .apply {
+                        put("class", hud.javaClass.name)
+                    }
+            }
+
+            return map
+        }
+
+    }
+
+    class HudDisplayedCategory(var isHudEditScreenOpen: AtomicBoolean) : DisplayedCategory("HUD") {
+        override var showUI: Boolean = false
+        override var `return`: Boolean = false
+
+        override fun onShow() {
+            isHudEditScreenOpen.set(true)
+        }
+
+        override fun onHide() {
+            isHudEditScreenOpen.set(false)
+        }
+
+    }
+
+    private val hudDisplayedCategory: HudDisplayedCategory
+
     init {
+        SettingManager.settingsCategory
+            .apply {
+                data["hud"] = HudCategoryData(huds)
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(HudDisplayedCategory(isHudEditScreenOpen).also { hudDisplayedCategory = it })
+            }
+
         initializePossibleElements()
         setupDefaultHud()
         val eventManager = EventManager
@@ -101,7 +173,6 @@ object HUDManager : SettingContainer {
         eventManager.register { _: RenderInGameEvent -> render() }
         eventManager.register(this::onClick)
         eventManager.register(this::onKey)
-        SettingManager.register(this)
     }
 
     private fun initializePossibleElements() {
@@ -121,13 +192,11 @@ object HUDManager : SettingContainer {
     }
 
     fun add(hud: HUDElement) {
-        val id = hud.id + "-" + System.nanoTime() % 1000
-        elements[id] = hud
-        hud.setInternalId(id)
+        huds.add(hud)
     }
 
     fun remove(hud: HUDElement) {
-        elements.remove(hud.internalId.value)
+        huds.remove(hud)
     }
 
     fun render() {
@@ -135,9 +204,9 @@ object HUDManager : SettingContainer {
         val renderer = AdapterManager.getAdapter().renderer
         val screenDimensions = adapter.screenDimensions
         val mouseLocation = adapter.mouseLocation
-        val isHudEditScreenOpen = UserInterface.isHudEditScreenOpen()
+        val isHudEditScreenOpen = isHudEditScreenOpen.get()
         if (!isHudEditScreenOpen) {
-            for (element in elements.values) {
+            for (element in getElements().values) {
                 for ((attachedId, _) in element.attached.value) {
                     val attachedElement = getById(attachedId)
                     element.updatePosition(attachedElement, screenDimensions)
@@ -146,11 +215,11 @@ object HUDManager : SettingContainer {
         }
         val blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND)
         val textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
-        for (element in elements.values) {
+        for (element in getElements().values) {
             element.render()
         }
         if (isHudEditScreenOpen) {
-            for (element in elements.values) {
+            for (element in getElements().values) {
                 val x = element.getX(screenDimensions[0])
                 val y = element.getY(screenDimensions[1])
                 val width = element.scaledWidth
@@ -164,6 +233,14 @@ object HUDManager : SettingContainer {
                 )
                 renderer.drawRectangle(x - width / 2 + 1, y - height / 2 + 1, 3.0, 3.0, Color.WHITE)
             }
+
+            val left = screenDimensions[0] - screenDimensions[1] * 0.075 - 2
+            val size = screenDimensions[1] * 0.075
+            val top = 2.0
+
+            renderer.drawRectangle(left, top, size, size, screenDimensions[0] * 0.0075, Color.fromRGB(0, 0, 0, 65))
+            renderer.drawRectangleBorder(left, top, size, size, screenDimensions[0] * 0.0075, 0.4, if (hoveredCloseButton) { Color.fromRGB(60, 75, 250, 255) } else { Color.fromRGB(0, 0, 0, 100) })
+            renderer.drawImage("sorus/ui/settings/back.png", left + 0.3 * size, top + 0.3 * size, 0.4 * size, 0.4 * size, Color.WHITE)
         }
         if (draggedHud != null) {
             when (interactType) {
@@ -182,7 +259,7 @@ object HUDManager : SettingContainer {
                     var snappedY: Pair<HUDElement?, AttachType>? = null
                     val possibleSnaps: MutableMap<HUDElement?, Pair<Pair<Double, Double>, Pair<Double, Double>>> =
                         HashMap()
-                    for (hud in elements.values) {
+                    for (hud in getElements().values) {
                         possibleSnaps[hud] = Pair(
                             Pair(
                                 hud.getX(
@@ -437,7 +514,7 @@ object HUDManager : SettingContainer {
         wantedScale: Double
     ): Double {
         var newScale = wantedScale
-        for (hud in elements.values) {
+        for (hud in getElements().values) {
             if (hud === draggedHud || draggedHud!!.isAttachedTo(hud)) continue
             val otherHudX = hud.getX(screenDimensions[0])
             val otherHudY = hud.getY(screenDimensions[1])
@@ -501,10 +578,25 @@ object HUDManager : SettingContainer {
     }
 
     private fun onClick(event: MouseEvent) {
-        if (event.button != Button.PRIMARY) return
-        if (event.isPressed && UserInterface.isHudEditScreenOpen()) {
+        if (isHudEditScreenOpen.get()) {
             val screenDimensions = AdapterManager.getAdapter().screenDimensions
-            for (element in elements.values) {
+            if (event.x > screenDimensions[0] - screenDimensions[1] * 0.075 && event.y < screenDimensions[1] * 0.075) {
+                hoveredCloseButton = true
+
+                if (event.isPressed && event.button == Button.PRIMARY) {
+                    hudDisplayedCategory.`return` = true
+                    hoveredCloseButton = false
+                }
+            } else {
+                hoveredCloseButton = false
+            }
+        }
+
+        if (event.button != Button.PRIMARY) return
+
+        if (event.isPressed && isHudEditScreenOpen.get()) {
+            val screenDimensions = AdapterManager.getAdapter().screenDimensions
+            for (element in getElements().values) {
                 val x = element.getX(screenDimensions[0])
                 val y = element.getY(screenDimensions[1])
                 val left = x - element.scaledWidth / 2
@@ -559,6 +651,15 @@ object HUDManager : SettingContainer {
         }
     }
 
+    private fun getElements(): Map<String, HUDElement> {
+        val elements: MutableMap<String, HUDElement> = HashMap()
+        for (hud in huds) {
+            elements[hud.internalId.value] = hud
+        }
+
+        return elements
+    }
+
     private fun onKey(event: KeyEvent) {
         if (event.isPressed && event.key == Key.D && draggedHud != null) {
             draggedHud!!.delete(ArrayList())
@@ -567,47 +668,12 @@ object HUDManager : SettingContainer {
     }
 
     fun getById(id: String): HUDElement? {
-        return elements[id]
+        return getElements()[id]
     }
 
     private fun distance(x1: Double, x2: Double, y1: Double, y2: Double): Double {
         return sqrt((x1 - x2).pow(2.0) + (y1 - y2).pow(2.0))
     }
-
-    override val id: String
-        get() = "hud"
-
-    override fun load(settings: Map<String, Any>) {
-        elements.clear()
-        for ((key, value) in settings) {
-            val hudSettings = value as Map<String, Any>
-            try {
-                val hudClass = Class.forName(hudSettings["class"] as String?)
-                val hudInstance = hudClass.newInstance() as HUDElement
-                hudInstance.load(hudSettings)
-                elements[key] = hudInstance
-            } catch (e: ClassNotFoundException) {
-                e.printStackTrace()
-            } catch (e: InstantiationException) {
-                e.printStackTrace()
-            } catch (e: IllegalAccessException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    override fun loadForced(settings: Map<String, Any>) {}
-    override fun removeForced() {}
-    override fun save(): Map<String, Any> {
-        val settingsMap: MutableMap<String, Any> = HashMap()
-        for ((key, value)  in elements) {
-            settingsMap[key] = value.save()
-        }
-        return settingsMap
-    }
-
-    override var shared: Boolean = false
-        get() = sharedInternal.value
 
     private class Snap(
         val axis: Axis,
