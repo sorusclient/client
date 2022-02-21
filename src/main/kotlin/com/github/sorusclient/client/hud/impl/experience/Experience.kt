@@ -13,6 +13,9 @@ class Experience : HUDElement("experience") {
     override val height: Double
         get() = 7.0
 
+    override val displayName: String
+        get() = "Experience"
+
     override fun render(x: Double, y: Double, scale: Double) {
         val player = AdapterManager.getAdapter().player!!
         val experiencePercent = player.experiencePercentUntilNextLevel

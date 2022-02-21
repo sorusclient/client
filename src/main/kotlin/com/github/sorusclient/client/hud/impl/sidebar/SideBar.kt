@@ -50,6 +50,9 @@ class Sidebar : HUDElement("sideBar") {
             return (sidebarObjective.scores.size + 1) * (fontRenderer.getHeight() + 1) + 1
         }
 
+    override val displayName: String
+        get() = "SideBar"
+
     init {
         register("showScores", Setting(true).also {
             showScores = it

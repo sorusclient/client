@@ -11,6 +11,9 @@ class Hunger : HUDElement("hunger") {
     override val height: Double
         get() = 11.0
 
+    override val displayName: String
+        get() = "Hunger"
+
     override fun render(x: Double, y: Double, scale: Double) {
         val player = AdapterManager.getAdapter().player!!
         val hunger = player.hunger.toInt()

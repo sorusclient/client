@@ -4,6 +4,7 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.setting.*
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.Axis
 
@@ -19,6 +20,9 @@ abstract class HUDElement(val id: String) {
     var internalId: Setting<String>
 
     val category = CategoryData()
+    val uiCategory = DisplayedCategory(displayName)
+
+    abstract val displayName: String
 
     init {
         category
@@ -31,6 +35,8 @@ abstract class HUDElement(val id: String) {
                 data["internalId"] = SettingData(Setting("$id-${System.nanoTime() % 1000}").also { internalId = it })
                 data["attached"] = SettingData(Setting(MutableMap::class.java as Class<MutableMap<String, MutableList<AttachType>>>, HashMap()).also { attached = it })
             }
+
+        uiCategory.parent = HUDManager.hudDisplayedCategory
 
         /*SettingManager.settingsCategory
             .apply {

@@ -42,6 +42,9 @@ class Armor : HUDElement("armor") {
         })
     }
 
+    override val displayName: String
+        get() = "Armor"
+
     override fun render(x: Double, y: Double, scale: Double) {
         val player = AdapterManager.getAdapter().player!!
         val renderer = AdapterManager.getAdapter().renderer

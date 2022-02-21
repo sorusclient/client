@@ -25,6 +25,9 @@ class Coordinates : HUDElement("coordinates") {
     override val height: Double
         get() = (12 * ((if (showX.value) 1 else 0) + (if (showY.value) 1 else 0) + if (showZ.value) 1 else 0)).toDouble()
 
+    override val displayName: String
+        get() = "Coordinates"
+
     init {
         this.register("showX", Setting(true).also { showX = it })
         this.register("showY", Setting(true).also { showY = it })

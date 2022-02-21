@@ -92,7 +92,6 @@ object HUDManager {
 
     class HudDisplayedCategory(var isHudEditScreenOpen: AtomicBoolean) : DisplayedCategory("HUD") {
         override var showUI: Boolean = false
-        override var `return`: Boolean = false
 
         override fun onShow() {
             isHudEditScreenOpen.set(true)
@@ -104,7 +103,7 @@ object HUDManager {
 
     }
 
-    private val hudDisplayedCategory: HudDisplayedCategory
+    val hudDisplayedCategory: HudDisplayedCategory
 
     init {
         SettingManager.settingsCategory
@@ -231,7 +230,10 @@ object HUDManager {
                     height,
                     Color.fromRGB(200, 200, 200, 50)
                 )
-                renderer.drawRectangle(x - width / 2 + 1, y - height / 2 + 1, 3.0, 3.0, Color.WHITE)
+
+                renderer.drawImage("sorus/ui/navbar/settings.png", x - width / 2 + 2, y - height / 2 + 2, 4.0, 4.0, Color.WHITE)
+                renderer.drawImage("sorus/ui/profiles/delete.png", x - width / 2 + 8, y - height / 2 + 2, 4.0, 4.0, Color.fromRGB(220, 50, 50, 255))
+                renderer.drawRectangle(x - width / 2 + 14, y - height / 2 + 2, 4.0, 4.0, Color.WHITE)
             }
 
             val left = screenDimensions[0] - screenDimensions[1] * 0.075 - 2
@@ -604,7 +606,15 @@ object HUDManager {
                 val top = y - element.scaledHeight / 2
                 val bottom = y + element.scaledHeight / 2
                 var interacting = false
-                if (event.x > left + 1 && event.x < left + 4 && event.y > top + 1 && event.y < top + 4) {
+
+                if (event.x > left + 2 && event.x < left + 6 && event.y > top + 2 && event.y < top + 6) {
+                    hudDisplayedCategory.wantedOpenCategory = element.uiCategory
+                } else if (event.x > left + 8 && event.x < left + 12 && event.y > top + 2 && event.y < top + 6) {
+                    element.detach()
+                    element.delete(ArrayList())
+                } else if (event.x > left + 14 && event.x < left + 18 && event.y > top + 2 && event.y < top + 6) {
+                    element.detach()
+                } else if (event.x > left + 1 && event.x < left + 4 && event.y > top + 1 && event.y < top + 4) {
                     hudToOpenSettings = element
                 } else if (distance(event.x, right, event.y, bottom) < 5) {
                     interactType = InteractType.RESIZE_BOTTOM_RIGHT
@@ -621,10 +631,6 @@ object HUDManager {
                 } else if (event.x > left && event.x < right && event.y > top && event.y < bottom) {
                     interactType = InteractType.MOVE
                     interacting = true
-                    if (System.currentTimeMillis() - prevClickTime < 400) {
-                        element.detach()
-                        interacting = false
-                    }
                 }
                 if (interacting) {
                     draggedHud = element
@@ -651,6 +657,12 @@ object HUDManager {
         }
     }
 
+    private fun onKey(event: KeyEvent) {
+        if (event.isPressed && event.key == Key.ESCAPE) {
+            isHudEditScreenOpen.set(false)
+        }
+    }
+
     private fun getElements(): Map<String, HUDElement> {
         val elements: MutableMap<String, HUDElement> = HashMap()
         for (hud in huds) {
@@ -658,13 +670,6 @@ object HUDManager {
         }
 
         return elements
-    }
-
-    private fun onKey(event: KeyEvent) {
-        if (event.isPressed && event.key == Key.D && draggedHud != null) {
-            draggedHud!!.delete(ArrayList())
-            draggedHud = null
-        }
     }
 
     fun getById(id: String): HUDElement? {

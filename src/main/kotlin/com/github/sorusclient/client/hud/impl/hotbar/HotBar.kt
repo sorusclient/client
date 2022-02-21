@@ -13,6 +13,9 @@ class HotBar : HUDElement("hotBar") {
     override val height: Double
         get() = 24.0
 
+    override val displayName: String
+        get() = "HotBar"
+
     override fun render(x: Double, y: Double, scale: Double) {
         val inventory = AdapterManager.getAdapter().player!!.inventory
         val hotBarRenderer = GlassLoader.getInstance().getInterface(IHotBarRenderer::class.java)

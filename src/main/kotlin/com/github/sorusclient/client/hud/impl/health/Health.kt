@@ -21,6 +21,9 @@ class Health : HUDElement("health") {
             return (totalRows * 11).toDouble()
         }
 
+    override val displayName: String
+        get() = "Health"
+
     private var prevHealth = 0.0
     private var regenTime: Long = 0
     private var damageTime: Long = 0

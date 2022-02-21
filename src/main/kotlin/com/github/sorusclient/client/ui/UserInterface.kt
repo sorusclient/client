@@ -928,10 +928,21 @@ object UserInterface {
                                             if (displayedCategory.`return`) {
                                                 displayedCategory.onHide()
                                                 state["currentSettingsCategory"] = displayedCategory.parent!!
-                                                state["hasInit"] = false
+                                                //state["hasInit"] = false
 
                                                 displayedCategory.`return` = false
                                             }
+
+                                            if (displayedCategory.wantedOpenCategory != null) {
+                                                displayedCategory.onHide()
+                                                state["currentSettingsCategory"] = displayedCategory.wantedOpenCategory!!
+                                                //state["hasInit"] = false
+                                                displayedCategory.wantedOpenCategory = null
+                                            }
+                                        }
+
+                                        onInit += { state ->
+                                            state.second["currentSettingsCategory"] = SettingManager.mainUICategory
                                         }
 
                                         children += Container()
@@ -1322,6 +1333,7 @@ object UserInterface {
                                                                             state["currentSettingsCategory"] = category.parent!!
                                                                             state["hasInitSettings"] = false
                                                                             category.onHide()
+                                                                            category.parent!!.onShow()
                                                                         }
                                                                     }
                                                             }

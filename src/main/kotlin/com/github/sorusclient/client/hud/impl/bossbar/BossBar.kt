@@ -12,6 +12,9 @@ class BossBar : HUDElement("bossBar") {
     override val height: Double
         get() = 18.0
 
+    override val displayName: String
+        get() = "BossBar"
+
     override fun render(x: Double, y: Double, scale: Double) {
         val bossBar = AdapterManager.getAdapter().world.bossBar
         if (!bossBar.isBossBar) return
