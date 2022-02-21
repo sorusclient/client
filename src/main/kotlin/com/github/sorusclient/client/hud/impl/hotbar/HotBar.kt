@@ -5,6 +5,7 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IPlayerInventory
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.util.Color
+import org.lwjgl.opengl.GL11
 
 class HotBar : HUDElement("hotBar") {
 

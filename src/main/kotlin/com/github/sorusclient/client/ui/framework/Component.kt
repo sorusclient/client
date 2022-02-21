@@ -104,6 +104,10 @@ abstract class Component {
             setState("hasInit", hasInit)
         }
 
+        open fun onClose() {
+
+        }
+
         abstract fun handleMouseEvent(event: MouseEvent): Boolean
         abstract fun handleKeyEvent(event: KeyEvent)
     }

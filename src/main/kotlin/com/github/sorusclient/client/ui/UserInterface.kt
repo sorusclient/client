@@ -833,6 +833,14 @@ object UserInterface {
                         height = 0.8.toRelative()
                         width = 0.8.toRelative()
 
+                        onUpdate += { state ->
+                            val displayedCategory = state["currentSettingsCategory"] as DisplayedCategory?
+
+                            if (displayedCategory != null) {
+                                //
+                            }
+                        }
+
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
@@ -843,6 +851,12 @@ object UserInterface {
                                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
                                 borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                 borderThickness = 0.4.toAbsolute()
+
+                                onUpdate += { state ->
+                                    val displayedCategory = state["currentSettingsCategory"] as DisplayedCategory?
+
+                                    state["hidden"] = if (displayedCategory != null && state["tab"] == "settings") { !displayedCategory.showUI } else { false }
+                                }
 
                                 children += List(com.github.sorusclient.client.ui.framework.List.VERTICAL)
                                     .apply {
@@ -918,8 +932,6 @@ object UserInterface {
 
                                 addChild("settings", Container()
                                     .apply {
-                                        storedState += "currentSettingsCategory"
-
                                         onUpdate += { state ->
                                             val displayedCategory = state["currentSettingsCategory"] as DisplayedCategory
 
@@ -928,7 +940,6 @@ object UserInterface {
                                             if (displayedCategory.`return`) {
                                                 displayedCategory.onHide()
                                                 state["currentSettingsCategory"] = displayedCategory.parent!!
-                                                //state["hasInit"] = false
 
                                                 displayedCategory.`return` = false
                                             }
@@ -936,13 +947,27 @@ object UserInterface {
                                             if (displayedCategory.wantedOpenCategory != null) {
                                                 displayedCategory.onHide()
                                                 state["currentSettingsCategory"] = displayedCategory.wantedOpenCategory!!
-                                                //state["hasInit"] = false
                                                 displayedCategory.wantedOpenCategory = null
+                                            }
+
+                                            if (displayedCategory.customUI != null) {
+                                                displayedCategory.onHide()
+                                                state["tab"] = "custom"
+                                                state["customContainer"] = displayedCategory.customUI!!
+                                                displayedCategory.customUI = null
                                             }
                                         }
 
+                                        onClose += { state ->
+                                            val displayedCategory = state["currentSettingsCategory"] as DisplayedCategory
+                                            displayedCategory.onHide()
+                                        }
+
                                         onInit += { state ->
-                                            state.second["currentSettingsCategory"] = SettingManager.mainUICategory
+                                            if (state.second["resetSettingsScreen"] == null || state.second["resetSettingsScreen"] as Boolean) {
+                                                state.second["currentSettingsCategory"] = SettingManager.mainUICategory
+                                            }
+                                            state.second["resetSettingsScreen"] = true
                                         }
 
                                         children += Container()
@@ -1358,7 +1383,7 @@ object UserInterface {
                                                                         if (displayed is DisplayedCategory) {
                                                                             addChild(Container()
                                                                                 .apply {
-                                                                                    width = 0.30666.toRelative()
+                                                                                    width = 0.31666.toRelative()
                                                                                     height = 0.2.toCopy()
 
                                                                                     backgroundCornerRadius = 0.0155.toRelative()
@@ -1485,7 +1510,27 @@ object UserInterface {
                                                 }
                                             }
                                     })
+
+                                addChild("custom", Container()
+                                    .apply {
+                                        onUpdate += { state ->
+                                            if (state["customContainer"] != state["prevCustomContainer"]) {
+                                                state["prevCustomContainer"] = state["customContainer"]!!
+
+                                                val container = state["customContainer"] as Container
+
+                                                clear()
+
+                                                children += container
+                                            }
+                                        }
+                                    })
                             }
+
+                        storedState += "customContainer"
+                        storedState += "resetSettingsScreen"
+                        storedState += "prevCustomContainer"
+                        storedState += "currentSettingsCategory"
 
                         storedState += "tab"
                     }

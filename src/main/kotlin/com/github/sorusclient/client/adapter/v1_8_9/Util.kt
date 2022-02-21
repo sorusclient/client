@@ -106,7 +106,7 @@ object Util {
                         arguments.add(argument)
                     }
                 }
-                TranslatableText(translatableText.key, arguments.toTypedArray())
+                TranslatableText(translatableText.key, *arguments.toTypedArray())
             }
             is ILiteralText -> {
                 LiteralText(text.string)

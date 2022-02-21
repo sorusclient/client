@@ -43,6 +43,7 @@ open class Container : Component() {
     val onInit: MutableList<((Pair<Container, MutableMap<String, Any>>) -> Unit)> = ArrayList()
     var onScroll: ((Pair<Double, MutableMap<String, Any>>) -> Unit)? = null
     val onUpdate: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
+    val onClose: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
     var scissor = false
     var consumeClicks = true
 
@@ -370,5 +371,19 @@ open class Container : Component() {
         open fun getChildren(): List<Component> {
             return children
         }
+
+        override fun onClose() {
+            val availableState = availableState
+            for (onClose in onClose) {
+                onClose(availableState)
+            }
+
+            this.availableState = availableState
+
+            for (child in children) {
+                child.runtime.onClose()
+            }
+        }
+
     }
 }

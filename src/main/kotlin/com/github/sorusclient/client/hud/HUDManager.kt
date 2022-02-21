@@ -17,12 +17,20 @@ import com.github.sorusclient.client.hud.impl.sidebar.Sidebar
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.AbstractData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.ui.*
+import com.github.sorusclient.client.ui.framework.Container
+import com.github.sorusclient.client.ui.framework.Scroll
+import com.github.sorusclient.client.ui.framework.Text
+import com.github.sorusclient.client.ui.framework.constraint.Dependent
+import com.github.sorusclient.client.ui.framework.constraint.Relative
+import com.github.sorusclient.client.ui.framework.constraint.Side
 import com.github.sorusclient.client.util.Axis
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.Pair
 import org.lwjgl.opengl.GL11
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -43,10 +51,104 @@ object HUDManager {
     private var hudToOpenSettings: HUDElement? = null
 
     private var hoveredCloseButton = false
+    private var hoveredAddButton = false
 
     var isHudEditScreenOpen = AtomicBoolean(false)
 
-    class HudCategoryData(val huds: MutableList<HUDElement>): AbstractData() {
+    private lateinit var addHudUI: Container
+
+    private fun initializeUserInterface() {
+        addHudUI = Container()
+            .apply {
+                backgroundCornerRadius = 0.0155.toRelative()
+                setPadding(0.0135.toRelative())
+                paddingLeft = 0.0.toAbsolute()
+
+                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
+                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                borderThickness = 0.4.toAbsolute()
+
+                children += Container()
+                    .apply {
+                        y = Side.NEGATIVE.toSide()
+                        height = 0.035.toRelative()
+                        setPadding(0.02.toRelative())
+
+                        children += Text()
+                            .apply {
+                                x = Side.NEGATIVE.toSide()
+
+                                fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
+                                scale = 0.0025.toRelative()
+                                text = "Huds".toAbsolute()
+                            }
+                    }
+
+                children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
+                    .apply {
+                        addChild(com.github.sorusclient.client.ui.framework.List(com.github.sorusclient.client.ui.framework.List.GRID)
+                            .apply {
+                                columns = 5
+
+                                val count = possibleHuds.size
+
+                                height = Relative(
+                                    ceil(count / 3.0) * 0.06 + (ceil(count / 3.0) + 1) * 0.015,
+                                    true
+                                )
+
+                                for (hud in possibleHuds) {
+                                    addChild(Container()
+                                        .apply {
+                                            width = 0.188.toRelative()
+                                            height = 0.2.toCopy()
+
+                                            backgroundCornerRadius = 0.01.toRelative()
+                                            setPadding(0.01.toRelative())
+
+                                            backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                            borderThickness = 0.4.toAbsolute()
+                                            borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                            borderColor = Dependent { state ->
+                                                if (state["hovered"] as Boolean) {
+                                                    Color.fromRGB(60, 75, 250, 255)
+                                                } else {
+                                                    Color.fromRGB(0, 0, 0, 100)
+                                                }
+                                            }
+
+                                            children += Container()
+                                                .apply {
+                                                    x = Side.NEGATIVE.toSide()
+                                                    width = 1.0.toCopy()
+                                                    height = 0.6.toRelative()
+                                                    setPadding(Relative(0.2, true))
+                                                }
+
+                                            children += Text()
+                                                .apply {
+                                                    x = Side.NEGATIVE.toSide()
+
+                                                    scale = 0.006.toRelative()
+                                                    fontRenderer =
+                                                        "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
+                                                    text = hud.name.toAbsolute()
+                                                }
+
+                                            onClick = { state ->
+                                                state["tab"] = "settings"
+                                                state["resetSettingsScreen"] = false
+                                                (state["currentSettingsCategory"] as DisplayedCategory).onShow()
+                                                add(hud.hudClass.getConstructor().newInstance()!!)
+                                            }
+                                        })
+                                }
+                            })
+                    }
+            }
+    }
+
+    class HudCategoryData(private val huds: MutableList<HUDElement>): AbstractData() {
 
         override fun loadForced(json: Any) {
 
@@ -103,7 +205,7 @@ object HUDManager {
 
     }
 
-    val hudDisplayedCategory: HudDisplayedCategory
+    lateinit var hudDisplayedCategory: HudDisplayedCategory
 
     init {
         SettingManager.settingsCategory
@@ -172,6 +274,16 @@ object HUDManager {
         eventManager.register { _: RenderInGameEvent -> render() }
         eventManager.register(this::onClick)
         eventManager.register(this::onKey)
+
+        eventManager.register<InitializeEvent> {
+            initializeUserInterface()
+        }
+
+        eventManager.register { event: KeyEvent ->
+            if (event.isPressed && !event.isRepeat && event.key === Key.U) {
+                initializeUserInterface()
+            }
+        }
     }
 
     private fun initializePossibleElements() {
@@ -243,7 +355,12 @@ object HUDManager {
             renderer.drawRectangle(left, top, size, size, screenDimensions[0] * 0.0075, Color.fromRGB(0, 0, 0, 65))
             renderer.drawRectangleBorder(left, top, size, size, screenDimensions[0] * 0.0075, 0.4, if (hoveredCloseButton) { Color.fromRGB(60, 75, 250, 255) } else { Color.fromRGB(0, 0, 0, 100) })
             renderer.drawImage("sorus/ui/settings/back.png", left + 0.3 * size, top + 0.3 * size, 0.4 * size, 0.4 * size, Color.WHITE)
+
+            val left2 = screenDimensions[0] - (screenDimensions[1] * 0.075 + 2) * 2
+            renderer.drawRectangle(left2, top, size, size, screenDimensions[0] * 0.0075, Color.fromRGB(0, 0, 0, 65))
+            renderer.drawRectangleBorder(left2, top, size, size, screenDimensions[0] * 0.0075, 0.4, if (hoveredAddButton) { Color.fromRGB(60, 75, 250, 255) } else { Color.fromRGB(0, 0, 0, 100) })
         }
+
         if (draggedHud != null) {
             when (interactType) {
                 InteractType.MOVE -> {
@@ -582,15 +699,25 @@ object HUDManager {
     private fun onClick(event: MouseEvent) {
         if (isHudEditScreenOpen.get()) {
             val screenDimensions = AdapterManager.getAdapter().screenDimensions
-            if (event.x > screenDimensions[0] - screenDimensions[1] * 0.075 && event.y < screenDimensions[1] * 0.075) {
+            if (event.x > screenDimensions[0] - screenDimensions[1] * 0.075 - 2 && event.y < screenDimensions[1] * 0.075) {
                 hoveredCloseButton = true
+                hoveredAddButton = false
 
                 if (event.isPressed && event.button == Button.PRIMARY) {
                     hudDisplayedCategory.`return` = true
                     hoveredCloseButton = false
                 }
+            } else if (event.x > screenDimensions[0] - screenDimensions[1] * 0.075 * 2 - 4  && event.y < screenDimensions[1] * 0.075) {
+                hoveredCloseButton = false
+                hoveredAddButton = true
+
+                if (event.isPressed && event.button == Button.PRIMARY) {
+                    hudDisplayedCategory.customUI = addHudUI
+                    hoveredAddButton = false
+                }
             } else {
                 hoveredCloseButton = false
+                hoveredAddButton = false
             }
         }
 
