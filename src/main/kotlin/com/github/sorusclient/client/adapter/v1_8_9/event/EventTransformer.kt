@@ -317,8 +317,7 @@ class EventTransformer : Transformer(), Listener {
     private fun transformClientPlayerNetworkHandler(classNode: ClassNode) {
         val onCustomPayload =
             Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onCustomPayload(Lv1_8_9/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;)V")
-        val onGameJoin =
-            Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_8_9/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V")
+        val onGameJoin = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_8_9/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V")
         findMethod(classNode, onCustomPayload)
             .apply(Insert(createList { insnList: InsnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))

@@ -13,6 +13,7 @@ import v1_8_9.net.minecraft.client.gui.screen.SettingsScreen
 import v1_8_9.net.minecraft.client.gui.screen.TitleScreen
 import v1_8_9.net.minecraft.client.gui.screen.VideoOptionsScreen
 import v1_8_9.net.minecraft.client.gui.screen.options.ControlsOptionsScreen
+import v1_8_9.net.minecraft.client.network.ServerInfo
 import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.entity.Entity
@@ -133,6 +134,7 @@ class Adapter : Listener, IAdapter {
         val serverAddress = ServerAddress.parse(ServerAddress.parse(ip).address)
         MinecraftClient.getInstance().world.disconnect()
         MinecraftClient.getInstance().connect(null)
+        MinecraftClient.getInstance().currentServerEntry = ServerInfo("", ip, false)
         MinecraftClient.getInstance().openScreen(ConnectScreen(TitleScreen(), MinecraftClient.getInstance(), serverAddress.address, serverAddress.port))
     }
 
