@@ -4,6 +4,7 @@ import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
+import org.lwjgl.input.Keyboard
 import v1_8_9.net.minecraft.text.*
 import v1_8_9.net.minecraft.util.Formatting
 import java.util.Objects
@@ -39,6 +40,7 @@ object Util {
 
     init {
         keyMap[1] = Key.ESCAPE
+        keyMap[14] = Key.BACKSPACE
         keyMap[16] = Key.Q
         keyMap[17] = Key.W
         keyMap[18] = Key.E
@@ -49,6 +51,7 @@ object Util {
         keyMap[23] = Key.I
         keyMap[24] = Key.O
         keyMap[25] = Key.P
+        keyMap[28] = Key.ENTER
         keyMap[29] = Key.CONTROL_LEFT
         keyMap[30] = Key.A
         keyMap[31] = Key.S
@@ -68,6 +71,10 @@ object Util {
         keyMap[49] = Key.N
         keyMap[50] = Key.M
         keyMap[54] = Key.SHIFT_RIGHT
+        keyMap[56] = Key.ALT_LEFT
+        keyMap[57] = Key.SPACE
+        keyMap[200] = Key.ARROW_UP
+        keyMap[208] = Key.ARROW_DOWN
     }
 
     fun getKey(id: Int): Key {

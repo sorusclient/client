@@ -9,7 +9,6 @@ import com.github.sorusclient.client.setting.data.SettingData
 
 class Particles {
 
-    private val enabled: Setting<Boolean>
     private val multiplier: Setting<Double>
     private val alwaysCriticalParticles: Setting<Boolean>
     private val alwaysEnchantmentParticles: Setting<Boolean>
@@ -19,7 +18,6 @@ class Particles {
             .apply {
                 data["particles"] = CategoryData()
                     .apply {
-                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
                         data["multiplier"] = SettingData(Setting(1.0).also { multiplier = it })
                         data["alwaysCriticalParticles"] = SettingData(Setting(false).also { alwaysCriticalParticles = it })
                         data["alwaysEnchantmentParticles"] = SettingData(Setting(false).also { alwaysEnchantmentParticles = it })
@@ -30,7 +28,6 @@ class Particles {
             .apply {
                 add(DisplayedCategory("Particles"))
                     .apply {
-                        add(Toggle(enabled, "Enabled"))
                         add(Slider(multiplier, "Multiplier", 0.5, 5.0))
                         add(Toggle(alwaysCriticalParticles, "Allows Show Critical Particles", ))
                         add(Toggle(alwaysEnchantmentParticles, "Allows Show Enchantment Particles", ))
@@ -48,10 +45,6 @@ class Particles {
 
     fun getAlwaysEnchantmentParticles(): Boolean {
         return alwaysEnchantmentParticles.value
-    }
-
-    fun isEnabled(): Boolean {
-        return enabled.value
     }
 
 }

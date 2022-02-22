@@ -35,3 +35,7 @@ fun Double.toCopy(): Copy {
 fun <T: Any> ((Map<String, Any>) -> T).toDependent(): Dependent {
     return Dependent(this)
 }
+
+fun <T: Any> (() -> T).toDependent(): Dependent {
+    return Dependent { this() }
+}

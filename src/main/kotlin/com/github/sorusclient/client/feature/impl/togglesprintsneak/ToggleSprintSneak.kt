@@ -14,7 +14,6 @@ import com.github.sorusclient.client.setting.data.SettingData
 
 class ToggleSprintSneak {
 
-    private val enabled: Setting<Boolean>
     private val toggleSprint: Setting<Boolean>
     private val useCustomSprintKey: Setting<Boolean>
     private val customSprintKey: Setting<Key>
@@ -29,7 +28,6 @@ class ToggleSprintSneak {
             .apply {
                 data["toggleSprintSneak"] = CategoryData()
                     .apply {
-                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
                         data["toggleSprint"] = SettingData(Setting(false).also { toggleSprint = it })
                         data["useCustomSprintKey"] = SettingData(Setting(false).also { useCustomSprintKey = it })
                         data["customSprintKey"] = SettingData(Setting(Key.SHIFT_LEFT).also { customSprintKey = it })
@@ -43,7 +41,6 @@ class ToggleSprintSneak {
             .apply {
                 add(DisplayedCategory("Toggle Sprint & Sneak"))
                     .apply {
-                        add(Toggle(enabled, "Enabled"))
                         add(Toggle(toggleSprint, "Toggle Sprint"))
                         add(Dependent(Toggle(useCustomSprintKey, "Use Custom Sprint Key"), toggleSprint, true))
                         add(Dependent(Dependent(KeyBind(customSprintKey, "Custom Sprint Key"), toggleSprint, true), useCustomSprintKey, true))
@@ -78,15 +75,11 @@ class ToggleSprintSneak {
             return if (useCustomSneakKey.value) customSneakKey.value else adapter.getKeyBind(IKeyBind.KeyBindType.SNEAK).key
         }
 
-    fun isEnabled(): Boolean {
-        return enabled.value
-    }
-
     fun isSprintToggledValue(): Boolean {
-        return isEnabled() && toggleSprint.value && sprintToggled
+        return toggleSprint.value && sprintToggled
     }
 
     fun isSneakToggledValue(): Boolean {
-        return isEnabled() && toggleSneak.value && sneakToggled
+        return toggleSneak.value && sneakToggled
     }
 }

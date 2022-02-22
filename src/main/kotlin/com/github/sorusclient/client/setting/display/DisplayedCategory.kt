@@ -5,7 +5,6 @@ import com.github.sorusclient.client.ui.framework.Container
 open class DisplayedCategory(val displayName: String): Displayed() {
 
     val components: MutableList<Displayed> = ArrayList()
-    var parent: DisplayedCategory? = null
     open var showUI = true
     var `return` = false
     var wantedOpenCategory: DisplayedCategory? = null
@@ -13,10 +12,7 @@ open class DisplayedCategory(val displayName: String): Displayed() {
 
     fun <T: Displayed> add(displayed: T): T {
         this.components.add(displayed)
-
-        if (displayed is DisplayedCategory) {
-            displayed.parent = this
-        }
+        displayed.parent = this
 
         return displayed
     }
@@ -28,5 +24,8 @@ open class DisplayedCategory(val displayName: String): Displayed() {
     open fun onHide() {
 
     }
+
+    override val name: String
+        get() = displayName
 
 }

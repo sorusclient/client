@@ -8,7 +8,12 @@ import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.util.Color
 
 class Text : Component() {
-    var padding: Constraint = Absolute(0.0)
+
+    var paddingLeft: Constraint = Absolute(0.0)
+    var paddingRight: Constraint = Absolute(0.0)
+    var paddingTop: Constraint = Absolute(0.0)
+    var paddingBottom: Constraint = Absolute(0.0)
+
     var fontRenderer: Constraint? = null
         set(value) {
             AdapterManager.getAdapter().renderer.createFont(value!!.getStringValue(null))
@@ -22,9 +27,11 @@ class Text : Component() {
         runtime = Runtime()
     }
 
-    fun setPadding(padding: Constraint): Text {
-        this.padding = padding
-        return this
+    fun setPadding(padding: Constraint) {
+        paddingLeft = padding
+        paddingRight = padding
+        paddingBottom = padding
+        paddingTop = padding
     }
 
     fun setTextColor(textColor: Constraint): Text {
@@ -94,10 +101,10 @@ class Text : Component() {
                 this.x = 0.0
                 this.y = 0.0
                 for (i in 0..2) {
-                    this.leftPadding = this@Text.padding.getPaddingValue(this)
-                    this.rightPadding = this@Text.padding.getPaddingValue(this)
-                    this.topPadding = this@Text.padding.getPaddingValue(this)
-                    this.bottomPadding = this@Text.padding.getPaddingValue(this)
+                    this.leftPadding = this@Text.paddingLeft.getPaddingValue(this)
+                    this.rightPadding = this@Text.paddingRight.getPaddingValue(this)
+                    this.topPadding = this@Text.paddingTop.getPaddingValue(this)
+                    this.bottomPadding = this@Text.paddingBottom.getPaddingValue(this)
 
                     this.x = this@Text.x.getXValue(this)
                     this.y = this@Text.y.getYValue(this)

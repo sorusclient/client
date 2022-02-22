@@ -10,7 +10,7 @@ object EnvironmentChangerHook {
     @JvmStatic
     fun modifySkyAngle(angle: Float): Float {
         val environmentChanger = FeatureManager.get<EnvironmentChanger>()
-        return if (environmentChanger.isEnabled() && environmentChanger.modifyTime()) {
+        return if (environmentChanger.modifyTime()) {
             MinecraftClient.getInstance().world.dimension.getSkyAngle(environmentChanger.getTimeValue(), 0f)
         } else {
             angle
@@ -20,7 +20,7 @@ object EnvironmentChangerHook {
     @JvmStatic
     fun modifyRainGradient(angle: Float): Float {
         val environmentChanger = FeatureManager.get<EnvironmentChanger>()
-        return if (environmentChanger.isEnabled() && environmentChanger.modifyWeather()) {
+        return if (environmentChanger.modifyWeather()) {
             when (environmentChanger.getWeatherValue()) {
                 Weather.CLEAR -> 0.0F
                 Weather.RAIN -> 1.0F

@@ -9,7 +9,6 @@ import com.github.sorusclient.client.setting.data.SettingData
 
 class EnvironmentChanger {
 
-    private var enabled: Setting<Boolean>
     //TODO: Make world lighting reflect time of day
     private var modifyTime: Setting<Boolean>
     private var time: Setting<Long>
@@ -21,7 +20,6 @@ class EnvironmentChanger {
             .apply {
                 data["environmentChanger"] = CategoryData()
                     .apply {
-                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
                         data["modifyTime"] = SettingData(Setting(false).also { modifyTime = it })
                         data["time"] = SettingData(Setting(5000L).also { time = it })
                         data["modifyWeather"] = SettingData(Setting(false).also { modifyWeather = it })
@@ -33,7 +31,6 @@ class EnvironmentChanger {
             .apply {
                 add(DisplayedCategory("Environment Changer"))
                     .apply {
-                        add(Toggle(enabled, "Enabled"))
                         add(Toggle(modifyTime, "Modify Time"))
                         add(Dependent(Slider(time, "Time", 0.0, 24000.0), modifyTime, true))
                         add(Toggle(modifyWeather, "Modify Weather"))
@@ -56,10 +53,6 @@ class EnvironmentChanger {
 
     fun getWeatherValue(): Weather {
         return weather.value
-    }
-
-    fun isEnabled(): Boolean {
-        return enabled.value
     }
 
     enum class Weather {

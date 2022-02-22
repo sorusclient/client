@@ -8,14 +8,16 @@ class TabHolder : Container() {
     var defaultTab: String? = null
     var stateId: String? = null
 
+    //var resetTab = true
+
     init {
         runtime = Runtime()
 
-        onInit += { state ->
-            if (stateId != null && defaultTab != null) {
+        /*onInit += { state ->
+            if (resetTab && stateId != null && defaultTab != null) {
                 state.second[stateId!!] = defaultTab!!
             }
-        }
+        }*/
     }
 
     fun setStateId(stateId: String): TabHolder {

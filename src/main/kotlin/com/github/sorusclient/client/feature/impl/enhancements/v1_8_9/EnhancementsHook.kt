@@ -10,24 +10,20 @@ object EnhancementsHook {
     @JvmStatic
     fun preRenderFireFirstPerson() {
         val enhancements = FeatureManager.get<Enhancements>()
-        if (enhancements.isEnabled()) {
-            GL11.glPushMatrix()
-            GL11.glTranslated(0.0, -enhancements.getFireHeightValue() * 0.4, 0.0)
-        }
+        GL11.glPushMatrix()
+        GL11.glTranslated(0.0, -enhancements.getFireHeightValue() * 0.4, 0.0)
     }
 
     @JvmStatic
     fun postRenderFireFirstPerson() {
         val enhancements = FeatureManager.get<Enhancements>()
-        if (enhancements.isEnabled()) {
-            GL11.glPopMatrix()
-        }
+        GL11.glPopMatrix()
     }
 
     @JvmStatic
     fun modifyPotionOffset(offset: Int): Int {
         val enhancements = FeatureManager.get<Enhancements>()
-        return if (enhancements.isEnabled() && enhancements.isCenteredInventoryValue()) {
+        return if (enhancements.isCenteredInventoryValue()) {
             0
         } else offset
     }

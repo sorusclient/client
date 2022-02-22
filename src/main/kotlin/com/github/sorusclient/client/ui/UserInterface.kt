@@ -7,6 +7,7 @@ import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.display.Displayed
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.ui.framework.*
@@ -17,19 +18,32 @@ import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.set
 import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 object UserInterface {
 
     private lateinit var mainGui: Container
+    private lateinit var searchGui: Container
     private val guiOpened = AtomicBoolean(false)
 
     fun initialize() {
         val eventManager = EventManager
+        val adapter = AdapterManager.getAdapter()
+
         eventManager.register { event: KeyEvent ->
-            val adapter = AdapterManager.getAdapter()
             if (!event.isRepeat) {
                 if (event.key === Key.SHIFT_RIGHT && event.isPressed && adapter.openScreen === ScreenType.IN_GAME) {
                     adapter.openScreen(ScreenType.DUMMY)
+
+                    mainGui
+                        .apply {
+                            children[0].runtime.apply {
+                                setState("tab", "home")
+                            }
+                        }
+
                     ContainerRenderer.open(mainGui)
                     AdapterManager.getAdapter().renderer.loadBlur()
                 } else if (event.key === Key.ESCAPE && event.isPressed && adapter.openScreen === ScreenType.DUMMY) {
@@ -50,6 +64,14 @@ object UserInterface {
 
         eventManager.register { _: InitializeEvent ->
             initializeUserInterface()
+        }
+
+        eventManager.register { event: KeyEvent ->
+            if (event.isPressed && event.key == Key.ALT_LEFT) {
+                adapter.openScreen(ScreenType.DUMMY)
+                ContainerRenderer.open(searchGui)
+                AdapterManager.getAdapter().renderer.loadBlur()
+            }
         }
     }
 
@@ -102,7 +124,7 @@ object UserInterface {
                                 borderThickness = 0.4.toAbsolute()
                                 borderColor = Dependent { state ->
                                     val toggled = setting.setting.value
-                                    if (state["hovered"] as Boolean || toggled) {
+                                    if ((state["hovered"] as Boolean && !setting.setting.isForcedValue) || toggled) {
                                         Color.fromRGB(60, 75, 250, 255)
                                     } else {
                                         Color.fromRGB(0, 0, 0, 100)
@@ -833,14 +855,6 @@ object UserInterface {
                         height = 0.8.toRelative()
                         width = 0.8.toRelative()
 
-                        onUpdate += { state ->
-                            val displayedCategory = state["currentSettingsCategory"] as DisplayedCategory?
-
-                            if (displayedCategory != null) {
-                                //
-                            }
-                        }
-
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
@@ -917,6 +931,9 @@ object UserInterface {
 
                                                     onClick = { state ->
                                                         state["tab"] = tab
+                                                        if (tab == "settings") {
+                                                            state["resetSettingsScreen"] = true
+                                                        }
                                                     }
                                                 })
                                         }
@@ -967,7 +984,6 @@ object UserInterface {
                                             if (state.second["resetSettingsScreen"] == null || state.second["resetSettingsScreen"] as Boolean) {
                                                 state.second["currentSettingsCategory"] = SettingManager.mainUICategory
                                             }
-                                            state.second["resetSettingsScreen"] = true
                                         }
 
                                         children += Container()
@@ -1006,6 +1022,7 @@ object UserInterface {
                                                         .apply {
                                                             y = Side.NEGATIVE.toSide()
                                                             height = 0.125.toRelative()
+
                                                             setPadding(0.05.toRelative())
 
                                                             children += Container()
@@ -1531,10 +1548,215 @@ object UserInterface {
                         storedState += "resetSettingsScreen"
                         storedState += "prevCustomContainer"
                         storedState += "currentSettingsCategory"
+                        storedState += "keepState"
 
                         storedState += "tab"
                     }
             }
+
+        searchGui = Container()
+            .apply {
+                children += Container()
+                    .apply {
+                        var searchResults: List<SearchResult> = ArrayList()
+
+                        width = 0.25.toRelative()
+                        height = {
+                            (0.12 * (searchResults.size + 1) + 0.025 * (searchResults.size)).toCopy()
+                        }.toDependent()
+
+                        backgroundCornerRadius = 0.01.toRelative()
+
+                        borderThickness = 0.4.toAbsolute()
+                        backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
+                        borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+
+                        storedState += "searchParameter"
+                        storedState += "searchResults"
+                        storedState += "selectedResult"
+
+                        onInit += { state ->
+                            state.second["searchParameter"] = ""
+                        }
+
+                        val results = ArrayList<SearchResult>()
+                        addSettingResults(results, SettingManager.mainUICategory, "")
+
+                        onStateUpdate["searchParameter"] = { state ->
+                            searchResults = search(state["searchParameter"] as String, results, 1.25, 5)
+                        }
+
+                        children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
+                            .apply {
+                                children += Container()
+                                    .apply {
+                                        height = 0.12.toCopy()
+
+                                        selectedByDefault = true
+
+                                        children += Text()
+                                            .apply {
+                                                x = Side.NEGATIVE.toSide()
+                                                paddingLeft = 0.05.toRelative()
+
+                                                fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
+                                                scale = 0.0075.toRelative()
+                                                text = { state: Map<String, Any> ->
+                                                    if (state["searchParameter"] == null) {
+                                                        ""
+                                                    } else {
+                                                        state["searchParameter"] as String
+                                                    }
+                                                }.toDependent()
+                                            }
+
+                                        onKey = { state ->
+                                            var parameter = if (state.first["searchParameter"] == null) { "" } else { state.first["searchParameter"] as String }
+                                            if (state.second.name.length == 1) {
+                                                parameter += state.second.name.lowercase()
+                                            } else if (state.second == Key.BACKSPACE && parameter.isNotEmpty()) {
+                                                parameter = parameter.substring(0, parameter.length - 1)
+                                            } else if (state.second == Key.SPACE) {
+                                                parameter += " "
+                                            } else if (state.second == Key.ARROW_DOWN) {
+                                                var newSelectedResult = state.first.getOrDefault("selectedResult", 0) as Int
+                                                newSelectedResult++
+                                                if (newSelectedResult > searchResults.size - 1) {
+                                                    newSelectedResult = 0
+                                                }
+                                                state.first["selectedResult"] = newSelectedResult
+                                            } else if (state.second == Key.ARROW_UP) {
+                                                var newSelectedResult = state.first.getOrDefault("selectedResult", 0) as Int
+                                                newSelectedResult--
+                                                if (newSelectedResult < 0) {
+                                                    newSelectedResult = searchResults.size - 1
+                                                }
+                                                state.first["selectedResult"] = newSelectedResult
+                                            } else if (state.second == Key.ENTER) {
+                                                searchResults[state.first.getOrDefault("selectedResult", 0) as Int].onSelect()
+                                            }
+
+                                            state.first["searchParameter"] = parameter
+                                        }
+                                    }
+
+                                onStateUpdate["searchParameter"] = {
+                                    clearAfter(1)
+                                    for ((i, result) in searchResults.withIndex()) {
+                                        children += Container()
+                                            .apply {
+                                                height = 0.12.toCopy()
+
+                                                setPadding(0.025.toRelative())
+
+                                                backgroundCornerRadius = 0.025.toRelative()
+
+                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                borderThickness = 0.4.toAbsolute()
+                                                borderColor = { state: Map<String, Any> ->
+                                                    if (state.getOrDefault("selectedResult", 0) == i) {
+                                                        Color.fromRGB(60, 75, 250, 255)
+                                                    } else {
+                                                        Color.fromRGB(0, 0, 0, 100)
+                                                    }
+                                                }.toDependent()
+
+                                                children += Text()
+                                                    .apply {
+                                                        x = Side.NEGATIVE.toSide()
+                                                        paddingLeft = 0.05.toRelative()
+
+                                                        fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+                                                        scale = 0.006.toRelative()
+                                                        text = result.displayName.toAbsolute()
+                                                    }
+                                            }
+                                    }
+                                }
+                            }
+                    }
+            }
+    }
+
+    private fun addSettingResults(list: MutableList<SearchResult>, category: DisplayedCategory, name: String) {
+        list.add(SettingSearchResult(name, category))
+
+        for (displayed in category.components) {
+            val name = name + "/" + displayed.name
+            if (displayed is DisplayedCategory) {
+                addSettingResults(list, displayed, name)
+            } else {
+                list.add(SettingSearchResult(name, displayed))
+            }
+        }
+    }
+
+    private fun search(searchTerm: String, results: List<SearchResult>, minimum: Double, maxResults: Int): List<SearchResult> {
+        val scores: MutableList<Pair<SearchResult, Double>> = ArrayList()
+
+        for (result in results) {
+            var score = 0
+            for (i in 1..searchTerm.length) {
+                for (j in 0..searchTerm.length - i) {
+                    if (result.searchString.contains(searchTerm.substring(j, j + i))) {
+                        score += i.toDouble().pow(2).toInt()
+                    }
+                }
+            }
+
+            scores.add(Pair(result, score.toDouble() / (sqrt(result.searchString.length.toDouble()) * sqrt(searchTerm.length.toDouble()))))
+        }
+
+        var added = 0
+
+        scores.retainAll {
+            if (it.second > minimum && added < maxResults) {
+                added += 1
+                return@retainAll true
+            } else {
+                return@retainAll false
+            }
+
+        }
+
+        scores.sortBy {
+            it.second
+        }
+
+        return scores.map {
+            it.first
+        }.reversed()
+    }
+
+    abstract class SearchResult(val searchString: String, val displayName: String) {
+        abstract fun onSelect()
+    }
+
+    class SettingSearchResult(searchString: String, displayed: Displayed) : SearchResult(searchString, displayed.name) {
+
+        private val linkedCategory: DisplayedCategory
+
+        init {
+             linkedCategory = if (displayed is DisplayedCategory) {
+                displayed
+            } else {
+                displayed.parent!!
+             }
+        }
+
+        override fun onSelect() {
+            mainGui.apply {
+                children[0].apply {
+                    runtime.setState("tab", "settings")
+                    runtime.setState("currentSettingsCategory", linkedCategory)
+                    runtime.setState("resetSettingsScreen", false)
+                }
+            }
+
+            ContainerRenderer.open(mainGui)
+            AdapterManager.getAdapter().renderer.loadBlur()
+        }
+
     }
 
     private fun addProfiles(profile: Profile, index: Int, profiles: MutableList<Pair<Profile, Int>>) {
@@ -1543,478 +1765,5 @@ object UserInterface {
             addProfiles(child.value, index + 1, profiles)
         }
     }
-
-    /*private fun initializeUserInterface() {
-        mainGui = TabHolder()
-            .apply {
-                stateId = "currentTab"
-
-                val tabs = arrayOf("home", "hudEdit", "moduleEdit", "settingEdit", "profileEdit")
-                for (tab in tabs) {
-                    val container1 = Container()
-                    addNavBar(container1, tabs)
-                    if (tab == "moduleEdit") {
-                        addModulesScreen(container1)
-                    } else if (tab == "settingEdit") {
-                        addSettingsScreen(container1)
-                    }
-                    addChild(tab, container1)
-                }
-
-                onInit = { state ->
-                    state.first.storedState += "currentTab"
-                    state.second["currentTab"] = "home"
-                }
-
-                onStateUpdate["currentTab"] = { state ->
-                    hudEditScreenOpen.set(
-                        state["currentTab"] == "hudEdit"
-                    )
-                }
-            }
-    }
-
-    private fun addNavBar(container: Container, tabs: Array<String>) {
-        container.addChild(
-            Container().apply {
-                    y = Side.POSITIVE.toSide()
-                    width = 0.53.toRelative()
-                    height = 0.09.toRelative()
-                    setPadding(0.01.toRelative()
-
-                    backgroundCornerRadius = 0.0075.toRelative()
-                    backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-
-                    children += Container().apply {
-                        x = Side.NEGATIVE.toSide()
-                        width = Copy()
-                        height = 0.7.toRelative()
-                        setPadding(0.02.toRelative()
-                        backgroundImage = "assets/minecraft/sorus.png".toAbsolute()
-                    }
-
-                    children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL).apply {
-                        x = Side.ZERO.toSide()
-                        y = Side.ZERO.toSide()
-                        height = 0.7.toRelative()
-
-                        for (tab in tabs) {
-                            children += Container().apply {
-                                width = Copy()
-                                setPadding(0.01.toRelative()
-                                backgroundCornerRadius = 0.0075.toRelative()
-                                backgroundColor = { state: Map<String, Any> ->
-                                    if (state["currentTab"] == tab) {
-                                        Color.fromRGB(20, 118, 188, 255)
-                                    } else {
-                                        Color.fromRGB(24, 24, 24, 255)
-                                    }
-                                }.toDependent()
-
-                                onClick = { state ->
-                                    state["currentTab"] = tab
-                                }
-
-                                children += Container().apply {
-                                    width = 0.5.toRelative()
-                                    height = 0.5.toRelative()
-                                    backgroundImage = "assets/minecraft/$tab.png".toAbsolute()
-                                }
-                            }
-
-                            children += Container().apply {
-                                width = 0.1.toCopy()
-                            }
-                        }
-                    }
-                })
-    }
-
-    private fun addSettingsScreen(container: Container) {
-        container.apply {
-            children += Container().apply {
-                onInit = { state ->
-                    state.first.storedState += "editingCategory"
-                    state.first.storedState += "hasInitMain"
-
-                    onStateUpdate["hasInitMain"] = { state ->
-                        if (!(state["hasInitMain"] as Boolean)) {
-                            state["hasInit"] = false
-                            state["hasInitMain"] = true
-                        }
-                    }
-
-                    clear()
-
-                    children += Container()
-                        .apply {
-                            y = Side.NEGATIVE.toSide()
-                            width = 0.53.toRelative()
-                            setPadding(0.01.toRelative()
-                            backgroundCornerRadius = 0.0075.toRelative()
-                            backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-
-                            val category = if (state.second["editingCategory"] != null) {
-                                state.second["editingCategory"] as DisplayedCategory
-                            } else {
-                                SettingManager.mainCategory
-                            }
-
-                            children += Container()
-                                .apply {
-                                    y = Side.NEGATIVE.toSide()
-                                    height = 0.05.toCopy()
-                                    setPadding(0.005.toRelative()
-
-                                    children += Text()
-                                        .apply {
-                                            x = Side.NEGATIVE.toSide()
-                                            fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                            setPadding(0.01.toRelative()
-                                            text = "Settings".toAbsolute()
-                                            scale = 0.003.toRelative()
-                                        }
-
-                                    if (category.parent != null) {
-                                        children += Container()
-                                            .apply {
-                                                x = Side.POSITIVE.toSide()
-                                                width = 1.0.toCopy()
-
-                                                setPadding(0.01.toRelative()
-
-                                                backgroundColor = Color.fromRGB(255, 255, 255, 200).toAbsolute()
-
-                                                onClick = { state ->
-                                                    state["hasInitMain"] = false
-                                                    state["editingCategory"] = category.parent!!
-                                                }
-                                            }
-                                    }
-                                }
-
-                            children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                .apply {
-                                    scissor = true
-
-                                    children += List(com.github.sorusclient.client.ui.framework.List.GRID)
-                                        .apply {
-                                            columns = 3
-                                            setPadding(0.005.toRelative()
-
-                                            var count = 0;
-                                            for (setting in category.displayed) {
-                                                if (setting is DisplayedCategory) {
-                                                    count += 1
-                                                }
-                                            }
-
-                                            height = (ceil(count / 3.0) * 0.11).toCopy()
-
-                                            for (setting in category.displayed) {
-                                                if (setting is DisplayedCategory) {
-                                                    addChild(Container()
-                                                        .apply {
-                                                            backgroundColor = Color.fromRGB(0, 0 , 0, 100).toAbsolute()
-
-                                                            width = 0.25.toRelative()
-                                                            height = 0.4.toCopy()
-                                                            setPadding(0.005.toRelative()
-
-                                                            onClick = { state ->
-                                                                state["hasInitMain"] = false
-                                                                state["editingCategory"] = setting
-                                                            }
-
-                                                            children += Text()
-                                                                .apply {
-                                                                    fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                                                    text = setting.id.toAbsolute()
-                                                                    scale = 0.007.toRelative()
-                                                                }
-                                                        })
-                                                }
-                                            }
-                                        }
-
-                                    children += List(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                        .apply {
-                                            setPadding(0.005.toRelative()
-
-                                            for (setting in category.displayed) {
-                                                if (setting is DisplayedSetting) {
-                                                    val settingContainer: Container = getSetting(setting) as Container
-
-                                                    if (setting is ConfigurableDataSingleSetting<*>) {
-                                                        settingContainer.apply {
-                                                            children += Container()
-                                                                .apply {
-                                                                    backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-
-                                                                    onUpdate += { state ->
-                                                                        state["hidden"] =
-                                                                            !setting.setting.overriden || SettingManager.currentProfile == SettingManager.mainProfile
-                                                                    }
-
-                                                                    children += Text()
-                                                                        .apply {
-                                                                            fontRenderer =
-                                                                                "Quicksand-Medium.ttf".toAbsolute()
-                                                                            text = "reset to default".toAbsolute()
-                                                                            scale = 0.0025.toRelative()
-                                                                        }
-
-                                                                    onClick = { state ->
-                                                                        setting.setting.overriden = false
-                                                                    }
-                                                                }
-                                                        }
-                                                    }
-
-                                                    addChild(settingContainer)
-                                                }
-                                            }
-                                        }
-                                }
-                        }
-
-                    children += Container()
-                        .apply {
-                            x = Side.NEGATIVE.toSide()
-                            setPadding(0.01.toRelative()
-                            backgroundCornerRadius = 0.0075.toRelative()
-                            backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-
-                            children += Container()
-                                .apply {
-                                    y = Side.NEGATIVE.toSide()
-                                    height = 0.15.toCopy()
-                                    setPadding(0.012.toRelative()
-
-                                    children += Text()
-                                        .apply {
-                                            x = Side.NEGATIVE.toSide()
-                                            fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                            setPadding(0.03.toRelative()
-                                            text = "Profiles".toAbsolute()
-                                            scale = 0.008.toRelative()
-                                        }
-                                }
-
-                            children += List(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                .apply {
-                                    y = Side.NEGATIVE.toSide()
-
-                                    for (profile in SettingManager.getAllProfiles()) {
-                                        addChild(Container()
-                                            .apply {
-                                                height = 0.125.toCopy()
-
-                                                backgroundColor = Dependent { state ->
-                                                    return@Dependent if (SettingManager.currentProfile == profile) {
-                                                        Color.fromRGB(26, 26, 150, 230)
-                                                    } else {
-                                                        Color.fromRGB(26, 26, 26, 230)
-                                                    }
-                                                }
-
-                                                children += Text()
-                                                    .apply {
-                                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                                        scale = 0.008.toRelative()
-                                                        text = profile.id.toAbsolute()
-                                                    }
-
-                                                onClick = { state ->
-                                                    SettingManager.load(profile)
-                                                    state["hasInitMain"] = false
-                                                }
-                                            })
-                                    }
-                                }
-                        }
-                }
-
-            }
-
-            children += Container()
-                .apply {
-                    x = Side.NEGATIVE.toSide()
-                    setPadding(0.01.toRelative()
-                    backgroundCornerRadius = 0.0075.toRelative()
-                    backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-                }
-        }
-    }
-
-    private fun addModulesScreen(container: Container) {
-        container.apply {
-            children += TabHolder().apply {
-                addChild("main", Container()
-                    .apply {
-                        y = Side.NEGATIVE.toSide()
-                        width = 0.53.toRelative()
-                        setPadding(0.01.toRelative()
-                        backgroundCornerRadius = 0.0075.toRelative()
-                        backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-
-                        children += Container()
-                            .apply {
-                                y = Side.NEGATIVE.toSide()
-                                height = 0.05.toCopy()
-                                setPadding(0.005.toRelative()
-
-                                children += Text()
-                                    .apply {
-                                        x = Side.NEGATIVE.toSide()
-                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                        setPadding(0.01.toRelative()
-                                        text = "Module".toAbsolute()
-                                        scale = 0.003.toRelative()
-                                    }
-                            }
-
-                        children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                            .apply {
-                                for (module in ModuleManager.modules.values) {
-                                    children += Container()
-                                        .apply {
-                                            height = 0.1.toCopy()
-                                            setPadding(0.01.toRelative()
-                                            backgroundCornerRadius = 0.01.toRelative()
-                                            backgroundColor = Color.fromRGB(24, 24, 24, 255).toAbsolute()
-
-                                            children += Container()
-                                                .apply {
-                                                    x = Side.NEGATIVE.toSide()
-                                                    width = Copy()
-                                                    height = 0.6.toRelative()
-                                                    setPadding(Relative(0.2, true)
-                                                    backgroundCornerRadius = 0.01.toRelative()
-                                                    backgroundColor = Color.fromRGB(255, 255, 255, 200).toAbsolute()
-                                                }
-
-                                            children += Text()
-                                                .apply {
-                                                    x = Side.NEGATIVE.toSide()
-                                                    y = Side.NEGATIVE.toSide()
-                                                    setPadding(Relative(0.15, true)
-
-                                                    text = module.name.toAbsolute()
-                                                    fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                                    scale = 0.003.toRelative()
-                                                }
-
-                                            children += Text()
-                                                .apply {
-                                                    x = Side.NEGATIVE.toSide()
-                                                    y = Side.POSITIVE.toSide()
-                                                    setPadding(Relative(0.15, true)
-
-                                                    text = module.description.toAbsolute()
-                                                    fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                                    scale = 0.0025.toRelative()
-                                                    textColor = Color.fromRGB(255, 255, 255, 80).toAbsolute()
-                                                }
-
-                                            children += Container()
-                                                .apply {
-                                                    x = Side.POSITIVE.toSide()
-                                                    y = Side.ZERO.toSide()
-                                                    width = Copy()
-                                                    height = 0.4.toRelative()
-                                                    setPadding(Relative(0.3, true)
-
-                                                    backgroundImage = "assets/minecraft/gear.png".toAbsolute()
-                                                    backgroundColor = Color.fromRGB(255, 255, 255, 75).toAbsolute()
-
-                                                    onClick =  { state ->
-                                                        state["moduleScreen"] = "edit"
-                                                        state["currentEditingModule"] = module
-                                                    }
-                                                }
-                                        }
-                                }
-
-                                scissor = true
-                            }
-                    })
-
-                addChild("edit", Container()
-                    .apply {
-                        y = Side.NEGATIVE.toSide()
-                        width = 0.53.toRelative()
-                        setPadding(0.01.toRelative()
-                        backgroundCornerRadius = 0.0075.toRelative()
-                        backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-
-                        onInit = { state ->
-                            val moduleData = state.second["currentEditingModule"] as ModuleData
-                            val settings: MutableList<DisplayedSetting> = ArrayList()
-
-                            moduleData.module.addSettings(settings)
-
-                            state.first.apply {
-                                clear()
-
-                                children += Container()
-                                    .apply {
-                                        y = Side.NEGATIVE.toSide()
-                                        height = 0.05.toCopy()
-                                        setPadding(0.005.toRelative()
-
-                                        children += Text()
-                                            .apply {
-                                                x = Side.NEGATIVE.toSide()
-                                                setPadding(0.01.toRelative()
-
-                                                fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                                text = moduleData.name.toAbsolute()
-                                                scale = 0.003.toRelative()
-                                            }
-                                    }
-
-                                children += Container()
-                                    .apply {
-                                        x = Side.POSITIVE.toSide()
-                                        y = Side.POSITIVE.toSide()
-                                        width = 25.0.toAbsolute()
-                                        height = 25.0.toAbsolute()
-
-                                        backgroundColor = Color.WHITE.toAbsolute()
-                                        onClick = { state ->
-                                            state["currentModuleTab"] = "main"
-                                        }
-                                    }
-
-                                children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                    .apply {
-                                        y = Side.NEGATIVE.toSide()
-                                        scissor = true
-
-                                        addSettingsList(this, settings)
-                                    }
-                            }
-                        }
-                    })
-
-                stateId = "moduleScreen"
-
-                onInit = { state ->
-                    state.first.storedState += "moduleScreen"
-                    state.first.storedState += "currentEditingModule"
-                    state.second["moduleScreen"] = "main"
-                }
-            }
-
-            children += Container()
-                .apply {
-                    x = Side.NEGATIVE.toSide()
-                    setPadding(0.01.toRelative()
-                    backgroundCornerRadius = 0.0075.toRelative()
-                    backgroundColor = Color.fromRGB(26, 26, 26, 230).toAbsolute()
-                }
-        }
-    }*/
 
 }

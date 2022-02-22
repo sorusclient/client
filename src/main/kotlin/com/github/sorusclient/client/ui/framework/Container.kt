@@ -47,12 +47,14 @@ open class Container : Component() {
     var scissor = false
     var consumeClicks = true
 
+    var selectedByDefault = false
+
     init {
         runtime = Runtime()
 
         onInit += { state ->
             state.second["hovered"] = false
-            state.second["selected"] = false
+            state.second["selected"] = selectedByDefault
         }
     }
 
@@ -71,6 +73,13 @@ open class Container : Component() {
 
     fun clear(): Container {
         children.clear()
+        return this
+    }
+
+    fun clearAfter(startIndex: Int): Container {
+        for (i in startIndex until children.size) {
+            children.removeAt(startIndex)
+        }
         return this
     }
 
@@ -101,10 +110,6 @@ open class Container : Component() {
         private var heldClick = false
 
         override fun onInit() {
-            for (child in getChildren()) {
-                child.parent = this@Container
-            }
-
             for (onInit in this@Container.onInit) {
                 val state = this.availableState
                 onInit(Pair(this@Container, state))
@@ -112,6 +117,7 @@ open class Container : Component() {
             }
 
             for (component in getChildren()) {
+                component.parent = this@Container
                 component.runtime.onInit()
             }
         }
@@ -128,7 +134,6 @@ open class Container : Component() {
             if (!(getState("hasInit") as Boolean)) {
                 onInit()
 
-                setState("selected", false)
                 setState("hasInit", true)
             }
 
@@ -347,7 +352,7 @@ open class Container : Component() {
         }
 
         override fun handleKeyEvent(event: KeyEvent) {
-            if (getState("selected") as Boolean) {
+            if (getState("selected") as Boolean && event.isPressed) {
                 if (onKey != null) {
                     val state = this.availableState
                     onKey!!(Pair(state, event.key))

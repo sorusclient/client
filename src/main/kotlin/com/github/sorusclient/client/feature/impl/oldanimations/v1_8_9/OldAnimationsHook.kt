@@ -11,7 +11,7 @@ object OldAnimationsHook {
     @JvmStatic
     fun getPartialTicks(partialTicks: Float): Float {
         val oldAnimations = FeatureManager.get<OldAnimations>()
-        return if (oldAnimations.isEnabled() && oldAnimations.isOldBlockHitValue()) {
+        return if (oldAnimations.isOldBlockHitValue()) {
             partialTicks
         } else {
             0.0F
@@ -24,7 +24,7 @@ object OldAnimationsHook {
         val mc = MinecraftClient.getInstance()
         val player = mc.player ?: return
         val oldAnimations = FeatureManager.get<OldAnimations>()
-        if (player.mainHandStack != null && oldAnimations.isEnabled() && oldAnimations.isOldBlockHitValue()) {
+        if (player.mainHandStack != null && oldAnimations.isOldBlockHitValue()) {
             if (player.method_3192() > 0) {
                 val mouseDown = mc.options.keyAttack.isPressed && mc.options.keyUse.isPressed
                 if (mouseDown && mc.result != null && mc.result.type == HitResult.Type.BLOCK) {
@@ -45,7 +45,7 @@ object OldAnimationsHook {
     @JvmStatic
     fun showArmorDamage(): Boolean {
         val oldAnimations = FeatureManager.get<OldAnimations>()
-        return oldAnimations.isEnabled() && oldAnimations.showArmorDamageValue()
+        return oldAnimations.showArmorDamageValue()
     }
 
 }

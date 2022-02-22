@@ -11,11 +11,7 @@ object ParticlesHook {
     fun modifyParticleSpawns(number: Int): Int {
         val particles = FeatureManager.get<Particles>()
 
-        if (particles.isEnabled()) {
-            return (number * particles.getMultiplierValue()).roundToInt()
-        }
-
-        return number
+        return (number * particles.getMultiplierValue()).roundToInt()
     }
 
     @JvmStatic
@@ -23,7 +19,7 @@ object ParticlesHook {
     fun modifyCriticalParticles(show: Boolean): Boolean {
         val particles = FeatureManager.get<Particles>()
 
-        if (particles.isEnabled() && particles.getAlwaysCriticalParticles()) {
+        if (particles.getAlwaysCriticalParticles()) {
             return true
         }
 
@@ -35,7 +31,7 @@ object ParticlesHook {
     fun modifyEnchantmentParticles(show: Float): Float {
         val particles = FeatureManager.get<Particles>()
 
-        if (particles.isEnabled() && particles.getAlwaysEnchantmentParticles()) {
+        if (particles.getAlwaysEnchantmentParticles()) {
             return 1F
         }
 

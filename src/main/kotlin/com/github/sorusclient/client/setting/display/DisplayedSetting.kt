@@ -6,7 +6,10 @@ import com.github.sorusclient.client.util.Color
 
 sealed class DisplayedSetting: Displayed() {
 
-    open class ConfigurableDataSingleSetting<T>(val setting: Setting<T>, val displayName: String) : DisplayedSetting()
+    open class ConfigurableDataSingleSetting<T>(val setting: Setting<T>, val displayName: String) : DisplayedSetting() {
+        override val name: String
+            get() = displayName
+    }
 
     class Toggle(setting: Setting<Boolean>, displayName: String): ConfigurableDataSingleSetting<Boolean>(setting, displayName)
 
@@ -20,6 +23,9 @@ sealed class DisplayedSetting: Displayed() {
 
     class Dependent<T>(val configurableData: DisplayedSetting, val setting: Setting<T>, expectedValue: T) : DisplayedSetting() {
         val expectedValue: T
+
+        override val name: String
+            get() = configurableData.name
 
         init {
             this.expectedValue = expectedValue
