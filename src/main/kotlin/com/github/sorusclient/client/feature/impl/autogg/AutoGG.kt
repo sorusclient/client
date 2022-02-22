@@ -37,9 +37,7 @@ class AutoGG {
             val autogg = json as HashMap<*, *>
             val triggers = autogg["triggers"] as List<*>
             autoggTriggers.clear()
-            println(triggers)
             autoggTriggers.addAll(triggers.map { string ->
-                println(string)
                 string.toString().toRegex()
             }.toList())
 

@@ -4,14 +4,19 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
+import com.github.sorusclient.client.ui.framework.ContainerRenderer
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
 import v1_8_9.net.minecraft.client.MinecraftClient
+import v1_8_9.net.minecraft.client.gui.screen.ConnectScreen
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
 import v1_8_9.net.minecraft.client.gui.screen.Screen
+import v1_8_9.net.minecraft.client.gui.screen.TitleScreen
 import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.client.util.Window
+import v1_8_9.net.minecraft.client.world.ClientWorld
 import v1_8_9.net.minecraft.entity.Entity
+import v1_8_9.net.minecraft.network.ServerAddress
 
 class Adapter : Listener, IAdapter {
     override fun run() {
@@ -115,6 +120,13 @@ class Adapter : Listener, IAdapter {
 
     override fun setDisplayTitle(title: String) {
         Display.setTitle(title)
+    }
+
+    override fun joinServer(ip: String) {
+        val serverAddress = ServerAddress.parse(ServerAddress.parse(ip).address)
+        MinecraftClient.getInstance().world.disconnect()
+        MinecraftClient.getInstance().connect(null)
+        MinecraftClient.getInstance().openScreen(ConnectScreen(TitleScreen(), MinecraftClient.getInstance(), serverAddress.address, serverAddress.port))
     }
 
     override val version = "1.8.9"

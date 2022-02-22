@@ -5,6 +5,7 @@ import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
+import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
 import com.github.sorusclient.client.setting.display.Displayed
@@ -13,14 +14,16 @@ import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.ui.framework.*
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.ui.framework.constraint.Dependent
+import com.github.sorusclient.client.util.AssetUtil
 import com.github.sorusclient.client.util.Color
+import org.json.JSONObject
+import v1_8_9.net.minecraft.client.MinecraftClient
+import v1_8_9.net.minecraft.network.ServerAddress
 import java.lang.reflect.InvocationTargetException
+import java.nio.charset.Charset
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.set
-import kotlin.math.ceil
-import kotlin.math.max
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 object UserInterface {
 
@@ -1562,7 +1565,7 @@ object UserInterface {
 
                         width = 0.25.toRelative()
                         height = {
-                            (0.12 * (searchResults.size + 1) + 0.025 * (searchResults.size)).toCopy()
+                            (0.12 + if (searchResults.isNotEmpty()) { 0.032 } else { 0.0 } + (searchResults.size * 0.138)).toCopy()
                         }.toDependent()
 
                         backgroundCornerRadius = 0.01.toRelative()
@@ -1582,8 +1585,16 @@ object UserInterface {
                         val results = ArrayList<SearchResult>()
                         addSettingResults(results, SettingManager.mainUICategory, "")
 
+                        results.add(MenuSearchResult("home", "Home"))
+                        results.add(MenuSearchResult("settings", "Settings"))
+
+                        for (serverJsonString in AssetUtil.getAllServerJson()) {
+                            val serverJson = JSONObject(serverJsonString)
+                            results.add(ServerSearchResult(serverJson["name"] as String, serverJson["ip"] as String))
+                        }
+
                         onStateUpdate["searchParameter"] = { state ->
-                            searchResults = search(state["searchParameter"] as String, results, 1.25, 5)
+                            searchResults = search(state["searchParameter"] as String, results, 2.0, 5)
                         }
 
                         children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
@@ -1593,6 +1604,15 @@ object UserInterface {
                                         height = 0.12.toCopy()
 
                                         selectedByDefault = true
+
+                                        children += Container()
+                                            .apply {
+                                                x = Side.NEGATIVE.toSide()
+                                                width = 1.0.toCopy()
+                                                setPadding(0.025.toRelative())
+
+                                                backgroundImage = "sorus/ui/search/magnifying_glass.png".toAbsolute()
+                                            }
 
                                         children += Text()
                                             .apply {
@@ -1610,38 +1630,68 @@ object UserInterface {
                                                 }.toDependent()
                                             }
 
+                                        var prevKeyTime = System.currentTimeMillis()
+
+                                        children += Container()
+                                            .apply {
+                                                x = Side.NEGATIVE.toSide()
+                                                width = 0.4.toAbsolute()
+                                                height = 0.6.toRelative()
+
+                                                backgroundColor = Color.WHITE.toAbsolute()
+
+                                                onUpdate += { state ->
+                                                    state["hidden"] = (System.currentTimeMillis() - prevKeyTime) % 1000 > 500
+                                                }
+                                            }
+
                                         onKey = { state ->
                                             var parameter = if (state.first["searchParameter"] == null) { "" } else { state.first["searchParameter"] as String }
-                                            if (state.second.name.length == 1) {
-                                                parameter += state.second.name.lowercase()
-                                            } else if (state.second == Key.BACKSPACE && parameter.isNotEmpty()) {
+
+                                            var string = "abcdefghijklmnopqrstuvwxyz"
+                                            string += string.uppercase()
+
+                                            if (string.contains(state.second.second)) {
+                                                parameter += state.second.second
+                                            } else if (state.second.first == Key.BACKSPACE && parameter.isNotEmpty()) {
                                                 parameter = parameter.substring(0, parameter.length - 1)
-                                            } else if (state.second == Key.SPACE) {
+                                            } else if (state.second.first == Key.SPACE) {
                                                 parameter += " "
-                                            } else if (state.second == Key.ARROW_DOWN) {
+                                            } else if (state.second.first == Key.ARROW_DOWN) {
                                                 var newSelectedResult = state.first.getOrDefault("selectedResult", 0) as Int
                                                 newSelectedResult++
                                                 if (newSelectedResult > searchResults.size - 1) {
                                                     newSelectedResult = 0
                                                 }
                                                 state.first["selectedResult"] = newSelectedResult
-                                            } else if (state.second == Key.ARROW_UP) {
+                                            } else if (state.second.first == Key.ARROW_UP) {
                                                 var newSelectedResult = state.first.getOrDefault("selectedResult", 0) as Int
                                                 newSelectedResult--
                                                 if (newSelectedResult < 0) {
                                                     newSelectedResult = searchResults.size - 1
                                                 }
                                                 state.first["selectedResult"] = newSelectedResult
-                                            } else if (state.second == Key.ENTER) {
+                                            } else if (state.second.first == Key.ENTER) {
                                                 searchResults[state.first.getOrDefault("selectedResult", 0) as Int].onSelect()
                                             }
+
+                                            prevKeyTime = System.currentTimeMillis()
 
                                             state.first["searchParameter"] = parameter
                                         }
                                     }
 
+                                children += Container()
+                                    .apply {
+                                        width = 0.9.toRelative()
+                                        height = 0.6.toAbsolute()
+
+                                        backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                    }
+
                                 onStateUpdate["searchParameter"] = {
-                                    clearAfter(1)
+                                    clearAfter(2)
+
                                     for ((i, result) in searchResults.withIndex()) {
                                         children += Container()
                                             .apply {
@@ -1694,45 +1744,62 @@ object UserInterface {
     private fun search(searchTerm: String, results: List<SearchResult>, minimum: Double, maxResults: Int): List<SearchResult> {
         val scores: MutableList<Pair<SearchResult, Double>> = ArrayList()
 
+        val searchTerm = searchTerm.lowercase()
+
         for (result in results) {
             var score = 0
             for (i in 1..searchTerm.length) {
                 for (j in 0..searchTerm.length - i) {
-                    if (result.searchString.contains(searchTerm.substring(j, j + i))) {
+                    if (result.searchString.lowercase().contains(searchTerm.substring(j, j + i))) {
                         score += i.toDouble().pow(2).toInt()
                     }
                 }
             }
 
-            scores.add(Pair(result, score.toDouble() / (sqrt(result.searchString.length.toDouble()) * sqrt(searchTerm.length.toDouble()))))
+            scores.add(Pair(result, score.toDouble() / (sqrt(result.searchString.length.toDouble()) * searchTerm.length.toDouble())))
         }
 
-        var added = 0
-
         scores.retainAll {
-            if (it.second > minimum && added < maxResults) {
-                added += 1
-                return@retainAll true
-            } else {
-                return@retainAll false
-            }
-
+            return@retainAll it.second > minimum
         }
 
         scores.sortBy {
             it.second
         }
 
+        scores.reverse()
+
+        var added = 0
+        scores.retainAll {
+            return@retainAll if (added < maxResults) {
+                added++
+                true
+            } else {
+                false
+            }
+
+        }
+
+        val addedResults = ArrayList<String>()
+        scores.retainAll {
+            return@retainAll if (addedResults.contains(it.first.displayName)) {
+                false
+            } else {
+                addedResults.add(it.first.displayName)
+                true
+            }
+        }
+
         return scores.map {
             it.first
-        }.reversed()
+        }
     }
 
     abstract class SearchResult(val searchString: String, val displayName: String) {
         abstract fun onSelect()
     }
 
-    class SettingSearchResult(searchString: String, displayed: Displayed) : SearchResult(searchString, displayed.name) {
+    class SettingSearchResult(searchString: String, displayed: Displayed) : SearchResult(searchString, if (displayed is DisplayedCategory) { displayed.name } else { displayed.parent!!.name }) {
 
         private val linkedCategory: DisplayedCategory
 
@@ -1754,7 +1821,30 @@ object UserInterface {
             }
 
             ContainerRenderer.open(mainGui)
-            AdapterManager.getAdapter().renderer.loadBlur()
+        }
+
+    }
+
+    class MenuSearchResult(val menu: String, name: String) : SearchResult(name, name) {
+
+        override fun onSelect() {
+            mainGui.apply {
+                children[0].apply {
+                    runtime.setState("tab", menu)
+                }
+            }
+
+            ContainerRenderer.open(mainGui)
+        }
+
+    }
+
+    class ServerSearchResult(name: String, val ip: String) : SearchResult(name, name) {
+
+        override fun onSelect() {
+            ContainerRenderer.close()
+            AdapterManager.getAdapter().openScreen(ScreenType.IN_GAME)
+            AdapterManager.getAdapter().joinServer(ip)
         }
 
     }

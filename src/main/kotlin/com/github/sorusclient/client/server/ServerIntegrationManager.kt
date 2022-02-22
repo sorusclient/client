@@ -5,6 +5,7 @@ import com.github.sorusclient.client.adapter.event.GameJoinEvent
 import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.SorusCustomPacketEvent
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.util.AssetUtil
 import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.json.JSONObject
@@ -12,9 +13,6 @@ import java.io.IOException
 import java.net.URL
 
 object ServerIntegrationManager {
-
-    private const val baseServersUrl = "https://raw.githubusercontent.com/sorusclient/asset/main/server"
-    private const val serversJsonUrl = "$baseServersUrl/servers.json"
 
     val joinListeners: MutableMap<String, (Any) -> Unit> = HashMap()
     val leaveListeners: MutableList<() -> Unit> = ArrayList()
@@ -30,7 +28,7 @@ object ServerIntegrationManager {
         val server = AdapterManager.getAdapter().currentServer
         if (server != null) {
             Thread {
-                val json = getJsonForServer(server.ip)
+                val json = AssetUtil.getJsonForServer(server.ip)
                 if (json != null) {
                     applyServerConfiguration(json)
                 }
@@ -48,26 +46,6 @@ object ServerIntegrationManager {
         if (event.channel == "integration") {
             applyServerConfiguration(event.contents)
         }
-    }
-
-    private fun getJsonForServer(ip: String): String? {
-        try {
-            val inputStream = URL(serversJsonUrl).openStream()
-            val jsonString = IOUtils.toString(inputStream)
-            inputStream.close()
-            val json = JSONObject(jsonString).toMap()
-            for ((key, value) in json) {
-                if (ip.matches((value as String).toRegex())) {
-                    val inputStream1 = URL("$baseServersUrl/$key.json").openStream()
-                    val serverJson = IOUtils.toString(inputStream1)
-                    inputStream1.close()
-                    return serverJson
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return null
     }
 
     private fun applyServerConfiguration(json: String) {

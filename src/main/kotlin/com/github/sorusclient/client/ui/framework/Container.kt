@@ -39,7 +39,7 @@ open class Container : Component() {
     var onClick: ((MutableMap<String, Any>) -> Unit)? = null
     private var onDoubleClick: Consumer<Map<String, Any>>? = null
     var onDrag: ((Pair<MutableMap<String, Any>, Pair<Double, Double>>) -> Unit)? = null
-    var onKey: ((Pair<MutableMap<String, Any>, Key>) -> Unit)? = null
+    var onKey: ((Pair<MutableMap<String, Any>, Pair<Key, Char>>) -> Unit)? = null
     val onInit: MutableList<((Pair<Container, MutableMap<String, Any>>) -> Unit)> = ArrayList()
     var onScroll: ((Pair<Double, MutableMap<String, Any>>) -> Unit)? = null
     val onUpdate: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
@@ -355,7 +355,7 @@ open class Container : Component() {
             if (getState("selected") as Boolean && event.isPressed) {
                 if (onKey != null) {
                     val state = this.availableState
-                    onKey!!(Pair(state, event.key))
+                    onKey!!(Pair(state, Pair(event.key, event.character)))
                     this.availableState = state
                 }
             }
