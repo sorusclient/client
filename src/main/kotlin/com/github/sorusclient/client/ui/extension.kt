@@ -16,8 +16,8 @@ fun Double.toAbsolute(): Absolute {
     return Absolute(this)
 }
 
-fun String.toAbsolute(): Absolute {
-    return Absolute(this)
+fun String?.toAbsolute(): Absolute? {
+    return if (this != null) { Absolute(this) } else { null }
 }
 
 fun Double.toRelative(): Relative {

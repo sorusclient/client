@@ -3,10 +3,10 @@ package com.github.sorusclient.client.ui.framework.constraint
 import com.github.sorusclient.client.ui.framework.Component
 import com.github.sorusclient.client.util.Color
 
-class Absolute private constructor(private val value: Any) : Constraint {
+class Absolute private constructor(private val value: Any?) : Constraint {
     constructor(value: Double) : this(value as Any)
     constructor(value: Color) : this(value as Any)
-    constructor(value: String) : this(value as Any)
+    constructor(value: String?) : this(value as Any?)
 
     override fun getXValue(componentRuntime: Component.Runtime): Double {
         return value as Double
@@ -36,7 +36,7 @@ class Absolute private constructor(private val value: Any) : Constraint {
         return value as Color
     }
 
-    override fun getStringValue(componentRuntime: Component.Runtime?): String {
-        return value as String
+    override fun getStringValue(componentRuntime: Component.Runtime?): String? {
+        return value as String?
     }
 }

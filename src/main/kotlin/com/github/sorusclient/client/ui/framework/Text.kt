@@ -16,7 +16,7 @@ class Text : Component() {
 
     var fontRenderer: Constraint? = null
         set(value) {
-            AdapterManager.getAdapter().renderer.createFont(value!!.getStringValue(null))
+            value?.getStringValue(null)?.let { AdapterManager.getAdapter().renderer.createFont(it) }
             field = value
         }
     var text: Constraint? = null
@@ -75,7 +75,7 @@ class Text : Component() {
 
             AdapterManager.getAdapter().renderer.drawText(
                     cachedFontId!!,
-                    text!!.getStringValue(this),
+                    text!!.getStringValue(this)!!,
                     x - this.width / 2,
                     y - this.height / 2,
                     scale.getPaddingValue(this),
@@ -118,7 +118,7 @@ class Text : Component() {
                     cachedFontId = fontRenderer!!.getStringValue(this)
                     AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
                 }
-                return AdapterManager.getAdapter().renderer.getTextWidth(cachedFontId!!, text!!.getStringValue(this)) * scale.getPaddingValue(this)
+                return AdapterManager.getAdapter().renderer.getTextWidth(cachedFontId!!, text!!.getStringValue(this)!!) * scale.getPaddingValue(this)
             }
 
         override val height: Double

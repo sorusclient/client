@@ -27,7 +27,7 @@ open class Container : Component() {
 
     var backgroundImage: Constraint? = null
         set(value) {
-            AdapterManager.getAdapter().renderer.createTexture(value!!.getStringValue(null))
+            value?.getStringValue(null)?.let { AdapterManager.getAdapter().renderer.createTexture(it) }
             field = value
         }
     var paddingLeft: Constraint = Absolute(0.0)
@@ -156,7 +156,7 @@ open class Container : Component() {
                     color = container.topLeftBackgroundColor!!.getColorValue(this)
                 }
                 renderer.drawImage(
-                    container.backgroundImage!!.getStringValue(this),
+                    container.backgroundImage!!.getStringValue(this)!!,
                     x - width / 2,
                     y - height / 2,
                     width,

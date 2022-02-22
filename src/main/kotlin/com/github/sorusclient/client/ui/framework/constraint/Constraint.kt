@@ -11,5 +11,5 @@ interface Constraint {
     fun getCornerRadiusValue(componentRuntime: Component.Runtime): Double
     fun getPaddingValue(componentRuntime: Component.Runtime): Double
     fun getColorValue(componentRuntime: Component.Runtime): Color
-    fun getStringValue(componentRuntime: Component.Runtime?): String
+    fun getStringValue(componentRuntime: Component.Runtime?): String?
 }

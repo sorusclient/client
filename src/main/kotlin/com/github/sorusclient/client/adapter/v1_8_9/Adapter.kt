@@ -4,17 +4,17 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
-import com.github.sorusclient.client.ui.framework.ContainerRenderer
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.screen.ConnectScreen
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
-import v1_8_9.net.minecraft.client.gui.screen.Screen
+import v1_8_9.net.minecraft.client.gui.screen.SettingsScreen
 import v1_8_9.net.minecraft.client.gui.screen.TitleScreen
+import v1_8_9.net.minecraft.client.gui.screen.VideoOptionsScreen
+import v1_8_9.net.minecraft.client.gui.screen.options.ControlsOptionsScreen
 import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.client.util.Window
-import v1_8_9.net.minecraft.client.world.ClientWorld
 import v1_8_9.net.minecraft.entity.Entity
 import v1_8_9.net.minecraft.network.ServerAddress
 
@@ -64,13 +64,20 @@ class Adapter : Listener, IAdapter {
         get() = WorldImpl(MinecraftClient.getInstance().world)
 
     override fun openScreen(screenType: ScreenType) {
-        var screen: Screen? = null
-        when (screenType) {
-            ScreenType.DUMMY -> screen = DummyScreen()
-            ScreenType.IN_GAME -> {}
-            else -> {}
+        val screen = when (screenType) {
+            ScreenType.DUMMY -> DummyScreen()
+            ScreenType.SETTINGS -> createSettingsScreen()
+            ScreenType.CONTROLS -> ControlsOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options)
+            ScreenType.VIDEO_SETTINGS -> VideoOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options)
+            else -> null
         }
+
         MinecraftClient.getInstance().openScreen(screen)
+    }
+
+    private fun createSettingsScreen(): SettingsScreen {
+        val inGame = MinecraftClient.getInstance().world != null
+        return SettingsScreen(if (inGame) { GameMenuScreen() } else { TitleScreen() }, MinecraftClient.getInstance().options)
     }
 
     override var perspective: PerspectiveMode

@@ -5,7 +5,6 @@ import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
-import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
 import com.github.sorusclient.client.setting.display.Displayed
@@ -17,10 +16,7 @@ import com.github.sorusclient.client.ui.framework.constraint.Dependent
 import com.github.sorusclient.client.util.AssetUtil
 import com.github.sorusclient.client.util.Color
 import org.json.JSONObject
-import v1_8_9.net.minecraft.client.MinecraftClient
-import v1_8_9.net.minecraft.network.ServerAddress
 import java.lang.reflect.InvocationTargetException
-import java.nio.charset.Charset
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.set
 import kotlin.math.*
@@ -1593,6 +1589,11 @@ object UserInterface {
                             results.add(ServerSearchResult(serverJson["name"] as String, serverJson["ip"] as String))
                         }
 
+                        val screens = listOf(Pair("Controls", ScreenType.CONTROLS), Pair("Settings", ScreenType.SETTINGS), Pair("Video Settings", ScreenType.VIDEO_SETTINGS))
+                        for (screen in screens) {
+                            results.add(MinecraftMenuSearchResult(screen.first, screen.second))
+                        }
+
                         onStateUpdate["searchParameter"] = { state ->
                             searchResults = search(state["searchParameter"] as String, results, 2.0, 5)
                         }
@@ -1711,10 +1712,19 @@ object UserInterface {
                                                     }
                                                 }.toDependent()
 
+                                                children += Container()
+                                                    .apply {
+                                                        x = Side.NEGATIVE.toSide()
+                                                        width = 1.0.toCopy()
+                                                        setPadding(0.025.toRelative())
+
+                                                        backgroundImage = result.displayImage.toAbsolute()
+                                                    }
+
                                                 children += Text()
                                                     .apply {
                                                         x = Side.NEGATIVE.toSide()
-                                                        paddingLeft = 0.05.toRelative()
+                                                        paddingLeft = 0.04.toRelative()
 
                                                         fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                         scale = 0.006.toRelative()
@@ -1795,11 +1805,11 @@ object UserInterface {
         }
     }
 
-    abstract class SearchResult(val searchString: String, val displayName: String) {
+    abstract class SearchResult(val searchString: String, val displayName: String, val displayImage: String?) {
         abstract fun onSelect()
     }
 
-    class SettingSearchResult(searchString: String, displayed: Displayed) : SearchResult(searchString, if (displayed is DisplayedCategory) { displayed.name } else { displayed.parent!!.name }) {
+    class SettingSearchResult(searchString: String, displayed: Displayed) : SearchResult(searchString, if (displayed is DisplayedCategory) { displayed.name } else { displayed.parent!!.name }, null) {
 
         private val linkedCategory: DisplayedCategory
 
@@ -1825,7 +1835,7 @@ object UserInterface {
 
     }
 
-    class MenuSearchResult(val menu: String, name: String) : SearchResult(name, name) {
+    class MenuSearchResult(val menu: String, name: String) : SearchResult(name, name, "sorus/ui/sorus.png") {
 
         override fun onSelect() {
             mainGui.apply {
@@ -1839,7 +1849,17 @@ object UserInterface {
 
     }
 
-    class ServerSearchResult(name: String, val ip: String) : SearchResult(name, name) {
+    class MinecraftMenuSearchResult(val name: String, val type: ScreenType) : SearchResult(name, "Minecraft $name", "sorus/ui/grass_block.png") {
+
+        override fun onSelect() {
+            ContainerRenderer.close()
+            AdapterManager.getAdapter().renderer.unloadBlur()
+            AdapterManager.getAdapter().openScreen(type)
+        }
+
+    }
+
+    class ServerSearchResult(name: String, val ip: String) : SearchResult(name, name, null) {
 
         override fun onSelect() {
             ContainerRenderer.close()
