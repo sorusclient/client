@@ -17,6 +17,7 @@ import com.github.sorusclient.client.util.AssetUtil
 import com.github.sorusclient.client.util.Color
 import org.json.JSONObject
 import java.lang.reflect.InvocationTargetException
+import java.net.URL
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.set
 import kotlin.math.*
@@ -1584,9 +1585,11 @@ object UserInterface {
                         results.add(MenuSearchResult("home", "Home"))
                         results.add(MenuSearchResult("settings", "Settings"))
 
-                        for (serverJsonString in AssetUtil.getAllServerJson()) {
-                            val serverJson = JSONObject(serverJsonString)
-                            results.add(ServerSearchResult(serverJson["name"] as String, serverJson["ip"] as String))
+                        for (serverJsonData in AssetUtil.getAllServerJson()) {
+                            val serverJson = JSONObject(serverJsonData.value)
+                            val logoAssetName = "${serverJson["name"]}-logo"
+                            AdapterManager.getAdapter().renderer.createTexture(logoAssetName, URL(AssetUtil.baseServersUrl + "/${serverJsonData.key}/${serverJson["logo"]}"))
+                            results.add(ServerSearchResult(serverJson["name"] as String, serverJson["ip"] as String, logoAssetName))
                         }
 
                         val screens = listOf(Pair("Controls", ScreenType.CONTROLS), Pair("Settings", ScreenType.SETTINGS), Pair("Video Settings", ScreenType.VIDEO_SETTINGS))
@@ -1719,6 +1722,7 @@ object UserInterface {
                                                         setPadding(0.025.toRelative())
 
                                                         backgroundImage = result.displayImage.toAbsolute()
+                                                        backgroundCornerRadius = 0.0175.toRelative()
                                                     }
 
                                                 children += Text()
@@ -1835,7 +1839,7 @@ object UserInterface {
 
     }
 
-    class MenuSearchResult(val menu: String, name: String) : SearchResult(name, name, "sorus/ui/sorus.png") {
+    class MenuSearchResult(private val menu: String, name: String) : SearchResult(name, name, "sorus/ui/sorus.png") {
 
         override fun onSelect() {
             mainGui.apply {
@@ -1859,7 +1863,7 @@ object UserInterface {
 
     }
 
-    class ServerSearchResult(name: String, val ip: String) : SearchResult(name, name, null) {
+    class ServerSearchResult(name: String, private val ip: String, image: String) : SearchResult(name, name, image) {
 
         override fun onSelect() {
             ContainerRenderer.close()

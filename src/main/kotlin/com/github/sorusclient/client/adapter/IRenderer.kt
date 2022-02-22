@@ -42,7 +42,7 @@ interface IRenderer {
     fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, antialias: Boolean, color: Color)
 
     fun createTexture(path: String) {
-        createTexture(path, Objects.requireNonNull(IRenderer::class.java.classLoader.getResource(path)))
+        IRenderer::class.java.classLoader.getResource(path)?.let { createTexture(path, it) }
     }
 
     fun createTexture(id: String, url: URL) {
