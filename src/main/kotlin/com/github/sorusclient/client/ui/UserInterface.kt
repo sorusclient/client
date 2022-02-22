@@ -7,6 +7,7 @@ import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.Displayed
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
@@ -27,6 +28,8 @@ object UserInterface {
     private lateinit var mainGui: Container
     private lateinit var searchGui: Container
     private val guiOpened = AtomicBoolean(false)
+
+    private lateinit var searchBarKey: Setting<out MutableList<Key>>
 
     fun initialize() {
         val eventManager = EventManager
@@ -55,9 +58,8 @@ object UserInterface {
             }
         }
 
-
         eventManager.register { event: KeyEvent ->
-            if (event.isPressed && !event.isRepeat && event.key === Key.U) {
+            if (event.isPressed && event.key == Key.U) {
                 initializeUserInterface()
             }
         }
@@ -66,13 +68,33 @@ object UserInterface {
             initializeUserInterface()
         }
 
+        val pressed = ArrayList<Key>()
+
         eventManager.register { event: KeyEvent ->
-            if (event.isPressed && event.key == Key.ALT_LEFT) {
-                adapter.openScreen(ScreenType.DUMMY)
-                ContainerRenderer.open(searchGui)
-                AdapterManager.getAdapter().renderer.loadBlur()
+            if (event.isPressed && !event.isRepeat && searchBarKey.value.contains(event.key)) {
+                pressed.add(event.key)
+
+                if (pressed.size == searchBarKey.value.size) {
+                    adapter.openScreen(ScreenType.DUMMY)
+                    ContainerRenderer.open(searchGui)
+                    AdapterManager.getAdapter().renderer.loadBlur()
+
+                    pressed.clear()
+                }
+            } else if (!event.isPressed) {
+                pressed.clear()
             }
         }
+
+        SettingManager.settingsCategory
+            .apply {
+                data["searchBar"] = SettingData(Setting(arrayListOf(Key.ALT_LEFT)).also { searchBarKey = it })
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(DisplayedSetting.KeyBind(searchBarKey, "Search Bar KeyBind"))
+            }
     }
 
     private fun getSetting(setting: DisplayedSetting): Container {
@@ -319,22 +341,29 @@ object UserInterface {
                                 }
                                 backgroundCornerRadius = 0.01.toRelative()
 
-                                onKey = { state ->
-                                    state.first["value"] = state.second
-                                    setting.setting.setValueRaw(state.second)
-                                    state.first["selected"] = false
-                                    setting.setting.overriden = true
+                                val pressedKeys = ArrayList<Key>()
+
+                                onKey = onKey@{ state ->
+                                    if (state.second.key == Key.UNKNOWN) return@onKey
+                                    if (state.second.isPressed) {
+                                        pressedKeys += state.second.key
+
+                                        setting.setting.setValueRaw(ArrayList(pressedKeys))
+                                        setting.setting.overriden = true
+                                    } else {
+                                        state.first["selected"] = false
+                                        pressedKeys.clear()
+                                    }
                                 }
 
                                 children += Text()
                                     .apply {
                                         fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                         text = { state: Map<String, Any> ->
-                                            if (state["selected"] as Boolean) {
+                                            if (pressedKeys.isEmpty() && state["selected"] as Boolean) {
                                                 "..."
                                             } else {
-                                                val key = state["value"] as Key?
-                                                key.toString()
+                                                setting.setting.value.joinToString(" + ")
                                             }
                                         }.toDependent()
                                         scale = 0.01.toRelative()
@@ -347,9 +376,7 @@ object UserInterface {
                             }
                         }
 
-                        storedState += "value"
                         storedState += "selected2"
-                        runtime.setState("value", setting.setting.value)
                     }
             }
             is DisplayedSetting.ClickThrough -> {
@@ -1649,33 +1676,35 @@ object UserInterface {
                                                 }
                                             }
 
-                                        onKey = { state ->
+                                        onKey = onKey@{ state ->
+                                            if (!state.second.isPressed) return@onKey
+
                                             var parameter = if (state.first["searchParameter"] == null) { "" } else { state.first["searchParameter"] as String }
 
                                             var string = "abcdefghijklmnopqrstuvwxyz"
                                             string += string.uppercase()
 
-                                            if (string.contains(state.second.second)) {
-                                                parameter += state.second.second
-                                            } else if (state.second.first == Key.BACKSPACE && parameter.isNotEmpty()) {
+                                            if (string.contains(state.second.character)) {
+                                                parameter += state.second.character
+                                            } else if (state.second.key == Key.BACKSPACE && parameter.isNotEmpty()) {
                                                 parameter = parameter.substring(0, parameter.length - 1)
-                                            } else if (state.second.first == Key.SPACE) {
+                                            } else if (state.second.key == Key.SPACE) {
                                                 parameter += " "
-                                            } else if (state.second.first == Key.ARROW_DOWN) {
+                                            } else if (state.second.key == Key.ARROW_DOWN) {
                                                 var newSelectedResult = state.first.getOrDefault("selectedResult", 0) as Int
                                                 newSelectedResult++
                                                 if (newSelectedResult > searchResults.size - 1) {
                                                     newSelectedResult = 0
                                                 }
                                                 state.first["selectedResult"] = newSelectedResult
-                                            } else if (state.second.first == Key.ARROW_UP) {
+                                            } else if (state.second.key == Key.ARROW_UP) {
                                                 var newSelectedResult = state.first.getOrDefault("selectedResult", 0) as Int
                                                 newSelectedResult--
                                                 if (newSelectedResult < 0) {
                                                     newSelectedResult = searchResults.size - 1
                                                 }
                                                 state.first["selectedResult"] = newSelectedResult
-                                            } else if (state.second.first == Key.ENTER) {
+                                            } else if (state.second.key == Key.ENTER) {
                                                 searchResults[state.first.getOrDefault("selectedResult", 0) as Int].onSelect()
                                             }
 

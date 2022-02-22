@@ -1,7 +1,5 @@
 package com.github.sorusclient.client.setting.data
 
-import com.github.sorusclient.client.setting.SettingManager
-
 class CategoryData: AbstractData() {
     val data: MutableMap<String, AbstractData> = HashMap()
 

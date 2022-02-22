@@ -17,7 +17,7 @@ import com.github.sorusclient.client.setting.display.DisplayedCategory
 class Zoom {
 
     private var enabled: Setting<Boolean>
-    private var key: Setting<Key>
+    private var key: Setting<out MutableList<Key>>
     private var fov: Setting<Double>
     private var sensitivity: Setting<Double>
     private var cinematicCamera: Setting<Boolean>
@@ -29,7 +29,7 @@ class Zoom {
                 data["zoom"] = CategoryData()
                         .apply {
                             data["enabled"] = SettingData(Setting(false).also { enabled = it })
-                            data["key"] = SettingData(Setting(Key.C).also { key = it })
+                            data["key"] = SettingData(Setting(arrayListOf(Key.C)).also { key = it })
                             data["fov"] = SettingData(Setting(30.0).also { fov = it })
                             data["sensitivity"] = SettingData(Setting(0.5).also { sensitivity = it })
                             data["cinematicCamera"] = SettingData(Setting(false).also { cinematicCamera = it })
@@ -71,7 +71,7 @@ class Zoom {
 
     private fun onKey(event: KeyEvent) {
         if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME) {
-            if (event.key == key.value && !event.isRepeat) {
+            if (event.key == key.value[0] && !event.isRepeat) {
                 toggled = event.isPressed
             }
         }

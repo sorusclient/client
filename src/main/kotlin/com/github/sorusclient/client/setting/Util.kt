@@ -1,10 +1,11 @@
 package com.github.sorusclient.client.setting
 
-import com.sun.org.apache.xpath.internal.operations.Mod
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Modifier
 import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object Util {
 
@@ -46,6 +47,15 @@ object Util {
                 return jsonSetting as T
             }
         } else if (jsonSetting is Map<*, *>) {
+            if (jsonSetting.contains("list")) {
+                val list = ArrayList<Any>()
+                val wantedClassInner = Class.forName(jsonSetting["type"] as String)
+                for (thing in jsonSetting["list"] as List<Any>) {
+                    toJava(wantedClassInner, thing)?.let { list.add(it) }
+                }
+
+                return list as T
+            }
             val jsonSettingMap = jsonSetting as Map<String, Any>
             if (wantedClass == null) {
                 val className = jsonSettingMap["class"] as String?
@@ -60,7 +70,7 @@ object Util {
             if (wantedClass != null && wantedClass == MutableMap::class.java) {
                 val map: MutableMap<String, Any> = HashMap()
                 for ((key, value) in jsonSetting) {
-                    map[key] = toJava<Any>(null, value)!!
+                    toJava<Any>(null, value)?.let { map[key] = it }
                 }
                 return map as T
             } else if (wantedClass != null) {
@@ -107,9 +117,12 @@ object Util {
                                 ?: if (any is Enum<*>) {
                                     any.name
                                 } else if (any is List<*>) {
-                                    val data: MutableList<Any> = ArrayList()
+                                    val data: MutableMap<String, Any> = HashMap()
+                                    val dataInner: MutableList<Any> = ArrayList()
+                                    data["type"] = any[0]!!.javaClass.name
+                                    data["list"] = dataInner
                                     for (inData in any) {
-                                        data.add(toData(inData!!))
+                                        dataInner.add(toData(inData!!))
                                     }
                                     data
                                 } else if (any is Map<*, *>) {

@@ -17,7 +17,7 @@ import com.github.sorusclient.client.setting.data.SettingData
 class Perspective {
 
     private val enabled: Setting<Boolean>
-    private val key: Setting<Key>
+    private val key: Setting<out MutableList<Key>>
 
     var isToggled = false
         private set
@@ -29,7 +29,7 @@ class Perspective {
                 data["perspective"] = CategoryData()
                     .apply {
                         data["enabled"] = SettingData(Setting(false).also { enabled = it })
-                        data["key"] = SettingData(Setting(Key.F).also { key = it })
+                        data["key"] = SettingData(Setting(arrayListOf(Key.F)).also { key = it })
                     }
             }
 
@@ -52,7 +52,7 @@ class Perspective {
     private fun onKey(event: KeyEvent) {
         val adapter = AdapterManager.getAdapter()
         if (isEnabled() && adapter.openScreen == ScreenType.IN_GAME) {
-            if (event.key == key.value && !event.isRepeat) {
+            if (event.key == key.value[0] && !event.isRepeat) {
                 isToggled = event.isPressed
                 if (isToggled) {
                     previousPerspective = adapter.perspective

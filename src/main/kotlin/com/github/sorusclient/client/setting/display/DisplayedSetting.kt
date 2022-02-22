@@ -17,7 +17,7 @@ sealed class DisplayedSetting: Displayed() {
 
     class ClickThrough(setting: Setting<out Enum<*>>, displayName: String): ConfigurableDataSingleSetting<Enum<*>>(setting as Setting<Enum<*>>, displayName)
 
-    class KeyBind(setting: Setting<Key>, displayName: String): ConfigurableDataSingleSetting<Key>(setting, displayName)
+    class KeyBind(setting: Setting<out MutableList<Key>>, displayName: String): ConfigurableDataSingleSetting<MutableList<Key>>(setting as Setting<MutableList<Key>>, displayName)
 
     class ColorPicker(setting: Setting<Color>, displayName: String): ConfigurableDataSingleSetting<Color>(setting, displayName)
 

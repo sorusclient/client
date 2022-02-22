@@ -16,10 +16,10 @@ class ToggleSprintSneak {
 
     private val toggleSprint: Setting<Boolean>
     private val useCustomSprintKey: Setting<Boolean>
-    private val customSprintKey: Setting<Key>
+    private val customSprintKey: Setting<out MutableList<Key>>
     private val toggleSneak: Setting<Boolean>
     private val useCustomSneakKey: Setting<Boolean>
-    private val customSneakKey: Setting<Key>
+    private val customSneakKey: Setting<out MutableList<Key>>
     private var sprintToggled = false
     private var sneakToggled = false
 
@@ -30,10 +30,10 @@ class ToggleSprintSneak {
                     .apply {
                         data["toggleSprint"] = SettingData(Setting(false).also { toggleSprint = it })
                         data["useCustomSprintKey"] = SettingData(Setting(false).also { useCustomSprintKey = it })
-                        data["customSprintKey"] = SettingData(Setting(Key.SHIFT_LEFT).also { customSprintKey = it })
+                        data["customSprintKey"] = SettingData(Setting(arrayListOf(Key.SHIFT_LEFT)).also { customSprintKey = it })
                         data["toggleSneak"] = SettingData(Setting(false).also { toggleSneak = it })
                         data["useCustomSneakKey"] = SettingData(Setting(false).also { useCustomSneakKey = it })
-                        data["customSneakKey"] = SettingData(Setting(Key.SHIFT_LEFT).also { customSneakKey = it })
+                        data["customSneakKey"] = SettingData(Setting(arrayListOf(Key.SHIFT_LEFT)).also { customSneakKey = it })
                     }
             }
 
@@ -67,12 +67,12 @@ class ToggleSprintSneak {
     private val sprintKey: Key
         get() {
             val adapter = AdapterManager.getAdapter()
-            return if (useCustomSprintKey.value) customSprintKey.value else adapter.getKeyBind(IKeyBind.KeyBindType.SPRINT).key
+            return if (useCustomSprintKey.value) customSprintKey.value[0] else adapter.getKeyBind(IKeyBind.KeyBindType.SPRINT).key
         }
     private val sneakKey: Key
         get() {
             val adapter = AdapterManager.getAdapter()
-            return if (useCustomSneakKey.value) customSneakKey.value else adapter.getKeyBind(IKeyBind.KeyBindType.SNEAK).key
+            return if (useCustomSneakKey.value) customSneakKey.value[0] else adapter.getKeyBind(IKeyBind.KeyBindType.SNEAK).key
         }
 
     fun isSprintToggledValue(): Boolean {
