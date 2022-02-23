@@ -7,9 +7,10 @@ import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.setting.Setting
+import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.CategoryData
+import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedSetting
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
-import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.util.Color
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -18,28 +19,31 @@ import java.util.stream.Collectors
 class Armor : HUDElement("armor") {
 
     //TODO: Add option for reversing image & durability
-    private var mode: Setting<Mode>
-    private var showHelmet: Setting<Boolean>
-    private var showChestplate: Setting<Boolean>
-    private var showLeggings: Setting<Boolean>
-    private var showBoots: Setting<Boolean>
+    private val mode: Setting<Mode>
+    private val showHelmet: Setting<Boolean>
+    private val showChestplate: Setting<Boolean>
+    private val showLeggings: Setting<Boolean>
+    private val showBoots: Setting<Boolean>
 
     init {
-        register("mode", Setting(Mode.TOTAL).also {
-            mode = it
-        })
-        register("showHelmet", Setting(true).also {
-            showHelmet = it
-        })
-        register("showChestplate", Setting(true).also {
-            showChestplate = it
-        })
-        register("showLeggings", Setting(true).also {
-            showLeggings = it
-        })
-        register("showBoots", Setting(true).also {
-            showBoots = it
-        })
+        category
+            .apply {
+                data["mode"] = SettingData(Setting(Mode.TOTAL).also { mode = it })
+                data["showHelmet"] = SettingData(Setting(true).also { showHelmet = it })
+                data["showChestplate"] = SettingData(Setting(true).also { showChestplate = it })
+                data["showLeggings"] = SettingData(Setting(true).also { showLeggings = it })
+                data["showBoots"] = SettingData(Setting(true).also { showBoots = it })
+            }
+
+
+        uiCategory
+            .apply {
+                add(DisplayedSetting.ClickThrough(mode, "Mode"))
+                add(DisplayedSetting.Dependent(DisplayedSetting.Toggle(showHelmet, "Show Helmet"), mode, Mode.INDIVIDUAL))
+                add(DisplayedSetting.Dependent(DisplayedSetting.Toggle(showChestplate, "Show Chestplate"), mode, Mode.INDIVIDUAL))
+                add(DisplayedSetting.Dependent(DisplayedSetting.Toggle(showLeggings, "Show Leggings"), mode, Mode.INDIVIDUAL))
+                add(DisplayedSetting.Dependent(DisplayedSetting.Toggle(showBoots, "Show Boots"), mode, Mode.INDIVIDUAL))
+            }
     }
 
     override val displayName: String
@@ -156,15 +160,6 @@ class Armor : HUDElement("armor") {
             }
         }
 
-    override fun addSettings(settings: MutableList<DisplayedSetting>) {
-        super.addSettings(settings)
-        settings.add(ClickThrough(mode, "Mode"))
-        settings.add(Toggle(showHelmet, "Show Helmet"))
-        settings.add(Toggle(showChestplate, "Show Chestplate"))
-        settings.add(Toggle(showLeggings, "Show Leggings"))
-        settings.add(Toggle(showBoots, "Show Boots"))
-    }
-
     private class FakeArmorItem(
         override val remainingDurability: Double,
         override val maxDurability: Double,
@@ -181,10 +176,6 @@ class Armor : HUDElement("armor") {
 
     enum class Mode {
         INDIVIDUAL, TOTAL
-    }
-
-    private enum class ArmorType {
-        HELMET, CHESTPLATE, LEGGINGS, BOOTS
     }
 
 }

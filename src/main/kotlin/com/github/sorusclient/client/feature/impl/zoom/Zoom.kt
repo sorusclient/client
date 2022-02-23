@@ -15,11 +15,12 @@ import com.github.sorusclient.client.util.keybind.KeyBindManager
 
 class Zoom {
 
-    private var enabled: Setting<Boolean>
-    private var key: Setting<out MutableList<Key>>
-    private var fov: Setting<Double>
-    private var sensitivity: Setting<Double>
-    private var cinematicCamera: Setting<Boolean>
+    private val enabled: Setting<Boolean>
+    private val key: Setting<out MutableList<Key>>
+    private val fov: Setting<Double>
+    private val sensitivity: Setting<Double>
+    private val cinematicCamera: Setting<Boolean>
+
     private var toggled = false
 
     init {

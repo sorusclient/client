@@ -3,11 +3,6 @@ package com.github.sorusclient.client.ui
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.util.Color
 
-inline fun <T> T.apply(block: T.() -> Unit): T {
-    this.run(block)
-    return this
-}
-
 fun Color.toAbsolute(): Absolute {
     return Absolute(this)
 }

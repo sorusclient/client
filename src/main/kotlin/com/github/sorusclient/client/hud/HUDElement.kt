@@ -5,12 +5,10 @@ import com.github.sorusclient.client.setting.*
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.Axis
 
 abstract class HUDElement(val id: String) {
 
-    private val settings: MutableMap<String, Setting<*>> = HashMap()
     var attached: Setting<MutableMap<String, MutableList<AttachType>>>
     private var x: Setting<Double>
     private var y: Setting<Double>
@@ -37,22 +35,6 @@ abstract class HUDElement(val id: String) {
             }
 
         uiCategory.parent = HUDManager.hudDisplayedCategory
-
-        /*SettingManager.settingsCategory
-            .apply {
-                put("hud", HashMap<String, Any>()
-                    .apply {
-                        put("elements", Setting<MutableList<String>>(ArrayList()).also { HUDManager.elements2 = it })
-                    })
-            }*/
-    }
-
-    protected fun register(id: String, setting: Setting<*>) {
-        settings[id] = setting
-    }
-
-    fun setInternalId(id: String) {
-        internalId.realValue = id
     }
 
     private fun getInternalId(): String {
@@ -203,7 +185,5 @@ abstract class HUDElement(val id: String) {
     fun isAttachedTo(other: HUDElement): Boolean {
         return getAttached().contains(other.getInternalId())
     }
-
-    open fun addSettings(settings: MutableList<DisplayedSetting>) {}
 
 }

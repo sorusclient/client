@@ -4,8 +4,8 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IEntity
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.hud.HUDElement
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
+import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.Pair
@@ -29,21 +29,26 @@ class Coordinates : HUDElement("coordinates") {
         get() = "Coordinates"
 
     init {
-        this.register("showX", Setting(true).also { showX = it })
-        this.register("showY", Setting(true).also { showY = it })
-        this.register("showZ", Setting(true).also { showZ = it })
-        this.register("identifierColor", Setting(Color.WHITE).also {
-            identifierColor = it
-        })
-        this.register("otherColor", Setting(Color.WHITE).also {
-            otherColor = it
-        })
-        this.register("valueColor", Setting(Color.WHITE).also {
-            valueColor = it
-        })
-        this.register("mode", Setting(Mode.BRACKET).also {
-            mode = it
-        })
+        category.apply {
+            data["showX"] = SettingData(Setting(true).also { showX = it })
+            data["showY"] = SettingData(Setting(true).also { showY = it })
+            data["showZ"] = SettingData(Setting(true).also { showZ = it })
+            data["identifierColor"] = SettingData(Setting(Color.WHITE).also { identifierColor = it })
+            data["otherColor"] = SettingData(Setting(Color.WHITE).also { otherColor = it })
+            data["valueColor"] = SettingData(Setting(Color.WHITE).also { valueColor = it })
+            data["mode"] = SettingData(Setting(Mode.BRACKET).also { mode = it })
+        }
+
+        uiCategory
+            .apply {
+                add(DisplayedSetting.Toggle(showX, "Show X"))
+                add(DisplayedSetting.Toggle(showY, "Show Y"))
+                add(DisplayedSetting.Toggle(showZ, "Show Z"))
+                add(DisplayedSetting.ColorPicker(identifierColor, "Identifier Color"))
+                add(DisplayedSetting.ColorPicker(otherColor, "Other Color"))
+                add(DisplayedSetting.ColorPicker(valueColor, "Value Color"))
+                add(DisplayedSetting.ClickThrough(mode, "Mode"))
+            }
     }
 
     override fun render(x: Double, y: Double, scale: Double) {
@@ -102,17 +107,6 @@ class Coordinates : HUDElement("coordinates") {
             fontRenderer.drawString(pair.first, x + partialX, y, scale, pair.second)
             partialX += fontRenderer.getWidth(pair.first) * scale + 1
         }
-    }
-
-    override fun addSettings(settings: MutableList<DisplayedSetting>) {
-        super.addSettings(settings)
-        settings.add(Toggle(showX, "Show X"))
-        settings.add(Toggle(showY, "Show Y"))
-        settings.add(Toggle(showZ, "Show Z"))
-        settings.add(ColorPicker(identifierColor, "Identifier Color"))
-        settings.add(ColorPicker(otherColor, "Other Color"))
-        settings.add(ColorPicker(valueColor, "Value Color"))
-        settings.add(ClickThrough(mode, "Mode"))
     }
 
     enum class Mode {

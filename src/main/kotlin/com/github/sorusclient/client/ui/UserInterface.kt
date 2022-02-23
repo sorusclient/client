@@ -1854,6 +1854,7 @@ object UserInterface {
                     runtime.setState("tab", "settings")
                     runtime.setState("currentSettingsCategory", linkedCategory)
                     runtime.setState("resetSettingsScreen", false)
+                    linkedCategory.onShow()
                 }
             }
 

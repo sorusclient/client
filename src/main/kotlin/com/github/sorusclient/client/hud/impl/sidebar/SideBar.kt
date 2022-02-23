@@ -7,9 +7,8 @@ import com.github.sorusclient.client.adapter.IScoreboardScore
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.setting.display.DisplayedSetting
-import com.github.sorusclient.client.setting.display.DisplayedSetting.Toggle
 import com.github.sorusclient.client.setting.Setting
-import com.github.sorusclient.client.ui.UserInterface
+import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.util.Color
 
 class Sidebar : HUDElement("sideBar") {
@@ -37,10 +36,10 @@ class Sidebar : HUDElement("sideBar") {
             val sidebarObjective = sidebarObjective ?: return 0.0
             var maxWidth = fontRenderer.getWidth(sidebarObjective.name)
             for (score in sidebarObjective.scores) {
-                val scoreString = if (showScores.value) " " + score.score else ""
+                val scoreString = if (showScores.value) { " " + score.score } else  { "" }
                 maxWidth = maxWidth.coerceAtLeast(fontRenderer.getWidth(score.name + scoreString))
             }
-            return 2 + maxWidth + 6
+            return 2 + maxWidth + 2
         }
     override val height: Double
         get() {
@@ -54,9 +53,15 @@ class Sidebar : HUDElement("sideBar") {
         get() = "SideBar"
 
     init {
-        register("showScores", Setting(true).also {
-            showScores = it
-        })
+        category
+            .apply {
+                data["showScores"] = SettingData(Setting(true).also { showScores = it })
+            }
+
+        uiCategory
+            .apply {
+                add(DisplayedSetting.Toggle(showScores, "Show Scores"))
+            }
     }
 
     override fun render(x: Double, y: Double, scale: Double) {
@@ -86,11 +91,6 @@ class Sidebar : HUDElement("sideBar") {
             }
             yOffset += (fontRenderer.getHeight() + 1) * scale
         }
-    }
-
-    override fun addSettings(settings: MutableList<DisplayedSetting>) {
-        super.addSettings(settings)
-        settings.add(Toggle(showScores, "Show Scores"))
     }
 
     private class FakeScoreboardObjective(override val scores: List<IScoreboardScore>, override val name: String) : IScoreboardObjective
