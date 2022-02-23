@@ -51,10 +51,10 @@ class Sorus : Listener {
             AdapterManager.getAdapter().setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
         }
 
-        SettingManager.initialize()
         UserInterface.initialize()
-
         ThemeManager.initialize()
+
+        SettingManager.initialize()
 
         EventManager.register<GetClientBrandEvent> { event ->
             event.brand = "sorus"

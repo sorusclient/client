@@ -50,7 +50,12 @@ class Dependent(private val function: Function<Map<String, Any>, Any>) : Constra
     }
 
     override fun getColorValue(componentRuntime: Component.Runtime): Color {
-        return this.apply(componentRuntime) as Color
+        val value = function.apply(componentRuntime.availableState)
+        return if (value is Constraint) {
+            value.getColorValue(componentRuntime)
+        } else {
+            value as Color
+        }
     }
 
     override fun getStringValue(componentRuntime: Component.Runtime?): String {

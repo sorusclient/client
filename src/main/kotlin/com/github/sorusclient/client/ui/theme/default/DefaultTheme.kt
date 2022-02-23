@@ -4,11 +4,13 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.impl.GlassLoaderImpl
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
+import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.plugin.PluginManager
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.ui.*
@@ -26,17 +28,47 @@ import kotlin.math.ceil
 
 class DefaultTheme: Theme() {
 
+    private val backgroundColor: Setting<Color>
+    private val borderColor: Setting<Color>
+    private val midgroundColor: Setting<Color>
+    private val selectedColor: Setting<Color>
+    private val selectedBorderColor: Setting<Color>
+    private val elementColor: Setting<Color>
+
     private lateinit var mainGui: Container
     private lateinit var searchGui: Container
 
     init {
-        this.initializeTheme()
+        EventManager.register<InitializeEvent> {
+            this.initializeTheme()
+        }
 
         EventManager.register { event: KeyEvent ->
             if (event.isPressed && event.key == Key.U) {
                 initializeTheme()
             }
         }
+
+        category
+            .apply {
+                Color.fromRGB(15, 15, 15, 200)
+                data["backgroundColor"] = SettingData(Setting(Color.fromRGB(15, 15, 15, 200)).also { backgroundColor = it })
+                data["borderColor"] = SettingData(Setting(Color.fromRGB(10, 10, 10, 150)).also { borderColor = it })
+                data["midgroundColor"] = SettingData(Setting(Color.fromRGB(0, 0, 0, 65)).also { midgroundColor = it })
+                data["selectedColor"] = SettingData(Setting(Color.fromRGB(60, 75, 250, 65)).also { selectedColor = it })
+                data["selectedBorderColor"] = SettingData(Setting(Color.fromRGB(60, 75, 250, 255)).also { selectedBorderColor = it })
+                data["elementColor"] = SettingData(Setting(Color.WHITE).also { elementColor = it })
+            }
+
+        uiCategory
+            .apply {
+                add(DisplayedSetting.ColorPicker(backgroundColor, "Background Color"))
+                add(DisplayedSetting.ColorPicker(borderColor, "Border Color"))
+                add(DisplayedSetting.ColorPicker(midgroundColor, "Midground Color"))
+                add(DisplayedSetting.ColorPicker(selectedColor, "Selected Color"))
+                add(DisplayedSetting.ColorPicker(selectedBorderColor, "Selected Border Color"))
+                add(DisplayedSetting.ColorPicker(elementColor, "Element Color"))
+            }
     }
 
     private fun getSetting(setting: DisplayedSetting): Container {
@@ -62,6 +94,7 @@ class DefaultTheme: Theme() {
                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
+                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                             }
 
                         children += Container()
@@ -80,18 +113,18 @@ class DefaultTheme: Theme() {
                                 backgroundColor = Dependent {
                                     val toggled = setting.setting.value
                                     if (toggled) {
-                                        Color.fromRGB(60, 75, 250, 65)
+                                        { this@DefaultTheme.selectedColor.value }.toDependent()
                                     } else {
-                                        Color.fromRGB(0, 0, 0, 65)
+                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
                                     }
                                 }
                                 borderThickness = 0.4.toAbsolute()
                                 borderColor = Dependent { state ->
                                     val toggled = setting.setting.value
                                     if ((state["hovered"] as Boolean && !setting.setting.isForcedValue) || toggled) {
-                                        Color.fromRGB(60, 75, 250, 255)
+                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                     } else {
-                                        Color.fromRGB(0, 0, 0, 100)
+                                        { this@DefaultTheme.borderColor.value }.toDependent()
                                     }
                                 }
                                 backgroundCornerRadius = 0.01.toRelative()
@@ -144,6 +177,7 @@ class DefaultTheme: Theme() {
                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
+                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                             }
 
                         children += Container()
@@ -159,14 +193,14 @@ class DefaultTheme: Theme() {
                                 height = 0.6.toRelative()
                                 setPadding(Relative(0.2, true))
 
-                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
 
                                 borderThickness = 0.4.toAbsolute()
                                 borderColor = Dependent { state ->
                                     if (state["hovered"] as Boolean || state["interacted"] as Boolean) {
-                                        Color.fromRGB(60, 75, 250, 255)
+                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                     } else {
-                                        Color.fromRGB(0, 0, 0, 100)
+                                        { this@DefaultTheme.borderColor.value }.toDependent()
                                     }
                                 }
                                 backgroundCornerRadius = 0.01.toRelative()
@@ -251,6 +285,7 @@ class DefaultTheme: Theme() {
                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
+                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                             }
 
                         children += Container()
@@ -268,17 +303,17 @@ class DefaultTheme: Theme() {
 
                                 backgroundColor = Dependent { state ->
                                     if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                        Color.fromRGB(60, 75, 250, 65)
+                                        { this@DefaultTheme.selectedColor.value }.toDependent()
                                     } else {
-                                        Color.fromRGB(0, 0, 0, 65)
+                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
                                     }
                                 }
                                 borderThickness = 0.4.toAbsolute()
                                 borderColor = Dependent { state ->
                                     if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                        Color.fromRGB(60, 75, 250, 255)
+                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                     } else {
-                                        Color.fromRGB(0, 0, 0, 100)
+                                        { this@DefaultTheme.borderColor.value }.toDependent()
                                     }
                                 }
                                 backgroundCornerRadius = 0.01.toRelative()
@@ -309,6 +344,7 @@ class DefaultTheme: Theme() {
                                             }
                                         }.toDependent()
                                         scale = 0.01.toRelative()
+                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                     }
                             }
 
@@ -341,6 +377,7 @@ class DefaultTheme: Theme() {
                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
+                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                             }
 
                         children += Container()
@@ -358,17 +395,17 @@ class DefaultTheme: Theme() {
 
                                 backgroundColor = Dependent { state ->
                                     if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                        Color.fromRGB(60, 75, 250, 65)
+                                        { this@DefaultTheme.selectedColor.value }.toDependent()
                                     } else {
-                                        Color.fromRGB(0, 0, 0, 65)
+                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
                                     }
                                 }
                                 borderThickness = 0.4.toAbsolute()
                                 borderColor = Dependent { state ->
                                     if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                        Color.fromRGB(60, 75, 250, 255)
+                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                     } else {
-                                        Color.fromRGB(0, 0, 0, 100)
+                                        { this@DefaultTheme.borderColor.value }.toDependent()
                                     }
                                 }
                                 backgroundCornerRadius = 0.01.toRelative()
@@ -431,7 +468,7 @@ class DefaultTheme: Theme() {
                                             setting.setting.value.toString()
                                         }.toDependent()
                                         scale = 0.01.toRelative()
-                                        textColor = Color.WHITE.toAbsolute()
+                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                     }
 
                                 onStateUpdate["clickThroughValue"] = { state ->
@@ -570,6 +607,7 @@ class DefaultTheme: Theme() {
                                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                 text = setting.displayName.toAbsolute()
                                                 scale = 0.0033.toRelative()
+                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                             }
 
                                         children += Container()
@@ -583,9 +621,9 @@ class DefaultTheme: Theme() {
                                                 x = Side.NEGATIVE.toSide()
                                                 width = Relative(1.7, true)
 
-                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
-                                                borderColor = Color.fromRGB(0, 0, 0, 100).toAbsolute()
+                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                 backgroundCornerRadius = 0.015.toRelative()
 
                                                 addChild(Container()
@@ -731,6 +769,7 @@ class DefaultTheme: Theme() {
                                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                 text = setting.displayName.toAbsolute()
                                                 scale = 0.0033.toRelative()
+                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                             }
 
                                         children += Container()
@@ -831,8 +870,8 @@ class DefaultTheme: Theme() {
                                 backgroundCornerRadius = 0.0155.toRelative()
                                 setPadding(0.0125.toRelative())
 
-                                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
+                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                 borderThickness = 0.4.toAbsolute()
 
                                 onUpdate += { state ->
@@ -850,6 +889,7 @@ class DefaultTheme: Theme() {
                                                 setPadding(0.2.toRelative())
 
                                                 backgroundImage = "sorus/ui/sorus.png".toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                             })
 
                                         addChild(Container()
@@ -858,7 +898,7 @@ class DefaultTheme: Theme() {
                                                 height = 0.6.toAbsolute()
                                                 setPadding(0.1.toRelative())
 
-                                                backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                             })
 
                                         val tabs = arrayOf("home", "settings", "plugins")
@@ -874,17 +914,17 @@ class DefaultTheme: Theme() {
 
                                                     backgroundColor = Dependent { state ->
                                                         return@Dependent if (state["tab"] == tab || (tab == "home" && state["tab"] == null)) {
-                                                            Color.fromRGB(60, 75, 250, 65)
+                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
                                                         } else {
-                                                            Color.fromRGB(0, 0, 0, 65)
+                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                         }
                                                     }
 
                                                     borderColor = Dependent { state ->
                                                         return@Dependent if (state["tab"] == tab || (tab == "home" && state["tab"] == null) || state["hovered"] as Boolean) {
-                                                            Color.fromRGB(60, 75, 250, 255)
+                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                         } else {
-                                                            Color.fromRGB(10, 10, 10, 150)
+                                                            { this@DefaultTheme.borderColor.value }.toDependent()
                                                         }
                                                     }
 
@@ -896,6 +936,7 @@ class DefaultTheme: Theme() {
                                                             height = 0.5.toRelative()
 
                                                             backgroundImage = "sorus/ui/navbar/$tab.png".toAbsolute()
+                                                            backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                         }
 
                                                     onClick = { state ->
@@ -964,8 +1005,8 @@ class DefaultTheme: Theme() {
                                                 setPadding(0.0125.toRelative())
                                                 paddingLeft = 0.0.toAbsolute()
 
-                                                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
+                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
 
                                                 onInit += {
@@ -984,6 +1025,7 @@ class DefaultTheme: Theme() {
                                                                     fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
                                                                     scale = 0.0075.toRelative()
                                                                     text = "Profiles".toAbsolute()
+                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                 }
                                                         }
 
@@ -1030,6 +1072,7 @@ class DefaultTheme: Theme() {
                                                                     }
 
                                                                     text = name.toAbsolute()
+                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                 }
                                                         }
 
@@ -1047,17 +1090,17 @@ class DefaultTheme: Theme() {
                                                                     backgroundCornerRadius = 0.025.toRelative()
                                                                     backgroundColor = Dependent { state ->
                                                                         if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                                                            Color.fromRGB(60, 75, 250, 65)
+                                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                         } else {
-                                                                            Color.fromRGB(0, 0, 0, 65)
+                                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                         }
                                                                     }
                                                                     borderThickness = 0.4.toAbsolute()
                                                                     borderColor = Dependent { state ->
                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                                                            Color.fromRGB(60, 75, 250, 255)
+                                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                         } else {
-                                                                            Color.fromRGB(0, 0, 0, 100)
+                                                                            { this@DefaultTheme.borderColor.value }.toDependent()
                                                                         }
                                                                     }
 
@@ -1069,6 +1112,7 @@ class DefaultTheme: Theme() {
                                                                             setPadding(Relative(0.2, true))
 
                                                                             backgroundImage = "sorus/ui/profiles/create.png".toAbsolute()
+                                                                            backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                         }
 
                                                                     children += Text()
@@ -1079,6 +1123,7 @@ class DefaultTheme: Theme() {
                                                                             scale = 0.012.toRelative()
                                                                             fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                             text = "Create".toAbsolute()
+                                                                            textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                         }
 
                                                                     onClick = { state ->
@@ -1095,17 +1140,17 @@ class DefaultTheme: Theme() {
                                                                     backgroundCornerRadius = 0.025.toRelative()
                                                                     backgroundColor = Dependent { state ->
                                                                         if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                                                            Color.fromRGB(60, 75, 250, 65)
+                                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                         } else {
-                                                                            Color.fromRGB(0, 0, 0, 65)
+                                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                         }
                                                                     }
                                                                     borderThickness = 0.4.toAbsolute()
                                                                     borderColor = Dependent { state ->
                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                                                            Color.fromRGB(60, 75, 250, 255)
+                                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                         } else {
-                                                                            Color.fromRGB(0, 0, 0, 100)
+                                                                            { this@DefaultTheme.borderColor.value }.toDependent()
                                                                         }
                                                                     }
 
@@ -1117,6 +1162,7 @@ class DefaultTheme: Theme() {
                                                                             setPadding(Relative(0.2, true))
 
                                                                             backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
+                                                                            backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                         }
 
                                                                     children += Text()
@@ -1128,6 +1174,7 @@ class DefaultTheme: Theme() {
                                                                             scale = 0.012.toRelative()
                                                                             fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                             text = "Delete".toAbsolute()
+                                                                            textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                         }
 
                                                                     onClick = { state ->
@@ -1144,7 +1191,7 @@ class DefaultTheme: Theme() {
                                                             height = 0.6.toAbsolute()
                                                             setPadding(0.05.toRelative())
 
-                                                            backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                            backgroundColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                         }
 
                                                     children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
@@ -1169,15 +1216,15 @@ class DefaultTheme: Theme() {
 
                                                                                     backgroundColor = Dependent {
                                                                                         return@Dependent if (SettingManager.currentProfile == profile.first) {
-                                                                                            Color.fromRGB(60, 75, 250, 65)
+                                                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                                         } else {
-                                                                                            Color.fromRGB(0, 0, 0, 65)
+                                                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                                         }
                                                                                     }
 
                                                                                     borderColor = Dependent { state ->
                                                                                         return@Dependent if (SettingManager.currentProfile == profile.first || state["hovered"] as Boolean) {
-                                                                                            Color.fromRGB(60, 75, 250, 255)
+                                                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                         } else {
                                                                                             Color.fromRGB(10, 10, 10, 150)
                                                                                         }
@@ -1214,6 +1261,7 @@ class DefaultTheme: Theme() {
                                                                                             }
 
                                                                                             text = name.toAbsolute()
+                                                                                            textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                                         }
 
                                                                                     onClick = {
@@ -1254,8 +1302,8 @@ class DefaultTheme: Theme() {
                                                 backgroundCornerRadius = 0.0155.toRelative()
                                                 setPadding(0.0125.toRelative())
 
-                                                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
+                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
 
                                                 storedState += "hasInitSettings"
@@ -1290,6 +1338,7 @@ class DefaultTheme: Theme() {
                                                                     fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
                                                                     scale = 0.0031.toRelative()
                                                                     text = "Settings | ${category.displayName}".toAbsolute()
+                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                 }
 
                                                             if (category.parent != null) {
@@ -1304,17 +1353,17 @@ class DefaultTheme: Theme() {
 
                                                                         backgroundColor = Dependent { state ->
                                                                             if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                                                                Color.fromRGB(60, 75, 250, 65)
+                                                                                { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                             } else {
-                                                                                Color.fromRGB(0, 0, 0, 65)
+                                                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                             }
                                                                         }
                                                                         borderThickness = 0.4.toAbsolute()
                                                                         borderColor = Dependent { state ->
                                                                             if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                                                                Color.fromRGB(60, 75, 250, 255)
+                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                             } else {
-                                                                                Color.fromRGB(0, 0, 0, 100)
+                                                                                { this@DefaultTheme.borderColor.value }.toDependent()
                                                                             }
                                                                         }
 
@@ -1324,6 +1373,7 @@ class DefaultTheme: Theme() {
                                                                                 height = 0.5.toRelative()
 
                                                                                 backgroundImage = "sorus/ui/settings/back.png".toAbsolute()
+                                                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
                                                                         onClick = { state ->
@@ -1364,18 +1414,18 @@ class DefaultTheme: Theme() {
 
                                                                                     backgroundColor = Dependent { state ->
                                                                                         if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                                                                            Color.fromRGB(60, 75, 250, 65)
+                                                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                                         } else {
-                                                                                            Color.fromRGB(0, 0, 0, 65)
+                                                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                                         }
                                                                                     }
                                                                                     borderThickness = 0.4.toAbsolute()
-                                                                                    borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                                                    borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                     borderColor = Dependent { state ->
                                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                                                                            Color.fromRGB(60, 75, 250, 255)
+                                                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                         } else {
-                                                                                            Color.fromRGB(0, 0, 0, 100)
+                                                                                            { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                         }
                                                                                     }
 
@@ -1394,6 +1444,7 @@ class DefaultTheme: Theme() {
                                                                                             scale = 0.006.toRelative()
                                                                                             fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                                             text = displayed.displayName.toAbsolute()
+                                                                                            textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                                         }
 
                                                                                     onClick = { state ->
@@ -1411,7 +1462,7 @@ class DefaultTheme: Theme() {
                                                                     width = 0.9.toRelative()
                                                                     height = 0.6.toAbsolute()
 
-                                                                    backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                                    backgroundColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                                 })
 
                                                             for (setting in category.components) {
@@ -1429,17 +1480,17 @@ class DefaultTheme: Theme() {
 
                                                                                     backgroundColor = Dependent { state ->
                                                                                         if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                                                                            Color.fromRGB(60, 75, 250, 65)
+                                                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                                         } else {
-                                                                                            Color.fromRGB(0, 0, 0, 65)
+                                                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                                         }
                                                                                     }
                                                                                     borderThickness = 0.4.toAbsolute()
                                                                                     borderColor = Dependent { state ->
                                                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                                                                            Color.fromRGB(60, 75, 250, 255)
+                                                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                         } else {
-                                                                                            Color.fromRGB(0, 0, 0, 100)
+                                                                                            { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                         }
                                                                                     }
 
@@ -1448,6 +1499,7 @@ class DefaultTheme: Theme() {
                                                                                             scale = 0.011.toRelative()
                                                                                             fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                                                             text = "Reset".toAbsolute()
+                                                                                            textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                                         }
 
                                                                                     onUpdate += { state ->
@@ -1503,8 +1555,8 @@ class DefaultTheme: Theme() {
                                                 paddingLeft = 0.0.toAbsolute()
                                                 backgroundCornerRadius = 0.0155.toRelative()
 
-                                                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
+                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                 borderThickness = 0.425.toAbsolute()
                                                 onInit += {
                                                     clear()
@@ -1523,6 +1575,7 @@ class DefaultTheme: Theme() {
                                                                     fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
                                                                     scale = 0.0045.toRelative()
                                                                     text = "Loaded Plugins".toAbsolute()
+                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                 }
                                                         }
 
@@ -1537,8 +1590,8 @@ class DefaultTheme: Theme() {
                                                                         backgroundCornerRadius = 0.025.toRelative()
                                                                         borderThickness = 0.4.toAbsolute()
 
-                                                                        backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
-                                                                        borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
 
                                                                         children += Container()
                                                                             .apply {
@@ -1559,6 +1612,7 @@ class DefaultTheme: Theme() {
                                                                                 fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                                 scale = 0.005.toRelative()
                                                                                 text = plugin.name.toAbsolute()
+                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
                                                                         children += Text()
@@ -1570,6 +1624,7 @@ class DefaultTheme: Theme() {
                                                                                 fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
                                                                                 scale = 0.0035.toRelative()
                                                                                 text = plugin.description.toAbsolute()
+                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
                                                                         children += Container()
@@ -1582,12 +1637,12 @@ class DefaultTheme: Theme() {
                                                                                 backgroundCornerRadius = 0.015.toRelative()
                                                                                 borderThickness = 0.4.toAbsolute()
 
-                                                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
 
-                                                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                 borderColor = { state: Map<String, Any> ->
                                                                                     if (state["hovered"] as Boolean) {
-                                                                                        Color.fromRGB(60, 75, 250, 255)
+                                                                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                     } else {
                                                                                         Color.fromRGB(10, 10, 10, 150)
                                                                                     }
@@ -1599,7 +1654,7 @@ class DefaultTheme: Theme() {
                                                                                         height = 1.0.toCopy()
 
                                                                                         backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
-                                                                                        backgroundColor = Color.fromRGB(220, 30, 30, 255).toAbsolute()
+                                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                                     }
 
                                                                                 onClick = { state ->
@@ -1628,8 +1683,8 @@ class DefaultTheme: Theme() {
                                                 setPadding(0.0125.toRelative())
                                                 backgroundCornerRadius = 0.0155.toRelative()
 
-                                                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
+                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
 
                                                 onInit += {
@@ -1649,6 +1704,7 @@ class DefaultTheme: Theme() {
                                                                     fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
                                                                     scale = 0.0045.toRelative()
                                                                     text = "Available Plugins".toAbsolute()
+                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                 }
                                                         }
 
@@ -1672,8 +1728,8 @@ class DefaultTheme: Theme() {
                                                                         backgroundCornerRadius = 0.025.toRelative()
                                                                         borderThickness = 0.4.toAbsolute()
 
-                                                                        backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
-                                                                        borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
 
                                                                         children += Container()
                                                                             .apply {
@@ -1694,6 +1750,7 @@ class DefaultTheme: Theme() {
                                                                                 fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                                 scale = 0.005.toRelative()
                                                                                 text = (pluginJson["name"] as String?).toAbsolute()
+                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
                                                                         children += Text()
@@ -1705,6 +1762,7 @@ class DefaultTheme: Theme() {
                                                                                 fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
                                                                                 scale = 0.0035.toRelative()
                                                                                 text = (pluginJson["description"] as String?).toAbsolute()
+                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
                                                                         children += Container()
@@ -1717,10 +1775,10 @@ class DefaultTheme: Theme() {
                                                                                 backgroundCornerRadius = 0.015.toRelative()
                                                                                 borderThickness = 0.4.toAbsolute()
 
-                                                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                                 borderColor = { state: Map<String, Any> ->
                                                                                     if (state["hovered"] as Boolean) {
-                                                                                        Color.fromRGB(60, 75, 250, 255)
+                                                                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                     } else {
                                                                                         Color.fromRGB(10, 10, 10, 150)
                                                                                     }
@@ -1732,6 +1790,7 @@ class DefaultTheme: Theme() {
                                                                                         height = 1.0.toCopy()
 
                                                                                         backgroundImage = "sorus/ui/plugins/download.png".toAbsolute()
+                                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                                     }
 
                                                                                 onClick = { state ->
@@ -1794,8 +1853,8 @@ class DefaultTheme: Theme() {
                         backgroundCornerRadius = 0.01.toRelative()
 
                         borderThickness = 0.4.toAbsolute()
-                        backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
-                        borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                        backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
+                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
 
                         storedState += "searchParameter"
                         storedState += "searchResults"
@@ -1826,6 +1885,7 @@ class DefaultTheme: Theme() {
                                                 setPadding(0.025.toRelative())
 
                                                 backgroundImage = "sorus/ui/search/magnifying_glass.png".toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                             }
 
                                         children += Text()
@@ -1842,6 +1902,7 @@ class DefaultTheme: Theme() {
                                                         state["searchParameter"] as String
                                                     }
                                                 }.toDependent()
+                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                             }
 
                                         var prevKeyTime = System.currentTimeMillis()
@@ -1902,7 +1963,7 @@ class DefaultTheme: Theme() {
                                         width = 0.9.toRelative()
                                         height = 0.6.toAbsolute()
 
-                                        backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                        backgroundColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                     }
 
                                 onStateUpdate["searchParameter"] = {
@@ -1917,13 +1978,13 @@ class DefaultTheme: Theme() {
 
                                                 backgroundCornerRadius = 0.025.toRelative()
 
-                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
                                                 borderColor = { state: Map<String, Any> ->
                                                     if (state.getOrDefault("selectedResult", 0) == i) {
-                                                        Color.fromRGB(60, 75, 250, 255)
+                                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                     } else {
-                                                        Color.fromRGB(0, 0, 0, 100)
+                                                        { this@DefaultTheme.borderColor.value }.toDependent()
                                                     }
                                                 }.toDependent()
 
@@ -1945,6 +2006,7 @@ class DefaultTheme: Theme() {
                                                         fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                         scale = 0.006.toRelative()
                                                         text = result.displayName.toAbsolute()
+                                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                     }
                                             }
                                     }

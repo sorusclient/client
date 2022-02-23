@@ -1,7 +1,6 @@
 package com.github.sorusclient.client.ui.theme
 
-import com.github.sorusclient.client.adapter.event.InitializeEvent
-import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.ui.theme.default.DefaultTheme
 
 object ThemeManager {
@@ -9,9 +8,17 @@ object ThemeManager {
     lateinit var currentTheme: Theme
 
     fun initialize() {
-        EventManager.register<InitializeEvent> {
-            currentTheme = DefaultTheme()
-        }
+        currentTheme = DefaultTheme()
+
+        SettingManager.settingsCategory
+            .apply {
+                data["theme"] = currentTheme.category
+            }
+
+        SettingManager.mainUICategory
+            .apply {
+                add(currentTheme.uiCategory)
+            }
     }
 
 }
