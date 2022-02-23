@@ -6,6 +6,7 @@ import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.ui.framework.constraint.Absolute
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.util.Color
+import kotlin.math.max
 
 class Text : Component() {
 
@@ -118,7 +119,7 @@ class Text : Component() {
                     cachedFontId = fontRenderer!!.getStringValue(this)
                     AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
                 }
-                return AdapterManager.getAdapter().renderer.getTextWidth(cachedFontId!!, text!!.getStringValue(this)!!) * scale.getPaddingValue(this)
+                return max(0.01, AdapterManager.getAdapter().renderer.getTextWidth(cachedFontId!!, text!!.getStringValue(this)!!) * scale.getPaddingValue(this))
             }
 
         override val height: Double

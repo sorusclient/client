@@ -14,6 +14,7 @@ import com.github.sorusclient.client.server.ServerIntegrationManager
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.ui.framework.ContainerRenderer
+import com.github.sorusclient.client.ui.theme.ThemeManager
 import com.github.sorusclient.client.util.keybind.KeyBindManager
 import java.util.*
 
@@ -38,6 +39,7 @@ class Sorus : Listener {
         this.register(PluginManager)
         this.register(ServerIntegrationManager)
         this.register(SettingManager)
+        this.register(ThemeManager)
         this.register(UserInterface)
 
         PluginManager.findPlugins()
@@ -45,19 +47,22 @@ class Sorus : Listener {
         HUDManager.initialize()
         ContainerRenderer.initialize()
 
+        EventManager.register<InitializeEvent> {
+            AdapterManager.getAdapter().setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
+        }
+
         SettingManager.initialize()
         UserInterface.initialize()
-        Runtime.getRuntime().addShutdownHook(Thread {
-            SettingManager.saveCurrent()
-        })
+
+        ThemeManager.initialize()
 
         EventManager.register<GetClientBrandEvent> { event ->
             event.brand = "sorus"
         }
 
-        EventManager.register<InitializeEvent> {
-            AdapterManager.getAdapter().setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
-        }
+        Runtime.getRuntime().addShutdownHook(Thread {
+            SettingManager.saveCurrent()
+        })
     }
 
     fun register(component: Any) {
