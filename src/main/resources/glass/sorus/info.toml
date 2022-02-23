@@ -8,5 +8,5 @@ implementations = [
 
 [listeners]
 initialize = [
-    "Sorus",
+    "Sorus"
 ]

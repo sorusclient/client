@@ -1,11 +1,15 @@
 package com.github.sorusclient.client.ui
 
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.glassmc.loader.impl.GlassLoaderImpl
+import com.github.glassmc.loader.impl.loader.GlassClassLoader
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.plugin.PluginManager
 import com.github.sorusclient.client.setting.*
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.Displayed
@@ -18,7 +22,9 @@ import com.github.sorusclient.client.util.AssetUtil
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.keybind.KeyBind
 import com.github.sorusclient.client.util.keybind.KeyBindManager
+import org.apache.commons.io.FileUtils
 import org.json.JSONObject
+import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.net.URL
 import kotlin.collections.set
@@ -913,7 +919,7 @@ object UserInterface {
                                                 backgroundColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                             })
 
-                                        val tabs = arrayOf("home", "settings")
+                                        val tabs = arrayOf("home", "settings", "plugins")
 
                                         for (tab in tabs) {
                                             addChild(Container()
@@ -1285,7 +1291,7 @@ object UserInterface {
                                                             }
 
                                                             for (onInit in onInit) {
-                                                                onInit(com.github.sorusclient.client.util.Pair(this, HashMap()))
+                                                                onInit(Pair(this, HashMap()))
                                                             }
 
                                                             onStateUpdate["hasInitProfiles"] = { state ->
@@ -1298,7 +1304,7 @@ object UserInterface {
                                                 }
 
                                                 for (onInit in onInit) {
-                                                    onInit(com.github.sorusclient.client.util.Pair(this, HashMap()))
+                                                    onInit(Pair(this, HashMap()))
                                                 }
 
                                                 storedState += "hasInitProfiles"
@@ -1544,7 +1550,276 @@ object UserInterface {
                                                 }
 
                                                 for (onInit in onInit) {
-                                                    onInit(com.github.sorusclient.client.util.Pair(this, HashMap()))
+                                                    onInit(Pair(this, HashMap()))
+                                                }
+                                            }
+                                    })
+
+                                addChild("plugins", Container()
+                                    .apply {
+                                        storedState += "hasInitPlugins"
+                                        onStateUpdate["hasInitPlugins"] = { state ->
+                                            if (state["hasInitPlugins"] != null && state["hasInitPlugins"] == false) {
+                                                state["hasInitPlugins"] = true
+                                                state["hasInit"] = false
+                                            }
+                                        }
+
+                                        children += Container()
+                                            .apply {
+                                                x = Side.NEGATIVE.toSide()
+                                                width = 0.475.toRelative()
+
+                                                setPadding(0.0125.toRelative())
+                                                paddingLeft = 0.0.toAbsolute()
+                                                backgroundCornerRadius = 0.0155.toRelative()
+
+                                                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
+                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                borderThickness = 0.425.toAbsolute()
+                                                onInit += {
+                                                    clear()
+
+                                                    children += Container()
+                                                        .apply {
+                                                            y = Side.NEGATIVE.toSide()
+                                                            height = 0.035.toRelative()
+                                                            setPadding(0.035.toRelative())
+                                                            paddingBottom = 0.0.toAbsolute()
+
+                                                            children += Text()
+                                                                .apply {
+                                                                    x = Side.NEGATIVE.toSide()
+
+                                                                    fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
+                                                                    scale = 0.0045.toRelative()
+                                                                    text = "Loaded Plugins".toAbsolute()
+                                                                }
+                                                        }
+
+                                                    children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
+                                                        .apply {
+                                                            for (plugin in PluginManager.getPlugins()) {
+                                                                children += Container()
+                                                                    .apply {
+                                                                        height = 0.125.toCopy()
+                                                                        setPadding(0.025.toRelative())
+
+                                                                        backgroundCornerRadius = 0.025.toRelative()
+                                                                        borderThickness = 0.4.toAbsolute()
+
+                                                                        backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                                        borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                width = 1.0.toCopy()
+                                                                                setPadding(Relative(0.15, true))
+
+                                                                                backgroundCornerRadius = 0.02.toRelative()
+                                                                                backgroundImage = plugin.logo.toAbsolute()
+                                                                            }
+
+                                                                        children += Text()
+                                                                            .apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                y = Side.NEGATIVE.toSide()
+                                                                                setPadding(Relative(0.175, true))
+
+                                                                                fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
+                                                                                scale = 0.005.toRelative()
+                                                                                text = plugin.name.toAbsolute()
+                                                                            }
+
+                                                                        children += Text()
+                                                                            .apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                y = Side.POSITIVE.toSide()
+                                                                                setPadding(Relative(0.175, true))
+
+                                                                                fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
+                                                                                scale = 0.0035.toRelative()
+                                                                                text = plugin.description.toAbsolute()
+                                                                            }
+
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                x = Side.POSITIVE.toSide()
+                                                                                width = 1.0.toCopy()
+
+                                                                                setPadding(Relative(0.2, true))
+
+                                                                                backgroundCornerRadius = 0.015.toRelative()
+                                                                                borderThickness = 0.4.toAbsolute()
+
+                                                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+
+                                                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                                                borderColor = { state: Map<String, Any> ->
+                                                                                    if (state["hovered"] as Boolean) {
+                                                                                        Color.fromRGB(60, 75, 250, 255)
+                                                                                    } else {
+                                                                                        Color.fromRGB(10, 10, 10, 150)
+                                                                                    }
+                                                                                }.toDependent()
+
+                                                                                children += Container()
+                                                                                    .apply {
+                                                                                        width = 0.5.toRelative()
+                                                                                        height = 1.0.toCopy()
+
+                                                                                        backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
+                                                                                        backgroundColor = Color.fromRGB(220, 30, 30, 255).toAbsolute()
+                                                                                    }
+
+                                                                                onClick = { state ->
+                                                                                    PluginManager.remove(plugin)
+                                                                                    UserInterface.javaClass.classLoader.javaClass.getMethod("removeURL", URL::class.java).invoke(UserInterface.javaClass.classLoader, plugin.file.toURI().toURL())
+                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).preLoad()
+                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).loadUpdateShards()
+                                                                                    state["hasInitPlugins"] = false
+                                                                                }
+                                                                            }
+                                                                    }
+                                                            }
+                                                        }
+                                                }
+
+                                                for (onInit in onInit) {
+                                                    onInit(Pair(this, HashMap()))
+                                                }
+                                            }
+
+                                        children += Container()
+                                            .apply {
+                                                x = Side.POSITIVE.toSide()
+
+                                                setPadding(0.0125.toRelative())
+                                                backgroundCornerRadius = 0.0155.toRelative()
+
+                                                backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
+                                                borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+                                                borderThickness = 0.4.toAbsolute()
+
+                                                onInit += {
+                                                    clear()
+
+                                                    children += Container()
+                                                        .apply {
+                                                            y = Side.NEGATIVE.toSide()
+                                                            height = 0.035.toRelative()
+                                                            setPadding(0.035.toRelative())
+                                                            paddingBottom = 0.0.toAbsolute()
+
+                                                            children += Text()
+                                                                .apply {
+                                                                    x = Side.NEGATIVE.toSide()
+
+                                                                    fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
+                                                                    scale = 0.0045.toRelative()
+                                                                    text = "Available Plugins".toAbsolute()
+                                                                }
+                                                        }
+
+                                                    children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
+                                                        .apply {
+                                                            val plugins = AssetUtil.getAllPlugins()
+                                                            for (plugin in plugins) {
+                                                                if (PluginManager.getPlugins().any { it.id == plugin }) continue
+
+                                                                val pluginJarData = AssetUtil.getPluginData(plugin)
+                                                                val pluginJson = JSONObject(String(pluginJarData["plugin.json"]!!))
+
+                                                                val logoData = pluginJarData[pluginJson["logo"]!!]!!
+                                                                AdapterManager.getAdapter().renderer.createTexture("plugin-$plugin", logoData, true)
+
+                                                                children += Container()
+                                                                    .apply {
+                                                                        height = 0.125.toCopy()
+                                                                        setPadding(0.025.toRelative())
+
+                                                                        backgroundCornerRadius = 0.025.toRelative()
+                                                                        borderThickness = 0.4.toAbsolute()
+
+                                                                        backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                                        borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
+
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                width = 1.0.toCopy()
+                                                                                setPadding(Relative(0.15, true))
+
+                                                                                backgroundCornerRadius = 0.025.toRelative()
+                                                                                backgroundImage = "plugin-$plugin".toAbsolute()
+                                                                            }
+
+                                                                        children += Text()
+                                                                            .apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                y = Side.NEGATIVE.toSide()
+                                                                                setPadding(Relative(0.175, true))
+
+                                                                                fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
+                                                                                scale = 0.005.toRelative()
+                                                                                text = (pluginJson["name"] as String?).toAbsolute()
+                                                                            }
+
+                                                                        children += Text()
+                                                                            .apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                y = Side.POSITIVE.toSide()
+                                                                                setPadding(Relative(0.175, true))
+
+                                                                                fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
+                                                                                scale = 0.0035.toRelative()
+                                                                                text = (pluginJson["description"] as String?).toAbsolute()
+                                                                            }
+
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                x = Side.POSITIVE.toSide()
+                                                                                width = 1.0.toCopy()
+
+                                                                                setPadding(Relative(0.2, true))
+
+                                                                                backgroundCornerRadius = 0.015.toRelative()
+                                                                                borderThickness = 0.4.toAbsolute()
+
+                                                                                backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
+                                                                                borderColor = { state: Map<String, Any> ->
+                                                                                    if (state["hovered"] as Boolean) {
+                                                                                        Color.fromRGB(60, 75, 250, 255)
+                                                                                    } else {
+                                                                                        Color.fromRGB(10, 10, 10, 150)
+                                                                                    }
+                                                                                }.toDependent()
+
+                                                                                children += Container()
+                                                                                    .apply {
+                                                                                        width = 0.5.toRelative()
+                                                                                        height = 1.0.toCopy()
+
+                                                                                        backgroundImage = "sorus/ui/plugins/download.png".toAbsolute()
+                                                                                    }
+
+                                                                                onClick = { state ->
+                                                                                    val url = URL("${AssetUtil.basePluginsUrl}/$plugin.jar")
+                                                                                    FileUtils.copyInputStreamToFile(url.openStream(), File("shards/$plugin.jar"))
+                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).preLoad()
+                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).loadUpdateShards()
+                                                                                    PluginManager.findPlugins()
+                                                                                    state["hasInitPlugins"] = false
+                                                                                }
+                                                                            }
+                                                                    }
+                                                            }
+                                                        }
+                                                }
+
+                                                for (onInit in onInit) {
+                                                    onInit(Pair(this, HashMap()))
                                                 }
                                             }
                                     })

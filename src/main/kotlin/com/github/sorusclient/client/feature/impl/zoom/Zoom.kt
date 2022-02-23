@@ -1,6 +1,8 @@
 package com.github.sorusclient.client.feature.impl.zoom
 
+import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
+import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.GetFOVEvent
 import com.github.sorusclient.client.adapter.event.GetSensitivityEvent
 import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
@@ -75,7 +77,9 @@ class Zoom {
     }
 
     private fun onKeyUpdate(pressed: Boolean) {
-        toggled = pressed
+        if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME) {
+            toggled = pressed
+        }
     }
 
     private fun applyZoom(): Boolean {

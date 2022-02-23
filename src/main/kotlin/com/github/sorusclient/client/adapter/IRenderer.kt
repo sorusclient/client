@@ -1,6 +1,7 @@
 package com.github.sorusclient.client.adapter
 
 import com.github.sorusclient.client.util.Color
+import org.apache.commons.io.IOUtils
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -53,7 +54,11 @@ interface IRenderer {
         }
     }
 
-    fun createTexture(id: String, inputStream: InputStream, antialias: Boolean)
+    fun createTexture(id: String, inputStream: InputStream, antialias: Boolean) {
+        createTexture(id, IOUtils.toByteArray(inputStream), antialias)
+    }
+
+    fun createTexture(id: String, bytes: ByteArray, antialias: Boolean)
 
     fun scissor(x: Double, y: Double, width: Double, height: Double)
     fun endScissor()

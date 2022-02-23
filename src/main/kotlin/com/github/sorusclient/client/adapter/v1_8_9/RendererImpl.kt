@@ -20,6 +20,7 @@ import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.client.util.Window
 import java.awt.*
 import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.lang.reflect.Method
@@ -354,10 +355,10 @@ class RendererImpl : IRenderer {
         return texture
     }
 
-    private fun setupTexture(inputStream: InputStream, antialias: Boolean): Int {
+    private fun setupTexture(bytes: ByteArray, antialias: Boolean): Int {
         var glId = -1
         try {
-            val bufferedImage = ImageIO.read(inputStream)
+            val bufferedImage = ImageIO.read(ByteArrayInputStream(bytes))
             glId = GL11.glGenTextures()
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, glId)
             val filter1: Int
@@ -426,9 +427,9 @@ class RendererImpl : IRenderer {
         GlStateManager.bindTexture(0)
     }
 
-    override fun createTexture(id: String, inputStream: InputStream, antialias: Boolean) {
+    override fun createTexture(id: String, bytes: ByteArray, antialias: Boolean) {
         if (this.textures.getOrDefault(id, -1) != -1) return
-        val texture = setupTexture(inputStream, antialias)
+        val texture = setupTexture(bytes, antialias)
         this.textures[id] = texture
     }
 

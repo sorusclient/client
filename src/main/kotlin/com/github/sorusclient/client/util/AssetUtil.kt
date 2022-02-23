@@ -1,14 +1,20 @@
 package com.github.sorusclient.client.util
 
 import org.apache.commons.io.IOUtils
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
+import java.util.jar.JarInputStream
+import java.util.zip.ZipEntry
 
 object AssetUtil {
 
-    const val baseServersUrl = "https://raw.githubusercontent.com/sorusclient/asset/main/server"
+    private const val baseUrl = "https://raw.githubusercontent.com/sorusclient/asset/main"
+    const val baseServersUrl = "$baseUrl/server"
     private const val serversJsonUrl = "$baseServersUrl/servers.json"
+    const val basePluginsUrl = "$baseUrl/plugin"
+    private const val pluginsJsonUrl = "$basePluginsUrl/plugins.json"
 
     @JvmStatic
     fun getAllServerJson(): Map<String, String> {
@@ -49,6 +55,30 @@ object AssetUtil {
             e.printStackTrace()
         }
         return null
+    }
+
+    @JvmStatic
+    fun getAllPlugins(): List<String> {
+        val inputStream = URL(pluginsJsonUrl).openStream()
+        val jsonString = IOUtils.toString(inputStream)
+        inputStream.close()
+        return JSONArray(jsonString).toList() as List<String>
+    }
+
+    @JvmStatic
+    fun getPluginData(id: String): Map<String, ByteArray> {
+        val inputStream1 = JarInputStream(URL("${basePluginsUrl}/$id.jar").openStream())
+
+        val map = HashMap<String, ByteArray>()
+
+        var entry: ZipEntry? = inputStream1.nextEntry
+        while (entry != null) {
+            map[entry.name] = IOUtils.toByteArray(inputStream1)
+            entry = inputStream1.nextEntry
+        }
+        inputStream1.close()
+
+        return map
     }
 
 }

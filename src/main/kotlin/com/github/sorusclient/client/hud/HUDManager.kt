@@ -26,7 +26,6 @@ import com.github.sorusclient.client.ui.framework.constraint.Relative
 import com.github.sorusclient.client.ui.framework.constraint.Side
 import com.github.sorusclient.client.util.Axis
 import com.github.sorusclient.client.util.Color
-import com.github.sorusclient.client.util.Pair
 import org.lwjgl.opengl.GL11
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
@@ -775,8 +774,8 @@ object HUDManager {
             for (hud in snapped) {
                 draggedHud!!.addAttached(hud.first as HUDElement?, hud.second as AttachType)
                 if (hud.first != null) {
-                    hud.first.clearStaticAttached(ArrayList())
-                    hud.first.addAttached(draggedHud, hud.second.reverse())
+                    (hud.first as HUDElement).clearStaticAttached(ArrayList())
+                    (hud.first as HUDElement).addAttached(draggedHud, (hud.second as AttachType).reverse())
                 }
             }
             snapped = emptyArray()

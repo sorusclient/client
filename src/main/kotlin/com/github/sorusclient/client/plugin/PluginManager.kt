@@ -9,24 +9,25 @@ object PluginManager {
 
     private val plugins: MutableList<Plugin> = ArrayList()
 
-    init {
-        try {
-            val resources = PluginManager::class.java.classLoader.getResources("plugin.json")
-            while (resources.hasMoreElements()) {
-                val resource = resources.nextElement()
-                val contents = IOUtils.toString(resource.openStream())
-                val json = JSONObject(contents)
-                val id = json.getString("id")
-                val version = json.getString("version")
-                val name = if (json.has("name")) json.getString("name") else id
-                val description = if (json.has("description")) json.getString("description") else ""
-                var filePath = resource.toString()
-                filePath = filePath.replace("jar:file:", "")
-                filePath = filePath.substring(0, filePath.indexOf("!"))
-                plugins.add(Plugin(id, version, name, description, File(filePath)))
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
+    fun findPlugins() {
+        plugins.clear()
+        val resources = PluginManager::class.java.classLoader.getResources("plugin.json")
+        while (resources.hasMoreElements()) {
+            val resource = resources.nextElement()
+            val contents = IOUtils.toString(resource.openStream())
+            val json = JSONObject(contents)
+            val id = json.getString("id")
+
+            if (plugins.any { it.id == id }) continue
+
+            val version = json.getString("version")
+            val name = if (json.has("name")) json.getString("name") else id
+            val description = if (json.has("description")) json.getString("description") else ""
+            val logo = if (json.has("logo")) json.getString("logo") else null
+            var filePath = resource.toString()
+            filePath = filePath.replace("jar:file:", "")
+            filePath = filePath.substring(0, filePath.indexOf("!"))
+            plugins.add(Plugin(id, version, name, description, File(filePath), logo))
         }
     }
 

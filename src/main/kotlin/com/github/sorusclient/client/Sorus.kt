@@ -40,6 +40,8 @@ class Sorus : Listener {
         this.register(SettingManager)
         this.register(UserInterface)
 
+        PluginManager.findPlugins()
+
         HUDManager.initialize()
         ContainerRenderer.initialize()
 

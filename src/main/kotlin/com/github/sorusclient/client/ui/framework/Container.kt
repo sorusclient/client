@@ -2,14 +2,12 @@ package com.github.sorusclient.client.ui.framework
 
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
-import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.ui.framework.constraint.Absolute
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.ui.toAbsolute
 import com.github.sorusclient.client.util.Color
-import com.github.sorusclient.client.util.Pair
 import java.util.function.Consumer
 import kotlin.collections.List
 
@@ -152,8 +150,8 @@ open class Container : Component() {
             val renderer = AdapterManager.getAdapter().renderer
             if (container.backgroundImage != null) {
                 var color = Color.WHITE
-                if (container.topLeftBackgroundColor != null) {
-                    color = container.topLeftBackgroundColor!!.getColorValue(this)
+                if (container.backgroundColor != null) {
+                    color = container.backgroundColor!!.getColorValue(this)
                 }
                 renderer.drawImage(
                     container.backgroundImage!!.getStringValue(this)!!,

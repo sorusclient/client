@@ -8,7 +8,6 @@ import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.Color
-import com.github.sorusclient.client.util.Pair
 
 class Coordinates : HUDElement("coordinates") {
 
