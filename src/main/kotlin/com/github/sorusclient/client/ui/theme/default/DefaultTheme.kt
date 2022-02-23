@@ -1687,6 +1687,13 @@ class DefaultTheme: Theme() {
                                                 borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
 
+                                                val pluginsFull = ArrayList<Triple<String, Map<String, ByteArray>, JSONObject>>()
+                                                for (plugin in AssetUtil.getAllPlugins()) {
+                                                    val pluginJarData = AssetUtil.getPluginData(plugin)
+                                                    val pluginJson = JSONObject(String(pluginJarData["plugin.json"]!!))
+                                                    pluginsFull.add(Triple(plugin, pluginJarData, pluginJson))
+                                                }
+
                                                 onInit += {
                                                     clear()
 
@@ -1710,15 +1717,11 @@ class DefaultTheme: Theme() {
 
                                                     children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
                                                         .apply {
-                                                            val plugins = AssetUtil.getAllPlugins()
-                                                            for (plugin in plugins) {
-                                                                if (PluginManager.getPlugins().any { it.id == plugin }) continue
+                                                            for (plugin in pluginsFull) {
+                                                                if (PluginManager.getPlugins().any { it.id == plugin.first }) continue
 
-                                                                val pluginJarData = AssetUtil.getPluginData(plugin)
-                                                                val pluginJson = JSONObject(String(pluginJarData["plugin.json"]!!))
-
-                                                                val logoData = pluginJarData[pluginJson["logo"]!!]!!
-                                                                AdapterManager.getAdapter().renderer.createTexture("plugin-$plugin", logoData, true)
+                                                                val logoData = plugin.second[plugin.third["logo"]!!]!!
+                                                                AdapterManager.getAdapter().renderer.createTexture("plugin-${plugin.first}", logoData, true)
 
                                                                 children += Container()
                                                                     .apply {
@@ -1738,7 +1741,7 @@ class DefaultTheme: Theme() {
                                                                                 setPadding(Relative(0.15, true))
 
                                                                                 backgroundCornerRadius = 0.025.toRelative()
-                                                                                backgroundImage = "plugin-$plugin".toAbsolute()
+                                                                                backgroundImage = "plugin-${plugin.first}".toAbsolute()
                                                                             }
 
                                                                         children += Text()
@@ -1749,7 +1752,7 @@ class DefaultTheme: Theme() {
 
                                                                                 fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                                 scale = 0.005.toRelative()
-                                                                                text = (pluginJson["name"] as String?).toAbsolute()
+                                                                                text = (plugin.third["name"] as String?).toAbsolute()
                                                                                 textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
@@ -1761,7 +1764,7 @@ class DefaultTheme: Theme() {
 
                                                                                 fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
                                                                                 scale = 0.0035.toRelative()
-                                                                                text = (pluginJson["description"] as String?).toAbsolute()
+                                                                                text = (plugin.third["description"] as String?).toAbsolute()
                                                                                 textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
