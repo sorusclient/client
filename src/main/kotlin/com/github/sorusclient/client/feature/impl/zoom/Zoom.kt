@@ -1,18 +1,17 @@
 package com.github.sorusclient.client.feature.impl.zoom
 
-import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
-import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.GetFOVEvent
 import com.github.sorusclient.client.adapter.event.GetSensitivityEvent
 import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
-import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting
+import com.github.sorusclient.client.util.keybind.KeyBind
+import com.github.sorusclient.client.util.keybind.KeyBindManager
 
 class Zoom {
 
@@ -40,15 +39,13 @@ class Zoom {
             .apply {
                 add(DisplayedCategory("Zoom")
                     .apply {
-                        add(Toggle(enabled, "Enabled"))
-                        add(KeyBind(key, "Key"))
-                        add(Slider(fov, "FOV", 15.0, 100.0))
-                        add(Slider(sensitivity, "Sensitivity", 0.25, 1.0))
-                        add(Toggle(cinematicCamera, "Cinematic Camera"))
+                        add(DisplayedSetting.Toggle(enabled, "Enabled"))
+                        add(DisplayedSetting.KeyBind(key, "Key"))
+                        add(DisplayedSetting.Slider(fov, "FOV", 15.0, 100.0))
+                        add(DisplayedSetting.Slider(sensitivity, "Sensitivity", 0.25, 1.0))
+                        add(DisplayedSetting.Toggle(cinematicCamera, "Cinematic Camera"))
                     })
             }
-
-        EventManager.register(this::onKey)
 
         EventManager.register<GetFOVEvent> { event ->
             if (applyZoom()) {
@@ -67,14 +64,17 @@ class Zoom {
                 event.useCinematicCamera = cinematicCamera.value
             }
         }
+
+        KeyBindManager.register(KeyBind(
+            {
+                key.value
+            },
+            this::onKeyUpdate
+        ))
     }
 
-    private fun onKey(event: KeyEvent) {
-        if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME) {
-            if (event.key == key.value[0] && !event.isRepeat) {
-                toggled = event.isPressed
-            }
-        }
+    private fun onKeyUpdate(pressed: Boolean) {
+        toggled = pressed
     }
 
     private fun applyZoom(): Boolean {

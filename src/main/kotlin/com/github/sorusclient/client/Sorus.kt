@@ -14,9 +14,11 @@ import com.github.sorusclient.client.server.ServerIntegrationManager
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.ui.framework.ContainerRenderer
+import com.github.sorusclient.client.util.keybind.KeyBindManager
 import java.util.*
 
 class Sorus : Listener {
+
     override fun run() {
         GlassLoader.getInstance().runHooks("post-initialize")
         val sorus = Sorus()
@@ -32,6 +34,7 @@ class Sorus : Listener {
         this.register(FeatureManager)
         this.register(HUDManager)
         this.register(IAdapter::class.java, GlassLoader.getInstance().getInterface(IAdapter::class.java))
+        this.register(KeyBindManager)
         this.register(PluginManager)
         this.register(ServerIntegrationManager)
         this.register(SettingManager)
@@ -67,4 +70,5 @@ class Sorus : Listener {
         val instance: Sorus
             get() = Objects.requireNonNull(GlassLoader.getInstance().getAPI(Sorus::class.java))
     }
+
 }

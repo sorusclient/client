@@ -6,11 +6,13 @@ import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedSetting
+import com.github.sorusclient.client.util.keybind.KeyBind
+import com.github.sorusclient.client.util.keybind.KeyBindManager
 
 class ToggleSprintSneak {
 
@@ -41,26 +43,38 @@ class ToggleSprintSneak {
             .apply {
                 add(DisplayedCategory("Toggle Sprint & Sneak"))
                     .apply {
-                        add(Toggle(toggleSprint, "Toggle Sprint"))
-                        add(Dependent(Toggle(useCustomSprintKey, "Use Custom Sprint Key"), toggleSprint, true))
-                        add(Dependent(Dependent(KeyBind(customSprintKey, "Custom Sprint Key"), toggleSprint, true), useCustomSprintKey, true))
-                        add(Toggle(toggleSneak, "Toggle Sneak"))
-                        add(Dependent(Toggle(useCustomSneakKey, "Use Custom Sneak Key"), toggleSneak, true))
-                        add(Dependent(Dependent(KeyBind(customSneakKey, "Custom Sneak Key"), toggleSneak, true), useCustomSneakKey, true))
+                        add(DisplayedSetting.Toggle(toggleSprint, "Toggle Sprint"))
+                        add(DisplayedSetting.Dependent(DisplayedSetting.Toggle(useCustomSprintKey, "Use Custom Sprint Key"), toggleSprint, true))
+                        add(DisplayedSetting.Dependent(DisplayedSetting.Dependent(DisplayedSetting.KeyBind(customSprintKey, "Custom Sprint Key"), toggleSprint, true), useCustomSprintKey, true))
+                        add(DisplayedSetting.Toggle(toggleSneak, "Toggle Sneak"))
+                        add(DisplayedSetting.Dependent(DisplayedSetting.Toggle(useCustomSneakKey, "Use Custom Sneak Key"), toggleSneak, true))
+                        add(DisplayedSetting.Dependent(DisplayedSetting.Dependent(DisplayedSetting.KeyBind(customSneakKey, "Custom Sneak Key"), toggleSneak, true), useCustomSneakKey, true))
                     }
             }
 
-        EventManager.register(this::onKey)
+        KeyBindManager.register(KeyBind(
+                {
+                    customSprintKey.value
+                },
+                this::onSprintKeyUpdate
+            ))
+        KeyBindManager.register(KeyBind(
+            {
+                customSneakKey.value
+            },
+            this::onSneakKeyUpdate
+        ))
     }
 
-    private fun onKey(event: KeyEvent) {
-        if (event.isPressed && !event.isRepeat) {
-            if (event.key == sprintKey) {
-                sprintToggled = !sprintToggled
-            }
-            if (event.key == sneakKey) {
-                sneakToggled = !sneakToggled
-            }
+    private fun onSprintKeyUpdate(pressed: Boolean) {
+        if (pressed) {
+            sprintToggled = !sprintToggled
+        }
+    }
+
+    private fun onSneakKeyUpdate(pressed: Boolean) {
+        if (pressed) {
+            sneakToggled = !sneakToggled
         }
     }
 

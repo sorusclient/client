@@ -5,14 +5,14 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.PerspectiveMode
 import com.github.sorusclient.client.adapter.ScreenType
-import com.github.sorusclient.client.adapter.event.KeyEvent
-import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedSetting
+import com.github.sorusclient.client.util.keybind.KeyBind
+import com.github.sorusclient.client.util.keybind.KeyBindManager
 
 class Perspective {
 
@@ -37,30 +37,35 @@ class Perspective {
             .apply {
                 add(DisplayedCategory("Perspective"))
                     .apply {
-                        add(Toggle(enabled, "Enabled"))
-                        add(KeyBind(key, "Key"))
+                        add(DisplayedSetting.Toggle(enabled, "Enabled"))
+                        add(DisplayedSetting.KeyBind(key, "Key"))
                     }
             }
 
-        EventManager.register(this::onKey)
+        KeyBindManager.register(KeyBind(
+                {
+                    key.value
+                },
+                this::onKeyUpdate,
+            )
+        )
     }
 
     fun isEnabled(): Boolean {
         return enabled.value
     }
 
-    private fun onKey(event: KeyEvent) {
+    private fun onKeyUpdate(pressed: Boolean) {
         val adapter = AdapterManager.getAdapter()
         if (isEnabled() && adapter.openScreen == ScreenType.IN_GAME) {
-            if (event.key == key.value[0] && !event.isRepeat) {
-                isToggled = event.isPressed
-                if (isToggled) {
-                    previousPerspective = adapter.perspective
-                    GlassLoader.getInstance().getInterface(IPerspectiveHelper::class.java).onToggle()
-                    adapter.perspective = PerspectiveMode.THIRD_PERSON_BACK
-                } else {
-                    adapter.perspective = previousPerspective
-                }
+            isToggled = pressed
+
+            if (pressed) {
+                previousPerspective = adapter.perspective
+                GlassLoader.getInstance().getInterface(IPerspectiveHelper::class.java).onToggle()
+                adapter.perspective = PerspectiveMode.THIRD_PERSON_BACK
+            } else {
+                adapter.perspective = previousPerspective
             }
         }
     }

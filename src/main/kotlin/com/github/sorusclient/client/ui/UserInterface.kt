@@ -16,10 +16,11 @@ import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.ui.framework.constraint.Dependent
 import com.github.sorusclient.client.util.AssetUtil
 import com.github.sorusclient.client.util.Color
+import com.github.sorusclient.client.util.keybind.KeyBind
+import com.github.sorusclient.client.util.keybind.KeyBindManager
 import org.json.JSONObject
 import java.lang.reflect.InvocationTargetException
 import java.net.URL
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.collections.set
 import kotlin.math.*
 
@@ -27,36 +28,37 @@ object UserInterface {
 
     private lateinit var mainGui: Container
     private lateinit var searchGui: Container
-    private val guiOpened = AtomicBoolean(false)
 
+    private lateinit var mainGuiKey: Setting<out MutableList<Key>>
     private lateinit var searchBarKey: Setting<out MutableList<Key>>
 
     fun initialize() {
         val eventManager = EventManager
         val adapter = AdapterManager.getAdapter()
 
-        eventManager.register { event: KeyEvent ->
-            if (!event.isRepeat) {
-                if (event.key === Key.SHIFT_RIGHT && event.isPressed && adapter.openScreen === ScreenType.IN_GAME) {
-                    adapter.openScreen(ScreenType.DUMMY)
+        KeyBindManager.register(KeyBind({ mainGuiKey.value }, { pressed ->
+            if (pressed && adapter.openScreen == ScreenType.IN_GAME) {
+                adapter.openScreen(ScreenType.DUMMY)
 
-                    mainGui
-                        .apply {
-                            children[0].runtime.apply {
-                                setState("tab", "home")
-                            }
+                mainGui
+                    .apply {
+                        children[0].runtime.apply {
+                            setState("tab", "home")
                         }
+                    }
 
-                    ContainerRenderer.open(mainGui)
-                    AdapterManager.getAdapter().renderer.loadBlur()
-                } else if (event.key === Key.ESCAPE && event.isPressed && adapter.openScreen === ScreenType.DUMMY) {
-                    adapter.openScreen(ScreenType.IN_GAME)
-                    guiOpened.set(false)
-                    ContainerRenderer.close()
-                    AdapterManager.getAdapter().renderer.unloadBlur()
-                }
+                ContainerRenderer.open(mainGui)
+                AdapterManager.getAdapter().renderer.loadBlur()
             }
-        }
+        }))
+
+        KeyBindManager.register(KeyBind({ listOf(Key.ESCAPE) }, { pressed ->
+            if (pressed && adapter.openScreen == ScreenType.DUMMY) {
+                adapter.openScreen(ScreenType.IN_GAME)
+                ContainerRenderer.close()
+                AdapterManager.getAdapter().renderer.unloadBlur()
+            }
+        }))
 
         eventManager.register { event: KeyEvent ->
             if (event.isPressed && event.key == Key.U) {
@@ -68,32 +70,24 @@ object UserInterface {
             initializeUserInterface()
         }
 
-        val pressed = ArrayList<Key>()
-
-        eventManager.register { event: KeyEvent ->
-            if (event.isPressed && !event.isRepeat && searchBarKey.value.contains(event.key)) {
-                pressed.add(event.key)
-
-                if (pressed.size == searchBarKey.value.size) {
-                    adapter.openScreen(ScreenType.DUMMY)
-                    ContainerRenderer.open(searchGui)
-                    AdapterManager.getAdapter().renderer.loadBlur()
-
-                    pressed.clear()
-                }
-            } else if (!event.isPressed) {
-                pressed.clear()
+        KeyBindManager.register(KeyBind({ searchBarKey.value }, {
+            if (it && adapter.openScreen == ScreenType.IN_GAME) {
+                adapter.openScreen(ScreenType.DUMMY)
+                ContainerRenderer.open(searchGui)
+                AdapterManager.getAdapter().renderer.loadBlur()
             }
-        }
+        }))
 
         SettingManager.settingsCategory
             .apply {
-                data["searchBar"] = SettingData(Setting(arrayListOf(Key.ALT_LEFT)).also { searchBarKey = it })
+                data["searchBarKey"] = SettingData(Setting(arrayListOf(Key.ALT_LEFT)).also { searchBarKey = it })
+                data["mainGuiKey"] = SettingData(Setting(arrayListOf(Key.SHIFT_RIGHT)).also { mainGuiKey = it })
             }
 
         SettingManager.mainUICategory
             .apply {
                 add(DisplayedSetting.KeyBind(searchBarKey, "Search Bar KeyBind"))
+                add(DisplayedSetting.KeyBind(mainGuiKey, "Main GUI KeyBind"))
             }
     }
 
