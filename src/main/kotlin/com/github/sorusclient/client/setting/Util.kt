@@ -57,16 +57,12 @@ object Util {
                 return list as T
             }
             val jsonSettingMap = jsonSetting as Map<String, Any>
-            if (wantedClass == null) {
-                val className = jsonSettingMap["class"] as String?
-                if (className != null) {
-                    try {
-                        wantedClass = Class.forName(className) as Class<T>
-                    } catch (e: ClassNotFoundException) {
-                        e.printStackTrace()
-                    }
-                }
+
+            val className = jsonSettingMap["class"] as String?
+            if (className != null) {
+                wantedClass = Class.forName(className) as Class<T>
             }
+
             if (wantedClass != null && wantedClass == MutableMap::class.java) {
                 val map: MutableMap<String, Any> = HashMap()
                 for ((key, value) in jsonSetting) {
@@ -74,28 +70,16 @@ object Util {
                 }
                 return map as T
             } else if (wantedClass != null) {
-                try {
-                    val constructor = Objects.requireNonNull(wantedClass).getDeclaredConstructor()
-                    constructor.isAccessible = true
-                    val wantedObject = constructor.newInstance()
-                    for ((key, value) in jsonSetting) {
-                        if (key == "class") continue
-                        val field = wantedClass.getDeclaredField(key)
-                        field.isAccessible = true
-                        field[wantedObject] = toJava(field.type, value)
-                    }
-                    return wantedObject
-                } catch (e: InstantiationException) {
-                    e.printStackTrace()
-                } catch (e: IllegalAccessException) {
-                    e.printStackTrace()
-                } catch (e: NoSuchFieldException) {
-                    e.printStackTrace()
-                } catch (e: NoSuchMethodException) {
-                    e.printStackTrace()
-                } catch (e: InvocationTargetException) {
-                    e.printStackTrace()
+                val constructor = Objects.requireNonNull(wantedClass).getDeclaredConstructor()
+                constructor.isAccessible = true
+                val wantedObject = constructor.newInstance()
+                for ((key, value) in jsonSetting) {
+                    if (key == "class") continue
+                    val field = wantedClass.getDeclaredField(key)
+                    field.isAccessible = true
+                    field[wantedObject] = toJava(field.type, value)
                 }
+                return wantedObject
             }
         } else if (jsonSetting is List<*>) {
             val list: MutableList<Any> = ArrayList()
@@ -119,10 +103,12 @@ object Util {
                                 } else if (any is List<*>) {
                                     val data: MutableMap<String, Any> = HashMap()
                                     val dataInner: MutableList<Any> = ArrayList()
-                                    data["type"] = any[0]!!.javaClass.name
-                                    data["list"] = dataInner
-                                    for (inData in any) {
-                                        dataInner.add(toData(inData!!))
+                                    if (any.size > 0) {
+                                        data["type"] = any[0]!!.javaClass.name
+                                        data["list"] = dataInner
+                                        for (inData in any) {
+                                            dataInner.add(toData(inData!!))
+                                        }
                                     }
                                     data
                                 } else if (any is Map<*, *>) {
