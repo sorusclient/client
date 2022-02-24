@@ -8,6 +8,10 @@ abstract class Theme {
     val category: CategoryData = CategoryData()
     val uiCategory: DisplayedCategory = DisplayedCategory("Theme")
 
+    var initialized: Boolean = false
+
+    abstract fun initialize()
+
     abstract fun onOpenMainGui()
     abstract fun onCloseGui()
     abstract fun onOpenSearchBar()

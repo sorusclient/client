@@ -6,6 +6,7 @@ import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
+import org.lwjgl.opengl.GL11
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.screen.ConnectScreen
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
@@ -18,6 +19,9 @@ import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.entity.Entity
 import v1_8_9.net.minecraft.network.ServerAddress
+import java.io.ByteArrayInputStream
+import java.nio.ByteBuffer
+import javax.imageio.ImageIO
 
 class Adapter : Listener, IAdapter {
     override fun run() {
@@ -128,6 +132,33 @@ class Adapter : Listener, IAdapter {
 
     override fun setDisplayTitle(title: String) {
         Display.setTitle(title)
+    }
+
+    override fun setDisplayIcon(iconSmall: String, iconLarge: String) {
+        Display.setIcon(arrayOf(getByteBuffer(iconSmall), getByteBuffer(iconLarge)))
+    }
+
+    private fun getByteBuffer(path: String): ByteBuffer {
+        val bufferedImage = ImageIO.read(Adapter::class.java.classLoader.getResourceAsStream(path))
+        val buffer = ByteBuffer.allocateDirect(bufferedImage.width * bufferedImage.height * 4)
+        val rgba = IntArray(bufferedImage.width * bufferedImage.height)
+        bufferedImage.getRGB(0, 0, bufferedImage.width, bufferedImage.height, rgba, 0, bufferedImage.width)
+        for (pixelY in 0 until bufferedImage.height) {
+            for (pixelX in 0 until bufferedImage.width) {
+                val rgb = rgba[bufferedImage.width * pixelY + pixelX]
+                val red = rgb shr 16 and 0xFF
+                val green = rgb shr 8 and 0xFF
+                val blue = rgb and 0xFF
+                val alpha = rgb shr 24 and 0xFF
+                buffer.put(red.toByte())
+                buffer.put(green.toByte())
+                buffer.put(blue.toByte())
+                buffer.put(alpha.toByte())
+            }
+        }
+        buffer.flip()
+
+        return buffer
     }
 
     override fun joinServer(ip: String) {

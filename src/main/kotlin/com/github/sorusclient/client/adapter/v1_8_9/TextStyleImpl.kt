@@ -7,10 +7,16 @@ import com.github.sorusclient.client.adapter.TextFormatting
 import v1_8_9.net.minecraft.text.Style
 
 class TextStyleImpl(style: Style) : ITextStyle {
+
     override var clickEvent: ITextClickEvent? = null
     override var hoverEvent: ITextHoverEvent? = null
     override val insertion: String?
     override var color: TextFormatting? = null
+    override val bold: Boolean
+    override val italic: Boolean
+    override val obfuscated: Boolean
+    override val strikethrough: Boolean
+    override val underlined: Boolean
 
     init {
         if (style.clickEvent != null) {
@@ -23,6 +29,11 @@ class TextStyleImpl(style: Style) : ITextStyle {
         if (style.color != null) {
             color = Util.formattingToTextFormatting(style.color)
         }
+        bold = style.isBold
+        italic = style.isItalic
+        obfuscated = style.isObfuscated
+        strikethrough = style.isStrikethrough
+        underlined = style.isUnderlined
     }
 
 }

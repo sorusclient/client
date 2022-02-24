@@ -48,7 +48,9 @@ class Sorus : Listener {
         ContainerRenderer.initialize()
 
         EventManager.register<InitializeEvent> {
-            AdapterManager.getAdapter().setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
+            val adapter = AdapterManager.getAdapter()
+            adapter.setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
+            adapter.setDisplayIcon("sorus/icon_16x.png", "sorus/icon_32x.png")
         }
 
         UserInterface.initialize()

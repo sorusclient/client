@@ -6,7 +6,7 @@ import v1_8_9.net.minecraft.text.ClickEvent
 
 class TextClickEventImpl(clickEvent: ClickEvent) : ITextClickEvent {
     override val value: String
-    override var action: ClickEventAction? = null
+    override val action: ClickEventAction
 
     init {
         value = clickEvent.value
@@ -14,7 +14,7 @@ class TextClickEventImpl(clickEvent: ClickEvent) : ITextClickEvent {
             ClickEvent.Action.SUGGEST_COMMAND -> ClickEventAction.SUGGEST_COMMAND
             ClickEvent.Action.RUN_COMMAND -> ClickEventAction.RUN_COMMAND
             ClickEvent.Action.OPEN_URL -> ClickEventAction.OPEN_URL
-            else -> null
+            else -> null!!
         }
     }
 

@@ -4,12 +4,11 @@ import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import org.lwjgl.input.Keyboard
 import v1_8_9.net.minecraft.text.*
 import v1_8_9.net.minecraft.util.Formatting
-import java.util.Objects
 
 object Util {
+
     fun getIdByItemType(itemType: ItemType?): Int {
         return when (itemType) {
             ItemType.LEATHER_HELMET -> 298
@@ -126,22 +125,20 @@ object Util {
             val style = Style()
             if (text.style?.clickEvent != null) {
                 val textClickEvent: ITextClickEvent = text.style?.clickEvent!!
-                var action: ClickEvent.Action? = null
-                when (textClickEvent.action) {
-                    ClickEventAction.SUGGEST_COMMAND -> action = ClickEvent.Action.SUGGEST_COMMAND
-                    ClickEventAction.RUN_COMMAND -> action = ClickEvent.Action.RUN_COMMAND
-                    ClickEventAction.OPEN_URL -> action = ClickEvent.Action.OPEN_URL
+                val action: ClickEvent.Action? = when (textClickEvent.action) {
+                    ClickEventAction.SUGGEST_COMMAND -> ClickEvent.Action.SUGGEST_COMMAND
+                    ClickEventAction.RUN_COMMAND -> ClickEvent.Action.RUN_COMMAND
+                    ClickEventAction.OPEN_URL -> ClickEvent.Action.OPEN_URL
                 }
                 val clickEvent = ClickEvent(action, textClickEvent.value)
                 style.clickEvent = clickEvent
             }
             if (text.style?.hoverEvent != null) {
                 val textHoverEvent: ITextHoverEvent = text.style?.hoverEvent!!
-                var action: HoverEvent.Action? = null
-                when (textHoverEvent.action) {
-                    HoverEventAction.SHOW_ENTITY -> action = HoverEvent.Action.SHOW_ENTITY
-                    HoverEventAction.SHOW_ACHIEVEMENT -> action = HoverEvent.Action.SHOW_ACHIEVEMENT
-                    HoverEventAction.SHOW_TEXT -> action = HoverEvent.Action.SHOW_TEXT
+                val action: HoverEvent.Action? = when (textHoverEvent.action) {
+                    HoverEventAction.SHOW_ENTITY -> HoverEvent.Action.SHOW_ENTITY
+                    HoverEventAction.SHOW_ACHIEVEMENT -> HoverEvent.Action.SHOW_ACHIEVEMENT
+                    HoverEventAction.SHOW_TEXT -> HoverEvent.Action.SHOW_TEXT
                 }
                 val hoverEvent = HoverEvent(action, apiTextToText(textHoverEvent.value!!))
                 style.hoverEvent = hoverEvent
@@ -150,6 +147,12 @@ object Util {
             if (text.style?.color != null) {
                 style.setFormatting(textFormattingToFormatting(text.style?.color!!))
             }
+            style.isBold = text.style!!.bold
+            style.isItalic = text.style!!.italic
+            style.isObfuscated = text.style!!.obfuscated
+            style.isStrikethrough = text.style!!.strikethrough
+            style.setUnderline(text.style!!.underlined)
+
             text1.style = style
         }
         for (text2 in text.siblings) {

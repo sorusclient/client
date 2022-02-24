@@ -13,7 +13,7 @@ import com.github.sorusclient.client.hud.impl.health.Health
 import com.github.sorusclient.client.hud.impl.hotbar.HotBar
 import com.github.sorusclient.client.hud.impl.hunger.Hunger
 import com.github.sorusclient.client.hud.impl.potions.Potions
-import com.github.sorusclient.client.hud.impl.sidebar.Sidebar
+import com.github.sorusclient.client.hud.impl.sidebar.SideBar
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.AbstractData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
@@ -262,7 +262,7 @@ object HUDManager {
         bossBar.addAttached(null, AttachType(0.0, 0.0, Axis.X))
         bossBar.addAttached(null, AttachType(-1.0, -1.0, Axis.Y))
         add(bossBar)
-        val sideBar = Sidebar()
+        val sideBar = SideBar()
         sideBar.addAttached(null, AttachType(1.0, 1.0, Axis.X))
         sideBar.addAttached(null, AttachType(0.0, 0.0, Axis.Y))
         add(sideBar)
@@ -294,7 +294,7 @@ object HUDManager {
         registerPossibleElement(HotBar::class.java, "HotBar", "yes yersy")
         registerPossibleElement(Hunger::class.java, "Hunger", "yes yersy")
         registerPossibleElement(Potions::class.java, "PotionStatus", "yes yersy")
-        registerPossibleElement(Sidebar::class.java, "Sidebar", "yes yersy")
+        registerPossibleElement(SideBar::class.java, "Sidebar", "yes yersy")
     }
 
     private fun registerPossibleElement(hudClass: Class<out HUDElement>, name: String, description: String) {

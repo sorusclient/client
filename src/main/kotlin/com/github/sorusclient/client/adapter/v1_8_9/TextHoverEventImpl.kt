@@ -7,7 +7,7 @@ import v1_8_9.net.minecraft.text.HoverEvent
 
 class TextHoverEventImpl(hoverEvent: HoverEvent) : ITextHoverEvent {
     override val value: IText
-    override var action: HoverEventAction? = null
+    override val action: HoverEventAction
 
     init {
         value = Util.textToApiText(hoverEvent.value)
@@ -15,7 +15,7 @@ class TextHoverEventImpl(hoverEvent: HoverEvent) : ITextHoverEvent {
             HoverEvent.Action.SHOW_ENTITY -> HoverEventAction.SHOW_ENTITY
             HoverEvent.Action.SHOW_ACHIEVEMENT -> HoverEventAction.SHOW_ACHIEVEMENT
             HoverEvent.Action.SHOW_TEXT -> HoverEventAction.SHOW_TEXT
-            else -> null
+            else -> null!!
         }
     }
 

@@ -22,7 +22,7 @@ class CategoryData: AbstractData() {
         }
     }
 
-    override fun save(): Any {
+    override fun save(): Map<String, Any> {
         val map: HashMap<String, Any> = HashMap()
         for (entry in data) {
             entry.value.save()?.let { map[entry.key] = it }

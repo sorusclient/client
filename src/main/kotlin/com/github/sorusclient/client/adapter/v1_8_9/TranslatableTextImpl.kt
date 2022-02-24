@@ -10,9 +10,9 @@ class TranslatableTextImpl(text: TranslatableText) : TextImpl<TranslatableText>(
 
     init {
         arguments = ArrayList()
-        for (argument in text.getArgs()) {
+        for (argument in text.args) {
             if (argument is Text) {
-                arguments.add(Util.textToApiText(argument as Text))
+                arguments.add(Util.textToApiText(argument))
             } else {
                 arguments.add(argument)
             }
