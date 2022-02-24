@@ -4,7 +4,6 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.impl.GlassLoaderImpl
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
-import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.plugin.PluginManager
@@ -2239,8 +2238,10 @@ class DefaultTheme: Theme() {
                                                                                                 //backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                                             }
 
-                                                                                        onClick = { state ->
+                                                                                        onClick = {
                                                                                             ThemeManager.currentTheme = theme
+                                                                                            ContainerRenderer.close()
+                                                                                            theme.openThemesScreen()
                                                                                         }
                                                                                     }
 
@@ -2785,6 +2786,17 @@ class DefaultTheme: Theme() {
         mainGui.apply {
             children[0].apply {
                 runtime.setState("tab", tab)
+            }
+        }
+
+        ContainerRenderer.open(mainGui)
+        AdapterManager.getAdapter().renderer.loadBlur()
+    }
+
+    override fun openThemesScreen() {
+        mainGui.apply {
+            children[0].apply {
+                runtime.setState("tab", "themes")
             }
         }
 
