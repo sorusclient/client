@@ -3,12 +3,18 @@ package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
+import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.IntInsnNode
+import org.objectweb.asm.tree.JumpInsnNode
+import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.MethodInsnNode
+import org.objectweb.asm.tree.TypeInsnNode
+import org.objectweb.asm.tree.VarInsnNode
 
 class EnhancementsTransformer : Transformer(), Listener {
     override fun run() {
@@ -28,6 +34,11 @@ class EnhancementsTransformer : Transformer(), Listener {
         }
         register("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher") { classNode: ClassNode ->
             transformEntityRenderDispatcher(
+                classNode
+            )
+        }
+        register("v1_8_9/net/minecraft/entity/LivingEntity") { classNode: ClassNode ->
+            transformLivingEntity(
                 classNode
             )
         }
@@ -112,4 +123,24 @@ class EnhancementsTransformer : Transformer(), Listener {
             }
         }
     }
+
+    private fun transformLivingEntity(classNode: ClassNode) {
+        val getRotationVector = Identifier.parse("v1_8_9/net/minecraft/entity/LivingEntity#getRotationVector(F)Lv1_8_9/net/minecraft/util/math/Vec3d;")
+        val clientPlayerEntity = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayerEntity")
+        val entity = Identifier.parse("v1_8_9/net/minecraft/entity/Entity")
+
+        findMethod(classNode, getRotationVector)
+            .apply(Applier.Insert(createList { insnList ->
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
+                insnList.add(TypeInsnNode(Opcodes.INSTANCEOF, clientPlayerEntity.className))
+                val labelNode = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
+                insnList.add(VarInsnNode(Opcodes.FLOAD, 1))
+                insnList.add(MethodInsnNode(Opcodes.INVOKESPECIAL, entity.className, getRotationVector.methodName, getRotationVector.methodDesc))
+                insnList.add(InsnNode(Opcodes.ARETURN))
+                insnList.add(labelNode)
+            }))
+    }
+
 }

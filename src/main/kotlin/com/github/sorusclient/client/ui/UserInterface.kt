@@ -12,7 +12,6 @@ import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.ui.framework.ContainerRenderer
 import com.github.sorusclient.client.ui.theme.ThemeManager
-import com.github.sorusclient.client.ui.theme.default.DefaultTheme
 import com.github.sorusclient.client.util.AssetUtil
 import com.github.sorusclient.client.util.keybind.KeyBind
 import com.github.sorusclient.client.util.keybind.KeyBindManager
@@ -71,6 +70,7 @@ object UserInterface {
             searchResults.add(MenuSearchResult("home", "Home"))
             searchResults.add(MenuSearchResult("settings", "Settings"))
             searchResults.add(MenuSearchResult("plugins", "Plugins"))
+            searchResults.add(MenuSearchResult("themes", "Themes"))
 
             for (serverJsonData in AssetUtil.getAllServerJson()) {
                 val serverJson = JSONObject(serverJsonData.value)
@@ -193,7 +193,7 @@ object UserInterface {
     class MenuSearchResult(private val menu: String, name: String) : SearchResult(name, name, "sorus/ui/sorus.png") {
 
         override fun onSelect() {
-            ThemeManager.currentTheme.openTabScreen(menu)
+            ThemeManager.currentTheme.openUIScreen(menu)
         }
 
     }

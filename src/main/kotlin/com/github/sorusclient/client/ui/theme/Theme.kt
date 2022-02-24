@@ -17,7 +17,6 @@ abstract class Theme {
     abstract fun onOpenSearchBar()
 
     abstract fun openSettingsScreen(category: DisplayedCategory)
-    abstract fun openTabScreen(tab: String)
-    abstract fun openThemesScreen()
+    abstract fun openUIScreen(tab: String)
 
 }

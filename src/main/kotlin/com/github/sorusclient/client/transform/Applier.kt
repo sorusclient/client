@@ -35,6 +35,9 @@ object Applier {
             is LabelNode -> {
                 return LabelNode(instruction.label)
             }
+            is TypeInsnNode -> {
+                return TypeInsnNode(instruction.opcode, instruction.desc)
+            }
             else -> return null
         }
     }

@@ -1175,7 +1175,6 @@ class DefaultTheme: Theme() {
                                                             width = 0.5.toRelative()
                                                             height = 0.5.toRelative()
 
-                                                            println(tab)
                                                             backgroundImage = "sorus/ui/navbar/$tab.png".toAbsolute()
                                                             backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                         }
@@ -2241,7 +2240,7 @@ class DefaultTheme: Theme() {
                                                                                         onClick = {
                                                                                             ThemeManager.currentTheme = theme
                                                                                             ContainerRenderer.close()
-                                                                                            theme.openThemesScreen()
+                                                                                            theme.openUIScreen("themes")
                                                                                         }
                                                                                     }
 
@@ -2514,17 +2513,9 @@ class DefaultTheme: Theme() {
                                                                                         ThemeManager.configuredThemes += theme
                                                                                         ThemeManager.currentTheme = theme
                                                                                         theme.initialize()
+                                                                                        ContainerRenderer.close()
+                                                                                        theme.openUIScreen("themes")
                                                                                         state["hasInitThemes"] = false
-                                                                                        /*val url =
-                                                                                            URL("${AssetUtil.basePluginsUrl}/$plugin.jar")
-                                                                                        FileUtils.copyInputStreamToFile(
-                                                                                            url.openStream(),
-                                                                                            File("shards/$plugin.jar")
-                                                                                        )
-                                                                                        (GlassLoader.getInstance() as GlassLoaderImpl).preLoad()
-                                                                                        (GlassLoader.getInstance() as GlassLoaderImpl).loadUpdateShards()
-                                                                                        PluginManager.findPlugins()
-                                                                                        state["hasInitPlugins"] = false*/
                                                                                     }
                                                                                 }
                                                                         }
@@ -2782,21 +2773,10 @@ class DefaultTheme: Theme() {
         AdapterManager.getAdapter().renderer.loadBlur()
     }
 
-    override fun openTabScreen(tab: String) {
+    override fun openUIScreen(tab: String) {
         mainGui.apply {
             children[0].apply {
                 runtime.setState("tab", tab)
-            }
-        }
-
-        ContainerRenderer.open(mainGui)
-        AdapterManager.getAdapter().renderer.loadBlur()
-    }
-
-    override fun openThemesScreen() {
-        mainGui.apply {
-            children[0].apply {
-                runtime.setState("tab", "themes")
             }
         }
 
