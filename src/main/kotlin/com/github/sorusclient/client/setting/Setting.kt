@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.setting
 
-class Setting<T>(val type: Class<T>, defaultValue: T) {
+class Setting<T>(val type: Class<T>, val defaultValue: T) {
 
     var realValue: T
     var forcedValues: List<T>? = null
@@ -12,7 +12,7 @@ class Setting<T>(val type: Class<T>, defaultValue: T) {
 
     val value: T
         get() {
-            val realValue = if (overriden) { realValue } else { parentValue!! }
+            val realValue = if (overriden || parentValue == null) { realValue } else { parentValue!! }
             return if (forcedValues != null) {
                 if (forcedValues!!.contains(realValue)) realValue else forcedValues!![0]
             } else {

@@ -133,9 +133,7 @@ class DefaultTheme: Theme() {
 
                                         onClick = { state ->
                                             if (!setting.setting.isForcedValue) {
-                                                val toggled = !(state["toggled"] as Boolean)
-                                                state["toggled"] = toggled
-                                                setting.setting.setValueRaw(toggled)
+                                                setting.setting.setValueRaw(!setting.setting.realValue)
 
                                                 setting.setting.overriden = true
                                             }
@@ -154,9 +152,6 @@ class DefaultTheme: Theme() {
                                                 backgroundColor = Color.WHITE.toAbsolute()
                                             }
                                     }
-
-                                storedState += "toggled"
-                                runtime.setState("toggled", setting.setting.value)
                             }
                     }
             }
@@ -2043,7 +2038,7 @@ class DefaultTheme: Theme() {
                                                                                         }
 
                                                                                         if (settingNew is DisplayedSetting.ConfigurableDataSingleSetting<*>) {
-                                                                                            state["hidden"] = !settingNew.setting.overriden || SettingManager.currentProfile == SettingManager.mainProfile
+                                                                                            state["hidden"] = !(settingNew.setting.overriden && (SettingManager.currentProfile != SettingManager.mainProfile || settingNew.setting.realValue != settingNew.setting.defaultValue))
                                                                                         }
                                                                                     }
 
@@ -2054,7 +2049,12 @@ class DefaultTheme: Theme() {
                                                                                         }
 
                                                                                         if (settingNew is DisplayedSetting.ConfigurableDataSingleSetting<*>) {
-                                                                                            (settingNew as DisplayedSetting.ConfigurableDataSingleSetting<*>).setting.overriden = false
+                                                                                            if (SettingManager.currentProfile == SettingManager.mainProfile) {
+                                                                                                (settingNew as DisplayedSetting.ConfigurableDataSingleSetting<*>).setting.setValueRaw((settingNew as DisplayedSetting.ConfigurableDataSingleSetting<*>).setting.defaultValue!!)
+                                                                                                (settingNew as DisplayedSetting.ConfigurableDataSingleSetting<*>).setting.overriden = false
+                                                                                            } else {
+                                                                                                (settingNew as DisplayedSetting.ConfigurableDataSingleSetting<*>).setting.overriden = false
+                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 }
