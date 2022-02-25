@@ -644,6 +644,5 @@ class RendererImpl : IRenderer {
     override fun unloadBlur() {
         MinecraftClient.getInstance().gameRenderer.disableShader()
     }
-    
 
 }
