@@ -39,6 +39,4 @@ dependencies {
     compileOnly minecraft("client", "1.8.9", "yarn")
 
     implementation(files("run/shards/api-mapped.jar"))
-
-    implementation(files("lwjgl-git-20161208.jar"))
 }
