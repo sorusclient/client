@@ -26,7 +26,6 @@ import com.github.sorusclient.client.ui.framework.constraint.Relative
 import com.github.sorusclient.client.ui.framework.constraint.Side
 import com.github.sorusclient.client.util.Axis
 import com.github.sorusclient.client.util.Color
-import org.lwjgl.opengl.GL11
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -204,7 +203,7 @@ object HUDManager {
 
     }
 
-    lateinit var hudDisplayedCategory: HudDisplayedCategory
+    var hudDisplayedCategory: HudDisplayedCategory
 
     init {
         SettingManager.settingsCategory
@@ -323,8 +322,6 @@ object HUDManager {
                 }
             }
         }
-        val blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND)
-        val textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
         for (element in getElements().values) {
             element.render()
         }
@@ -594,17 +591,6 @@ object HUDManager {
                 else -> {}
             }
         }
-        if (blendEnabled) {
-            GL11.glEnable(GL11.GL_BLEND)
-        } else {
-            GL11.glDisable(GL11.GL_BLEND)
-        }
-        if (textureEnabled) {
-            GL11.glEnable(GL11.GL_TEXTURE_2D)
-        } else {
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-        }
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
     }
 
     private fun displaySnaps(screenDimensions: DoubleArray, snaps: List<Snap>) {

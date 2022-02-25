@@ -4,6 +4,7 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.InitializeEvent
+import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
 import com.github.sorusclient.client.setting.data.SettingData
@@ -85,6 +86,12 @@ object UserInterface {
             }
 
             this.searchResults = searchResults
+        }
+
+        EventManager.register<TickEvent> {
+            if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME && ContainerRenderer.container != null) {
+                ThemeManager.currentTheme.onForceClose()
+            }
         }
     }
 

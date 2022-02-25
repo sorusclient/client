@@ -4,7 +4,7 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
 import com.github.sorusclient.client.hud.impl.potionstatus.IPotionEffectRenderer
-import org.lwjgl.opengl.GL11
+import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.entity.effect.StatusEffect
@@ -16,8 +16,7 @@ class PotionEffectRenderer : Listener, IPotionEffectRenderer {
     }
 
     override fun render(type: PotionType?, x: Double, y: Double, scale: Double) {
-        val id: Int
-        id = when (type) {
+        val id = when (type) {
             PotionType.SPEED -> 1
             PotionType.SLOWNESS -> 2
             PotionType.HASTE -> 3
@@ -44,26 +43,14 @@ class PotionEffectRenderer : Listener, IPotionEffectRenderer {
             else -> -1
         }
         val index = StatusEffect.STATUS_EFFECTS[id].method_2444()
-        val textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
-        val blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND)
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/container/inventory.png"))
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 0.0)
+        GlStateManager.enableTexture()
+        GlStateManager.enableBlend()
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
         DrawableHelper().drawTexture(0, 0, index % 8 * 18, 198 + index / 8 * 18, 18, 18)
-        GL11.glPopMatrix()
-        if (textureEnabled) {
-            GL11.glEnable(GL11.GL_TEXTURE_2D)
-        } else {
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-        }
-        if (blendEnabled) {
-            GL11.glEnable(GL11.GL_BLEND)
-        } else {
-            GL11.glDisable(GL11.GL_BLEND)
-        }
+        GlStateManager.popMatrix()
     }
 }

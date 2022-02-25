@@ -6,7 +6,6 @@ import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
-import org.lwjgl.opengl.GL11
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.screen.ConnectScreen
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
@@ -19,7 +18,6 @@ import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.entity.Entity
 import v1_8_9.net.minecraft.network.ServerAddress
-import java.io.ByteArrayInputStream
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
@@ -30,20 +28,7 @@ class Adapter : Listener, IAdapter {
 
     override val openScreen: ScreenType
         get() {
-            return when (MinecraftClient.getInstance().currentScreen) {
-                is GameMenuScreen -> {
-                    ScreenType.GAME_MENU
-                }
-                is DummyScreen -> {
-                    ScreenType.DUMMY
-                }
-                null -> {
-                    ScreenType.IN_GAME
-                }
-                else -> {
-                    ScreenType.UNKNOWN
-                }
-            }
+            return Util.screenToScreenType(MinecraftClient.getInstance().currentScreen)
         }
     override val screenDimensions: DoubleArray
         get() {

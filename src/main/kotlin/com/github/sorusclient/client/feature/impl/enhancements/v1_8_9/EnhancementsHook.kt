@@ -2,22 +2,23 @@ package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
 import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
-import org.lwjgl.opengl.GL11
+import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
+import kotlin.properties.Delegates
+
 
 object EnhancementsHook {
 
     @JvmStatic
     fun preRenderFireFirstPerson() {
         val enhancements = FeatureManager.get<Enhancements>()
-        GL11.glPushMatrix()
-        GL11.glTranslated(0.0, -enhancements.getFireHeightValue() * 0.4, 0.0)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(0.0, -enhancements.getFireHeightValue() * 0.4, 0.0)
     }
 
     @JvmStatic
     fun postRenderFireFirstPerson() {
-        val enhancements = FeatureManager.get<Enhancements>()
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 
     @JvmStatic

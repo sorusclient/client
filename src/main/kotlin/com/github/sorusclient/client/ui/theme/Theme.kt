@@ -19,4 +19,6 @@ abstract class Theme {
     abstract fun openSettingsScreen(category: DisplayedCategory)
     abstract fun openUIScreen(tab: String)
 
+    abstract fun onForceClose()
+
 }

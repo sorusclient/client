@@ -6,17 +6,11 @@ import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.FieldInsnNode
-import org.objectweb.asm.tree.InsnNode
-import org.objectweb.asm.tree.IntInsnNode
-import org.objectweb.asm.tree.JumpInsnNode
-import org.objectweb.asm.tree.LabelNode
-import org.objectweb.asm.tree.MethodInsnNode
-import org.objectweb.asm.tree.TypeInsnNode
-import org.objectweb.asm.tree.VarInsnNode
+import org.objectweb.asm.tree.*
+
 
 class EnhancementsTransformer : Transformer(), Listener {
+
     override fun run() {
         GlassLoader.getInstance().registerTransformer(EnhancementsTransformer::class.java)
     }
@@ -39,6 +33,11 @@ class EnhancementsTransformer : Transformer(), Listener {
         }
         register("v1_8_9/net/minecraft/entity/LivingEntity") { classNode: ClassNode ->
             transformLivingEntity(
+                classNode
+            )
+        }
+        register("org/lwjgl/opengl/LinuxKeyboard") { classNode: ClassNode ->
+            transformLinuxKeyboard(
                 classNode
             )
         }
@@ -141,6 +140,124 @@ class EnhancementsTransformer : Transformer(), Listener {
                 insnList.add(InsnNode(Opcodes.ARETURN))
                 insnList.add(labelNode)
             }))
+    }
+
+    private fun transformLinuxKeyboard(classNode: ClassNode) {
+        val getKeyCode = Identifier.parse("org/lwjgl/opengl/LinuxKeyboard#getKeycode(JI)I")
+
+        findMethod(classNode, getKeyCode)
+            .apply { methodNode ->
+                methodNode.instructions.clear()
+            }
+
+        findMethod(classNode, getKeyCode)
+            .apply(Applier.Insert(createList { insnList ->
+                val label0 = LabelNode()
+                insnList.add(label0)
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
+                insnList.add(InsnNode(Opcodes.I2L))
+                insnList.add(InsnNode(Opcodes.LCONST_1))
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
+                insnList.add(FieldInsnNode(Opcodes.GETFIELD, "org/lwjgl/opengl/LinuxKeyboard", "shift_lock_mask", "I"))
+                insnList.add(InsnNode(Opcodes.I2L))
+                insnList.add(InsnNode(Opcodes.LOR))
+                insnList.add(InsnNode(Opcodes.LAND))
+                insnList.add(InsnNode(Opcodes.LCONST_0))
+                insnList.add(InsnNode(Opcodes.LCMP))
+                val label1 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, label1))
+                insnList.add(InsnNode(Opcodes.ICONST_1))
+                val label2 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.GOTO, label2))
+                insnList.add(label1)
+                insnList.add(InsnNode(Opcodes.ICONST_0))
+                insnList.add(label2)
+                insnList.add(VarInsnNode(Opcodes.ISTORE, 4))
+                val label3 = LabelNode()
+                insnList.add(label3)
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
+                insnList.add(FieldInsnNode(Opcodes.GETFIELD, "org/lwjgl/opengl/LinuxKeyboard", "modeswitch_mask", "I"))
+                insnList.add(InsnNode(Opcodes.IAND))
+                val label4 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, label4))
+                insnList.add(InsnNode(Opcodes.ICONST_1))
+                val label5 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.GOTO, label5))
+                insnList.add(label4)
+                insnList.add(InsnNode(Opcodes.ICONST_0))
+                insnList.add(label5)
+                insnList.add(VarInsnNode(Opcodes.ISTORE, 5))
+                val label6 = LabelNode()
+                insnList.add(label6)
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
+                insnList.add(FieldInsnNode(Opcodes.GETFIELD, "org/lwjgl/opengl/LinuxKeyboard", "numlock_mask", "I"))
+                insnList.add(InsnNode(Opcodes.IAND))
+                val label7 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, label7))
+                insnList.add(VarInsnNode(Opcodes.LLOAD, 1))
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 5))
+                insnList.add(InsnNode(Opcodes.ICONST_1))
+                insnList.add(MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/LinuxKeyboard", "getKeySym", "(JII)J", false))
+                insnList.add(InsnNode(Opcodes.DUP2))
+                insnList.add(VarInsnNode(Opcodes.LSTORE, 6))
+                val label8 = LabelNode()
+                insnList.add(label8)
+                insnList.add(MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/LinuxKeyboard", "isKeypadKeysym", "(J)Z", false))
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, label7))
+                val label9 = LabelNode()
+                insnList.add(label9)
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 4))
+                val label10 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, label10))
+                val label11 = LabelNode()
+                insnList.add(label11)
+                insnList.add(VarInsnNode(Opcodes.LLOAD, 1))
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 5))
+                insnList.add(InsnNode(Opcodes.ICONST_0))
+                insnList.add(MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/LinuxKeyboard", "getKeySym", "(JII)J", false))
+                insnList.add(VarInsnNode(Opcodes.LSTORE, 6))
+                insnList.add(JumpInsnNode(Opcodes.GOTO, label10))
+                insnList.add(label7)
+                insnList.add(VarInsnNode(Opcodes.LLOAD, 1))
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 5))
+                insnList.add(InsnNode(Opcodes.ICONST_0))
+                insnList.add(MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/LinuxKeyboard", "getKeySym", "(JII)J", false))
+                insnList.add(VarInsnNode(Opcodes.LSTORE, 6))
+                val label12 = LabelNode()
+                insnList.add(label12)
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 4))
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
+                insnList.add(FieldInsnNode(Opcodes.GETFIELD, "org/lwjgl/opengl/LinuxKeyboard", "caps_lock_mask", "I"))
+                insnList.add(InsnNode(Opcodes.IAND))
+                val label13 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, label13))
+                insnList.add(InsnNode(Opcodes.ICONST_1))
+                val label14 = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.GOTO, label14))
+                insnList.add(label13)
+                insnList.add(InsnNode(Opcodes.ICONST_0))
+                insnList.add(label14)
+                insnList.add(InsnNode(Opcodes.IXOR))
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, label10))
+                val label15 = LabelNode()
+                insnList.add(label15)
+                insnList.add(VarInsnNode(Opcodes.LLOAD, 6))
+                insnList.add(MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/LinuxKeyboard", "toUpper", "(J)J", false))
+                insnList.add(VarInsnNode(Opcodes.LSTORE, 6))
+                insnList.add(label10)
+                insnList.add(VarInsnNode(Opcodes.LLOAD, 6))
+                insnList.add(MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/LinuxKeycodes", "mapKeySymToLWJGLKeyCode", "(J)I", false))
+                insnList.add(InsnNode(Opcodes.IRETURN))
+            }))
+
+        findMethod(classNode, getKeyCode)
+            .apply { methodNode ->
+                methodNode.maxLocals = 8
+                methodNode.maxStack = 6
+            }
     }
 
 }

@@ -4,7 +4,7 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.hud.impl.hotbar.IHotBarRenderer
-import org.lwjgl.opengl.GL11
+import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.client.render.GuiLighting
@@ -17,35 +17,37 @@ class HotBarRenderer : Listener, IHotBarRenderer {
     }
 
     override fun renderBackground(x: Double, y: Double, scale: Double) {
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 1.0)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
+        GlStateManager.enableBlend()
+        GlStateManager.enableTexture()
         val drawableHelper = DrawableHelper()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/widgets.png"))
         drawableHelper.drawTexture(0, 0, 0, 0, 182, 22)
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 
     override fun renderItem(x: Double, y: Double, scale: Double, item: IItem) {
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 1.0)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
         GuiLighting.enable()
         MinecraftClient.getInstance().itemRenderer.renderInGuiWithOverrides(item.inner as ItemStack, 0, 0)
         GuiLighting.disable()
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 
     override fun renderSelectedSlot(x: Double, y: Double, scale: Double) {
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 1.0)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
         val drawableHelper = DrawableHelper()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/widgets.png"))
         drawableHelper.drawTexture(0, 0, 0, 22, 24, 24)
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 }

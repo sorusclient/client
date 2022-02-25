@@ -20,6 +20,15 @@ object Applier {
                     instruction.opcode,
                     instruction.owner,
                     instruction.name,
+                    instruction.desc,
+                    instruction.itf
+                )
+            }
+            is FieldInsnNode -> {
+                return FieldInsnNode(
+                    instruction.opcode,
+                    instruction.owner,
+                    instruction.name,
                     instruction.desc
                 )
             }

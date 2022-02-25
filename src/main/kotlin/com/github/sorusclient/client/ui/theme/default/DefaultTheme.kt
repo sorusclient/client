@@ -2784,4 +2784,15 @@ class DefaultTheme: Theme() {
         AdapterManager.getAdapter().renderer.loadBlur()
     }
 
+    override fun onForceClose() {
+        mainGui.apply {
+            children[0].apply {
+                if (runtime.getState("currentSettingsCategory") != null) {
+                    (runtime.getState("currentSettingsCategory") as DisplayedCategory).onHide()
+                }
+            }
+        }
+        onCloseGui()
+    }
+
 }

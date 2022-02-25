@@ -3,10 +3,8 @@ package com.github.sorusclient.client.hud.impl.hunger.v1_8_9
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.hud.impl.hunger.IHungerRenderer
-import org.lwjgl.opengl.GL11
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
-import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.client.render.Tessellator
 import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.util.Identifier
@@ -19,10 +17,10 @@ class HungerRenderer : Listener, IHungerRenderer {
 
     override fun renderHunger(x: Double, y: Double, scale: Double, heartRenderType: IHungerRenderer.HeartRenderType) {
         GlStateManager.enableBlend()
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 1.0)
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
         val xLocation = 52
         if (heartRenderType == IHungerRenderer.HeartRenderType.FULL) {
@@ -30,19 +28,20 @@ class HungerRenderer : Listener, IHungerRenderer {
         } else if (heartRenderType == IHungerRenderer.HeartRenderType.HALF) {
             drawTexture(0, 0, xLocation.toDouble() + 9, 27.0, 9, 9)
         }
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 
     override fun renderHungerBackground(x: Double, y: Double, scale: Double) {
         GlStateManager.enableBlend()
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 1.0)
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
+
         drawTexture(0, 0, 16.0, 27.0, 9, 9)
 
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 
     private fun drawTexture(var1: Int, var2: Int, var3: Double, var4: Double, var5: Int, var6: Int) {

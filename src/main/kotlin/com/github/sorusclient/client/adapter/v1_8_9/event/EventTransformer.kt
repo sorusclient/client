@@ -144,6 +144,13 @@ class EventTransformer : Transformer(), Listener {
                 .apply(Insert(createList { insnList ->
                     insnList.add(this.getHook("onTick"))
                 }))
+
+        val openScreen = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#openScreen(Lv1_8_9/net/minecraft/client/gui/Screen;)V")
+        findMethod(classNode, openScreen)
+            .apply(Insert(createList { insnList ->
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                insnList.add(this.getHook("onOpenScreen"))
+            }))
     }
 
     private fun transformScreen(classNode: ClassNode) {

@@ -50,7 +50,7 @@ class RendererImpl : IRenderer {
     }
 
     override fun setColor(color: Color) {
-        GL11.glColor4d(color.red, color.green, color.blue, color.alpha)
+        GlStateManager.color4f(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
     }
 
     override fun setLineThickness(thickness: Double) {
@@ -168,15 +168,15 @@ class RendererImpl : IRenderer {
         if (topLeftColor.rgb == topRightColor.rgb && topRightColor.rgb == bottomRightColor.rgb) {
             this.createPrograms()
 
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
+            GlStateManager.enableBlend()
+            GlStateManager.disableTexture()
 
             GL20.glUseProgram(roundedRectangleProgram)
 
             GL30.glBindVertexArray(roundedRectangleVao)
             GL20.glEnableVertexAttribArray(0)
 
-            GL11.glColor4f(1f, 1f, 1f, 1f)
+            GlStateManager.color4f(1f, 1f, 1f, 1f)
 
             val window = Window(MinecraftClient.getInstance())
 
@@ -200,11 +200,11 @@ class RendererImpl : IRenderer {
 
             GL20.glUseProgram(0)
 
-            GL11.glDisable(GL11.GL_BLEND)
-            GL11.glEnable(GL11.GL_TEXTURE_2D)
+            GlStateManager.disableBlend()
+            GlStateManager.enableTexture()
         } else {
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-            GL11.glEnable(GL11.GL_BLEND)
+            GlStateManager.disableTexture()
+            GlStateManager.enableBlend()
             GlStateManager.shadeModel(GL11.GL_SMOOTH)
             val tessellator = Tessellator.getInstance()
             val bufferBuilder = tessellator.buffer
@@ -327,7 +327,7 @@ class RendererImpl : IRenderer {
         width += 0.2
         height += 0.2
         createPrograms()
-        GL11.glEnable(GL11.GL_BLEND)
+        GlStateManager.enableBlend()
         GL20.glUseProgram(roundedRectangleBorderProgram)
         GL30.glBindVertexArray(roundedRectangleBorderVao)
         GL20.glEnableVertexAttribArray(0)
@@ -360,7 +360,7 @@ class RendererImpl : IRenderer {
         try {
             val bufferedImage = ImageIO.read(ByteArrayInputStream(bytes))
             glId = GL11.glGenTextures()
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, glId)
+            GlStateManager.bindTexture(glId)
             val filter1: Int
             val filter2: Int
             if (antialias) {
@@ -407,7 +407,7 @@ class RendererImpl : IRenderer {
         val glId: Int = getTexture(id)
         GlStateManager.bindTexture(glId)
         createPrograms()
-        GL11.glEnable(GL11.GL_BLEND)
+        GlStateManager.enableBlend()
         GL20.glUseProgram(imageProgram)
         GL30.glBindVertexArray(imageVao)
         GL20.glEnableVertexAttribArray(0)
@@ -489,11 +489,10 @@ class RendererImpl : IRenderer {
 
     override fun drawText(id: String, text: String, x: Double, y: Double, scale: Double, color: Color) {
         val fontData = getFont(id)
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, fontData!!.glId)
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_BLEND)
+        GlStateManager.bindTexture(fontData!!.glId)
+        GlStateManager.disableTexture()
+        GlStateManager.enableBlend()
         createPrograms()
-        GL11.glEnable(GL11.GL_BLEND)
         GL20.glUseProgram(imageProgram)
         GL30.glBindVertexArray(imageVao)
         GL20.glEnableVertexAttribArray(0)

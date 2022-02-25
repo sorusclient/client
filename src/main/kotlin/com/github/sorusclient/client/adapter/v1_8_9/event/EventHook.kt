@@ -7,7 +7,9 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
+import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
+import v1_8_9.net.minecraft.client.gui.screen.Screen
 import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.client.world.ClientWorld
 import v1_8_9.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
@@ -30,15 +32,28 @@ object EventHook {
     @Suppress("Unused")
     fun onInGameRender() {
         val textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
+        val blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND)
         EventManager.call(RenderInGameEvent())
         setEnabled(GL11.GL_TEXTURE_2D, textureEnabled)
+        setEnabled(GL11.GL_BLEND, blendEnabled)
     }
 
     private fun setEnabled(capability: Int, enabled: Boolean) {
-        if (enabled) {
-            GL11.glEnable(capability)
-        } else {
-            GL11.glDisable(capability)
+        when (capability) {
+            GL11.GL_BLEND -> {
+                if (enabled) {
+                    GlStateManager.enableBlend()
+                } else {
+                    GlStateManager.disableBlend()
+                }
+            }
+            GL11.GL_TEXTURE_2D -> {
+                if (enabled) {
+                    GlStateManager.enableTexture()
+                } else {
+                    GlStateManager.disableTexture()
+                }
+            }
         }
     }
 
@@ -48,8 +63,7 @@ object EventHook {
         val key = Keyboard.getEventKey()
         val pressed = Keyboard.getEventKeyState()
         val repeat = Keyboard.isRepeatEvent()
-        EventManager
-            .call(KeyEvent(Util.getKey(key), Keyboard.getEventCharacter(), pressed, repeat))
+        EventManager.call(KeyEvent(Util.getKey(key), Keyboard.getEventCharacter(), pressed, repeat))
     }
 
     @JvmStatic
@@ -228,6 +242,13 @@ object EventHook {
     @Suppress("Unused")
     fun onTick() {
         val event = TickEvent()
+        EventManager.call(event)
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onOpenScreen(screen: Any) {
+        val event = OpenScreenEvent(Util.screenToScreenType(screen as Screen))
         EventManager.call(event)
     }
 

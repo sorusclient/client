@@ -4,6 +4,9 @@ import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
+import v1_8_9.net.minecraft.client.MinecraftClient
+import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
+import v1_8_9.net.minecraft.client.gui.screen.Screen
 import v1_8_9.net.minecraft.text.*
 import v1_8_9.net.minecraft.util.Formatting
 
@@ -213,6 +216,23 @@ object Util {
             TextFormatting.UNDERLINE -> return Formatting.UNDERLINE
             TextFormatting.ITALIC -> return Formatting.ITALIC
             TextFormatting.RESET -> return Formatting.RESET
+        }
+    }
+
+    fun screenToScreenType(screen: Screen?): ScreenType {
+        return when (screen) {
+            is GameMenuScreen -> {
+                ScreenType.GAME_MENU
+            }
+            is DummyScreen -> {
+                ScreenType.DUMMY
+            }
+            null -> {
+                ScreenType.IN_GAME
+            }
+            else -> {
+                ScreenType.UNKNOWN
+            }
         }
     }
 

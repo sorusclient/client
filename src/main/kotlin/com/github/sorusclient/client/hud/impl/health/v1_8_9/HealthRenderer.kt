@@ -5,7 +5,7 @@ import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.BackgroundType
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.HeartType
-import org.lwjgl.opengl.GL11
+import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.render.Tessellator
 import v1_8_9.net.minecraft.client.render.VertexFormats
@@ -23,40 +23,48 @@ class HealthRenderer : Listener, IHealthRenderer {
         heartType: HeartType,
         heartRenderType: IHealthRenderer.HeartRenderType
     ) {
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 1.0)
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
-        GL11.glEnable(GL11.GL_BLEND)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
+        GlStateManager.enableBlend()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
         val xLocation = if (heartType == HeartType.HEALTH) 52 else 52 + 12 * 9
-        if (heartRenderType == IHealthRenderer.HeartRenderType.FULL) {
-            drawTexture(0, 0, xLocation.toDouble(), 0.0, 9, 9)
-        } else if (heartRenderType == IHealthRenderer.HeartRenderType.HALF_EMPTY) {
-            drawTexture(0, 0, xLocation.toDouble() + 9, 0.0, 9, 9)
-        } else if (heartRenderType == IHealthRenderer.HeartRenderType.HALF_DAMAGE) {
-            drawTexture(0, 0, xLocation.toDouble() + 18, 0.0, 9, 9)
-            drawTexture(0, 0, xLocation.toDouble() + 9, 0.0, 9, 9)
-        } else if (heartRenderType == IHealthRenderer.HeartRenderType.DAMAGE) {
-            drawTexture(0, 0, xLocation.toDouble() + 18, 0.0, 9, 9)
-        } else if (heartRenderType == IHealthRenderer.HeartRenderType.DAMAGE_EMPTY) {
-            drawTexture(0, 0, xLocation.toDouble() + 27, 0.0, 9, 9)
+        when (heartRenderType) {
+            IHealthRenderer.HeartRenderType.FULL -> {
+                drawTexture(0, 0, xLocation.toDouble(), 0.0, 9, 9)
+            }
+            IHealthRenderer.HeartRenderType.HALF_EMPTY -> {
+                drawTexture(0, 0, xLocation.toDouble() + 9, 0.0, 9, 9)
+            }
+            IHealthRenderer.HeartRenderType.HALF_DAMAGE -> {
+                drawTexture(0, 0, xLocation.toDouble() + 18, 0.0, 9, 9)
+                drawTexture(0, 0, xLocation.toDouble() + 9, 0.0, 9, 9)
+            }
+            IHealthRenderer.HeartRenderType.DAMAGE -> {
+                drawTexture(0, 0, xLocation.toDouble() + 18, 0.0, 9, 9)
+            }
+            IHealthRenderer.HeartRenderType.DAMAGE_EMPTY -> {
+                drawTexture(0, 0, xLocation.toDouble() + 27, 0.0, 9, 9)
+            }
+            else -> {}
         }
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 
     override fun renderHeartBackground(x: Double, y: Double, scale: Double, backgroundType: BackgroundType?) {
-        GL11.glPushMatrix()
-        GL11.glTranslated(x, y, 0.0)
-        GL11.glScaled(scale, scale, 1.0)
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
-        GL11.glEnable(GL11.GL_BLEND)
+        GlStateManager.pushMatrix()
+        GlStateManager.translated(x, y, 0.0)
+        GlStateManager.scaled(scale, scale, 1.0)
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
+        GlStateManager.enableBlend()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
         when (backgroundType) {
             BackgroundType.STANDARD -> drawTexture(0, 0, 16.0, 0.0, 9, 9)
             BackgroundType.FLASHING_OUTLINE -> drawTexture(0, 0, 25.0, 0.0, 9, 9)
+            else -> {}
         }
-        GL11.glPopMatrix()
+        GlStateManager.popMatrix()
     }
 
     private fun drawTexture(var1: Int, var2: Int, var3: Double, var4: Double, var5: Int, var6: Int) {

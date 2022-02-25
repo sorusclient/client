@@ -11,7 +11,7 @@ object ContainerRenderer {
     private val keyEvents: MutableList<KeyEvent> = ArrayList()
     private val mouseEvents: MutableList<MouseEvent> = ArrayList()
 
-    private var container: Container? = null
+    var container: Container? = null
 
     fun initialize() {
         val eventManager = EventManager
