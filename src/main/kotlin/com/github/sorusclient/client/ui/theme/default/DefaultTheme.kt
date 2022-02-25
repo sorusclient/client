@@ -82,76 +82,82 @@ class DefaultTheme: Theme() {
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
-
-                        children += Text()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
-                                text = setting.displayName.toAbsolute()
-                                scale = 0.0025.toRelative()
-                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 2.0.toCopy()
-                                height = 0.6.toRelative()
-                                setPadding(Relative(0.2, true))
-
-                                backgroundColor = Dependent {
-                                    val toggled = setting.setting.value
-                                    if (toggled) {
-                                        { this@DefaultTheme.selectedColor.value }.toDependent()
-                                    } else {
-                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                    }
-                                }
-                                borderThickness = 0.4.toAbsolute()
-                                borderColor = Dependent { state ->
-                                    val toggled = setting.setting.value
-                                    if ((state["hovered"] as Boolean && !setting.setting.isForcedValue) || toggled) {
-                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                    } else {
-                                        { this@DefaultTheme.borderColor.value }.toDependent()
-                                    }
-                                }
-                                backgroundCornerRadius = 0.01.toRelative()
-
-                                onClick = { state ->
-                                    if (!setting.setting.isForcedValue) {
-                                        val toggled = !(state["toggled"] as Boolean)
-                                        state["toggled"] = toggled
-                                        setting.setting.setValueRaw(toggled)
-
-                                        setting.setting.overriden = true
-                                    }
-                                }
+                                width = 0.75.toRelative()
 
                                 children += Container()
                                     .apply {
-                                        x = { _: Map<String, Any> ->
-                                            Side(if (setting.setting.value) 1 else -1)
-                                        }.toDependent()
-                                        width = Copy()
-                                        height = 0.7.toRelative()
-                                        setPadding(Relative(0.15, true))
-
-                                        backgroundCornerRadius = 0.075.toRelative()
-                                        backgroundColor = Color.WHITE.toAbsolute()
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.0666.toRelative()
                                     }
-                            }
 
-                        storedState += "toggled"
-                        runtime.setState("toggled", setting.setting.value)
+                                children += Text()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+                                        text = setting.displayName.toAbsolute()
+                                        scale = 0.0033.toRelative()
+                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                    }
+
+                                children += Container()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.0666.toRelative()
+                                    }
+
+                                children += Container()
+                                    .apply {
+                                        x = Side.POSITIVE.toSide()
+                                        width = 2.0.toCopy()
+                                        height = 0.6.toRelative()
+                                        setPadding(Relative(0.2, true))
+
+                                        backgroundColor = Dependent {
+                                            val toggled = setting.setting.value
+                                            if (toggled) {
+                                                { this@DefaultTheme.selectedColor.value }.toDependent()
+                                            } else {
+                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                            }
+                                        }
+                                        borderThickness = 0.4.toAbsolute()
+                                        borderColor = Dependent { state ->
+                                            val toggled = setting.setting.value
+                                            if ((state["hovered"] as Boolean && !setting.setting.isForcedValue) || toggled) {
+                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                            } else {
+                                                { this@DefaultTheme.borderColor.value }.toDependent()
+                                            }
+                                        }
+                                        backgroundCornerRadius = 0.01.toRelative()
+
+                                        onClick = { state ->
+                                            if (!setting.setting.isForcedValue) {
+                                                val toggled = !(state["toggled"] as Boolean)
+                                                state["toggled"] = toggled
+                                                setting.setting.setValueRaw(toggled)
+
+                                                setting.setting.overriden = true
+                                            }
+                                        }
+
+                                        children += Container()
+                                            .apply {
+                                                x = { _: Map<String, Any> ->
+                                                    Side(if (setting.setting.value) 1 else -1)
+                                                }.toDependent()
+                                                width = Copy()
+                                                height = 0.7.toRelative()
+                                                setPadding(Relative(0.15, true))
+
+                                                backgroundCornerRadius = 0.075.toRelative()
+                                                backgroundColor = Color.WHITE.toAbsolute()
+                                            }
+                                    }
+
+                                storedState += "toggled"
+                                runtime.setState("toggled", setting.setting.value)
+                            }
                     }
             }
             is DisplayedSetting.Slider -> {
@@ -165,101 +171,107 @@ class DefaultTheme: Theme() {
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
-
-                        children += Text()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
-                                text = setting.displayName.toAbsolute()
-                                scale = 0.0025.toRelative()
-                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 5.0.toCopy()
-                                height = 0.6.toRelative()
-                                setPadding(Relative(0.2, true))
-
-                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-
-                                borderThickness = 0.4.toAbsolute()
-                                borderColor = Dependent { state ->
-                                    if (state["hovered"] as Boolean || state["interacted"] as Boolean) {
-                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                    } else {
-                                        { this@DefaultTheme.borderColor.value }.toDependent()
-                                    }
-                                }
-                                backgroundCornerRadius = 0.01.toRelative()
-
-                                onDrag = { state ->
-                                    if (!setting.setting.isForcedValue) {
-                                        val minimum = setting.minimum
-                                        val maximum = setting.maximum
-                                        val value = state.second.first
-                                        state.first["value"] = value
-                                        val actualSetting: Setting<*> = setting.setting
-                                        val valueToSet = (maximum - minimum) * value + minimum
-                                        when (actualSetting.type) {
-                                            java.lang.Double::class.java -> {
-                                                actualSetting.setValueRaw(valueToSet)
-                                            }
-                                            java.lang.Long::class.java -> {
-                                                actualSetting.setValueRaw(valueToSet.toLong())
-                                            }
-                                            else -> {
-                                                error("Strange Type on Slider")
-                                            }
-                                        }
-
-                                        setting.setting.overriden = true
-                                    }
-                                }
+                                width = 0.75.toRelative()
 
                                 children += Container()
                                     .apply {
                                         x = Side.NEGATIVE.toSide()
-                                        width = { _: Map<String, Any> ->
-                                            val minimum = setting.minimum
-                                            val maximum = setting.maximum
-                                            Flexible((setting.setting.value.toDouble() - minimum) / (maximum - minimum))
-                                        }.toDependent()
-                                        setPadding(Relative(0.1, true))
+                                        width = 0.0666.toRelative()
+                                    }
 
-                                        backgroundColor = Color.WHITE.toAbsolute()
-                                        backgroundCornerRadius = Relative(0.2, true)
+                                children += Text()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+                                        text = setting.displayName.toAbsolute()
+                                        scale = 0.0033.toRelative()
+                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                     }
 
                                 children += Container()
                                     .apply {
-                                        x = { _: Map<String, Any> ->
-                                            val minimum = setting.minimum
-                                            val maximum = setting.maximum
-                                            Relative((setting.setting.value.toDouble() - minimum) / (maximum - minimum) - 0.5)
-                                        }.toDependent()
-                                        y = 0.0.toRelative()
-                                        width = Copy()
-                                        height = 1.0.toRelative()
-
-                                        backgroundCornerRadius = Relative(0.25, true)
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.0666.toRelative()
                                     }
-                            }
 
-                        storedState += "value"
-                        runtime.setState(
-                            "value",
-                            (setting.setting.value.toDouble() - setting.minimum) / (setting.maximum - setting.minimum)
-                        )
+                                children += Container()
+                                    .apply {
+                                        x = Side.POSITIVE.toSide()
+                                        width = 5.0.toCopy()
+                                        height = 0.6.toRelative()
+                                        setPadding(Relative(0.2, true))
+
+                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+
+                                        borderThickness = 0.4.toAbsolute()
+                                        borderColor = Dependent { state ->
+                                            if (state["hovered"] as Boolean || state["interacted"] as Boolean) {
+                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                            } else {
+                                                { this@DefaultTheme.borderColor.value }.toDependent()
+                                            }
+                                        }
+                                        backgroundCornerRadius = 0.01.toRelative()
+
+                                        onDrag = { state ->
+                                            if (!setting.setting.isForcedValue) {
+                                                val minimum = setting.minimum
+                                                val maximum = setting.maximum
+                                                val value = state.second.first
+                                                state.first["value"] = value
+                                                val actualSetting: Setting<*> = setting.setting
+                                                val valueToSet = (maximum - minimum) * value + minimum
+                                                when (actualSetting.type) {
+                                                    java.lang.Double::class.java -> {
+                                                        actualSetting.setValueRaw(valueToSet)
+                                                    }
+                                                    java.lang.Long::class.java -> {
+                                                        actualSetting.setValueRaw(valueToSet.toLong())
+                                                    }
+                                                    else -> {
+                                                        error("Strange Type on Slider")
+                                                    }
+                                                }
+
+                                                setting.setting.overriden = true
+                                            }
+                                        }
+
+                                        children += Container()
+                                            .apply {
+                                                x = Side.NEGATIVE.toSide()
+                                                width = { _: Map<String, Any> ->
+                                                    val minimum = setting.minimum
+                                                    val maximum = setting.maximum
+                                                    Flexible((setting.setting.value.toDouble() - minimum) / (maximum - minimum))
+                                                }.toDependent()
+                                                setPadding(Relative(0.1, true))
+
+                                                backgroundColor = Color.WHITE.toAbsolute()
+                                                backgroundCornerRadius = Relative(0.2, true)
+                                            }
+
+                                        children += Container()
+                                            .apply {
+                                                x = { _: Map<String, Any> ->
+                                                    val minimum = setting.minimum
+                                                    val maximum = setting.maximum
+                                                    Relative((setting.setting.value.toDouble() - minimum) / (maximum - minimum) - 0.5)
+                                                }.toDependent()
+                                                y = 0.0.toRelative()
+                                                width = Copy()
+                                                height = 1.0.toRelative()
+
+                                                backgroundCornerRadius = Relative(0.25, true)
+                                            }
+                                    }
+
+                                storedState += "value"
+                                runtime.setState(
+                                    "value",
+                                    (setting.setting.value.toDouble() - setting.minimum) / (setting.maximum - setting.minimum)
+                                )
+                            }
                     }
             }
             is DisplayedSetting.KeyBind -> {
@@ -273,85 +285,91 @@ class DefaultTheme: Theme() {
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
+                                width = 0.75.toRelative()
 
-                        children += Text()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
-                                text = setting.displayName.toAbsolute()
-                                scale = 0.0025.toRelative()
-                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 5.0.toCopy()
-                                height = 0.6.toRelative()
-                                setPadding(Relative(0.2, true))
-
-                                backgroundColor = Dependent { state ->
-                                    if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                        { this@DefaultTheme.selectedColor.value }.toDependent()
-                                    } else {
-                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                children += Container()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.0666.toRelative()
                                     }
-                                }
-                                borderThickness = 0.4.toAbsolute()
-                                borderColor = Dependent { state ->
-                                    if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                    } else {
-                                        { this@DefaultTheme.borderColor.value }.toDependent()
-                                    }
-                                }
-                                backgroundCornerRadius = 0.01.toRelative()
-
-                                val pressedKeys = ArrayList<Key>()
-
-                                onKey = onKey@{ state ->
-                                    if (state.second.key == Key.UNKNOWN) return@onKey
-                                    if (state.second.isPressed) {
-                                        pressedKeys += state.second.key
-
-                                        setting.setting.setValueRaw(ArrayList(pressedKeys))
-                                        setting.setting.overriden = true
-                                    } else {
-                                        state.first["selected"] = false
-                                        pressedKeys.clear()
-                                    }
-                                }
 
                                 children += Text()
                                     .apply {
+                                        x = Side.NEGATIVE.toSide()
                                         fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
-                                        text = { state: Map<String, Any> ->
-                                            if (pressedKeys.isEmpty() && state["selected"] as Boolean) {
-                                                "..."
-                                            } else {
-                                                setting.setting.value.joinToString(" + ")
-                                            }
-                                        }.toDependent()
-                                        scale = 0.01.toRelative()
+                                        text = setting.displayName.toAbsolute()
+                                        scale = 0.0033.toRelative()
                                         textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                     }
-                            }
 
-                        onStateUpdate["selected"] = { state ->
-                            if (state["selected"] != null) {
-                                state["selected2"] = state["selected"] as Any
-                            }
-                        }
+                                children += Container()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.0666.toRelative()
+                                    }
 
-                        storedState += "selected2"
+                                children += Container()
+                                    .apply {
+                                        x = Side.POSITIVE.toSide()
+                                        width = 5.0.toCopy()
+                                        height = 0.6.toRelative()
+                                        setPadding(Relative(0.2, true))
+
+                                        backgroundColor = Dependent { state ->
+                                            if (state["clicked"] != null && state["clicked"] as Boolean) {
+                                                { this@DefaultTheme.selectedColor.value }.toDependent()
+                                            } else {
+                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                            }
+                                        }
+                                        borderThickness = 0.4.toAbsolute()
+                                        borderColor = Dependent { state ->
+                                            if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
+                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                            } else {
+                                                { this@DefaultTheme.borderColor.value }.toDependent()
+                                            }
+                                        }
+                                        backgroundCornerRadius = 0.01.toRelative()
+
+                                        val pressedKeys = ArrayList<Key>()
+
+                                        onKey = onKey@{ state ->
+                                            if (state.second.key == Key.UNKNOWN) return@onKey
+                                            if (state.second.isPressed) {
+                                                pressedKeys += state.second.key
+
+                                                setting.setting.setValueRaw(ArrayList(pressedKeys))
+                                                setting.setting.overriden = true
+                                            } else {
+                                                state.first["selected"] = false
+                                                pressedKeys.clear()
+                                            }
+                                        }
+
+                                        children += Text()
+                                            .apply {
+                                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+                                                text = { state: Map<String, Any> ->
+                                                    if (pressedKeys.isEmpty() && state["selected"] as Boolean) {
+                                                        "..."
+                                                    } else {
+                                                        setting.setting.value.joinToString(" + ")
+                                                    }
+                                                }.toDependent()
+                                                scale = 0.01.toRelative()
+                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                            }
+                                    }
+
+                                onStateUpdate["selected"] = { state ->
+                                    if (state["selected"] != null) {
+                                        state["selected2"] = state["selected"] as Any
+                                    }
+                                }
+
+                                storedState += "selected2"
+                            }
                     }
             }
             is DisplayedSetting.ClickThrough -> {
@@ -365,139 +383,145 @@ class DefaultTheme: Theme() {
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
-
-                        children += Text()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
-                                text = setting.displayName.toAbsolute()
-                                scale = 0.0025.toRelative()
-                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 0.05.toRelative()
-                            }
-
-                        children += Container()
-                            .apply {
-                                x = Side.NEGATIVE.toSide()
-                                width = 5.0.toCopy()
-                                height = 0.6.toRelative()
-                                setPadding(Relative(0.2, true))
-
-                                backgroundColor = Dependent { state ->
-                                    if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                        { this@DefaultTheme.selectedColor.value }.toDependent()
-                                    } else {
-                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                    }
-                                }
-                                borderThickness = 0.4.toAbsolute()
-                                borderColor = Dependent { state ->
-                                    if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                    } else {
-                                        { this@DefaultTheme.borderColor.value }.toDependent()
-                                    }
-                                }
-                                backgroundCornerRadius = 0.01.toRelative()
+                                width = 0.75.toRelative()
 
                                 children += Container()
                                     .apply {
                                         x = Side.NEGATIVE.toSide()
-                                        width = Copy()
-                                        height = 0.6.toRelative()
-                                        setPadding(Relative(0.15, true))
+                                        width = 0.0666.toRelative()
+                                    }
 
-                                        backgroundImage = "assets/minecraft/arrow_left.png".toAbsolute()
+                                children += Text()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+                                        text = setting.displayName.toAbsolute()
+                                        scale = 0.0033.toRelative()
+                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                    }
 
-                                        onClick = { state ->
-                                            var newValue = state["clickThroughValue"] as Int - 1
-                                            if (newValue < 0) {
-                                                newValue = (setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>).size - 1
-                                            }
-                                            state["clickThroughValue"] = newValue
-
-                                            setting.setting.overriden = true
-                                        }
-
-                                        consumeClicks = false
+                                children += Container()
+                                    .apply {
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.0666.toRelative()
                                     }
 
                                 children += Container()
                                     .apply {
                                         x = Side.POSITIVE.toSide()
-                                        width = Copy()
+                                        width = 5.0.toCopy()
                                         height = 0.6.toRelative()
-                                        setPadding(Relative(0.15, true))
+                                        setPadding(Relative(0.2, true))
 
-                                        backgroundImage = "assets/minecraft/arrow_right.png".toAbsolute()
-
-                                        onClick = { state ->
-                                            var valuesLength = 0
-                                            try {
-                                                valuesLength = (setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>).size
-                                            } catch (e: IllegalAccessException) {
-                                                e.printStackTrace()
-                                            } catch (e: InvocationTargetException) {
-                                                e.printStackTrace()
-                                            } catch (e: NoSuchMethodException) {
-                                                e.printStackTrace()
-                                            }
-                                            if (state["clickThroughValue"] as Int + 1 >= valuesLength) {
-                                                state["clickThroughValue"] = 0
+                                        backgroundColor = Dependent { state ->
+                                            if (state["clicked"] != null && state["clicked"] as Boolean) {
+                                                { this@DefaultTheme.selectedColor.value }.toDependent()
                                             } else {
-                                                state["clickThroughValue"] = state["clickThroughValue"] as Int + 1
+                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
                                             }
-
-                                            setting.setting.overriden = true
                                         }
-
-                                        consumeClicks = false
-                                    }
-
-                                children += Text()
-                                    .apply {
-                                        fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
-                                        text = { _: Map<String, Any> ->
-                                            setting.setting.value.toString()
-                                        }.toDependent()
-                                        scale = 0.01.toRelative()
-                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                    }
-
-                                onStateUpdate["clickThroughValue"] = { state ->
-                                    val values = setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>
-                                    val setting1: Setting<*> = setting.setting
-                                    if (setting1.isForcedValue) {
-                                        var index = state["clickThroughValue"] as Int
-                                        while (index != -1) {
-                                            if (setting1.forcedValues!!.contains(values[index])) {
-                                                setting1.setValueRaw(values[index]!!)
-                                                state["clickThroughValue"] = index
-                                                index = -1
+                                        borderThickness = 0.4.toAbsolute()
+                                        borderColor = Dependent { state ->
+                                            if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
+                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                             } else {
-                                                index++
-                                                if (index >= values.size) {
-                                                    index = 0
+                                                { this@DefaultTheme.borderColor.value }.toDependent()
+                                            }
+                                        }
+                                        backgroundCornerRadius = 0.01.toRelative()
+
+                                        children += Container()
+                                            .apply {
+                                                x = Side.NEGATIVE.toSide()
+                                                width = Copy()
+                                                height = 0.6.toRelative()
+                                                setPadding(Relative(0.15, true))
+
+                                                backgroundImage = "assets/minecraft/arrow_left.png".toAbsolute()
+
+                                                onClick = { state ->
+                                                    var newValue = state["clickThroughValue"] as Int - 1
+                                                    if (newValue < 0) {
+                                                        newValue = (setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>).size - 1
+                                                    }
+                                                    state["clickThroughValue"] = newValue
+
+                                                    setting.setting.overriden = true
+                                                }
+
+                                                consumeClicks = false
+                                            }
+
+                                        children += Container()
+                                            .apply {
+                                                x = Side.POSITIVE.toSide()
+                                                width = Copy()
+                                                height = 0.6.toRelative()
+                                                setPadding(Relative(0.15, true))
+
+                                                backgroundImage = "assets/minecraft/arrow_right.png".toAbsolute()
+
+                                                onClick = { state ->
+                                                    var valuesLength = 0
+                                                    try {
+                                                        valuesLength = (setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>).size
+                                                    } catch (e: IllegalAccessException) {
+                                                        e.printStackTrace()
+                                                    } catch (e: InvocationTargetException) {
+                                                        e.printStackTrace()
+                                                    } catch (e: NoSuchMethodException) {
+                                                        e.printStackTrace()
+                                                    }
+                                                    if (state["clickThroughValue"] as Int + 1 >= valuesLength) {
+                                                        state["clickThroughValue"] = 0
+                                                    } else {
+                                                        state["clickThroughValue"] = state["clickThroughValue"] as Int + 1
+                                                    }
+
+                                                    setting.setting.overriden = true
+                                                }
+
+                                                consumeClicks = false
+                                            }
+
+                                        children += Text()
+                                            .apply {
+                                                fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+                                                text = { _: Map<String, Any> ->
+                                                    setting.setting.value.toString()
+                                                }.toDependent()
+                                                scale = 0.01.toRelative()
+                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                            }
+
+                                        onStateUpdate["clickThroughValue"] = { state ->
+                                            val values = setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>
+                                            val setting1: Setting<*> = setting.setting
+                                            if (setting1.isForcedValue) {
+                                                var index = state["clickThroughValue"] as Int
+                                                while (index != -1) {
+                                                    if (setting1.forcedValues!!.contains(values[index])) {
+                                                        setting1.setValueRaw(values[index]!!)
+                                                        state["clickThroughValue"] = index
+                                                        index = -1
+                                                    } else {
+                                                        index++
+                                                        if (index >= values.size) {
+                                                            index = 0
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                if (state["clickThroughValue"] != null) {
+                                                    state["clickThroughValue"].let { setting1.setValueRaw(values[it as Int]!!) }
                                                 }
                                             }
                                         }
-                                    } else {
-                                        if (state["clickThroughValue"] != null) {
-                                            state["clickThroughValue"].let { setting1.setValueRaw(values[it as Int]!!) }
-                                        }
                                     }
-                                }
-                            }
 
-                        storedState += "clickThroughValue"
-                        runtime.setState("clickThroughValue", setting.setting.value.ordinal)
+                                storedState += "clickThroughValue"
+                                runtime.setState("clickThroughValue", setting.setting.value.ordinal)
+                            }
                     }
             }
             /*is ClickThrough -> {
@@ -618,8 +642,10 @@ class DefaultTheme: Theme() {
 
                                         children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL)
                                             .apply {
-                                                x = Side.NEGATIVE.toSide()
+                                                x = Side.POSITIVE.toSide()
                                                 width = Relative(1.7, true)
+
+                                                paddingLeft = Relative(0.2, true)
 
                                                 backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
@@ -780,9 +806,10 @@ class DefaultTheme: Theme() {
 
                                         children += Container()
                                             .apply {
-                                                x = Side.NEGATIVE.toSide()
+                                                x = Side.POSITIVE.toSide()
                                                 width = Copy()
                                                 height = 0.6.toRelative()
+                                                setPadding(Relative(0.2, true))
 
                                                 backgroundColor = { _: Map<String, Any> ->
                                                     setting.setting.value

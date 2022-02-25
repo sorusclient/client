@@ -48,6 +48,7 @@ abstract class Component {
             setState("hidden", false)
             setState("clicked", false)
             setState("hovered", false)
+            setState("selected", false)
             setState("interacted", false)
         }
 
