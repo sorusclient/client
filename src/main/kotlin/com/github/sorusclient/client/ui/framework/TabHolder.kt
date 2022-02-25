@@ -49,14 +49,18 @@ class TabHolder : Container() {
                 currentTab = defaultTab
             }
 
-            if (prevCurrentTab != null && prevCurrentTab != currentTab) {
+            if (prevCurrentTab != currentTab) {
                 //made a question mark instead of exclamation point, not sure if this will kill me in the future
-                tabs[prevCurrentTab]?.runtime?.setHasInit(false)
-                tabs[prevCurrentTab]?.runtime?.onClose()
+                if (prevCurrentTab != null) {
+                    tabs[prevCurrentTab]?.runtime?.setHasInit(false)
+                    tabs[prevCurrentTab]?.runtime?.onClose()
+                }
 
-                tabs[currentTab]?.runtime?.setHasInit(false)
+                prevCurrentTab = currentTab
+
+                tabs[currentTab]?.runtime?.onInit()
             }
-            prevCurrentTab = currentTab
+
             return if (tabs[currentTab] == null) emptyList() else listOf(tabs[currentTab]!!)
         }
 

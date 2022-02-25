@@ -25,6 +25,7 @@ import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.net.URL
 import kotlin.math.ceil
+import kotlin.math.max
 
 class DefaultTheme: Theme() {
 
@@ -843,11 +844,16 @@ class DefaultTheme: Theme() {
             is DisplayedSetting.CustomTextColor -> {
                 return Container()
                     .apply {
-                        height = 30.0.toAbsolute()
+                        height = { state: Map<String, Any> ->
+                            ((setting.setting.value.size * 0.22 + (setting.setting.value.size + 1) * 0.05) * 0.415).toCopy().getHeightValue(runtime) + if (state["colorTab"] != null && state["colorTab"] == "edit") { 35.0 } else { 0.0 }
+                        }.toDependent()
 
                         onUpdate += { state ->
                             state["hidden"] = false
                         }
+
+                        storedState += "colorTab"
+                        storedState += "editedColor"
 
                         children += Container()
                             .apply {
@@ -858,6 +864,7 @@ class DefaultTheme: Theme() {
                         children += Text()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
+
                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                 text = setting.displayName.toAbsolute()
                                 scale = 0.0025.toRelative()
@@ -873,7 +880,11 @@ class DefaultTheme: Theme() {
                         children += Container()
                             .apply {
                                 x = Side.NEGATIVE.toSide()
-                                width = 0.5.toRelative()
+                                y = Side.NEGATIVE.toSide()
+                                width = 0.65.toRelative()
+                                height = { state: Map<String, Any> ->
+                                    1.0.toRelative().getHeightValue(runtime) - if (state["colorTab"] != null && state["colorTab"] == "edit") { 35.0 } else { 0.0 }
+                                }.toDependent()
 
                                 backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                 borderThickness = 0.4.toAbsolute()
@@ -900,6 +911,7 @@ class DefaultTheme: Theme() {
                                             for (line in setting.setting.value) {
                                                 children += Container()
                                                     .apply {
+                                                        height = 0.22.toCopy()
                                                         setPadding(0.025.toRelative())
 
                                                         backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
@@ -917,7 +929,16 @@ class DefaultTheme: Theme() {
                                                                 backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                 borderThickness = 0.4.toAbsolute()
                                                                 borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                backgroundCornerRadius = 0.04.toRelative()
+                                                                backgroundCornerRadius = 0.02.toRelative()
+
+                                                                children += Container()
+                                                                    .apply {
+                                                                        width = 0.5.toRelative()
+                                                                        height = 1.0.toCopy()
+
+                                                                        backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
+                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                    }
 
                                                                 onClick = { state ->
                                                                     setting.setting.value.remove(line)
@@ -935,7 +956,16 @@ class DefaultTheme: Theme() {
                                                                 backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                 borderThickness = 0.4.toAbsolute()
                                                                 borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                backgroundCornerRadius = 0.04.toRelative()
+                                                                backgroundCornerRadius = 0.02.toRelative()
+
+                                                                children += Container()
+                                                                    .apply {
+                                                                        width = 0.5.toRelative()
+                                                                        height = 1.0.toCopy()
+
+                                                                        backgroundImage = "sorus/ui/themes/add.png".toAbsolute()
+                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                    }
 
                                                                 onClick = { state ->
                                                                     line.add(com.github.sorusclient.client.util.Pair("", Color.WHITE))
@@ -949,7 +979,7 @@ class DefaultTheme: Theme() {
                                                                     children += Container()
                                                                         .apply {
                                                                             width = {
-                                                                                AdapterManager.getAdapter().renderer.getTextWidth("sorus/ui/font/Quicksand-SemiBold.ttf", element.first) * 0.575 + Relative(0.15, true).getWidthValue(this.runtime) * 2
+                                                                                max(35.0, AdapterManager.getAdapter().renderer.getTextWidth("sorus/ui/font/Quicksand-SemiBold.ttf", element.first)) * 0.54 + Relative(0.15, true).getWidthValue(this.runtime) * 2
                                                                             }.toDependent()
                                                                             setPadding(0.0125.toRelative())
 
@@ -974,17 +1004,43 @@ class DefaultTheme: Theme() {
                                                                                     x = Side.POSITIVE.toSide()
                                                                                     y = Side.POSITIVE.toSide()
                                                                                     width = 1.0.toCopy()
-                                                                                    height = 0.5.toRelative()
-                                                                                    setPadding(0.15.toRelative())
+                                                                                    height = 0.4.toRelative()
+                                                                                    setPadding(Relative(0.075, true))
 
                                                                                     backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                                     borderThickness = 0.4.toAbsolute()
                                                                                     borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                     backgroundCornerRadius = 0.04.toRelative()
 
+                                                                                    children += Container()
+                                                                                        .apply {
+                                                                                            width = 0.5.toRelative()
+                                                                                            height = 1.0.toCopy()
+
+                                                                                            backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
+                                                                                            backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                        }
+
                                                                                     onClick = { state ->
                                                                                         line.remove(element)
                                                                                         state["hasInitList"] = false
+                                                                                    }
+                                                                                }
+
+                                                                            children += Container()
+                                                                                .apply {
+                                                                                    x = Side.NEGATIVE.toSide()
+                                                                                    y = Side.POSITIVE.toSide()
+                                                                                    width = 1.0.toCopy()
+                                                                                    height = 0.4.toRelative()
+                                                                                    setPadding(Relative(0.075, true))
+
+                                                                                    backgroundColor = { element.second }.toDependent()
+                                                                                    backgroundCornerRadius = 0.04.toRelative()
+
+                                                                                    onClick = { state ->
+                                                                                        state["editedColor"] = element
+                                                                                        state["colorTab"] = "edit"
                                                                                     }
                                                                                 }
 
@@ -1022,10 +1078,221 @@ class DefaultTheme: Theme() {
                                         borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                         backgroundCornerRadius = 0.015.toRelative()
 
+                                        children += Container()
+                                            .apply {
+                                                width = 0.5.toRelative()
+                                                height = 1.0.toCopy()
+
+                                                backgroundImage = "sorus/ui/themes/add.png".toAbsolute()
+                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                            }
+
                                         onClick = { state ->
                                             setting.setting.value.add(ArrayList())
                                             state["hasInitList"] = false
                                         }
+                                    }
+                            }
+
+                        children += Container()
+                            .apply {
+                                x = 0.0.toRelative()
+                                width = 0.95.toRelative()
+                                height = 30.0.toAbsolute()
+                                y = Side.POSITIVE.toSide()
+
+                                children += TabHolder()
+                                    .apply {
+                                        addChild("edit", Container()
+                                            .apply {
+
+                                                children += Container()
+                                                    .apply {
+                                                        x = Side.NEGATIVE.toSide()
+                                                        width = 0.5.toRelative()
+                                                    }
+
+                                                children += List(com.github.sorusclient.client.ui.framework.List.HORIZONTAL)
+                                                    .apply {
+                                                        x = Side.NEGATIVE.toSide()
+
+                                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                        borderThickness = 0.4.toAbsolute()
+                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
+                                                        backgroundCornerRadius = 0.03.toRelative()
+
+                                                        addChild(Container()
+                                                            .apply {
+                                                                width = Copy()
+                                                                height = 0.85.toRelative()
+                                                                setPadding(Relative(0.1, true))
+
+                                                                topLeftBackgroundColor = Color.WHITE.toAbsolute()
+                                                                bottomLeftBackgroundColor = Color.BLACK.toAbsolute()
+                                                                bottomRightBackgroundColor = Color.BLACK.toAbsolute()
+                                                                topRightBackgroundColor = { state: Map<String, Any> ->
+                                                                    val colorData = state["value"] as FloatArray
+                                                                    val rgb = java.awt.Color.HSBtoRGB(colorData[0], 1f, 1f)
+                                                                    val javaColor = java.awt.Color(rgb)
+                                                                    Color.fromRGB(javaColor.red, javaColor.green, javaColor.blue, 255)
+                                                                }.toDependent()
+
+                                                                onDrag = { state ->
+                                                                    val colorData = state.first["value"] as FloatArray
+                                                                    val colorDataNew = floatArrayOf(
+                                                                        colorData[0],
+                                                                        state.second.first.toFloat(),
+                                                                        1 - state.second.second.toFloat(),
+                                                                        colorData[3]
+                                                                    )
+                                                                    state.first["value"] = colorDataNew
+
+                                                                    setting.setting.overriden = true
+                                                                }
+
+                                                                children += Container()
+                                                                    .apply {
+                                                                        x = { state: Map<String, Any> ->
+                                                                            val colorData = state["value"] as FloatArray
+                                                                            Relative(colorData[1] - 0.5)
+                                                                        }.toDependent()
+
+                                                                        y = { state: Map<String, Any> ->
+                                                                            val colorData = state["value"] as FloatArray
+                                                                            Relative(1 - colorData[2] - 0.5)
+                                                                        }.toDependent()
+
+                                                                        width = 1.5.toAbsolute()
+                                                                        height = Copy()
+
+                                                                        backgroundColor = Color.WHITE.toAbsolute()
+                                                                        backgroundCornerRadius = 0.75.toAbsolute()
+                                                                    }
+                                                            })
+
+                                                        addChild(Container()
+                                                            .apply {
+                                                                width = 0.25.toCopy()
+                                                                height = 0.85.toRelative()
+                                                                setPadding(Relative(0.1, true))
+
+                                                                backgroundImage = "assets/minecraft/color_range.png".toAbsolute()
+
+                                                                onDrag = { state ->
+                                                                    val colorData = state.first["value"] as FloatArray
+                                                                    val colorDataNew = floatArrayOf(
+                                                                        state.second.second.toFloat(),
+                                                                        colorData[1],
+                                                                        colorData[2],
+                                                                        colorData[3]
+                                                                    )
+                                                                    state.first["value"] = colorDataNew
+
+                                                                    setting.setting.overriden = true
+                                                                }
+
+                                                                children += Container()
+                                                                    .apply {
+                                                                        x = 0.0.toRelative()
+                                                                        y = { state: Map<String, Any> ->
+                                                                            Relative((state["value"] as FloatArray)[0].toDouble() - 0.5)
+                                                                        }.toDependent()
+
+                                                                        width = 1.0.toRelative()
+                                                                        height = 0.5.toAbsolute()
+
+                                                                        backgroundColor = Color.WHITE.toAbsolute()
+                                                                    }
+                                                            })
+
+                                                        addChild(Container()
+                                                            .apply {
+                                                                x = Side.NEGATIVE.toSide()
+                                                                width = 0.25.toCopy()
+                                                                height = 0.85.toRelative()
+                                                                setPadding(Relative(0.1, true))
+
+                                                                topLeftBackgroundColor = Color.WHITE.toAbsolute()
+                                                                topRightBackgroundColor = Color.WHITE.toAbsolute()
+                                                                bottomLeftBackgroundColor = Color.fromRGB(255, 255, 255, 50).toAbsolute()
+                                                                bottomRightBackgroundColor = Color.fromRGB(255, 255, 255, 50).toAbsolute()
+
+                                                                onDrag = { state ->
+                                                                    val colorData = state.first["value"] as FloatArray? ?: floatArrayOf(1f, 1f, 1f, 1f)
+                                                                    val colorDataNew = floatArrayOf(
+                                                                        colorData[0],
+                                                                        colorData[1],
+                                                                        colorData[2],
+                                                                        1 - state.second.second.toFloat()
+                                                                    )
+                                                                    state.first["value"] = colorDataNew
+
+                                                                    setting.setting.overriden = true
+                                                                }
+
+                                                                children += Container()
+                                                                    .apply {
+                                                                        x = 0.0.toRelative()
+                                                                        y = { state: Map<String, Any> ->
+                                                                            Relative((1 - (state["value"] as FloatArray? ?: floatArrayOf(1f, 1f, 1f, 1f))[3]).toDouble() - 0.5)
+                                                                        }.toDependent()
+
+                                                                        width = 1.0.toRelative()
+                                                                        height = 0.5.toAbsolute()
+
+                                                                        backgroundColor = Color.WHITE.toAbsolute()
+                                                                    }
+                                                            })
+                                                    }
+
+                                                onInit += { state ->
+                                                    if (state.second["editedColor"] != null) {
+                                                        val color = (state.second["editedColor"] as com.github.sorusclient.client.util.Pair<String, Color>).second
+                                                        val javaColor = java.awt.Color(
+                                                            (color.red * 255).toInt(),
+                                                            (color.green * 255).toInt(),
+                                                            (color.blue * 255).toInt(),
+                                                            (color.alpha * 255).toInt()
+                                                        )
+
+                                                        val colorData = FloatArray(4)
+                                                        java.awt.Color.RGBtoHSB(javaColor.red, javaColor.green, javaColor.blue, colorData)
+                                                        colorData[3] = color.alpha.toFloat()
+                                                        state.second["value"] = colorData
+                                                    }
+                                                }
+                                            })
+
+                                        addChild("view", Container())
+
+                                        onStateUpdate["value"] = { state ->
+                                            val stateValue = state["value"] as FloatArray
+                                            val rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2])
+                                            val javaColor = java.awt.Color(rgb)
+
+                                            (state["editedColor"] as com.github.sorusclient.client.util.Pair<String, Color>).second = Color.fromRGB(
+                                                javaColor.red,
+                                                javaColor.green,
+                                                javaColor.blue,
+                                                (stateValue[3] * 255).toInt()
+                                            )
+                                        }
+
+                                        onStateUpdate["selected"] = { state ->
+                                            if (state["selected"] != null) {
+                                                state["colorTab"] = if (state["selected"] as Boolean) "edit" else "view"
+                                                if (!(state["selected"] as Boolean)) {
+                                                    state.remove("editedColor")
+                                                }
+                                            }
+                                        }
+
+                                        storedState += "value"
+
+                                        stateId = "colorTab"
+
+                                        x = Side.NEGATIVE.toSide()
+                                        width = 0.5.toRelative()
                                     }
                             }
 

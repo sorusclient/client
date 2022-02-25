@@ -269,24 +269,25 @@ open class Container : Component() {
 
         override fun onStateUpdate(id: String, value: Any) {
             super.onStateUpdate(id, value)
+            if (id == "selected") return
             for (child in getChildren()) {
                 child.runtime.onStateUpdate(id, value)
             }
         }
 
         override fun handleMouseEvent(event: MouseEvent): Boolean {
-            var handled = false
             for (component in placedComponents2) {
-                handled = component.runtime.handleMouseEvent(event)
-                if (handled) {
+                if (component.runtime.handleMouseEvent(event)) {
                     return true
                 }
             }
+            var handled = false
+
+            if (event.isPressed && event.button === Button.PRIMARY) {
+                setState("selected", event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2)
+            }
 
             val state = this.availableState
-            if (event.isPressed && event.button === Button.PRIMARY) {
-                state["selected"] = event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2
-            }
 
             if (event.x > this.x - this.width / 2 && event.x < this.x + this.width / 2 && event.y > this.y - this.height / 2 && event.y < this.y + this.height / 2) {
                 if (event.wheel != 0.0 && onScroll != null) {
