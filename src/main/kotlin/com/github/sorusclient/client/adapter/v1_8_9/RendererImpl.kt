@@ -299,7 +299,7 @@ class RendererImpl : IRenderer {
             ).next()
             for (i in 270..359) {
                 bufferBuilder.vertex(
-                    x + cornerRadius + kotlin.math.sin(Math.toRadians(i.toDouble())) * cornerRadius,
+                    x + cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
                     y + height - cornerRadius + cos(
                         Math.toRadians(i.toDouble())
                     ) * cornerRadius,

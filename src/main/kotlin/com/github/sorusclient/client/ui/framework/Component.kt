@@ -110,6 +110,6 @@ abstract class Component {
         }
 
         abstract fun handleMouseEvent(event: MouseEvent): Boolean
-        abstract fun handleKeyEvent(event: KeyEvent)
+        abstract fun handleKeyEvent(event: KeyEvent): Boolean
     }
 }

@@ -1,6 +1,5 @@
 package com.github.sorusclient.client.setting
 
-import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Modifier
 import java.math.BigDecimal
 import java.util.*
@@ -15,6 +14,9 @@ object Util {
         if (jsonSetting is Int) {
             return when (wantedClass) {
                 Double::class.java -> {
+                    jsonSetting.toDouble() as T
+                }
+                java.lang.Double::class.java -> {
                     jsonSetting.toDouble() as T
                 }
                 Long::class.java -> {

@@ -350,7 +350,7 @@ open class Container : Component() {
             return handled
         }
 
-        override fun handleKeyEvent(event: KeyEvent) {
+        override fun handleKeyEvent(event: KeyEvent): Boolean {
             if (getState("selected") as Boolean) {
                 if (onKey != null) {
                     val state = this.availableState
@@ -361,6 +361,8 @@ open class Container : Component() {
             for (component in placedComponents2) {
                 component.runtime.handleKeyEvent(event)
             }
+
+            return false
         }
 
         override fun setHasInit(hasInit: Boolean) {

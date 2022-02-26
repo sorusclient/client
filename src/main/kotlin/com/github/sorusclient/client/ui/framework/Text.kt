@@ -135,6 +135,8 @@ class Text : Component() {
             return false
         }
 
-        override fun handleKeyEvent(event: KeyEvent) {}
+        override fun handleKeyEvent(event: KeyEvent): Boolean {
+            return false
+        }
     }
 }

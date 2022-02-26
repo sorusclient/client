@@ -89,7 +89,7 @@ object UserInterface {
         }
 
         EventManager.register<TickEvent> {
-            if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME && ContainerRenderer.container != null) {
+            if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME && ContainerRenderer.containers.size > 0) {
                 ThemeManager.currentTheme.onForceClose()
             }
         }

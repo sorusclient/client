@@ -1,10 +1,10 @@
 package com.github.sorusclient.client.util
 
-class Color private constructor(
-    val red: Double = 0.0,
-    val green: Double = 0.0,
-    val blue: Double = 0.0,
-    val alpha: Double = 0.0
+class Color constructor(
+    var red: Double = 0.0,
+    var green: Double = 0.0,
+    var blue: Double = 0.0,
+    var alpha: Double = 0.0
 ) {
 
     constructor() : this(0.0, 0.0, 0.0, 0.0)
@@ -21,6 +21,7 @@ class Color private constructor(
     companion object {
         val BLACK = fromRGB(0, 0, 0, 255)
         val WHITE = fromRGB(255, 255, 255, 255)
+
         fun getBetween(percent: Double, color1: Color, color2: Color): Color {
             return Color(
                 (color2.red - color1.red) * percent + color1.red,
@@ -39,4 +40,12 @@ class Color private constructor(
             )
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other != null && other is Color) {
+            return red == other.red && green == other.green && blue == other.blue && alpha == other.alpha
+        }
+        return super.equals(other)
+    }
+
 }

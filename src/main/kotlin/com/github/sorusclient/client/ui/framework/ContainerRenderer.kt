@@ -11,7 +11,7 @@ object ContainerRenderer {
     private val keyEvents: MutableList<KeyEvent> = ArrayList()
     private val mouseEvents: MutableList<MouseEvent> = ArrayList()
 
-    var container: Container? = null
+    var containers: MutableList<Container> = ArrayList()
 
     fun initialize() {
         val eventManager = EventManager
@@ -21,29 +21,43 @@ object ContainerRenderer {
     }
 
     fun open(container: Container) {
-        this.container = container
+        this.containers.add(container)
         container.runtime.setState("hasInit", false)
     }
 
+    fun close(container: Container) {
+        this.containers.remove(container)
+    }
+
     fun close() {
-        this.container = null
+        this.containers.clear()
     }
 
     fun render() {
-        if (container != null) {
+        if (containers.isNotEmpty()) {
             val screenDimensions = AdapterManager.getAdapter().screenDimensions
-            container!!.runtime.render(
-                screenDimensions[0] / 2,
-                screenDimensions[1] / 2,
-                screenDimensions[0],
-                screenDimensions[1]
-            )
+            for (container in containers) {
+                container.runtime.render(
+                    screenDimensions[0] / 2,
+                    screenDimensions[1] / 2,
+                    screenDimensions[0],
+                    screenDimensions[1]
+                )
+            }
 
             for (event in keyEvents) {
-                container!!.runtime.handleKeyEvent(event)
+                for (container in ArrayList(containers)) {
+                    if (container.runtime.handleKeyEvent(event)) {
+                        break
+                    }
+                }
             }
             for (event in mouseEvents) {
-                container!!.runtime.handleMouseEvent(event)
+                for (container in ArrayList(containers)) {
+                    if (container.runtime.handleMouseEvent(event)) {
+                        break
+                    }
+                }
             }
         }
 
