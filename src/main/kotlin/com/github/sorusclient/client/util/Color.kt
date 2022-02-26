@@ -19,8 +19,11 @@ class Color constructor(
         }
 
     companion object {
-        val BLACK = fromRGB(0, 0, 0, 255)
-        val WHITE = fromRGB(255, 255, 255, 255)
+        val BLACK: Color
+            get() = fromRGB(0, 0, 0, 255)
+
+        val WHITE: Color
+            get() = fromRGB(255, 255, 255, 255)
 
         fun getBetween(percent: Double, color1: Color, color2: Color): Color {
             return Color(

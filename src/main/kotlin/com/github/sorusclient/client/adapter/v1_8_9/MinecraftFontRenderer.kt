@@ -13,6 +13,7 @@ class MinecraftFontRenderer(private val textRenderer: TextRenderer) : IFontRende
         GlStateManager.disableDepthTest()
         GlStateManager.enableTexture()
         GlStateManager.enableBlend()
+        GlStateManager.color4f(1f, 1f, 1f, 1f)
         textRenderer.draw(text, (x / scale).toFloat(), (y / scale).toFloat(), color.rgb, false)
         GlStateManager.enableDepthTest()
         GlStateManager.popMatrix()

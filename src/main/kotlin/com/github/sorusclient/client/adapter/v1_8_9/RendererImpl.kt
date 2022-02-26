@@ -312,6 +312,8 @@ class RendererImpl : IRenderer {
                 ).next()
             }
             tessellator.draw()
+
+            GlStateManager.color4f(1f, 1f, 1f, 1f)
         }
     }
 
