@@ -36,6 +36,7 @@ class HotBarRenderer : Listener, IHotBarRenderer {
         GlStateManager.color4f(1f, 1f, 1f, 1f)
         GuiLighting.enable()
         MinecraftClient.getInstance().itemRenderer.renderInGuiWithOverrides(item.inner as ItemStack, 0, 0)
+        MinecraftClient.getInstance().itemRenderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, item.inner as ItemStack, 0, 0, null)
         GuiLighting.disable()
         GlStateManager.popMatrix()
     }

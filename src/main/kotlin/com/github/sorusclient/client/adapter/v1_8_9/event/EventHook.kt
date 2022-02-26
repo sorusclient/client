@@ -252,4 +252,12 @@ object EventHook {
         EventManager.call(event)
     }
 
+    @JvmStatic
+    @Suppress("Unused")
+    fun onRenderCrosshair(): Boolean {
+        val event = RenderCrosshairEvent()
+        EventManager.call(event)
+        return event.canceled
+    }
+
 }

@@ -27,7 +27,7 @@ class HotBar : HUDElement("hotBar") {
             val item = inventory.getItem(slot)
             if (item != null) {
                 hotBarRenderer.renderItem(x + 4 * scale + i * 20 * scale, y + 4 * scale, scale, item)
-                if (item.count > 1) {
+                /*if (item.count > 1) {
                     val itemCount = item.count.toString()
                     minecraftFontRenderer.drawStringShadowed(
                         itemCount,
@@ -37,7 +37,7 @@ class HotBar : HUDElement("hotBar") {
                         Color.WHITE,
                         Color.fromRGB(70, 70, 70, 255)
                     )
-                }
+                }*/
             }
         }
     }

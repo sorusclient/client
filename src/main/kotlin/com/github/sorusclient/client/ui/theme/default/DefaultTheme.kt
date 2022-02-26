@@ -104,12 +104,6 @@ class DefaultTheme: Theme() {
 
                                 children += Container()
                                     .apply {
-                                        x = Side.NEGATIVE.toSide()
-                                        width = 0.0666.toRelative()
-                                    }
-
-                                children += Container()
-                                    .apply {
                                         x = Side.POSITIVE.toSide()
                                         width = 2.0.toCopy()
                                         height = 0.6.toRelative()

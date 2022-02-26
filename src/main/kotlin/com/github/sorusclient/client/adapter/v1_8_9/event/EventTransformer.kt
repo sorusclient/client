@@ -319,6 +319,29 @@ class EventTransformer : Transformer(), Listener {
                     insnList.add(labelNode)
                 }
             })
+
+        for (methodNode in classNode.methods) {
+            if (methodNode.name == render.methodName && methodNode.desc == render.methodDesc) {
+                val method_9429 = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#method_9429()Z")
+                for (node in methodNode.instructions) {
+                    if (node is MethodInsnNode && node.owner == method_9429.className && node.name == method_9429.methodName && node.desc == method_9429.methodDesc) {
+                        val jumpInsnNode = node.getNext() as JumpInsnNode
+                        val insnList = InsnList()
+                        insnList.add(
+                            MethodInsnNode(
+                                Opcodes.INVOKESTATIC,
+                                EventHook::class.java.name.replace(".", "/"),
+                                "onRenderCrosshair",
+                                "()Z"
+                            )
+                        )
+                        insnList.add(JumpInsnNode(Opcodes.IFNE, jumpInsnNode.label))
+
+                        methodNode.instructions.insertBefore(node.previous, insnList)
+                    }
+                }
+            }
+        }
     }
 
     private fun transformClientPlayerNetworkHandler(classNode: ClassNode) {
