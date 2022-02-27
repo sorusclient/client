@@ -29,7 +29,7 @@ open class Transformer : com.github.glassmc.loader.api.loader.Transformer {
         val classReader = ClassReader(data)
         classReader.accept(classNode, 0)
         transformers[name]!!.accept(classNode)
-        val classWriter = ClassWriter(0)
+        val classWriter = ClassWriter(ClassWriter.COMPUTE_FRAMES)
         classNode.accept(classWriter)
         return classWriter.toByteArray()
     }

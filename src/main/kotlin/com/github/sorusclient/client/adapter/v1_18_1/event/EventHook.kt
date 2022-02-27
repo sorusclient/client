@@ -36,4 +36,60 @@ object EventHook {
         }
     }
 
+    @JvmStatic
+    @Suppress("Unused")
+    fun onSideBarRender(): SideBarRenderEvent {
+        val event = SideBarRenderEvent()
+        EventManager.call(event)
+        return event
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onBossBarRender(): BossBarRenderEvent {
+        val event = BossBarRenderEvent()
+        EventManager.call(event)
+        return event
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onHotBarRender(): HotBarRenderEvent {
+        val event = HotBarRenderEvent()
+        EventManager.call(event)
+        return event
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onExperienceBarRender(): ExperienceBarRenderEvent {
+        val event = ExperienceBarRenderEvent()
+        EventManager.call(event)
+        return event
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onHealthBarRender(): HealthBarRenderEvent {
+        val event = HealthBarRenderEvent()
+        EventManager.call(event)
+        return event
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onArmorBarRender(): ArmorBarRenderEvent {
+        val event = ArmorBarRenderEvent()
+        EventManager.call(event)
+        return event
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onHungerBarRender(): HungerBarRenderEvent {
+        val event = HungerBarRenderEvent()
+        EventManager.call(event)
+        return event
+    }
+
 }
