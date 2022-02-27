@@ -57,7 +57,10 @@ open class Transformer : com.github.glassmc.loader.api.loader.Transformer {
     protected fun findValues(methodNode: MethodNode, value: Any): Result<AbstractInsnNode> {
         val results: MutableList<AbstractInsnNode> = ArrayList()
         for (node in methodNode.instructions) {
-            if (node is IntInsnNode && node.opcode == Opcodes.BIPUSH && node.operand == value) {
+            if (node is IntInsnNode && value is Int && node.opcode == Opcodes.BIPUSH && node.operand == value) {
+                results.add(node)
+            }
+            if (node is InsnNode && value is Float && value == 1f && node.opcode == Opcodes.FCONST_1) {
                 results.add(node)
             }
             if (node is LdcInsnNode && node.cst == value) {

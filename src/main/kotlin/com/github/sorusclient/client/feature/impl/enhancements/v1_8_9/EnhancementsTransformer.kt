@@ -8,7 +8,6 @@ import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
-
 class EnhancementsTransformer : Transformer(), Listener {
 
     override fun run() {
@@ -38,6 +37,11 @@ class EnhancementsTransformer : Transformer(), Listener {
         }
         register("org/lwjgl/opengl/LinuxKeyboard") { classNode: ClassNode ->
             transformLinuxKeyboard(
+                classNode
+            )
+        }
+        register("v1_8_9/net/minecraft/client/font/TextRenderer") { classNode: ClassNode ->
+            transformTextRenderer(
                 classNode
             )
         }
@@ -257,6 +261,29 @@ class EnhancementsTransformer : Transformer(), Listener {
             .apply { methodNode ->
                 methodNode.maxLocals = 8
                 methodNode.maxStack = 6
+            }
+    }
+
+    private fun transformTextRenderer(classNode: ClassNode) {
+        val method_959 = Identifier.parse("v1_8_9/net/minecraft/client/font/TextRenderer#method_959(Ljava/lang/String;Z)V")
+        findMethod(classNode, method_959)
+            .apply { methodNode ->
+                findVarReferences(methodNode, 6, VarReferenceType.LOAD)
+                    .nth(9)
+                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                        insnList.add(LdcInsnNode(0.99f))
+                        insnList.add(InsnNode(Opcodes.FMUL))
+                    }))
+            }
+
+        findMethod(classNode, method_959)
+            .apply { methodNode ->
+                findVarReferences(methodNode, 6, VarReferenceType.LOAD)
+                    .nth(12)
+                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                        insnList.add(LdcInsnNode(0.99f))
+                        insnList.add(InsnNode(Opcodes.FMUL))
+                    }))
             }
     }
 

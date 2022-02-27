@@ -21,23 +21,11 @@ class HotBar : HUDElement("hotBar") {
         val hotBarRenderer = GlassLoader.getInstance().getInterface(IHotBarRenderer::class.java)
         hotBarRenderer.renderBackground(x + 1 * scale, y + 1 * scale, scale)
         hotBarRenderer.renderSelectedSlot(x + 20 * inventory.selectedSlot.ordinal * scale, y, scale)
-        val minecraftFontRenderer = AdapterManager.getAdapter().renderer.getFontRenderer("minecraft")!!
         for (i in 0..8) {
             val slot = IPlayerInventory.Slot.values()[i]
             val item = inventory.getItem(slot)
             if (item != null) {
                 hotBarRenderer.renderItem(x + 4 * scale + i * 20 * scale, y + 4 * scale, scale, item)
-                /*if (item.count > 1) {
-                    val itemCount = item.count.toString()
-                    minecraftFontRenderer.drawStringShadowed(
-                        itemCount,
-                        x + 20 * scale + i * 20 * scale - minecraftFontRenderer.getWidth(itemCount) * scale,
-                        y + 21 * scale - minecraftFontRenderer.getHeight() * scale,
-                        scale,
-                        Color.WHITE,
-                        Color.fromRGB(70, 70, 70, 255)
-                    )
-                }*/
             }
         }
     }

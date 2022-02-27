@@ -47,6 +47,9 @@ object Applier {
             is TypeInsnNode -> {
                 return TypeInsnNode(instruction.opcode, instruction.desc)
             }
+            is LdcInsnNode -> {
+                return LdcInsnNode(instruction.cst)
+            }
             else -> return null
         }
     }
