@@ -157,4 +157,7 @@ class Adapter : Listener, IAdapter {
     override val version = "1.8.9"
 
     override val renderer: IRenderer = RendererImpl()
+
+    override val fps: Int
+        get() = MinecraftClient.getCurrentFps()
 }

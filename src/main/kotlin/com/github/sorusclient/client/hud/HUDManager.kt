@@ -8,12 +8,15 @@ import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.hud.impl.armor.Armor
 import com.github.sorusclient.client.hud.impl.bossbar.BossBar
 import com.github.sorusclient.client.hud.impl.coordinates.Coordinates
+import com.github.sorusclient.client.hud.impl.cps.CPS
 import com.github.sorusclient.client.hud.impl.experience.Experience
+import com.github.sorusclient.client.hud.impl.fps.FPS
 import com.github.sorusclient.client.hud.impl.health.Health
 import com.github.sorusclient.client.hud.impl.hotbar.HotBar
 import com.github.sorusclient.client.hud.impl.hunger.Hunger
 import com.github.sorusclient.client.hud.impl.potions.Potions
 import com.github.sorusclient.client.hud.impl.sidebar.SideBar
+import com.github.sorusclient.client.hud.impl.timer.Timer
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.AbstractData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
@@ -288,12 +291,15 @@ object HUDManager {
         registerPossibleElement(Armor::class.java, "Armor", "yes yersy")
         registerPossibleElement(BossBar::class.java, "BossBar", "yes yersy")
         registerPossibleElement(Coordinates::class.java, "Coordinates", "yes yersy")
+        registerPossibleElement(CPS::class.java, "CPS", "yes yersy")
         registerPossibleElement(Experience::class.java, "Experience", "yes yersy")
+        registerPossibleElement(FPS::class.java, "FPS", "yes yersy")
         registerPossibleElement(Health::class.java, "Health", "yes yersy")
         registerPossibleElement(HotBar::class.java, "HotBar", "yes yersy")
         registerPossibleElement(Hunger::class.java, "Hunger", "yes yersy")
         registerPossibleElement(Potions::class.java, "PotionStatus", "yes yersy")
         registerPossibleElement(SideBar::class.java, "Sidebar", "yes yersy")
+        registerPossibleElement(Timer::class.java, "Timer", "yes yersy")
     }
 
     private fun registerPossibleElement(hudClass: Class<out HUDElement>, name: String, description: String) {

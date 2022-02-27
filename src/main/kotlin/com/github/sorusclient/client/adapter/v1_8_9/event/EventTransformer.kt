@@ -151,6 +151,16 @@ class EventTransformer : Transformer(), Listener {
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
                 insnList.add(this.getHook("onOpenScreen"))
             }))
+
+        val getEventButton = Identifier.parse("org/lwjgl/input/Mouse#getEventButton()I")
+
+        findMethod(classNode, tick)
+            .apply { methoNode ->
+                findMethodCalls(methoNode, getEventButton)
+                    .apply(InsertBefore(methoNode, createList { insnList ->
+                        insnList.add(this.getHook("onMouse"))
+                    }))
+            }
     }
 
     private fun transformScreen(classNode: ClassNode) {
@@ -322,9 +332,9 @@ class EventTransformer : Transformer(), Listener {
 
         for (methodNode in classNode.methods) {
             if (methodNode.name == render.methodName && methodNode.desc == render.methodDesc) {
-                val method_9429 = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#method_9429()Z")
+                val method9429 = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#method_9429()Z")
                 for (node in methodNode.instructions) {
-                    if (node is MethodInsnNode && node.owner == method_9429.className && node.name == method_9429.methodName && node.desc == method_9429.methodDesc) {
+                    if (node is MethodInsnNode && node.owner == method9429.className && node.name == method9429.methodName && node.desc == method9429.methodDesc) {
                         val jumpInsnNode = node.getNext() as JumpInsnNode
                         val insnList = InsnList()
                         insnList.add(

@@ -20,4 +20,5 @@ interface IAdapter {
     val version: String
 
     val renderer: IRenderer
+    val fps: Int
 }
