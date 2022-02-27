@@ -8,6 +8,4 @@ class BossBarImpl : IBossBar {
         get() = BossBar.name
     override val percentage: Double
         get() = BossBar.percent.toDouble()
-    override val isBossBar: Boolean
-        get() = BossBar.framesToLive > 0
 }

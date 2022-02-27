@@ -272,7 +272,9 @@ object HUDManager {
 
     fun initialize() {
         val eventManager = EventManager
-        eventManager.register { _: RenderInGameEvent -> render() }
+        eventManager.register { _: RenderInGameEvent ->
+            render()
+        }
         eventManager.register(this::onClick)
         eventManager.register(this::onKey)
 

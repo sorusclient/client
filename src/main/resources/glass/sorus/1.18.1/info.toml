@@ -1,0 +1,19 @@
+namespace = "com.github.sorusclient.client"
+
+[listeners]
+initialize = [
+    "adapter.v1_18_1.event.EventTransformer",
+    "hud.impl.health.v1_18_1.HealthRenderer",
+    "hud.impl.bossbar.v1_18_1.BossBarRenderer",
+    "hud.impl.hotbar.v1_18_1.HotBarRenderer",
+    "hud.impl.experience.v1_18_1.ExperienceRenderer",
+    "hud.impl.armor.v1_18_1.ArmorRenderer",
+    "hud.impl.hunger.v1_18_1.HungerRenderer",
+]
+post-initialize = [
+    "adapter.v1_18_1.Adapter",
+]
+
+[environment]
+    [environment.has]
+    client = "1.18.1"

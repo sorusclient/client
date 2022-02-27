@@ -1,14 +1,13 @@
-package com.github.sorusclient.client.adapter.v1_8_9
+package com.github.sorusclient.client.adapter.v1_18_1
 
 import com.github.sorusclient.client.adapter.IScoreboardObjective
 import com.github.sorusclient.client.adapter.IScoreboardScore
 import com.github.sorusclient.client.adapter.IText
-import v1_8_9.net.minecraft.scoreboard.ScoreboardObjective
-import v1_8_9.net.minecraft.text.BaseText
-import v1_8_9.net.minecraft.text.LiteralText
-import v1_8_9.net.minecraft.text.Text
+import v1_18_1.net.minecraft.scoreboard.ScoreboardObjective
+import v1_18_1.net.minecraft.text.Text
 
 class ScoreboardObjectiveImpl(private val scoreboardObjective: ScoreboardObjective) : IScoreboardObjective {
+
     override val scores: List<IScoreboardScore>
         get() {
             val scores: MutableList<IScoreboardScore> = ArrayList()
@@ -22,6 +21,9 @@ class ScoreboardObjectiveImpl(private val scoreboardObjective: ScoreboardObjecti
             scores.reverse()
             return scores
         }
+
     override val name: IText
-        get() = Util.textToApiText(LiteralText(scoreboardObjective.displayName))
+        get() {
+            return Util.textToApiText(scoreboardObjective.displayName)
+        }
 }

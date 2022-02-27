@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.glassmc:loader:v0.8.2"
+    implementation "com.github.glassmc:loader:v0.8.3"
 
     shadowImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
@@ -37,6 +37,5 @@ dependencies {
     shadowImplementation "org.json:json:20211205"
 
     compileOnly minecraft("client", "1.8.9", "yarn")
-
-    implementation(files("run/shards/api-mapped.jar"))
+    compileOnly minecraft("client", "1.18.1", "yarn")
 }

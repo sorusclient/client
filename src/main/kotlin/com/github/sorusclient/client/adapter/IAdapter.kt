@@ -17,6 +17,8 @@ interface IAdapter {
     fun setDisplayIcon(iconSmall: String, iconLarge: String)
     fun joinServer(ip: String)
 
+    fun createText(string: String): IText
+
     val version: String
 
     val renderer: IRenderer

@@ -18,6 +18,7 @@ import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.entity.Entity
 import v1_8_9.net.minecraft.network.ServerAddress
+import v1_8_9.net.minecraft.text.LiteralText
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
@@ -35,6 +36,7 @@ class Adapter : Listener, IAdapter {
             val window = Window(MinecraftClient.getInstance())
             return doubleArrayOf(window.scaledWidth, window.scaledHeight)
         }
+
     override val mouseLocation: DoubleArray
         get() {
             val window = Window(MinecraftClient.getInstance())
@@ -152,6 +154,10 @@ class Adapter : Listener, IAdapter {
         MinecraftClient.getInstance().connect(null)
         MinecraftClient.getInstance().currentServerEntry = ServerInfo("", ip, false)
         MinecraftClient.getInstance().openScreen(ConnectScreen(TitleScreen(), MinecraftClient.getInstance(), serverAddress.address, serverAddress.port))
+    }
+
+    override fun createText(string: String): IText {
+        return Util.textToApiText(LiteralText(string))
     }
 
     override val version = "1.8.9"

@@ -16,22 +16,23 @@ class BossBar : HUDElement("bossBar") {
         get() = "BossBar"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val bossBar = AdapterManager.getAdapter().world.bossBar
-        if (!bossBar.isBossBar) return
-        val percent = bossBar.percentage
-        val bossBarRenderer = GlassLoader.getInstance().getInterface(
-            IBossBarRenderer::class.java
-        )
+        val bossBars = AdapterManager.getAdapter().world.bossBars
+        if (bossBars.isEmpty()) return
+
+        val percent = bossBars[0].percentage
+        val bossBarRenderer = GlassLoader.getInstance().getInterface(IBossBarRenderer::class.java)
+
         bossBarRenderer.renderBossBar(x + 1 * scale, y + 11 * scale, scale, percent)
         val renderer = AdapterManager.getAdapter().renderer
         val minecraftFontRenderer = renderer.getFontRenderer("minecraft")!!
-        val bossBarName = bossBar.name!!
+        val bossBarName = bossBars[0].name!!
         minecraftFontRenderer.drawString(
-                bossBarName,
-                x + width / 2 * scale - minecraftFontRenderer.getWidth(bossBarName) / 2 * scale,
-                y + 5.5 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
-                scale,
-                Color.WHITE
+            bossBarName,
+            x + width / 2 * scale - minecraftFontRenderer.getWidth(bossBarName) / 2 * scale,
+            y + 5.5 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
+            scale,
+            Color.WHITE,
+            true
         )
     }
 

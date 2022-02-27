@@ -19,13 +19,11 @@ import com.github.sorusclient.client.ui.theme.Theme
 import com.github.sorusclient.client.ui.theme.ThemeManager
 import com.github.sorusclient.client.util.AssetUtil
 import com.github.sorusclient.client.util.Color
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.net.URL
-import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.ceil
 import kotlin.math.max
 

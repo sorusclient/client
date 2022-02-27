@@ -1,9 +1,6 @@
 package com.github.sorusclient.client.hud.impl.sidebar
 
-import com.github.sorusclient.client.adapter.AdapterManager
-import com.github.sorusclient.client.adapter.IScoreboard
-import com.github.sorusclient.client.adapter.IScoreboardObjective
-import com.github.sorusclient.client.adapter.IScoreboardScore
+import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.setting.display.DisplayedSetting
@@ -24,9 +21,9 @@ class SideBar : HUDElement("sideBar") {
                 sidebarObjective
             } else {
                 val fakeScores: MutableList<IScoreboardScore> = ArrayList()
-                fakeScores.add(FakeScoreboardScore("Steve", 0))
-                fakeScores.add(FakeScoreboardScore("Alex", 1))
-                FakeScoreboardObjective(fakeScores, "Points")
+                fakeScores.add(FakeScoreboardScore(AdapterManager.getAdapter().createText("Steve"), 0))
+                fakeScores.add(FakeScoreboardScore(AdapterManager.getAdapter().createText("Alex"), 1))
+                FakeScoreboardObjective(fakeScores, AdapterManager.getAdapter().createText("Points"))
             }
         }
     override val width: Double
@@ -37,7 +34,7 @@ class SideBar : HUDElement("sideBar") {
             var maxWidth = fontRenderer.getWidth(sidebarObjective.name)
             for (score in sidebarObjective.scores) {
                 val scoreString = if (showScores.value) { " " + score.score } else  { "" }
-                maxWidth = maxWidth.coerceAtLeast(fontRenderer.getWidth(score.name + scoreString))
+                maxWidth = maxWidth.coerceAtLeast(fontRenderer.getWidth(score.name) + fontRenderer.getWidth(scoreString))
             }
             return 2 + maxWidth + 2
         }
@@ -93,8 +90,8 @@ class SideBar : HUDElement("sideBar") {
         }
     }
 
-    private class FakeScoreboardObjective(override val scores: List<IScoreboardScore>, override val name: String) : IScoreboardObjective
+    private class FakeScoreboardObjective(override val scores: List<IScoreboardScore>, override val name: IText) : IScoreboardObjective
 
-    private class FakeScoreboardScore(override val name: String, override val score: Int) : IScoreboardScore
+    private class FakeScoreboardScore(override val name: IText, override val score: Int) : IScoreboardScore
 
 }

@@ -2,5 +2,5 @@ package com.github.sorusclient.client.adapter
 
 interface IScoreboardObjective {
     val scores: List<IScoreboardScore>
-    val name: String
+    val name: IText
 }
