@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.ui.framework
 
+import com.github.sorusclient.client.adapter.event.KeyCharEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
@@ -111,5 +112,6 @@ abstract class Component {
 
         abstract fun handleMouseEvent(event: MouseEvent): Boolean
         abstract fun handleKeyEvent(event: KeyEvent): Boolean
+        abstract fun handleKeyCharEvent(event: KeyCharEvent): Boolean
     }
 }

@@ -910,14 +910,13 @@ class DefaultTheme: Theme() {
                                                                                     onKey = onKey@{ state ->
                                                                                         if (!state.second.isPressed) return@onKey
 
-                                                                                        var string = "abcdefghijklmnopqrstuvwxyz :;<,>./?'\"[]{}\\||!@#$%^&*()-_=+1234567890"
-                                                                                        string += string.uppercase()
-
-                                                                                        if (string.contains(state.second.character)) {
-                                                                                            element.first += state.second.character
-                                                                                        } else if (state.second.key == Key.BACKSPACE && element.first.isNotEmpty()) {
+                                                                                        if (state.second.key == Key.BACKSPACE && element.first.isNotEmpty()) {
                                                                                             element.first = element.first.substring(0, element.first.length - 1)
                                                                                         }
+                                                                                    }
+
+                                                                                    onChar = { state ->
+                                                                                        element.first += state.second.character
                                                                                     }
                                                                                 }
                                                                         }
@@ -2545,12 +2544,7 @@ class DefaultTheme: Theme() {
 
                                             var parameter = if (state.first["searchParameter"] == null) { "" } else { state.first["searchParameter"] as String }
 
-                                            var string = "abcdefghijklmnopqrstuvwxyz "
-                                            string += string.uppercase()
-
-                                            if (string.contains(state.second.character)) {
-                                                parameter += state.second.character
-                                            } else if (state.second.key == Key.BACKSPACE && parameter.isNotEmpty()) {
+                                            if (state.second.key == Key.BACKSPACE && parameter.isNotEmpty()) {
                                                 parameter = parameter.substring(0, parameter.length - 1)
                                             } else if (state.second.key == Key.SPACE) {
                                                 parameter += " "
@@ -2575,6 +2569,14 @@ class DefaultTheme: Theme() {
 
                                             prevKeyTime = System.currentTimeMillis()
 
+                                            state.first["searchParameter"] = parameter
+                                        }
+
+                                        onChar = { state ->
+                                            var parameter = if (state.first["searchParameter"] == null) { "" } else { state.first["searchParameter"] as String }
+                                            parameter += state.second.character
+
+                                            prevKeyTime = System.currentTimeMillis()
                                             state.first["searchParameter"] = parameter
                                         }
                                     }

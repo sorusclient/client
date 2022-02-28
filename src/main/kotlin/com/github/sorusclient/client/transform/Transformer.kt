@@ -34,10 +34,10 @@ open class Transformer : com.github.glassmc.loader.api.loader.Transformer {
         return classWriter.toByteArray()
     }
 
-    protected fun findMethod(classNode: ClassNode, methodIdentifier: Identifier): Result<MethodNode> {
+    protected fun findMethod(classNode: ClassNode, methodIdentifier: Identifier, ignoreDescriptor: Boolean = false): Result<MethodNode> {
         val results: MutableList<MethodNode> = ArrayList()
         for (methodNode in classNode.methods) {
-            if (methodNode.name == methodIdentifier.methodName && methodNode.desc == methodIdentifier.methodDesc) {
+            if (methodNode.name == methodIdentifier.methodName && (ignoreDescriptor || methodNode.desc == methodIdentifier.methodDesc)) {
                 results.add(methodNode)
             }
         }

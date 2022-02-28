@@ -4,6 +4,11 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.*
 import v1_18_1.net.minecraft.client.MinecraftClient
+import v1_18_1.net.minecraft.client.gui.screen.GameMenuScreen
+import v1_18_1.net.minecraft.client.gui.screen.TitleScreen
+import v1_18_1.net.minecraft.client.gui.screen.option.ControlsOptionsScreen
+import v1_18_1.net.minecraft.client.gui.screen.option.OptionsScreen
+import v1_18_1.net.minecraft.client.gui.screen.option.VideoOptionsScreen
 import v1_18_1.net.minecraft.text.LiteralText
 
 class Adapter: Listener, IAdapter {
@@ -12,8 +17,8 @@ class Adapter: Listener, IAdapter {
         GlassLoader.getInstance().registerInterface(IAdapter::class.java, this)
     }
 
-    override val openScreen: ScreenType?
-        get() = TODO("Not yet implemented")
+    override val openScreen: ScreenType
+        get() = Util.screenToScreenType(MinecraftClient.getInstance().currentScreen)
 
     override val screenDimensions: DoubleArray
         get() {
@@ -24,24 +29,38 @@ class Adapter: Listener, IAdapter {
     override val mouseLocation: DoubleArray
         get() {
             val mouse = MinecraftClient.getInstance().mouse
-            return doubleArrayOf(mouse.x, mouse.y)
+            val window = MinecraftClient.getInstance().window
+            return doubleArrayOf(mouse.x / window.width * window.scaledWidth, mouse.y / window.height * window.scaledHeight)
         }
 
-    override val player: IPlayerEntity?
+    override val player: IPlayerEntity
         get() = PlayerEntityImpl(MinecraftClient.getInstance().player!!)
 
     override val world: IWorld
         get() = WorldImpl(MinecraftClient.getInstance().world!!)
 
     override fun openScreen(screenType: ScreenType) {
-        TODO("Not yet implemented")
+        val screen = when (screenType) {
+            ScreenType.DUMMY -> DummyScreen()
+            ScreenType.SETTINGS -> createSettingsScreen()
+            ScreenType.CONTROLS -> ControlsOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options)
+            ScreenType.VIDEO_SETTINGS -> VideoOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options)
+            else -> null
+        }
+
+        MinecraftClient.getInstance().setScreen(screen)
+    }
+
+    private fun createSettingsScreen(): OptionsScreen {
+        val inGame = MinecraftClient.getInstance().world != null
+        return OptionsScreen(if (inGame) { GameMenuScreen(true) } else { TitleScreen() }, MinecraftClient.getInstance().options)
     }
 
     override var perspective: PerspectiveMode
         get() = TODO("Not yet implemented")
         set(value) {}
 
-    override val currentServer: IServer?
+    override val currentServer: IServer
         get() = TODO("Not yet implemented")
 
     override fun getKeyBind(type: IKeyBind.KeyBindType): IKeyBind {
@@ -53,11 +72,11 @@ class Adapter: Listener, IAdapter {
     }
 
     override fun setDisplayTitle(title: String) {
-        TODO("Not yet implemented")
+        MinecraftClient.getInstance().window.setTitle(title)
     }
 
     override fun setDisplayIcon(iconSmall: String, iconLarge: String) {
-        TODO("Not yet implemented")
+        MinecraftClient.getInstance().window.setIcon(Adapter::class.java.classLoader.getResourceAsStream(iconSmall), Adapter::class.java.classLoader.getResourceAsStream(iconLarge))
     }
 
     override fun joinServer(ip: String) {
@@ -69,7 +88,7 @@ class Adapter: Listener, IAdapter {
     }
 
     override val version: String
-        get() = TODO("Not yet implemented")
+        get() = "1.18.1"
 
     override val renderer: IRenderer = RendererImpl()
 

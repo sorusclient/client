@@ -1,6 +1,7 @@
 package com.github.sorusclient.client.ui.framework
 
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.event.KeyCharEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.ui.framework.constraint.Absolute
@@ -136,6 +137,10 @@ class Text : Component() {
         }
 
         override fun handleKeyEvent(event: KeyEvent): Boolean {
+            return false
+        }
+
+        override fun handleKeyCharEvent(event: KeyCharEvent): Boolean {
             return false
         }
     }

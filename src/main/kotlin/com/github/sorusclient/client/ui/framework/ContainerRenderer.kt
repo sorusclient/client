@@ -5,6 +5,7 @@ import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.adapter.event.RenderEvent
 import com.github.sorusclient.client.event.EventManager
+import v1_8_9.net.minecraft.client.MinecraftClient
 
 object ContainerRenderer {
 

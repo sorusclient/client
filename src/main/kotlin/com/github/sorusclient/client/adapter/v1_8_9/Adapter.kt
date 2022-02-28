@@ -31,6 +31,7 @@ class Adapter : Listener, IAdapter {
         get() {
             return Util.screenToScreenType(MinecraftClient.getInstance().currentScreen)
         }
+
     override val screenDimensions: DoubleArray
         get() {
             val window = Window(MinecraftClient.getInstance())

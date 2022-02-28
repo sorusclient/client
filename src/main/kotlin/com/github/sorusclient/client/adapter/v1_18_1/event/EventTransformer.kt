@@ -4,6 +4,7 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.adapter.event.*
+import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Applier.Insert
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
@@ -18,8 +19,12 @@ class EventTransformer : Transformer(), Listener {
 
     init {
         setHookClass(EventHook::class.java)
-        register("v1_18_1/net/minecraft/client/gui/hud/InGameHud") { classNode: ClassNode -> transformInGameHud(classNode) }
-        register("v1_18_1/net/minecraft/client/gui/hud/BossBarHud") { classNode: ClassNode -> transformBossBarHud(classNode) }
+        register("v1_18_1/net/minecraft/client/gui/hud/InGameHud", this::transformInGameHud)
+        register("v1_18_1/net/minecraft/client/gui/hud/BossBarHud", this::transformBossBarHud)
+        register("v1_18_1/net/minecraft/client/Keyboard", this::transformKeyboard)
+        register("v1_18_1/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
+        register("v1_18_1/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
+        register("v1_18_1/net/minecraft/client/Mouse", this::transformMouse)
     }
 
     private fun transformInGameHud(classNode: ClassNode) {
@@ -144,6 +149,82 @@ class EventTransformer : Transformer(), Listener {
                 insnList.add(InsnNode(Opcodes.RETURN))
                 insnList.add(labelNode)
             }))
+    }
+
+    private fun transformKeyboard(classNode: ClassNode) {
+        val onKey = Identifier.parse("v1_18_1/net/minecraft/client/Keyboard#onKey(JIIII)V")
+        val debugCrashStartTime = Identifier.parse("v1_18_1/net/minecraft/client/Keyboard#debugCrashStartTime")
+
+        findMethod(classNode, onKey)
+            .apply { methodNode ->
+                findFieldReferences(methodNode, debugCrashStartTime, FieldReferenceType.GET)
+                    .nth(0)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
+                        insnList.add(VarInsnNode(Opcodes.ILOAD, 5))
+                        insnList.add(this.getHook("onKey"))
+                    }))
+            }
+
+        val onChar = Identifier.parse("v1_18_1/net/minecraft/client/Keyboard#onChar(JII)V")
+        val currentScreen = Identifier.parse("v1_18_1/net/minecraft/client/MinecraftClient#currentScreen")
+
+        findMethod(classNode, onChar)
+            .apply { methodNode ->
+                findFieldReferences(methodNode, currentScreen, FieldReferenceType.GET)
+                    .nth(0)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
+                        insnList.add(this.getHook("onChar"))
+                    }))
+            }
+    }
+
+    private fun transformMinecraftClient(classNode: ClassNode) {
+        val init = Identifier.parse("v1_18_1/net/minecraft/client/MinecraftClient#<init>(Lv1_18_1/net/minecraft/client/RunArgs;)V")
+        val initRenderer = Identifier.parse("v1_18_1/com/mojang/blaze3d/systems/RenderSystem#initRenderer(IZ)V")
+
+        findMethod(classNode, init, true)
+            .apply { methodNode ->
+                findMethodCalls(methodNode, initRenderer)
+                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                        insnList.add(this.getHook("onInitialize"))
+                    }))
+            }
+    }
+
+    private fun transformGameRenderer(classNode: ClassNode) {
+        val render = Identifier.parse("v1_18_1/net/minecraft/client/render/GameRenderer#render(FJZ)V")
+        findMethod(classNode, render)
+            .apply { methodNode: MethodNode ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, this.getHook("onRender")))
+            }
+    }
+
+    private fun transformMouse(classNode: ClassNode) {
+        val onMouseButton = Identifier.parse("v1_18_1/net/minecraft/client/Mouse#onMouseButton(JIII)V")
+
+        findMethod(classNode, onMouseButton)
+            .apply { methodNode ->
+                findVarReferences(methodNode, 6, VarReferenceType.STORE)
+                    .nth(0)
+                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
+                        insnList.add(VarInsnNode(Opcodes.ILOAD, 4))
+                        insnList.add(this.getHook("onMousePress"))
+                    }))
+            }
+
+        val onCursorPos = Identifier.parse("v1_18_1/net/minecraft/client/Mouse#onCursorPos(JDD)V")
+
+        findMethod(classNode, onCursorPos)
+            .apply { methodNode ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(this.getHook("onMouseMove"))
+                    }))
+            }
     }
 
 }

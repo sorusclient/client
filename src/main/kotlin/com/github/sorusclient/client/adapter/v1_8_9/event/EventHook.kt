@@ -63,7 +63,8 @@ object EventHook {
         val key = Keyboard.getEventKey()
         val pressed = Keyboard.getEventKeyState()
         val repeat = Keyboard.isRepeatEvent()
-        EventManager.call(KeyEvent(Util.getKey(key), Keyboard.getEventCharacter(), pressed, repeat))
+        EventManager.call(KeyEvent(Util.getKey(key), pressed, repeat))
+        EventManager.call(KeyCharEvent(Keyboard.getEventCharacter()))
     }
 
     @JvmStatic

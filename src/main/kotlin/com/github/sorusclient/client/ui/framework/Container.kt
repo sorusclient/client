@@ -2,6 +2,7 @@ package com.github.sorusclient.client.ui.framework
 
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
+import com.github.sorusclient.client.adapter.event.KeyCharEvent
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.ui.framework.constraint.Absolute
@@ -38,6 +39,7 @@ open class Container : Component() {
     private var onDoubleClick: Consumer<Map<String, Any>>? = null
     var onDrag: ((Pair<MutableMap<String, Any>, Pair<Double, Double>>) -> Unit)? = null
     var onKey: ((Pair<MutableMap<String, Any>, KeyEvent>) -> Unit)? = null
+    var onChar: ((Pair<MutableMap<String, Any>, KeyCharEvent>) -> Unit)? = null
     val onInit: MutableList<((Pair<Container, MutableMap<String, Any>>) -> Unit)> = ArrayList()
     var onScroll: ((Pair<Double, MutableMap<String, Any>>) -> Unit)? = null
     val onUpdate: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
@@ -360,6 +362,21 @@ open class Container : Component() {
             }
             for (component in placedComponents2) {
                 component.runtime.handleKeyEvent(event)
+            }
+
+            return false
+        }
+
+        override fun handleKeyCharEvent(event: KeyCharEvent): Boolean {
+            if (getState("selected") as Boolean) {
+                if (onChar != null) {
+                    val state = this.availableState
+                    onChar!!(Pair(state, event))
+                    this.availableState = state
+                }
+            }
+            for (component in placedComponents2) {
+                component.runtime.handleKeyCharEvent(event)
             }
 
             return false

@@ -1,10 +1,71 @@
 package com.github.sorusclient.client.adapter.v1_18_1
 
 import com.github.sorusclient.client.adapter.*
+import com.google.common.collect.BiMap
+import com.google.common.collect.HashBiMap
+import org.lwjgl.glfw.GLFW
+import v1_18_1.net.minecraft.client.gui.screen.GameMenuScreen
+import v1_18_1.net.minecraft.client.gui.screen.Screen
 import v1_18_1.net.minecraft.text.*
 import v1_18_1.net.minecraft.util.Formatting
 
 object Util {
+
+    private val keyMap: BiMap<Int, Key> = HashBiMap.create()
+
+    init {
+        keyMap[GLFW.GLFW_KEY_ESCAPE] = Key.ESCAPE
+        keyMap[GLFW.GLFW_KEY_BACKSLASH] = Key.BACKSPACE
+        keyMap[GLFW.GLFW_KEY_Q] = Key.Q
+        keyMap[GLFW.GLFW_KEY_W] = Key.W
+        keyMap[GLFW.GLFW_KEY_E] = Key.E
+        keyMap[GLFW.GLFW_KEY_R] = Key.R
+        keyMap[GLFW.GLFW_KEY_T] = Key.T
+        keyMap[GLFW.GLFW_KEY_Y] = Key.Y
+        keyMap[GLFW.GLFW_KEY_U] = Key.U
+        keyMap[GLFW.GLFW_KEY_I] = Key.I
+        keyMap[GLFW.GLFW_KEY_O] = Key.O
+        keyMap[GLFW.GLFW_KEY_P] = Key.P
+        keyMap[GLFW.GLFW_KEY_ENTER] = Key.ENTER
+        keyMap[GLFW.GLFW_KEY_LEFT_CONTROL] = Key.CONTROL_LEFT
+        keyMap[GLFW.GLFW_KEY_A] = Key.A
+        keyMap[GLFW.GLFW_KEY_S] = Key.S
+        keyMap[GLFW.GLFW_KEY_D] = Key.D
+        keyMap[GLFW.GLFW_KEY_F] = Key.F
+        keyMap[GLFW.GLFW_KEY_G] = Key.G
+        keyMap[GLFW.GLFW_KEY_H] = Key.H
+        keyMap[GLFW.GLFW_KEY_J] = Key.J
+        keyMap[GLFW.GLFW_KEY_K] = Key.K
+        keyMap[GLFW.GLFW_KEY_L] = Key.L
+        keyMap[GLFW.GLFW_KEY_LEFT_SHIFT] = Key.SHIFT_LEFT
+        keyMap[GLFW.GLFW_KEY_Z] = Key.Z
+        keyMap[GLFW.GLFW_KEY_X] = Key.X
+        keyMap[GLFW.GLFW_KEY_C] = Key.C
+        keyMap[GLFW.GLFW_KEY_V] = Key.V
+        keyMap[GLFW.GLFW_KEY_B] = Key.B
+        keyMap[GLFW.GLFW_KEY_N] = Key.N
+        keyMap[GLFW.GLFW_KEY_M] = Key.M
+        keyMap[GLFW.GLFW_KEY_RIGHT_SHIFT] = Key.SHIFT_RIGHT
+        keyMap[GLFW.GLFW_KEY_LEFT_ALT] = Key.ALT_LEFT
+        keyMap[GLFW.GLFW_KEY_SPACE] = Key.SPACE
+        keyMap[GLFW.GLFW_KEY_UP] = Key.ARROW_UP
+        keyMap[GLFW.GLFW_KEY_DOWN] = Key.ARROW_DOWN
+    }
+
+    fun getKey(id: Int): Key {
+        return keyMap.getOrDefault(id, Key.UNKNOWN)
+    }
+
+    private val buttonMap: BiMap<Int, Button> = HashBiMap.create()
+
+    init {
+        buttonMap[0] = Button.PRIMARY
+        buttonMap[-1] = Button.NONE
+    }
+
+    fun getButton(id: Int): Button {
+        return buttonMap.getOrDefault(id, Button.UNKNOWN)
+    }
 
     fun textToApiText(text: Text): IText {
         if (text is TranslatableText) {
@@ -132,6 +193,23 @@ object Util {
             TextFormatting.UNDERLINE -> return Formatting.UNDERLINE
             TextFormatting.ITALIC -> return Formatting.ITALIC
             TextFormatting.RESET -> return Formatting.RESET
+        }
+    }
+
+    fun screenToScreenType(screen: Screen?): ScreenType {
+        return when (screen) {
+            is GameMenuScreen -> {
+                ScreenType.GAME_MENU
+            }
+            is DummyScreen -> {
+                ScreenType.DUMMY
+            }
+            null -> {
+                ScreenType.IN_GAME
+            }
+            else -> {
+                ScreenType.UNKNOWN
+            }
         }
     }
 
