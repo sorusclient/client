@@ -3,6 +3,9 @@ package com.github.sorusclient.client.adapter.v1_18_1
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.IText
 import com.github.sorusclient.client.util.Color
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL20
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.client.font.TextRenderer
@@ -16,6 +19,7 @@ class MinecraftFontRenderer(private val textRenderer: TextRenderer) : IFontRende
         RenderSystem.disableDepthTest()
         RenderSystem.enableTexture()
         RenderSystem.enableBlend()
+
         if (shadow) {
             textRenderer.drawWithShadow(matrixStack, text, (x / scale).toFloat(), (y / scale).toFloat(), color.rgb)
         } else {
@@ -31,6 +35,7 @@ class MinecraftFontRenderer(private val textRenderer: TextRenderer) : IFontRende
         RenderSystem.disableDepthTest()
         RenderSystem.enableTexture()
         RenderSystem.enableBlend()
+
         if (shadow) {
             textRenderer.drawWithShadow(matrixStack, Util.apiTextToText(text), (x / scale).toFloat(), (y / scale).toFloat(), color.rgb)
         } else {

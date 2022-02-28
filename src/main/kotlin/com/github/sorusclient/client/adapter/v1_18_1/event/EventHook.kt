@@ -187,4 +187,30 @@ object EventHook {
         )
     }
 
+    @JvmStatic
+    @Suppress("Unused")
+    fun onTick() {
+        val event = TickEvent()
+        EventManager.call(event)
+    }
+
+    @JvmStatic
+    var lastBoundArray = 0
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onBindVertexArray(array: Int) {
+        lastBoundArray = array
+    }
+
+    var lastBoundBuffer = 0
+    var lastBoundBufferTarget = 0
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onBindBuffer(target: Int, buffer: Int) {
+        lastBoundBufferTarget = target
+        lastBoundBuffer = buffer
+    }
+
 }

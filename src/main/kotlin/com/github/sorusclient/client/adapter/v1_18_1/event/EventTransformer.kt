@@ -25,6 +25,8 @@ class EventTransformer : Transformer(), Listener {
         register("v1_18_1/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
         register("v1_18_1/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
         register("v1_18_1/net/minecraft/client/Mouse", this::transformMouse)
+        register("org/lwjgl/opengl/GL30", this::transformGl30)
+        register("org/lwjgl/opengl/GL15", this::transformGl15)
     }
 
     private fun transformInGameHud(classNode: ClassNode) {
@@ -189,6 +191,13 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(this.getHook("onInitialize"))
                     }))
             }
+
+        val tick = Identifier.parse("v1_18_1/net/minecraft/client/MinecraftClient#tick()V")
+
+        findMethod(classNode, tick)
+            .apply(Insert(createList { insnList ->
+                insnList.add(this.getHook("onTick"))
+            }))
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {
@@ -233,6 +242,25 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(this.getHook("onMouseScroll"))
                     }))
             }
+    }
+
+    private fun transformGl30(classNode: ClassNode) {
+        val glUseProgram = Identifier.parse("org/lwjgl/opengl/GL30#glBindVertexArray(I)V")
+        findMethod(classNode, glUseProgram)
+            .apply(Insert(createList { insnList ->
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
+                insnList.add(this.getHook("onBindVertexArray"))
+            }))
+    }
+
+    private fun transformGl15(classNode: ClassNode) {
+        val glUseProgram = Identifier.parse("org/lwjgl/opengl/GL15#glBindBuffer(II)V")
+        findMethod(classNode, glUseProgram)
+            .apply(Insert(createList { insnList ->
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 1))
+                insnList.add(this.getHook("onBindBuffer"))
+            }))
     }
 
 }

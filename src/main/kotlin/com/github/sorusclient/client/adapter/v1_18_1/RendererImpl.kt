@@ -3,10 +3,12 @@ package com.github.sorusclient.client.adapter.v1_18_1
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.IRenderer
 import com.github.sorusclient.client.adapter.RenderBuffer
+import com.github.sorusclient.client.adapter.v1_18_1.event.EventHook
 import com.github.sorusclient.client.adapter.v1_8_9.RendererImpl
 import com.github.sorusclient.client.util.Color
 import org.apache.commons.io.IOUtils
 import org.lwjgl.opengl.*
+import v1_18_1.com.mojang.blaze3d.platform.GlStateManager
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.client.render.Tessellator
@@ -163,6 +165,10 @@ class RendererImpl: IRenderer {
 
     override fun drawRectangle(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, topLeftColor: Color, bottomLeftColor: Color, bottomRightColor: Color, topRightColor: Color) {
         if (topLeftColor.rgb == topRightColor.rgb && topRightColor.rgb == bottomRightColor.rgb) {
+            val prevBoundVertexArray = EventHook.lastBoundArray
+            val prevBoundBuffer = EventHook.lastBoundBuffer
+            val prevBoundBufferTarget = EventHook.lastBoundBufferTarget
+
             this.createPrograms()
 
             RenderSystem.enableBlend()
@@ -192,8 +198,8 @@ class RendererImpl: IRenderer {
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
 
             GL20.glDisableVertexAttribArray(0)
-            GL30.glBindVertexArray(0)
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+            GL30.glBindVertexArray(prevBoundVertexArray)
+            GL15.glBindBuffer(prevBoundBufferTarget, prevBoundBuffer)
 
             GL20.glUseProgram(0)
 
