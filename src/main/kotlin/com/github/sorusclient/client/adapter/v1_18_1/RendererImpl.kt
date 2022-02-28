@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.adapter.v1_18_1
 
+import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.IRenderer
 import com.github.sorusclient.client.adapter.RenderBuffer
@@ -11,6 +12,7 @@ import org.lwjgl.opengl.*
 import v1_18_1.com.mojang.blaze3d.platform.GlStateManager
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.client.MinecraftClient
+import v1_18_1.net.minecraft.client.render.GameRenderer
 import v1_18_1.net.minecraft.client.render.Tessellator
 import v1_18_1.net.minecraft.client.render.VertexFormat
 import v1_18_1.net.minecraft.client.render.VertexFormats
@@ -22,6 +24,7 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.lang.reflect.Method
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
@@ -32,15 +35,27 @@ import kotlin.math.sin
 class RendererImpl: IRenderer {
 
     override fun draw(buffer: RenderBuffer) {
-        TODO("Not yet implemented")
+        val mode = when (buffer.drawMode) {
+            RenderBuffer.DrawMode.QUAD -> VertexFormat.DrawMode.QUADS
+            else -> null!!
+        }
+        val tessellator = Tessellator.getInstance()
+        val bufferBuilder = tessellator.buffer
+        bufferBuilder.begin(mode, VertexFormats.POSITION_COLOR)
+        for (vertex in buffer.vertices) {
+            val point = vertex.point
+            val color = vertex.color
+            bufferBuilder.vertex(point.x, point.y, point.z).color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat()).next()
+        }
+        tessellator.draw()
     }
 
     override fun setColor(color: Color) {
-        TODO("Not yet implemented")
+        GL11.glColor4f(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
     }
 
     override fun setLineThickness(thickness: Double) {
-        TODO("Not yet implemented")
+        GL11.glLineWidth(thickness.toFloat())
     }
 
     private var createdPrograms = false
@@ -651,12 +666,20 @@ class RendererImpl: IRenderer {
         return fontData
     }
 
+    private val loadShader: Method
+
+    init {
+        val loadShader = Identifier.parse("v1_18_1/net/minecraft/client/render/GameRenderer#loadShader(Lv1_18_1/net/minecraft/util/Identifier;)V")
+        this.loadShader = GameRenderer::class.java.getDeclaredMethod(loadShader.methodName, v1_18_1.net.minecraft.util.Identifier::class.java)
+        this.loadShader.isAccessible = true
+    }
+
     override fun loadBlur() {
-        //TODO("Not yet implemented")
+        loadShader.invoke(MinecraftClient.getInstance().gameRenderer, v1_18_1.net.minecraft.util.Identifier("sorus/shaders/blur.json"))
     }
 
     override fun unloadBlur() {
-        //TODO("Not yet implemented")
+        MinecraftClient.getInstance().gameRenderer.disableShader()
     }
 
 }

@@ -25,6 +25,9 @@ class EventTransformer : Transformer(), Listener {
         register("v1_18_1/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
         register("v1_18_1/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
         register("v1_18_1/net/minecraft/client/Mouse", this::transformMouse)
+        register("v1_18_1/net/minecraft/client/util/Window", this::transformWindow)
+        register("v1_18_1/net/minecraft/client/render/LightmapTextureManager", this::transformLightMapTextureManager)
+        register("v1_18_1/net/minecraft/client/render/WorldRenderer", this::transformWorldRenderer)
         register("org/lwjgl/opengl/GL30", this::transformGl30)
         register("org/lwjgl/opengl/GL15", this::transformGl15)
     }
@@ -207,6 +210,16 @@ class EventTransformer : Transformer(), Listener {
                 findReturns(methodNode)
                     .apply(Applier.InsertBefore(methodNode, this.getHook("onRender")))
             }
+
+        val getFov = Identifier.parse("v1_18_1/net/minecraft/client/render/GameRenderer#getFov(Lv1_18_1/net/minecraft/client/render/Camera;FZ)D")
+
+        findMethod(classNode, getFov)
+            .apply { methodNode ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(this.getHook("onGetFOV"))
+                    }))
+            }
     }
 
     private fun transformMouse(classNode: ClassNode) {
@@ -242,6 +255,22 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(this.getHook("onMouseScroll"))
                     }))
             }
+
+        val updateMouse = Identifier.parse("v1_18_1/net/minecraft/client/Mouse#updateMouse()V")
+        val smoothCameraEnabled = Identifier.parse("v1_18_1/net/minecraft/client/option/GameOptions#smoothCameraEnabled")
+
+        findMethod(classNode, updateMouse)
+            .apply { methodNode ->
+                findVarReferences(methodNode, 9, VarReferenceType.STORE)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(this.getHook("onGetSensitivity"))
+                    }))
+
+                findFieldReferences(methodNode, smoothCameraEnabled, FieldReferenceType.GET)
+                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                        insnList.add(this.getHook("onGetUseCinematicCamera"))
+                    }))
+            }
     }
 
     private fun transformGl30(classNode: ClassNode) {
@@ -260,6 +289,48 @@ class EventTransformer : Transformer(), Listener {
                 insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
                 insnList.add(VarInsnNode(Opcodes.ILOAD, 1))
                 insnList.add(this.getHook("onBindBuffer"))
+            }))
+    }
+
+    private fun transformWindow(classNode: ClassNode) {
+        val setTitle = Identifier.parse("v1_18_1/net/minecraft/client/util/Window#setTitle(Ljava/lang/String;)V")
+        findMethod(classNode, setTitle)
+            .apply(Insert(createList { insnList ->
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                insnList.add(this.getHook("updateTitle"))
+                val labelNode = LabelNode()
+                insnList.add(JumpInsnNode(Opcodes.IFNE, labelNode))
+                insnList.add(InsnNode(Opcodes.RETURN))
+                insnList.add(labelNode)
+            }))
+    }
+
+    private fun transformLightMapTextureManager(classNode: ClassNode) {
+        val update = Identifier.parse("v1_18_1/net/minecraft/client/render/LightmapTextureManager#update(F)V")
+
+        findMethod(classNode, update)
+            .apply { methodNode ->
+                findVarReferences(methodNode, 17, VarReferenceType.STORE)
+                    .nth(2)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(this.getHook("onGetGamma"))
+                    }))
+            }
+    }
+
+    private fun transformWorldRenderer(classNode: ClassNode) {
+        val drawShapeOutline = Identifier.parse("v1_18_1/net/minecraft/client/render/WorldRenderer#drawShapeOutline(Lv1_18_1/net/minecraft/client/util/math/MatrixStack;Lv1_18_1/net/minecraft/client/render/VertexConsumer;Lv1_18_1/net/minecraft/util/shape/VoxelShape;DDDFFFF)V")
+
+        findMethod(classNode, drawShapeOutline)
+            .apply(Insert(createList { insnList ->
+                val eventClassName = BlockOutlineRenderEvent::class.java.name.replace(".", "/")
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 2))
+                insnList.add(this.getHook("onBlockOutlineRender"))
+                val labelNode = LabelNode()
+                insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
+                insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
+                insnList.add(InsnNode(Opcodes.RETURN))
+                insnList.add(labelNode)
             }))
     }
 

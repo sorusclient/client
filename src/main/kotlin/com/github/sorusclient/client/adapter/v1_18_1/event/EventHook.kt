@@ -11,8 +11,11 @@ import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11C
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
+import v1_18_1.net.minecraft.util.math.Direction
+import v1_18_1.net.minecraft.util.shape.VoxelShape
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.util.Window
+import v1_8_9.net.minecraft.util.math.Box
 
 object EventHook {
 
@@ -211,6 +214,61 @@ object EventHook {
     fun onBindBuffer(target: Int, buffer: Int) {
         lastBoundBufferTarget = target
         lastBoundBuffer = buffer
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetFOV(fov: Double): Double {
+        val event = GetFOVEvent(fov)
+        EventManager.call(event)
+        return event.fov
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetSensitivity(sensitivity: Double): Double {
+        val event = GetSensitivityEvent(sensitivity)
+        EventManager.call(event)
+        return event.sensitivity
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun updateTitle(title: String): Boolean {
+        return title.contains("Sorus")
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetUseCinematicCamera(useCinematicCamera: Boolean): Boolean {
+        val event = GetUseCinematicCamera(useCinematicCamera)
+        EventManager.call(event)
+        return event.useCinematicCamera
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGetGamma(gamma: Float): Float {
+        val event = GetGammaEvent(gamma.toDouble())
+        EventManager.call(event)
+        return event.gamma.toFloat()
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onBlockOutlineRender(voxelShape: VoxelShape): BlockOutlineRenderEvent {
+        val event = BlockOutlineRenderEvent(
+            com.github.sorusclient.client.adapter.Box(
+                voxelShape.getMin(Direction.Axis.X),
+                voxelShape.getMax(Direction.Axis.X),
+                voxelShape.getMin(Direction.Axis.Y),
+                voxelShape.getMax(Direction.Axis.Y),
+                voxelShape.getMin(Direction.Axis.Z),
+                voxelShape.getMax(Direction.Axis.Z),
+            )
+        )
+        EventManager.call(event)
+        return event
     }
 
 }
