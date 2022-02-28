@@ -153,12 +153,10 @@ class EventTransformer : Transformer(), Listener {
 
     private fun transformKeyboard(classNode: ClassNode) {
         val onKey = Identifier.parse("v1_18_1/net/minecraft/client/Keyboard#onKey(JIIII)V")
-        val debugCrashStartTime = Identifier.parse("v1_18_1/net/minecraft/client/Keyboard#debugCrashStartTime")
 
         findMethod(classNode, onKey)
             .apply { methodNode ->
-                findFieldReferences(methodNode, debugCrashStartTime, FieldReferenceType.GET)
-                    .nth(0)
+                findReturns(methodNode)
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
                         insnList.add(VarInsnNode(Opcodes.ILOAD, 5))
@@ -207,9 +205,8 @@ class EventTransformer : Transformer(), Listener {
 
         findMethod(classNode, onMouseButton)
             .apply { methodNode ->
-                findVarReferences(methodNode, 6, VarReferenceType.STORE)
-                    .nth(0)
-                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(VarInsnNode(Opcodes.ILOAD, 3))
                         insnList.add(VarInsnNode(Opcodes.ILOAD, 4))
                         insnList.add(this.getHook("onMousePress"))
@@ -223,6 +220,17 @@ class EventTransformer : Transformer(), Listener {
                 findReturns(methodNode)
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(this.getHook("onMouseMove"))
+                    }))
+            }
+
+        val onMouseScroll = Identifier.parse("v1_18_1/net/minecraft/client/Mouse#onMouseScroll(JDD)V")
+
+        findMethod(classNode, onMouseScroll)
+            .apply { methodNode ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.DLOAD, 5))
+                        insnList.add(this.getHook("onMouseScroll"))
                     }))
             }
     }

@@ -631,7 +631,7 @@ class RendererImpl : IRenderer {
         fonts[id] = fontData
     }
 
-    val loadShader: Method
+    private val loadShader: Method
 
     init {
         val loadShader = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#loadShader(Lv1_8_9/net/minecraft/util/Identifier;)V")

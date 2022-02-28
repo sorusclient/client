@@ -64,7 +64,13 @@ object EventHook {
         val pressed = Keyboard.getEventKeyState()
         val repeat = Keyboard.isRepeatEvent()
         EventManager.call(KeyEvent(Util.getKey(key), pressed, repeat))
-        EventManager.call(KeyCharEvent(Keyboard.getEventCharacter()))
+
+        var string = "0123456789abcdefghijklmnoppqrstuvwxyz "
+        string += string.uppercase()
+
+        if (string.contains(Keyboard.getEventCharacter())) {
+            EventManager.call(KeyCharEvent(Keyboard.getEventCharacter()))
+        }
     }
 
     @JvmStatic
@@ -75,6 +81,7 @@ object EventHook {
         val x = Mouse.getEventX()
         val y = Mouse.getEventY()
         val window = Window(MinecraftClient.getInstance())
+
         EventManager.call(
             MouseEvent(
                 Util.getButton(button),
