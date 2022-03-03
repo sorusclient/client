@@ -6,6 +6,7 @@ initialize = [
     "feature.impl.blockoverlay.v1_18_1.BlockOverlayTransformer",
     "feature.impl.perspective.v1_18_1.PerspectiveTransformer",
     "feature.impl.perspective.v1_18_1.PerspectiveHelper",
+    "feature.impl.particles.v1_18_1.ParticlesTransformer",
     "hud.impl.health.v1_18_1.HealthRenderer",
     "hud.impl.bossbar.v1_18_1.BossBarRenderer",
     "hud.impl.hotbar.v1_18_1.HotBarRenderer",
