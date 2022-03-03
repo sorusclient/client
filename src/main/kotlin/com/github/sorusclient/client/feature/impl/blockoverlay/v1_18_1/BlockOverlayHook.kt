@@ -38,8 +38,6 @@ object BlockOverlayHook {
             val maxY = position.y + boxY + boxHeight
             val minZ = position.z + boxZ
             val maxZ = position.z + boxZ + boxDepth
-
-            println("$minX $maxX $minY $maxY $minZ $maxZ")
             
             val buffer = RenderBuffer()
             buffer.drawMode = RenderBuffer.DrawMode.QUAD
