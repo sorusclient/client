@@ -6,11 +6,8 @@ import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.SorusCustomPacketEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.util.AssetUtil
-import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
-import java.net.URL
 
 object ServerIntegrationManager {
 

@@ -78,8 +78,15 @@ class Adapter: Listener, IAdapter {
             }
         }
 
-    override val currentServer: IServer
-        get() = TODO("Not yet implemented")
+    override val currentServer: IServer?
+        get() {
+            val serverInfo = MinecraftClient.getInstance().currentServerEntry
+            return if (serverInfo != null) {
+                ServerImpl(serverInfo)
+            } else {
+                null
+            }
+        }
 
     override fun getKeyBind(type: IKeyBind.KeyBindType): IKeyBind {
         val options = MinecraftClient.getInstance().options

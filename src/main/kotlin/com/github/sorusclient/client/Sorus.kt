@@ -33,7 +33,6 @@ class Sorus : Listener {
         this.register(ContainerRenderer)
         this.register(EventManager)
         this.register(FeatureManager)
-        GlassLoader.getInstance().runHooks("post-initialize")
         this.register(HUDManager)
         this.register(IAdapter::class.java, GlassLoader.getInstance().getInterface(IAdapter::class.java))
         this.register(KeyBindManager)
@@ -56,6 +55,8 @@ class Sorus : Listener {
 
         UserInterface.initialize()
         ThemeManager.initialize()
+
+        GlassLoader.getInstance().runHooks("post-initialize")
 
         SettingManager.initialize()
 

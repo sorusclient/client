@@ -1643,7 +1643,7 @@ class DefaultTheme: Theme() {
                                                                                         }
 
                                                                                         if (settingNew is DisplayedSetting.ConfigurableDataSingleSetting<*>) {
-                                                                                            state["hidden"] = !(settingNew.setting.overriden && (SettingManager.currentProfile != SettingManager.mainProfile || settingNew.setting.realValue != settingNew.setting.defaultValue))
+                                                                                            state["hidden"] = !(settingNew.setting.overriden && (SettingManager.currentProfile != SettingManager.mainProfile || settingNew.setting.realValue != settingNew.setting.defaultValue)) || settingNew.setting.isForcedValue
                                                                                         }
                                                                                     }
 

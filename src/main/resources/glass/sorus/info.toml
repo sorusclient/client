@@ -9,6 +9,9 @@ implementations = [
 
 [listeners]
 initialize = [
-    "Sorus",
+    "Sorus"
+]
+
+post-initialize = [
     "feature.FeatureListener"
 ]

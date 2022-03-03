@@ -4,18 +4,11 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_18_1.Util
-import com.github.sorusclient.client.adapter.v1_8_9.event.EventHook
 import com.github.sorusclient.client.event.EventManager
-import org.lwjgl.input.Mouse
-import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11C
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
-import v1_18_1.net.minecraft.util.math.Direction
-import v1_18_1.net.minecraft.util.shape.VoxelShape
-import v1_8_9.net.minecraft.client.MinecraftClient
-import v1_8_9.net.minecraft.client.util.Window
-import v1_8_9.net.minecraft.util.math.Box
+import v1_18_1.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
 
 object EventHook {
 
@@ -270,5 +263,25 @@ object EventHook {
         EventManager.call(event)
         return event
     }*/
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onCustomPayload(packet: CustomPayloadS2CPacket) {
+        if (packet.channel.namespace.equals("sorus")) {
+            EventManager.call(SorusCustomPacketEvent(packet.channel.path, packet.data.readString(32767)))
+        }
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onGameJoin() {
+        EventManager.call(GameJoinEvent())
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onDisconnect() {
+        EventManager.call(GameLeaveEvent())
+    }
 
 }

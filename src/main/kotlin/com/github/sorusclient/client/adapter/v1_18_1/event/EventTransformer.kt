@@ -27,6 +27,7 @@ class EventTransformer : Transformer(), Listener {
         register("v1_18_1/net/minecraft/client/Mouse", this::transformMouse)
         register("v1_18_1/net/minecraft/client/util/Window", this::transformWindow)
         register("v1_18_1/net/minecraft/client/render/LightmapTextureManager", this::transformLightMapTextureManager)
+        register("v1_18_1/net/minecraft/client/network/ClientPlayNetworkHandler", this::transformClientPlayerNetworkHandler)
         register("org/lwjgl/opengl/GL30", this::transformGl30)
         register("org/lwjgl/opengl/GL15", this::transformGl15)
     }
@@ -200,6 +201,12 @@ class EventTransformer : Transformer(), Listener {
             .apply(Insert(createList { insnList ->
                 insnList.add(this.getHook("onTick"))
             }))
+
+        val disconnect = Identifier.parse("v1_18_1/net/minecraft/client/MinecraftClient#disconnect(Lv1_18_1/net/minecraft/client/gui/screen/Screen;)V")
+        findMethod(classNode, disconnect)
+            .apply(Insert(createList { insnList: InsnList ->
+                insnList.add(this.getHook("onDisconnect"))
+            }))
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {
@@ -315,6 +322,18 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(this.getHook("onGetGamma"))
                     }))
             }
+    }
+
+    private fun transformClientPlayerNetworkHandler(classNode: ClassNode) {
+        val onCustomPayload = Identifier.parse("v1_18_1/net/minecraft/client/network/ClientPlayNetworkHandler#onCustomPayload(Lv1_18_1/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;)V")
+        val onGameJoin = Identifier.parse("v1_18_1/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_18_1/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V")
+        findMethod(classNode, onCustomPayload)
+            .apply(Insert(createList { insnList: InsnList ->
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                insnList.add(this.getHook("onCustomPayload"))
+            }))
+        findMethod(classNode, onGameJoin)
+            .apply(Insert(this.getHook("onGameJoin")))
     }
 
 }
