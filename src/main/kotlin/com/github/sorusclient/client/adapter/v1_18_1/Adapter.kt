@@ -11,6 +11,7 @@ import v1_18_1.net.minecraft.client.gui.screen.option.OptionsScreen
 import v1_18_1.net.minecraft.client.gui.screen.option.VideoOptionsScreen
 import v1_18_1.net.minecraft.client.option.Perspective
 import v1_18_1.net.minecraft.text.LiteralText
+import v1_18_1.net.minecraft.client.option.KeyBinding
 
 class Adapter: Listener, IAdapter {
 
@@ -78,7 +79,12 @@ class Adapter: Listener, IAdapter {
         get() = TODO("Not yet implemented")
 
     override fun getKeyBind(type: IKeyBind.KeyBindType): IKeyBind {
-        TODO("Not yet implemented")
+        val options = MinecraftClient.getInstance().options
+        val keyBinding: KeyBinding = when (type) {
+            IKeyBind.KeyBindType.SPRINT -> options.keySprint
+            IKeyBind.KeyBindType.SNEAK -> options.keySneak
+        }
+        return KeyBindImpl(keyBinding)
     }
 
     override fun sendPlayerMessage(message: String) {

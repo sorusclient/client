@@ -35,7 +35,7 @@ class ToggleSprintSneak {
                         data["customSprintKey"] = SettingData(Setting(arrayListOf(Key.SHIFT_LEFT)).also { customSprintKey = it })
                         data["toggleSneak"] = SettingData(Setting(false).also { toggleSneak = it })
                         data["useCustomSneakKey"] = SettingData(Setting(false).also { useCustomSneakKey = it })
-                        data["customSneakKey"] = SettingData(Setting(arrayListOf(Key.SHIFT_LEFT)).also { customSneakKey = it })
+                        data["customSneakKey"] = SettingData(Setting(arrayListOf(Key.CONTROL_LEFT)).also { customSneakKey = it })
                     }
             }
 
@@ -54,13 +54,13 @@ class ToggleSprintSneak {
 
         KeyBindManager.register(KeyBind(
                 {
-                    customSprintKey.value
+                    listOf(sprintKey)
                 },
                 this::onSprintKeyUpdate
             ))
         KeyBindManager.register(KeyBind(
             {
-                customSneakKey.value
+                listOf(sneakKey)
             },
             this::onSneakKeyUpdate
         ))
