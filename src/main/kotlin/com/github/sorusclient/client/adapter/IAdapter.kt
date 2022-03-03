@@ -15,6 +15,7 @@ interface IAdapter {
     fun sendPlayerMessage(message: String)
     fun setDisplayTitle(title: String)
     fun setDisplayIcon(iconSmall: String, iconLarge: String)
+    fun leaveWorld()
     fun joinServer(ip: String)
 
     fun createText(string: String): IText

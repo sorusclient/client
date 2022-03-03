@@ -20,8 +20,10 @@ initialize = [
     "hud.impl.bossbar.v1_8_9.BossBarRenderer",
     "hud.impl.hotbar.v1_8_9.HotBarRenderer",
 ]
-post-initialize = [
+
+pre-initialize = [
     "adapter.v1_8_9.Adapter",
+    "feature.v1_8_9.FeatureListener"
 ]
 
 [environment]

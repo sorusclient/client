@@ -149,10 +149,13 @@ class Adapter : Listener, IAdapter {
         return buffer
     }
 
-    override fun joinServer(ip: String) {
-        val serverAddress = ServerAddress.parse(ServerAddress.parse(ip).address)
+    override fun leaveWorld() {
         MinecraftClient.getInstance().world.disconnect()
         MinecraftClient.getInstance().connect(null)
+    }
+
+    override fun joinServer(ip: String) {
+        val serverAddress = ServerAddress.parse(ServerAddress.parse(ip).address)
         MinecraftClient.getInstance().currentServerEntry = ServerInfo("", ip, false)
         MinecraftClient.getInstance().openScreen(ConnectScreen(TitleScreen(), MinecraftClient.getInstance(), serverAddress.address, serverAddress.port))
     }

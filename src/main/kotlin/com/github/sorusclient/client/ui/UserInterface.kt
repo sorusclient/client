@@ -220,6 +220,7 @@ object UserInterface {
         override fun onSelect() {
             ContainerRenderer.close()
             AdapterManager.getAdapter().openScreen(ScreenType.IN_GAME)
+            AdapterManager.getAdapter().leaveWorld()
             AdapterManager.getAdapter().joinServer(ip)
         }
 

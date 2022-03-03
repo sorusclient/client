@@ -6,7 +6,6 @@ import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import kotlin.properties.Delegates
 
-
 object EnhancementsHook {
 
     @JvmStatic
@@ -23,7 +22,7 @@ object EnhancementsHook {
 
     @JvmStatic
     fun modifyPotionOffset(offset: Int): Int {
-        val enhancements = FeatureManager.get<Enhancements>()
+        val enhancements = FeatureManager.get<com.github.sorusclient.client.feature.impl.enhancements.v1_8_9.Enhancements>()
         return if (enhancements.isCenteredInventoryValue()) {
             0
         } else offset

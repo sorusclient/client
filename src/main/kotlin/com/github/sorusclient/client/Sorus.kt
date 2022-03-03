@@ -21,7 +21,6 @@ import java.util.*
 class Sorus : Listener {
 
     override fun run() {
-        GlassLoader.getInstance().runHooks("post-initialize")
         val sorus = Sorus()
         GlassLoader.getInstance().registerAPI(sorus)
         sorus.initialize()
@@ -30,9 +29,11 @@ class Sorus : Listener {
     private val components: MutableMap<Class<*>, Any> = HashMap()
 
     private fun initialize() {
+        GlassLoader.getInstance().runHooks("pre-initialize")
         this.register(ContainerRenderer)
         this.register(EventManager)
         this.register(FeatureManager)
+        GlassLoader.getInstance().runHooks("post-initialize")
         this.register(HUDManager)
         this.register(IAdapter::class.java, GlassLoader.getInstance().getInterface(IAdapter::class.java))
         this.register(KeyBindManager)

@@ -1,4 +1,4 @@
-package com.github.sorusclient.client.feature.impl.oldanimations
+package com.github.sorusclient.client.feature.impl.oldanimations.v1_8_9
 
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting.Toggle

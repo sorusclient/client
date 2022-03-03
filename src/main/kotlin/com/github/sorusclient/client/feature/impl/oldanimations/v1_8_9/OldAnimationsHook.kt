@@ -1,7 +1,6 @@
 package com.github.sorusclient.client.feature.impl.oldanimations.v1_8_9
 
 import com.github.sorusclient.client.feature.FeatureManager
-import com.github.sorusclient.client.feature.impl.oldanimations.OldAnimations
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.entity.effect.StatusEffect
 import v1_8_9.net.minecraft.util.hit.HitResult

@@ -1,7 +1,17 @@
 package com.github.sorusclient.client.setting.data
 
 class CategoryData: AbstractData() {
+
     val data: MutableMap<String, AbstractData> = HashMap()
+
+    fun <T: AbstractData> add(string: String, data: T): T {
+        if (this.data.containsKey(string)) {
+            return this.data[string] as T
+        }
+
+        this.data[string] = data
+        return data
+    }
 
     override fun loadForced(json: Any) {
         val json = json as Map<*, *>

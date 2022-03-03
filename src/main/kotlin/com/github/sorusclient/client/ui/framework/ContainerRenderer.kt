@@ -48,21 +48,21 @@ object ContainerRenderer {
                 )
             }
 
-            for (event in keyEvents) {
+            for (event in ArrayList(keyEvents)) {
                 for (container in ArrayList(containers)) {
                     if (container.runtime.handleKeyEvent(event)) {
                         break
                     }
                 }
             }
-            for (event in mouseEvents) {
+            for (event in ArrayList(mouseEvents)) {
                 for (container in ArrayList(containers)) {
                     if (container.runtime.handleMouseEvent(event)) {
                         break
                     }
                 }
             }
-            for (event in keyCharEvents) {
+            for (event in ArrayList(keyCharEvents)) {
                 for (container in ArrayList(containers)) {
                     if (container.runtime.handleKeyCharEvent(event)) {
                         break

@@ -16,7 +16,8 @@ initialize = [
     "hud.impl.armor.v1_18_1.ArmorRenderer",
     "hud.impl.hunger.v1_18_1.HungerRenderer",
 ]
-post-initialize = [
+
+pre-initialize = [
     "adapter.v1_18_1.Adapter",
 ]
 

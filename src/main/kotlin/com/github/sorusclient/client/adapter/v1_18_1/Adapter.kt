@@ -4,11 +4,14 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.*
 import v1_18_1.net.minecraft.client.MinecraftClient
+import v1_18_1.net.minecraft.client.gui.screen.ConnectScreen
 import v1_18_1.net.minecraft.client.gui.screen.GameMenuScreen
 import v1_18_1.net.minecraft.client.gui.screen.TitleScreen
 import v1_18_1.net.minecraft.client.gui.screen.option.ControlsOptionsScreen
 import v1_18_1.net.minecraft.client.gui.screen.option.OptionsScreen
 import v1_18_1.net.minecraft.client.gui.screen.option.VideoOptionsScreen
+import v1_18_1.net.minecraft.client.network.ServerAddress
+import v1_18_1.net.minecraft.client.network.ServerInfo
 import v1_18_1.net.minecraft.client.option.Perspective
 import v1_18_1.net.minecraft.text.LiteralText
 import v1_18_1.net.minecraft.client.option.KeyBinding
@@ -99,8 +102,17 @@ class Adapter: Listener, IAdapter {
         MinecraftClient.getInstance().window.setIcon(Adapter::class.java.classLoader.getResourceAsStream(iconSmall), Adapter::class.java.classLoader.getResourceAsStream(iconLarge))
     }
 
+    override fun leaveWorld() {
+        MinecraftClient.getInstance().world!!.disconnect()
+        MinecraftClient.getInstance().setScreen(TitleScreen())
+    }
+
     override fun joinServer(ip: String) {
-        TODO("Not yet implemented")
+        val serverAddress = ServerAddress.parse(ServerAddress.parse(ip).address)
+        val serverInfo = ServerInfo("", ip, false)
+        MinecraftClient.getInstance().currentServerEntry = serverInfo
+        ConnectScreen.connect(TitleScreen(), MinecraftClient.getInstance(), serverAddress, serverInfo)
+        //MinecraftClient.getInstance().setScreen(ConnectScreen(v1_8_9.net.minecraft.client.gui.screen.TitleScreen(), v1_8_9.net.minecraft.client.MinecraftClient.getInstance(), serverAddress.address, serverAddress.port))
     }
 
     override fun createText(string: String): IText {

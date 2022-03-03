@@ -11,10 +11,22 @@ open class DisplayedCategory(val displayName: String): Displayed() {
     var customUI: Container? = null
 
     fun <T: Displayed> add(displayed: T): T {
-        this.components.add(displayed)
-        displayed.parent = this
+        var displayed2 = displayed
 
-        return displayed
+        if (displayed2 is DisplayedCategory) {
+            for (component in components) {
+                if (component is DisplayedCategory && component.displayName == (displayed2 as DisplayedCategory).displayName) {
+                    displayed2 = component as T
+                }
+            }
+        }
+
+        if (displayed == displayed2) {
+            this.components.add(displayed)
+            displayed.parent = this
+        }
+
+        return displayed2
     }
 
     open fun onShow() {
