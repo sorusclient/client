@@ -37,11 +37,6 @@ class EventTransformer : Transformer(), Listener {
                 classNode
             )
         }
-        register("v1_8_9/net/minecraft/client/render/WorldRenderer") { classNode: ClassNode ->
-            transformWorldRenderer(
-                classNode
-            )
-        }
         register("v1_8_9/net/minecraft/client/gui/hud/ChatHud") { classNode: ClassNode ->
             transformChatHud(
                 classNode
@@ -367,26 +362,7 @@ class EventTransformer : Transformer(), Listener {
             .apply(Insert(this.getHook("onGameJoin")))
     }
 
-    private fun transformWorldRenderer(classNode: ClassNode) {
-        val method9895 = Identifier.parse("v1_8_9/net/minecraft/client/render/WorldRenderer#method_9895(Lv1_8_9/net/minecraft/util/math/Box;)V")
-        findMethod(classNode, method9895)
-            .apply(Insert { methodNode: MethodNode ->
-                createList { insnList: InsnList ->
-                    val eventClassName = BlockOutlineRenderEvent::class.java.name.replace(".", "/")
-                    insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
-                    insnList.add(this.getHook("onBlockOutlineRender"))
-                    val index = methodNode.maxLocals
-                    insnList.add(VarInsnNode(Opcodes.ASTORE, index))
-                    methodNode.maxLocals++
-                    val labelNode = LabelNode()
-                    insnList.add(VarInsnNode(Opcodes.ALOAD, index))
-                    insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
-                    insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
-                    insnList.add(InsnNode(Opcodes.RETURN))
-                    insnList.add(labelNode)
-                }
-            })
-    }
+
 
     private fun transformChatHud(classNode: ClassNode) {
         val addMessage = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/ChatHud#addMessage(Lv1_8_9/net/minecraft/text/Text;I)V")

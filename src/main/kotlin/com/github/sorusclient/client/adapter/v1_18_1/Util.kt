@@ -15,7 +15,7 @@ object Util {
 
     init {
         keyMap[GLFW.GLFW_KEY_ESCAPE] = Key.ESCAPE
-        keyMap[GLFW.GLFW_KEY_BACKSLASH] = Key.BACKSPACE
+        keyMap[GLFW.GLFW_KEY_BACKSPACE] = Key.BACKSPACE
         keyMap[GLFW.GLFW_KEY_Q] = Key.Q
         keyMap[GLFW.GLFW_KEY_W] = Key.W
         keyMap[GLFW.GLFW_KEY_E] = Key.E

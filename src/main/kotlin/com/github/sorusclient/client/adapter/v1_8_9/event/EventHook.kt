@@ -174,7 +174,7 @@ object EventHook {
         return event
     }
 
-    @JvmStatic
+    /*@JvmStatic
     @Suppress("Unused")
     fun onBlockOutlineRender(box: Box): BlockOutlineRenderEvent {
         val event = BlockOutlineRenderEvent(
@@ -189,7 +189,7 @@ object EventHook {
         )
         EventManager.call(event)
         return event
-    }
+    }*/
 
     @JvmStatic
     @Suppress("Unused")

@@ -9,6 +9,7 @@ import v1_18_1.net.minecraft.client.gui.screen.TitleScreen
 import v1_18_1.net.minecraft.client.gui.screen.option.ControlsOptionsScreen
 import v1_18_1.net.minecraft.client.gui.screen.option.OptionsScreen
 import v1_18_1.net.minecraft.client.gui.screen.option.VideoOptionsScreen
+import v1_18_1.net.minecraft.client.option.Perspective
 import v1_18_1.net.minecraft.text.LiteralText
 
 class Adapter: Listener, IAdapter {
@@ -57,8 +58,21 @@ class Adapter: Listener, IAdapter {
     }
 
     override var perspective: PerspectiveMode
-        get() = TODO("Not yet implemented")
-        set(value) {}
+        get() {
+            return when (MinecraftClient.getInstance().options.perspective!!) {
+                Perspective.FIRST_PERSON -> PerspectiveMode.FIRST_PERSON
+                Perspective.THIRD_PERSON_FRONT -> PerspectiveMode.THIRD_PERSON_FRONT
+                Perspective.THIRD_PERSON_BACK -> PerspectiveMode.THIRD_PERSON_BACK
+            }
+        }
+        set(value) {
+            MinecraftClient.getInstance().options.perspective = when (value) {
+                PerspectiveMode.FIRST_PERSON -> Perspective.FIRST_PERSON
+                PerspectiveMode.THIRD_PERSON_FRONT -> Perspective.THIRD_PERSON_FRONT
+                PerspectiveMode.THIRD_PERSON_BACK -> Perspective.THIRD_PERSON_BACK
+                else -> null!!
+            }
+        }
 
     override val currentServer: IServer
         get() = TODO("Not yet implemented")

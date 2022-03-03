@@ -19,12 +19,14 @@ object KeyBindManager {
     private val currentKeys: MutableList<Key> = ArrayList()
 
     private fun onKey(event: KeyEvent) {
+        var action = false
         if (event.isPressed && !event.isRepeat) {
             currentKeys += event.key
 
             for (keyBind in keyBinds) {
                 if (currentKeys.containsAll(keyBind.keyCheck())) {
                     keyBind.action(true)
+                    action = true
                 }
             }
         } else if (!event.isPressed) {
@@ -35,6 +37,10 @@ object KeyBindManager {
                     keyBind.action(false)
                 }
             }
+        }
+
+        if (action) {
+            currentKeys.clear()
         }
     }
 

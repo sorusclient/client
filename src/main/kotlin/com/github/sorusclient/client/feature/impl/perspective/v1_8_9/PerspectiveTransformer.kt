@@ -39,8 +39,9 @@ class PerspectiveTransformer : Transformer(), Listener {
 
     private fun transformEntity(classNode: ClassNode) {
         val increaseTransforms = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#increaseTransforms(FF)V")
-        for (methodNode in classNode.methods) {
-            if (methodNode.name == increaseTransforms.methodName && methodNode.desc == increaseTransforms.methodDesc) {
+
+        findMethod(classNode, increaseTransforms)
+            .apply { methodNode ->
                 val insnList = InsnList()
                 insnList.add(VarInsnNode(Opcodes.FLOAD, 1))
                 insnList.add(
@@ -64,7 +65,6 @@ class PerspectiveTransformer : Transformer(), Listener {
                 insnList.add(VarInsnNode(Opcodes.FSTORE, 2))
                 methodNode.instructions.insert(insnList)
             }
-        }
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {

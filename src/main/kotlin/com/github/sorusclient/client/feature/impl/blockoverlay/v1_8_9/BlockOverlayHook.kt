@@ -1,59 +1,36 @@
-package com.github.sorusclient.client.feature.impl.blockoverlay
+package com.github.sorusclient.client.feature.impl.blockoverlay.v1_8_9
 
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Point
 import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.Vertex
-import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
-import com.github.sorusclient.client.setting.Setting
-import com.github.sorusclient.client.setting.SettingManager
-import com.github.sorusclient.client.setting.data.CategoryData
-import com.github.sorusclient.client.setting.data.SettingData
-import com.github.sorusclient.client.util.Color
+import com.github.sorusclient.client.feature.FeatureManager
+import com.github.sorusclient.client.feature.impl.blockoverlay.BlockOverlay
+import org.lwjgl.opengl.GL11
+import v1_8_9.net.minecraft.util.math.Box
 
-class BlockOverlay {
+object BlockOverlayHook {
 
-    var enabled: Setting<Boolean>
-    var borderColor: Setting<Color>
-    var borderThickness: Setting<Double>
-    var fillColor: Setting<Color>
-
-    init {
-        SettingManager.settingsCategory
-            .apply {
-                data["blockOverlay"] = CategoryData()
-                    .apply {
-                        data["enabled"] = SettingData(Setting(false).also { enabled = it })
-                        data["borderColor"] = SettingData(Setting(Color.BLACK).also { borderColor = it })
-                        data["borderThickness"] = SettingData(Setting(1.0).also { borderThickness = it })
-                        data["fillColor"] = SettingData(Setting(Color.fromRGB(0, 0, 0, 0)).also { fillColor = it })
-                    }
-            }
-
-        SettingManager.mainUICategory
-            .apply {
-                add(DisplayedCategory("Block Overlay"))
-                    .apply {
-                        add(Toggle(enabled, "Enabled"))
-                        add(ColorPicker(borderColor, "Border Color", ))
-                        add(Slider(borderThickness, "Border Thickness", 0.0, 5.0))
-                        add(ColorPicker(fillColor, "Fill Color", ))
-                    }
-            }
-
-        //EventManager.register(this::preRenderBlockOutline)
-    }
-
-    /*private fun preRenderBlockOutline(event: BlockOutlineRenderEvent) {
-        if (!enabled.value) {
+    @JvmStatic
+    @Suppress("Unused")
+    fun onBlockOverlayRender(box: Box) {
+        val blockOverlay = FeatureManager.get<BlockOverlay>()
+        if (!blockOverlay.enabled.value) {
             return
         }
-        val box = event.box
+
+        val box = com.github.sorusclient.client.adapter.Box(
+            box.minX,
+            box.maxX,
+            box.minY,
+            box.maxY,
+            box.minZ,
+            box.maxZ
+        )
+
         val buffer = RenderBuffer()
         buffer.drawMode = RenderBuffer.DrawMode.QUAD
-        val fillColor = getFillColor()
+        val fillColor = blockOverlay.fillColor.value
         buffer.push(Vertex().setPoint(Point(box.minX, box.minY, box.minZ)).setColor(fillColor))
         buffer.push(Vertex().setPoint(Point(box.minX, box.maxY, box.minZ)).setColor(fillColor))
         buffer.push(Vertex().setPoint(Point(box.maxX, box.maxY, box.minZ)).setColor(fillColor))
@@ -80,20 +57,10 @@ class BlockOverlay {
         buffer.push(Vertex().setPoint(Point(box.maxX, box.minY, box.minZ)).setColor(fillColor))
         val renderer = AdapterManager.getAdapter().renderer
         renderer.draw(buffer)
-        renderer.setLineThickness(getBorderThickness())
-        renderer.setColor(getBorderColor())
-    }*/
 
-    private fun getBorderColor(): Color {
-        return borderColor.value
-    }
-
-    private fun getBorderThickness(): Double {
-        return borderThickness.value
-    }
-
-    private fun getFillColor(): Color {
-        return fillColor.value
+        GL11.glLineWidth(blockOverlay.borderThickness.value.toFloat())
+        val borderColor = blockOverlay.borderColor.value
+        GL11.glColor4f(borderColor.red.toFloat(), borderColor.green.toFloat(), borderColor.blue.toFloat(), borderColor.alpha.toFloat())
     }
 
 }

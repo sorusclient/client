@@ -27,7 +27,6 @@ class EventTransformer : Transformer(), Listener {
         register("v1_18_1/net/minecraft/client/Mouse", this::transformMouse)
         register("v1_18_1/net/minecraft/client/util/Window", this::transformWindow)
         register("v1_18_1/net/minecraft/client/render/LightmapTextureManager", this::transformLightMapTextureManager)
-        register("v1_18_1/net/minecraft/client/render/WorldRenderer", this::transformWorldRenderer)
         register("org/lwjgl/opengl/GL30", this::transformGl30)
         register("org/lwjgl/opengl/GL15", this::transformGl15)
     }
@@ -316,22 +315,6 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(this.getHook("onGetGamma"))
                     }))
             }
-    }
-
-    private fun transformWorldRenderer(classNode: ClassNode) {
-        val drawShapeOutline = Identifier.parse("v1_18_1/net/minecraft/client/render/WorldRenderer#drawShapeOutline(Lv1_18_1/net/minecraft/client/util/math/MatrixStack;Lv1_18_1/net/minecraft/client/render/VertexConsumer;Lv1_18_1/net/minecraft/util/shape/VoxelShape;DDDFFFF)V")
-
-        findMethod(classNode, drawShapeOutline)
-            .apply(Insert(createList { insnList ->
-                val eventClassName = BlockOutlineRenderEvent::class.java.name.replace(".", "/")
-                insnList.add(VarInsnNode(Opcodes.ALOAD, 2))
-                insnList.add(this.getHook("onBlockOutlineRender"))
-                val labelNode = LabelNode()
-                insnList.add(MethodInsnNode(Opcodes.INVOKEVIRTUAL, eventClassName, "getCanceled", "()Z"))
-                insnList.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
-                insnList.add(InsnNode(Opcodes.RETURN))
-                insnList.add(labelNode)
-            }))
     }
 
 }

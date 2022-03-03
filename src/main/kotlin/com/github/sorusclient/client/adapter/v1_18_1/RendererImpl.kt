@@ -9,7 +9,6 @@ import com.github.sorusclient.client.adapter.v1_8_9.RendererImpl
 import com.github.sorusclient.client.util.Color
 import org.apache.commons.io.IOUtils
 import org.lwjgl.opengl.*
-import v1_18_1.com.mojang.blaze3d.platform.GlStateManager
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.client.render.GameRenderer

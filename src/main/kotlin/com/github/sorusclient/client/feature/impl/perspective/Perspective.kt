@@ -58,7 +58,6 @@ class Perspective {
     private fun onKeyUpdate(pressed: Boolean) {
         val adapter = AdapterManager.getAdapter()
         if (isEnabled() && adapter.openScreen == ScreenType.IN_GAME) {
-            isToggled = pressed
 
             if (pressed) {
                 previousPerspective = adapter.perspective
@@ -67,6 +66,8 @@ class Perspective {
             } else {
                 adapter.perspective = previousPerspective
             }
+
+            isToggled = pressed
         }
     }
 

@@ -254,7 +254,7 @@ object EventHook {
         return event.gamma.toFloat()
     }
 
-    @JvmStatic
+    /*@JvmStatic
     @Suppress("Unused")
     fun onBlockOutlineRender(voxelShape: VoxelShape): BlockOutlineRenderEvent {
         val event = BlockOutlineRenderEvent(
@@ -269,6 +269,6 @@ object EventHook {
         )
         EventManager.call(event)
         return event
-    }
+    }*/
 
 }

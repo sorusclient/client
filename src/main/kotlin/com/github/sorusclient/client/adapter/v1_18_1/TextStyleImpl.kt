@@ -28,7 +28,7 @@ class TextStyleImpl(style: Style) : ITextStyle {
         }
         insertion = style.insertion
         if (style.color != null) {
-            color = Util.formattingToTextFormatting(Formatting.byName(style.color?.name)!!)
+            color = Formatting.byName(style.color?.name)?.let { Util.formattingToTextFormatting(it) }
         }
         bold = style.isBold
         italic = style.isItalic
