@@ -91,10 +91,13 @@ object SettingManager {
         }
 
         for (profileParent in profiles) {
-            load(JSONObject(profileParent.readSettings()).toMap(), profileParent == profile)
-        }
+            val map = JSONObject(profileParent.readSettings()).toMap()
+            load(map, profileParent == profile)
 
-        cachedSettings = JSONObject(profile.readSettings()).toMap()
+            if (profileParent == profile) {
+                cachedSettings = map
+            }
+        }
     }
 
     private fun load(json: Any, isPrimary: Boolean) {

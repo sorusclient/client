@@ -7,6 +7,7 @@ import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import com.github.sorusclient.client.feature.impl.environmentchanger.EnvironmentChanger
 import com.github.sorusclient.client.feature.impl.fullbright.FullBright
 import com.github.sorusclient.client.feature.impl.itemphysics.ItemPhysics
+import com.github.sorusclient.client.feature.impl.oldanimations.OldAnimations
 import com.github.sorusclient.client.feature.impl.particles.Particles
 import com.github.sorusclient.client.feature.impl.perspective.Perspective
 import com.github.sorusclient.client.feature.impl.togglesprintsneak.ToggleSprintSneak
@@ -21,6 +22,7 @@ class FeatureListener: Listener {
         FeatureManager.features.add(EnvironmentChanger())
         FeatureManager.features.add(FullBright())
         FeatureManager.features.add(ItemPhysics())
+        FeatureManager.features.add(OldAnimations())
         FeatureManager.features.add(Particles())
         FeatureManager.features.add(Perspective())
         FeatureManager.features.add(ToggleSprintSneak())

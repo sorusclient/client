@@ -43,7 +43,7 @@ object OldAnimationsHook {
 
     @JvmStatic
     fun showArmorDamage(): Boolean {
-        val oldAnimations = FeatureManager.get<OldAnimations>()
+        val oldAnimations = FeatureManager.get<com.github.sorusclient.client.feature.impl.oldanimations.OldAnimations>()
         return oldAnimations.showArmorDamageValue()
     }
 

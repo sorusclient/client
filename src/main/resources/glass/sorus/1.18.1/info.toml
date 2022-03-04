@@ -5,6 +5,7 @@ initialize = [
     "adapter.v1_18_1.event.EventTransformer",
     "feature.impl.environmentchanger.v1_18_1.EnvironmentChangerTransformer",
     "feature.impl.itemphysics.v1_18_1.ItemPhysicsTransformer",
+    "feature.impl.oldanimations.v1_18_1.OldAnimationsTransformer",
     "feature.impl.blockoverlay.v1_18_1.BlockOverlayTransformer",
     "feature.impl.perspective.v1_18_1.PerspectiveTransformer",
     "feature.impl.perspective.v1_18_1.PerspectiveHelper",

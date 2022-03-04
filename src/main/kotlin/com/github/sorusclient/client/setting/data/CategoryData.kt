@@ -29,6 +29,7 @@ class CategoryData: AbstractData() {
     override fun load(json: Any, isPrimary: Boolean) {
         for (entry in data) {
             (json as Map<*, *>)[entry.key]?.let { entry.value.load(it, isPrimary) }
+            json[entry.key]?.let { (json as MutableMap<*, *>).remove(entry.key) }
         }
     }
 

@@ -2563,8 +2563,11 @@ class DefaultTheme: Theme() {
                                                 }
                                                 state.first["selectedResult"] = newSelectedResult
                                             } else if (state.second.key == Key.ENTER) {
-                                                ContainerRenderer.close()
-                                                searchResults.getOrNull(state.first.getOrDefault("selectedResult", 0) as Int)?.onSelect()
+                                                val result = searchResults.getOrNull(state.first.getOrDefault("selectedResult", 0) as Int)
+                                                if (result != null) {
+                                                    ContainerRenderer.close()
+                                                    result.onSelect()
+                                                }
                                             }
 
                                             prevKeyTime = System.currentTimeMillis()
