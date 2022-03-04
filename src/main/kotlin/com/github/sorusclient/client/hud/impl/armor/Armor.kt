@@ -7,8 +7,6 @@ import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.setting.Setting
-import com.github.sorusclient.client.setting.SettingManager
-import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.Color
@@ -142,6 +140,7 @@ class Armor : HUDElement("armor") {
             Mode.INDIVIDUAL -> 60.0
             Mode.TOTAL -> (1 + 8 * 10 + 1 + 1).toDouble()
         }
+
     override val height: Double
         get() {
             return when (mode.value) {

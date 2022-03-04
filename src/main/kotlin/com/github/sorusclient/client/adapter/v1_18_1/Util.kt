@@ -6,10 +6,38 @@ import com.google.common.collect.HashBiMap
 import org.lwjgl.glfw.GLFW
 import v1_18_1.net.minecraft.client.gui.screen.GameMenuScreen
 import v1_18_1.net.minecraft.client.gui.screen.Screen
+import v1_18_1.net.minecraft.item.Item
+import v1_18_1.net.minecraft.item.Items
 import v1_18_1.net.minecraft.text.*
 import v1_18_1.net.minecraft.util.Formatting
 
 object Util {
+
+    fun getItemByItemType(itemType: IItem.ItemType?): Item? {
+        return when (itemType) {
+            IItem.ItemType.LEATHER_HELMET -> Items.LEATHER_HELMET
+            IItem.ItemType.LEATHER_CHESTPLATE -> Items.LEATHER_CHESTPLATE
+            IItem.ItemType.LEATHER_LEGGINGS -> Items.LEATHER_LEGGINGS
+            IItem.ItemType.LEATHER_BOOTS -> Items.LEATHER_BOOTS
+            IItem.ItemType.CHAIN_HELMET -> Items.CHAINMAIL_HELMET
+            IItem.ItemType.CHAIN_CHESTPLATE -> Items.CHAINMAIL_CHESTPLATE
+            IItem.ItemType.CHAIN_LEGGINGS -> Items.CHAINMAIL_LEGGINGS
+            IItem.ItemType.CHAIN_BOOTS -> Items.CHAINMAIL_BOOTS
+            IItem.ItemType.IRON_HELMET -> Items.IRON_HELMET
+            IItem.ItemType.IRON_CHESTPLATE -> Items.IRON_CHESTPLATE
+            IItem.ItemType.IRON_LEGGINGS -> Items.IRON_LEGGINGS
+            IItem.ItemType.IRON_BOOTS -> Items.IRON_BOOTS
+            IItem.ItemType.DIAMOND_HELMET -> Items.DIAMOND_HELMET
+            IItem.ItemType.DIAMOND_CHESTPLATE -> Items.DIAMOND_CHESTPLATE
+            IItem.ItemType.DIAMOND_LEGGINGS -> Items.DIAMOND_LEGGINGS
+            IItem.ItemType.DIAMOND_BOOTS -> Items.DIAMOND_BOOTS
+            IItem.ItemType.GOLD_HELMET -> Items.GOLDEN_HELMET
+            IItem.ItemType.GOLD_CHESTPLATE -> Items.GOLDEN_CHESTPLATE
+            IItem.ItemType.GOLD_LEGGINGS -> Items.GOLDEN_LEGGINGS
+            IItem.ItemType.GOLD_BOOTS -> Items.GOLDEN_BOOTS
+            else -> null
+        }
+    }
 
     private val keyMap: BiMap<Int, Key> = HashBiMap.create()
 

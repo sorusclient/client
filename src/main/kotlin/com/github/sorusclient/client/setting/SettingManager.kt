@@ -21,6 +21,8 @@ object SettingManager {
     val settingsCategory: CategoryData = CategoryData()
     val mainUICategory: DisplayedCategory = DisplayedCategory("Main")
 
+    var cachedSettings: Map<String, Any>? = null
+
     init {
         profileFile.mkdirs()
     }
@@ -91,6 +93,8 @@ object SettingManager {
         for (profileParent in profiles) {
             load(JSONObject(profileParent.readSettings()).toMap(), profileParent == profile)
         }
+
+        cachedSettings = JSONObject(profile.readSettings()).toMap()
     }
 
     private fun load(json: Any, isPrimary: Boolean) {
@@ -106,7 +110,34 @@ object SettingManager {
     }
 
     private fun save(profile: Profile) {
-        profile.writeSettings(JSONObject(save() as Map<*, *>).toString(2))
+        val saved = save() as Map<*, *>
+
+        val combined = combine(saved, cachedSettings!!)
+        profile.writeSettings(JSONObject(combined as Map<*, *>).toString(2))
+    }
+
+    private fun combine(any1: Any, any2: Any): Any {
+        return if (any1 is Map<*, *>) {
+            val newMap = HashMap<String, Any>()
+
+            for (thing in any2 as Map<*, *>) {
+                if (any1[thing.key] != null) {
+                    newMap[thing.key as String] = combine(any1[thing.key]!!, thing.value!!)
+                } else {
+                    newMap[thing.key as String] = thing.value!!
+                }
+            }
+
+            for (thing in any1) {
+                if (thing.value !is Map<*, *> || any2[thing.value!!] == null) {
+                    newMap[thing.key as String] = thing.value!!
+                }
+            }
+
+            newMap
+        } else {
+            any1
+        }
     }
 
     private fun save(): Any {

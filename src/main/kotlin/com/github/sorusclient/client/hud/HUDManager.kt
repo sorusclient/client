@@ -55,6 +55,7 @@ object HUDManager {
     private var hoveredAddButton = false
 
     var isHudEditScreenOpen = AtomicBoolean(false)
+    var prevIsHudEditScreenOpen = false
 
     private lateinit var addHudUI: Container
 
@@ -321,7 +322,7 @@ object HUDManager {
         val renderer = AdapterManager.getAdapter().renderer
         val screenDimensions = adapter.screenDimensions
         val mouseLocation = adapter.mouseLocation
-        val isHudEditScreenOpen = isHudEditScreenOpen.get()
+        val isHudEditScreenOpen = prevIsHudEditScreenOpen
         if (!isHudEditScreenOpen) {
             for (element in getElements().values) {
                 for ((attachedId, _) in element.attached.value) {
@@ -330,6 +331,9 @@ object HUDManager {
                 }
             }
         }
+
+        prevIsHudEditScreenOpen = this.isHudEditScreenOpen.get()
+
         for (element in getElements().values) {
             element.render()
         }

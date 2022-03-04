@@ -3,13 +3,12 @@ package com.github.sorusclient.client.hud.impl.armor.v1_18_1
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IItem
-import com.github.sorusclient.client.adapter.v1_8_9.Util
+import com.github.sorusclient.client.adapter.v1_18_1.Util
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer.ArmorRenderType
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.client.render.*
-import v1_18_1.net.minecraft.item.Item
 import v1_18_1.net.minecraft.item.ItemStack
 
 class ArmorRenderer : Listener, IArmorRenderer {
@@ -19,11 +18,11 @@ class ArmorRenderer : Listener, IArmorRenderer {
     }
 
     override fun render(item: IItem, x: Double, y: Double, scale: Double) {
-        var itemStack = item.inner as ItemStack
+        var itemStack = item.inner as ItemStack?
         if (itemStack == null) {
-            val id = Util.getIdByItemType(item.type)
-            if (id != -1) {
-                itemStack = ItemStack(Item.byRawId(id))
+            val item = Util.getItemByItemType(item.type)
+            if (item != null) {
+                itemStack = ItemStack(item)
             }
         }
 

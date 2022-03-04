@@ -5,7 +5,7 @@ import com.github.sorusclient.client.adapter.IItem.ItemType
 import v1_18_1.net.minecraft.item.Item
 import v1_18_1.net.minecraft.item.ItemStack
 
-class ItemImpl(protected val itemStack: ItemStack) : IItem {
+class ItemImpl(private val itemStack: ItemStack) : IItem {
 
     override val remainingDurability: Double
         get() = maxDurability - itemStack.damage
