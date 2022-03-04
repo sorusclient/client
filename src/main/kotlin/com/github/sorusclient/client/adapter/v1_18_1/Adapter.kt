@@ -2,6 +2,7 @@ package com.github.sorusclient.client.adapter.v1_18_1
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
+import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.adapter.*
 import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.client.gui.screen.ConnectScreen
@@ -15,6 +16,7 @@ import v1_18_1.net.minecraft.client.network.ServerInfo
 import v1_18_1.net.minecraft.client.option.Perspective
 import v1_18_1.net.minecraft.text.LiteralText
 import v1_18_1.net.minecraft.client.option.KeyBinding
+import java.lang.reflect.Field
 
 class Adapter: Listener, IAdapter {
 
@@ -119,7 +121,6 @@ class Adapter: Listener, IAdapter {
         val serverInfo = ServerInfo("", ip, false)
         MinecraftClient.getInstance().currentServerEntry = serverInfo
         ConnectScreen.connect(TitleScreen(), MinecraftClient.getInstance(), serverAddress, serverInfo)
-        //MinecraftClient.getInstance().setScreen(ConnectScreen(v1_8_9.net.minecraft.client.gui.screen.TitleScreen(), v1_8_9.net.minecraft.client.MinecraftClient.getInstance(), serverAddress.address, serverAddress.port))
     }
 
     override fun createText(string: String): IText {
@@ -131,7 +132,15 @@ class Adapter: Listener, IAdapter {
 
     override val renderer: IRenderer = RendererImpl()
 
+    private val currentFps: Field = run {
+        val currentFps = Identifier.parse("v1_18_1/net/minecraft/client/MinecraftClient#currentFps")
+        val field = MinecraftClient::class.java.getDeclaredField(currentFps.fieldName)
+        field.isAccessible = true
+
+        field
+    }
+
     override val fps: Int
-        get() = TODO("Not yet implemented")
+        get() = currentFps.getInt(MinecraftClient.getInstance())
 
 }

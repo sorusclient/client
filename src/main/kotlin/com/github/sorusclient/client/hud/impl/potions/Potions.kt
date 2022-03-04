@@ -43,7 +43,6 @@ class Potions : HUDElement("potionStatus") {
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
         var textY = y + 3 * scale
         for (effect in effects) {
-            potionEffectRenderer.render(effect.type, x + 3 * scale, textY, scale)
             fontRenderer.drawString(
                 effect.name + " " + getAmplifierString(effect.amplifier),
                 x + 24 * scale,
@@ -58,6 +57,7 @@ class Potions : HUDElement("potionStatus") {
                 scale,
                 Color.WHITE
             )
+            potionEffectRenderer.render(effect.type, x + 3 * scale, textY, scale)
             textY += (5 + fontRenderer.getHeight() * 2) * scale
         }
     }

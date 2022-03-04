@@ -10,6 +10,7 @@ initialize = [
     "feature.impl.perspective.v1_18_1.PerspectiveHelper",
     "feature.impl.particles.v1_18_1.ParticlesTransformer",
     "feature.impl.togglesprintsneak.v1_18_1.ToggleSprintSneakTransformer",
+    "hud.impl.potionstatus.v1_18_1.PotionEffectRenderer",
     "hud.impl.health.v1_18_1.HealthRenderer",
     "hud.impl.bossbar.v1_18_1.BossBarRenderer",
     "hud.impl.hotbar.v1_18_1.HotBarRenderer",
