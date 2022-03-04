@@ -32,7 +32,6 @@ class ItemPhysicsTransformer : Transformer(), Listener {
 
         findMethod(classNode, render)
             .apply { methodNode: MethodNode ->
-                println("Test")
                 findVarReferences(methodNode, 13, VarReferenceType.STORE)
                     .apply(InsertBefore(methodNode, this.getHook("modifyItemBob")))
                 findVarReferences(methodNode, 15, VarReferenceType.STORE)

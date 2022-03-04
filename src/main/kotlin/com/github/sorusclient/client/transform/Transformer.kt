@@ -100,7 +100,7 @@ open class Transformer : com.github.glassmc.loader.api.loader.Transformer {
         return Result(results)
     }
 
-    protected fun isMethodCall(node: AbstractInsnNode?, methodIdentifier: Identifier): Boolean {
+    protected fun isMethodCall(node: AbstractInsnNode, methodIdentifier: Identifier): Boolean {
         return node is MethodInsnNode && node.owner == methodIdentifier.className && node.name == methodIdentifier.methodName && node.desc == methodIdentifier.methodDesc
     }
 

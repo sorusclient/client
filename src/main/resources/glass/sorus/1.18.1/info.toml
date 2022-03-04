@@ -3,6 +3,7 @@ namespace = "com.github.sorusclient.client"
 [listeners]
 initialize = [
     "adapter.v1_18_1.event.EventTransformer",
+    "feature.impl.environmentchanger.v1_18_1.EnvironmentChangerTransformer",
     "feature.impl.itemphysics.v1_18_1.ItemPhysicsTransformer",
     "feature.impl.blockoverlay.v1_18_1.BlockOverlayTransformer",
     "feature.impl.perspective.v1_18_1.PerspectiveTransformer",
