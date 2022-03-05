@@ -5,8 +5,10 @@ import com.github.glassmc.loader.api.Listener
 import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
+import org.apache.commons.io.FileUtils
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
+import java.io.File
 
 class BlockOverlayTransformer: Transformer(), Listener {
 
@@ -17,19 +19,59 @@ class BlockOverlayTransformer: Transformer(), Listener {
     init {
         setHookClass(BlockOverlayHook::class.java)
         register("v1_18_1/net/minecraft/client/render/WorldRenderer", this::transformWorldRenderer)
+        register("v1_18_1/com/mojang/blaze3d/systems/RenderSystem", this::transformRenderSystem)
+
+    }
+
+    override fun transform(name: String, data: ByteArray): ByteArray {
+        val bytes = super.transform(name, data)
+        FileUtils.writeByteArrayToFile(File(name + ".class"), bytes)
+        return bytes
     }
 
     private fun transformWorldRenderer(classNode: ClassNode) {
-        val drawShapeOutline = Identifier.parse("v1_18_1/net/minecraft/client/render/WorldRenderer#drawShapeOutline(Lv1_18_1/net/minecraft/client/util/math/MatrixStack;Lv1_18_1/net/minecraft/client/render/VertexConsumer;Lv1_18_1/net/minecraft/util/shape/VoxelShape;DDDFFFF)V")
+        val render = Identifier.parse("v1_18_1/net/minecraft/client/render/WorldRenderer#render(Lv1_18_1/net/minecraft/client/util/math/MatrixStack;FJZLv1_18_1/net/minecraft/client/render/Camera;Lv1_18_1/net/minecraft/client/render/GameRenderer;Lv1_18_1/net/minecraft/client/render/LightmapTextureManager;Lv1_18_1/net/minecraft/util/math/Matrix4f;)V")
+        val drawBlockOutline = Identifier.parse("v1_18_1/net/minecraft/client/render/WorldRenderer#drawBlockOutline(Lv1_18_1/net/minecraft/client/util/math/MatrixStack;Lv1_18_1/net/minecraft/client/render/VertexConsumer;Lv1_18_1/net/minecraft/entity/Entity;DDDLv1_18_1/net/minecraft/util/math/BlockPos;Lv1_18_1/net/minecraft/block/BlockState;)V")
 
-        findMethod(classNode, drawShapeOutline)
+        findMethod(classNode, render)
+            .apply { methodNode ->
+                findMethodCalls(methodNode, drawBlockOutline)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                        insnList.add(VarInsnNode(Opcodes.ALOAD, 6))
+                        insnList.add(this.getHook("render"))
+                    }))
+            }
+
+        findMethod(classNode, drawBlockOutline)
+            .apply { methodNode ->
+                var i = 0
+                for (node in methodNode.instructions) {
+                    if (node.opcode == Opcodes.FCONST_0) {
+                        methodNode.instructions.insert(node, this.getHook(when (i) {
+                            0 -> "modifyOutlineRed"
+                            1 -> "modifyOutlineGreen"
+                            2 -> "modifyOutlineBlue"
+                            else -> null!!
+                        }))
+                        i++
+                    }
+
+                    if (node is LdcInsnNode && node.cst == 0.4f) {
+                        methodNode.instructions.insert(node, this.getHook("modifyOutlineAlpha"))
+                    }
+                }
+            }
+    }
+
+    private fun transformRenderSystem(classNode: ClassNode) {
+        val lineWidth = Identifier.parse("v1_18_1/com/mojang/blaze3d/systems/RenderSystem#lineWidth(F)V")
+
+        findMethod(classNode, lineWidth)
             .apply(Applier.Insert(createList { insnList ->
-                insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
-                insnList.add(VarInsnNode(Opcodes.ALOAD, 2))
-                insnList.add(VarInsnNode(Opcodes.DLOAD, 3))
-                insnList.add(VarInsnNode(Opcodes.DLOAD, 5))
-                insnList.add(VarInsnNode(Opcodes.DLOAD, 7))
-                insnList.add(this.getHook("onBlockOverlayRender"))
+                insnList.add(VarInsnNode(Opcodes.FLOAD, 0))
+                insnList.add(this.getHook("modifyLineWidth"))
+                insnList.add(VarInsnNode(Opcodes.FSTORE, 0))
             }))
     }
 

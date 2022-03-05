@@ -15,9 +15,6 @@ object BlockOverlayHook {
     @Suppress("Unused")
     fun onBlockOverlayRender(box: Box) {
         val blockOverlay = FeatureManager.get<BlockOverlay>()
-        if (!blockOverlay.enabled.value) {
-            return
-        }
 
         val box = com.github.sorusclient.client.adapter.Box(
             box.minX,

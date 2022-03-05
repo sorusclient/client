@@ -3,13 +3,14 @@ import static com.github.glassmc.kiln.standard.DependencyHandlerExtension.*
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
         maven {
             url = "https://jitpack.io/"
         }
     }
 
     dependencies {
-        classpath("com.github.glassmc:kiln:v0.6.12")
+        classpath("com.github.glassmc:kiln:0.6.12")
     }
 }
 
