@@ -1,11 +1,18 @@
 package com.github.sorusclient.client.feature.impl.enhancements
 
+import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.setting.Util
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
+import org.apache.commons.io.FileUtils
+import org.json.JSONObject
+import java.io.File
+import java.nio.charset.StandardCharsets
 
 class Enhancements {
 
@@ -31,6 +38,41 @@ class Enhancements {
 
     fun getFireHeightValue(): Double {
         return fireHeight.value
+    }
+
+    private var settings: Map<String, Any> = HashMap()
+    private var settingsLoader: ISettingsLoader = GlassLoader.getInstance().getInterface(ISettingsLoader::class.java)
+
+    fun saveSettings() {
+        val jsonObject = settingsLoader.save(settings)
+        settings = jsonObject
+        val settingsFile = File("settings.json")
+        FileUtils.writeStringToFile(settingsFile, JSONObject(Util.toData(settings) as Map<*, *>).toString(2), StandardCharsets.UTF_8)
+    }
+
+    fun loadSettings() {
+        val settingsFile = File("settings.json")
+        if (!settingsFile.exists()) return
+
+        val contents = FileUtils.readFileToString(settingsFile, StandardCharsets.UTF_8)
+        val baseMap = JSONObject(contents).toMap()
+
+        val map: MutableMap<String, Any> = HashMap()
+
+        for ((key, value) in baseMap) {
+            when (key) {
+                "sensitivity" -> map[key] = Util.toJava(Double::class.java, value)!!
+                "chat" -> map[key] = Util.toJava(Key::class.java, value)!!
+                "command" -> map[key] = Util.toJava(Key::class.java, value)!!
+                else -> {
+                    if (key.startsWith("hotbar_")) {
+                        map[key] = Util.toJava(Key::class.java, value)!!
+                    }
+                }
+            }
+        }
+
+        settingsLoader.load(map)
     }
 
 }

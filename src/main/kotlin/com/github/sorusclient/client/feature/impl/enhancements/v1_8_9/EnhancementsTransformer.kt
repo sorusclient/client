@@ -15,6 +15,8 @@ class EnhancementsTransformer : Transformer(), Listener {
     }
 
     init {
+        this.setHookClass(EnhancementsHook::class.java)
+
         register("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer") { classNode: ClassNode ->
             transformHeldItemRenderer(
                 classNode
@@ -42,6 +44,12 @@ class EnhancementsTransformer : Transformer(), Listener {
         }
         register("v1_8_9/net/minecraft/client/font/TextRenderer") { classNode: ClassNode ->
             transformTextRenderer(
+                classNode
+            )
+        }
+
+        register("v1_8_9/net/minecraft/client/options/GameOptions") { classNode: ClassNode ->
+            transformGameOptions(
                 classNode
             )
         }
@@ -129,7 +137,7 @@ class EnhancementsTransformer : Transformer(), Listener {
 
     private fun transformLivingEntity(classNode: ClassNode) {
         val getRotationVector = Identifier.parse("v1_8_9/net/minecraft/entity/LivingEntity#getRotationVector(F)Lv1_8_9/net/minecraft/util/math/Vec3d;")
-        val clientPlayerEntity = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayerEntity")
+        val clientPlayerEntity = Identifier.parse("v1_8_9/net/minecraft/entity/player/ClientPlayerEntity")
         val entity = Identifier.parse("v1_8_9/net/minecraft/entity/Entity")
 
         findMethod(classNode, getRotationVector)
@@ -283,6 +291,28 @@ class EnhancementsTransformer : Transformer(), Listener {
                     .apply(Applier.InsertAfter(methodNode, createList { insnList ->
                         insnList.add(LdcInsnNode(0.99f))
                         insnList.add(InsnNode(Opcodes.FMUL))
+                    }))
+            }
+    }
+
+    private fun transformGameOptions(classNode: ClassNode) {
+        val save = Identifier.parse("v1_8_9/net/minecraft/client/options/GameOptions#save()V")
+        val load = Identifier.parse("v1_8_9/net/minecraft/client/options/GameOptions#load()V")
+
+        findMethod(classNode, save)
+            .apply { methodNode ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(this.getHook("onSave"))
+                    }))
+            }
+
+        findMethod(classNode, load)
+            .apply { methodNode ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
+                        insnList.add(this.getHook("onLoad"))
                     }))
             }
     }

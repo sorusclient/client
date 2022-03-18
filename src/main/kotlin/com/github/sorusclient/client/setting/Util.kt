@@ -31,10 +31,16 @@ object Util {
         } else if (jsonSetting is Double) {
             return jsonSetting as T
         } else if (jsonSetting is BigDecimal) {
-            if (wantedClass == java.lang.Double::class.java) {
-                return jsonSetting.toDouble() as T
-            } else if (wantedClass == Double::class.javaPrimitiveType) {
-                return jsonSetting.toDouble() as T
+            when (wantedClass) {
+                java.lang.Double::class.java -> {
+                    return jsonSetting.toDouble() as T
+                }
+                Double::class.javaPrimitiveType -> {
+                    return jsonSetting.toDouble() as T
+                }
+                null -> {
+                    return jsonSetting.toDouble() as T
+                }
             }
         } else if (jsonSetting is String) {
             if (wantedClass != null && wantedClass.superclass == Enum::class.java) {
@@ -65,7 +71,7 @@ object Util {
                 wantedClass = Class.forName(className) as Class<T>
             }
 
-            if (wantedClass != null && wantedClass == MutableMap::class.java) {
+            if (wantedClass != null && wantedClass == Map::class.java) {
                 val map: MutableMap<String, Any> = HashMap()
                 for ((key, value) in jsonSetting) {
                     toJava<Any>(null, value)?.let { map[key] = it }

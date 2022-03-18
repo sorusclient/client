@@ -9,6 +9,7 @@ import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
 import v1_8_9.net.minecraft.client.gui.screen.Screen
 import v1_8_9.net.minecraft.text.*
 import v1_8_9.net.minecraft.util.Formatting
+import v1_8_9.org.lwjgl.input.Keyboard
 
 object Util {
 
@@ -42,6 +43,16 @@ object Util {
 
     init {
         keyMap[1] = Key.ESCAPE
+        keyMap[2] = Key.ONE
+        keyMap[3] = Key.TWO
+        keyMap[4] = Key.THREE
+        keyMap[5] = Key.FOUR
+        keyMap[6] = Key.FIVE
+        keyMap[7] = Key.SIX
+        keyMap[8] = Key.SEVEN
+        keyMap[9] = Key.EIGHT
+        keyMap[10] = Key.NINE
+        keyMap[11] = Key.ZERO
         keyMap[14] = Key.BACKSPACE
         keyMap[16] = Key.Q
         keyMap[17] = Key.W
@@ -72,6 +83,7 @@ object Util {
         keyMap[48] = Key.B
         keyMap[49] = Key.N
         keyMap[50] = Key.M
+        keyMap[53] = Key.SLASH
         keyMap[54] = Key.SHIFT_RIGHT
         keyMap[56] = Key.ALT_LEFT
         keyMap[57] = Key.SPACE
@@ -81,6 +93,10 @@ object Util {
 
     fun getKey(id: Int): Key {
         return keyMap.getOrDefault(id, Key.UNKNOWN)
+    }
+
+    fun getKeyCode(key: Key): Int {
+        return keyMap.inverse().getOrDefault(key, -1)
     }
 
     private val buttonMap: BiMap<Int, Button> = HashBiMap.create()

@@ -78,10 +78,25 @@ object Util {
         keyMap[GLFW.GLFW_KEY_SPACE] = Key.SPACE
         keyMap[GLFW.GLFW_KEY_UP] = Key.ARROW_UP
         keyMap[GLFW.GLFW_KEY_DOWN] = Key.ARROW_DOWN
+        keyMap[GLFW.GLFW_KEY_1] = Key.ONE
+        keyMap[GLFW.GLFW_KEY_2] = Key.TWO
+        keyMap[GLFW.GLFW_KEY_3] = Key.THREE
+        keyMap[GLFW.GLFW_KEY_4] = Key.FOUR
+        keyMap[GLFW.GLFW_KEY_5] = Key.FIVE
+        keyMap[GLFW.GLFW_KEY_6] = Key.SIX
+        keyMap[GLFW.GLFW_KEY_7] = Key.SEVEN
+        keyMap[GLFW.GLFW_KEY_8] = Key.EIGHT
+        keyMap[GLFW.GLFW_KEY_9] = Key.NINE
+        keyMap[GLFW.GLFW_KEY_0] = Key.ZERO
+        keyMap[GLFW.GLFW_KEY_SLASH] = Key.SLASH
     }
 
     fun getKey(id: Int): Key {
         return keyMap.getOrDefault(id, Key.UNKNOWN)
+    }
+
+    fun getKeyCode(key: Key): Int {
+        return keyMap.inverse().getOrDefault(key, -1);
     }
 
     private val buttonMap: BiMap<Int, Button> = HashBiMap.create()

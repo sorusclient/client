@@ -10,6 +10,7 @@ initialize = [
     "feature.impl.perspective.v1_8_9.PerspectiveHelper",
     "feature.impl.particles.v1_8_9.ParticlesTransformer",
     "feature.impl.enhancements.v1_8_9.EnhancementsTransformer",
+    "feature.impl.enhancements.v1_8_9.EnhancementsInitializeListener",
     "feature.impl.blockoverlay.v1_8_9.BlockOverlayTransformer",
     "feature.impl.togglesprintsneak.v1_8_9.ToggleSprintSneakTransformer",
     "hud.impl.potionstatus.v1_8_9.PotionEffectRenderer",
