@@ -24,7 +24,7 @@ object OldAnimationsHook {
         val player = mc.player ?: return
         val oldAnimations = FeatureManager.get<OldAnimations>()
         if (player.mainHandStack != null && oldAnimations.isOldBlockHitValue()) {
-            if (player.method_3192() > 0) {
+            if (player.itemUseTicks > 0) {
                 val mouseDown = mc.options.keyAttack.isPressed && mc.options.keyUse.isPressed
                 if (mouseDown && mc.result != null && mc.result.type == HitResult.Type.BLOCK) {
                     val swingAnimationEnd =

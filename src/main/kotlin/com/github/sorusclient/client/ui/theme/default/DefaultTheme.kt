@@ -2714,8 +2714,6 @@ class DefaultTheme: Theme() {
                                                 colorData[3]
                                             )
                                             state.first["value"] = colorDataNew
-
-                                            //setting.setting.overriden = true
                                         }
 
                                         children += Container()

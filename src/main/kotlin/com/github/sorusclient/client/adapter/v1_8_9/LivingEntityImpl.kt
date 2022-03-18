@@ -10,7 +10,7 @@ open class LivingEntityImpl(entity: Entity) : EntityImpl(entity), ILivingEntity 
     override val effects: List<IPotionEffect>
         get() {
             val effects: MutableList<IPotionEffect> = ArrayList()
-            for (effect in (entity as LivingEntity).method_6120()) {
+            for (effect in (entity as LivingEntity).statusEffectInstances) {
                 effects.add(PotionEffectImpl(effect))
             }
             return effects

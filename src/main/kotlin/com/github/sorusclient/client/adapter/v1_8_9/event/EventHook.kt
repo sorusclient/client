@@ -3,10 +3,10 @@ package com.github.sorusclient.client.adapter.v1_8_9.event
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.event.EventManager
-import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
-import org.lwjgl.opengl.Display
-import org.lwjgl.opengl.GL11
+import v1_8_9.org.lwjgl.input.Keyboard
+import v1_8_9.org.lwjgl.input.Mouse
+import v1_8_9.org.lwjgl.opengl.Display
+import v1_8_9.org.lwjgl.opengl.GL11
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.screen.Screen
@@ -14,7 +14,6 @@ import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.client.world.ClientWorld
 import v1_8_9.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
 import v1_8_9.net.minecraft.text.Text
-import v1_8_9.net.minecraft.util.math.Box
 
 object EventHook {
 

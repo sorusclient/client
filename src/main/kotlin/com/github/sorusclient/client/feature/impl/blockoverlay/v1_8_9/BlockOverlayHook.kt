@@ -6,7 +6,7 @@ import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.Vertex
 import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.blockoverlay.BlockOverlay
-import org.lwjgl.opengl.GL11
+import v1_8_9.org.lwjgl.opengl.GL11
 import v1_8_9.net.minecraft.util.math.Box
 
 object BlockOverlayHook {

@@ -1,16 +1,19 @@
-import static com.github.glassmc.kiln.standard.DependencyHandlerExtension.*
+import com.github.glassmc.kiln.standard.environment.GlassLoaderEnvironment
 
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
+
+        maven {
+            url = "https://glassmc.ml/repository"
+        }
         maven {
             url = "https://jitpack.io/"
         }
     }
 
     dependencies {
-        classpath("com.github.glassmc:kiln:0.6.12")
+        classpath("com.github.glassmc:kiln:0.7.8")
     }
 }
 
@@ -23,20 +26,28 @@ apply plugin: "kiln-main"
 repositories {
     mavenCentral()
     maven {
+        url = "https://glassmc.ml/repository"
+    }
+    maven {
         url = "https://jitpack.io/"
     }
 }
 
 dependencies {
-    implementation "com.github.glassmc:loader:v0.8.3"
+    implementation "com.github.glassmc:loader:0.9.5:mapped"
 
     shadowImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
     implementation "org.ow2.asm:asm-tree:9.2"
     shadowImplementation "commons-io:commons-io:2.11.0"
-    shadowImplementation "com.google.guava:guava:31.0.1-jre"
+    shadowImplementation 'com.google.guava:guava:31.1-jre'
     shadowImplementation "org.json:json:20211205"
+}
 
-    compileOnly minecraft("client", "1.8.9", "yarn")
-    compileOnly minecraft("client", "1.18.1", "yarn")
+kiln {
+    environment = new GlassLoaderEnvironment("0.9.5")
+    minecraft = [
+            "client:1.8.9:yarn",
+            "client:1.18.1:yarn"
+    ]
 }

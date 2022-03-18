@@ -30,6 +30,7 @@ class EventTransformer : Transformer(), Listener {
         register("v1_18_1/net/minecraft/client/network/ClientPlayNetworkHandler", this::transformClientPlayerNetworkHandler)
         register("org/lwjgl/opengl/GL30", this::transformGl30)
         register("org/lwjgl/opengl/GL15", this::transformGl15)
+        register("org/lwjgl/opengl/GL20", this::transformGl20)
     }
 
     private fun transformInGameHud(classNode: ClassNode) {
@@ -295,6 +296,15 @@ class EventTransformer : Transformer(), Listener {
                 insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
                 insnList.add(VarInsnNode(Opcodes.ILOAD, 1))
                 insnList.add(this.getHook("onBindBuffer"))
+            }))
+    }
+
+    private fun transformGl20(classNode: ClassNode) {
+        val glUseProgram = Identifier.parse("org/lwjgl/opengl/GL20#glUseProgram(I)V")
+        findMethod(classNode, glUseProgram)
+            .apply(Insert(createList { insnList ->
+                insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
+                insnList.add(this.getHook("onUseProgram"))
             }))
     }
 

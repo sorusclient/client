@@ -5,8 +5,8 @@ import com.github.sorusclient.client.adapter.Button
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_18_1.Util
 import com.github.sorusclient.client.event.EventManager
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11C
+import v1_18_1.org.lwjgl.opengl.GL11
+import v1_18_1.org.lwjgl.opengl.GL11C
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
 
@@ -201,12 +201,20 @@ object EventHook {
 
     var lastBoundBuffer = 0
     var lastBoundBufferTarget = 0
+    var lastBoundProgram = 0
 
     @JvmStatic
     @Suppress("Unused")
     fun onBindBuffer(target: Int, buffer: Int) {
         lastBoundBufferTarget = target
         lastBoundBuffer = buffer
+    }
+
+    @JvmStatic
+    @Suppress("Unused")
+    fun onUseProgram(program: Int) {
+        //println(program)
+        lastBoundProgram = program
     }
 
     @JvmStatic
@@ -246,23 +254,6 @@ object EventHook {
         EventManager.call(event)
         return event.gamma.toFloat()
     }
-
-    /*@JvmStatic
-    @Suppress("Unused")
-    fun onBlockOutlineRender(voxelShape: VoxelShape): BlockOutlineRenderEvent {
-        val event = BlockOutlineRenderEvent(
-            com.github.sorusclient.client.adapter.Box(
-                voxelShape.getMin(Direction.Axis.X),
-                voxelShape.getMax(Direction.Axis.X),
-                voxelShape.getMin(Direction.Axis.Y),
-                voxelShape.getMax(Direction.Axis.Y),
-                voxelShape.getMin(Direction.Axis.Z),
-                voxelShape.getMax(Direction.Axis.Z),
-            )
-        )
-        EventManager.call(event)
-        return event
-    }*/
 
     @JvmStatic
     @Suppress("Unused")

@@ -7,8 +7,8 @@ import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.v1_18_1.event.EventHook
 import com.github.sorusclient.client.adapter.v1_8_9.RendererImpl
 import com.github.sorusclient.client.util.Color
-import org.apache.commons.io.IOUtils
-import org.lwjgl.opengl.*
+import v1_18_1.org.apache.commons.io.IOUtils
+import v1_18_1.org.lwjgl.opengl.*
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.client.render.GameRenderer
@@ -28,8 +28,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
 import javax.imageio.ImageIO
-import kotlin.math.cos
-import kotlin.math.sin
 
 class RendererImpl: IRenderer {
 
@@ -67,6 +65,9 @@ class RendererImpl: IRenderer {
 
     private var roundedRectangleBorderProgram = 0
     private var roundedRectangleBorderVao = 0
+
+    private var rectangleColoredProgram = 0
+    private var rectangleColoredVao = 0
 
     private fun createProgram(vertexShaderPath: String, fragmentShaderPath: String): Int {
         val program = GL20.glCreateProgram()
@@ -173,16 +174,38 @@ class RendererImpl: IRenderer {
             GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
             GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0)
             GL30.glBindVertexArray(0)
-            GL30.glBindVertexArray(1)
+        }
+        rectangleColoredProgram = createProgram("colored_rectangle_vertex.glsl", "colored_rectangle_fragment.glsl")
+        run {
+            rectangleColoredVao = GL30.glGenVertexArrays()
+            GL30.glBindVertexArray(rectangleColoredVao)
+            val vertices = floatArrayOf(
+                1f, 1f,
+                1f, 0f,
+                0f, 0f,
+                0f, 0f,
+                0f, 1f,
+                1f, 1f
+            )
+
+            val verticesBuffer = ByteBuffer.allocateDirect(vertices.size shl 2).order(ByteOrder.nativeOrder()).asFloatBuffer()
+            verticesBuffer.put(vertices).flip()
+
+            val vboID = GL15.glGenBuffers()
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
+            GL30.glBindVertexArray(0)
         }
     }
 
     override fun drawRectangle(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, topLeftColor: Color, bottomLeftColor: Color, bottomRightColor: Color, topRightColor: Color) {
-        if (topLeftColor.rgb == topRightColor.rgb && topRightColor.rgb == bottomRightColor.rgb) {
-            val prevBoundVertexArray = EventHook.lastBoundArray
-            val prevBoundBuffer = EventHook.lastBoundBuffer
-            val prevBoundBufferTarget = EventHook.lastBoundBufferTarget
+        val prevProgram = EventHook.lastBoundProgram
+        val prevBoundVertexArray = EventHook.lastBoundArray
+        val prevBoundBuffer = EventHook.lastBoundBuffer
+        val prevBoundBufferTarget = EventHook.lastBoundBufferTarget
 
+        if (topLeftColor.rgb == topRightColor.rgb && topRightColor.rgb == bottomRightColor.rgb) {
             this.createPrograms()
 
             RenderSystem.enableBlend()
@@ -192,8 +215,6 @@ class RendererImpl: IRenderer {
 
             GL30.glBindVertexArray(roundedRectangleVao)
             GL20.glEnableVertexAttribArray(0)
-
-            //GlStateManager.color4f(1f, 1f, 1f, 1f)
 
             val window = MinecraftClient.getInstance().window
 
@@ -212,126 +233,107 @@ class RendererImpl: IRenderer {
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
 
             GL20.glDisableVertexAttribArray(0)
-            GL30.glBindVertexArray(prevBoundVertexArray)
-            GL15.glBindBuffer(prevBoundBufferTarget, prevBoundBuffer)
 
             GL20.glUseProgram(0)
 
             RenderSystem.disableBlend()
             RenderSystem.enableTexture()
         } else {
-            RenderSystem.disableTexture()
+            this.createPrograms()
+
             RenderSystem.enableBlend()
+            RenderSystem.disableTexture()
+
+            GL20.glUseProgram(rectangleColoredProgram)
+
+            GL30.glBindVertexArray(rectangleColoredVao)
+            GL20.glEnableVertexAttribArray(0)
+
+            val window = MinecraftClient.getInstance().window
+
+            GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+            //TODO: Make colors vary for different corners
+            GL20.glUniform4f(
+                2,
+                topLeftColor.red.toFloat(),
+                topLeftColor.green.toFloat(),
+                topLeftColor.blue.toFloat(),
+                topLeftColor.alpha.toFloat()
+            )
+            GL20.glUniform4f(
+                3,
+                topRightColor.red.toFloat(),
+                topRightColor.green.toFloat(),
+                topRightColor.blue.toFloat(),
+                topRightColor.alpha.toFloat()
+            )
+            GL20.glUniform4f(
+                4,
+                bottomRightColor.red.toFloat(),
+                bottomRightColor.green.toFloat(),
+                bottomRightColor.blue.toFloat(),
+                bottomRightColor.alpha.toFloat()
+            )
+            GL20.glUniform4f(
+                5,
+                bottomLeftColor.red.toFloat(),
+                bottomLeftColor.green.toFloat(),
+                bottomLeftColor.blue.toFloat(),
+                bottomLeftColor.alpha.toFloat()
+            )
+            GL20.glUniform2f(6, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+
+            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
+
+            GL20.glDisableVertexAttribArray(0)
+
+            RenderSystem.disableBlend()
+            RenderSystem.enableTexture()
+
+            /*RenderSystem.disableTexture()
+            RenderSystem.enableBlend()
+
+            RenderSystem.setShader { GameRenderer.getPositionColorShader() }
+
+            GL20.glEnableVertexAttribArray(0)
+
             //GlStateManager.shadeModel(GL11.GL_SMOOTH)
             val tessellator = Tessellator.getInstance()
             val bufferBuilder = tessellator.buffer
             bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
-            bufferBuilder.vertex(x + cornerRadius, y + height, 0.0).color(
-                bottomLeftColor.red.toFloat(),
-                bottomLeftColor.green.toFloat(),
-                bottomLeftColor.blue.toFloat(),
-                bottomLeftColor.alpha.toFloat()
-            ).next()
-            bufferBuilder.vertex(x + width - cornerRadius, y + height, 0.0).color(
-                bottomRightColor.red.toFloat(),
-                bottomRightColor.green.toFloat(),
-                bottomRightColor.blue.toFloat(),
-                bottomRightColor.alpha.toFloat()
-            ).next()
-            for (i in 0..89) {
-                bufferBuilder.vertex(
-                    x + width - cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
-                    y + height - cornerRadius + cos(
-                        Math.toRadians(i.toDouble())
-                    ) * cornerRadius,
-                    0.0
-                ).color(
-                    bottomRightColor.red.toFloat(),
-                    bottomRightColor.green.toFloat(),
-                    bottomRightColor.blue.toFloat(),
-                    bottomRightColor.alpha.toFloat()
-                ).next()
-            }
-            bufferBuilder.vertex(x + width, y + height - cornerRadius, 0.0).color(
-                bottomRightColor.red.toFloat(),
-                bottomRightColor.green.toFloat(),
-                bottomRightColor.blue.toFloat(),
-                bottomRightColor.alpha.toFloat()
-            ).next()
-            bufferBuilder.vertex(x + width, y + cornerRadius, 0.0).color(
+            bufferBuilder.vertex(x, y + height, 0.0).color(
                 topRightColor.red.toFloat(),
                 topRightColor.green.toFloat(),
                 topRightColor.blue.toFloat(),
                 topRightColor.alpha.toFloat()
             ).next()
-            for (i in 90..179) {
-                bufferBuilder.vertex(
-                    x + width - cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
-                    y + cornerRadius + cos(
-                        Math.toRadians(i.toDouble())
-                    ) * cornerRadius,
-                    0.0
-                ).color(
-                    topRightColor.red.toFloat(),
-                    topRightColor.green.toFloat(),
-                    topRightColor.blue.toFloat(),
-                    topRightColor.alpha.toFloat()
-                ).next()
-            }
-            bufferBuilder.vertex(x + width - cornerRadius, y, 0.0).color(
+            bufferBuilder.vertex(x + width, y + height, 0.0).color(
                 topRightColor.red.toFloat(),
                 topRightColor.green.toFloat(),
                 topRightColor.blue.toFloat(),
                 topRightColor.alpha.toFloat()
             ).next()
-            bufferBuilder.vertex(x + cornerRadius, y, 0.0).color(
-                topLeftColor.red.toFloat(),
-                topLeftColor.green.toFloat(),
-                topLeftColor.blue.toFloat(),
-                topLeftColor.alpha.toFloat()
+            bufferBuilder.vertex(x + width, y, 0.0).color(
+                topRightColor.red.toFloat(),
+                topRightColor.green.toFloat(),
+                topRightColor.blue.toFloat(),
+                topRightColor.alpha.toFloat()
             ).next()
-            for (i in 180..269) {
-                bufferBuilder.vertex(
-                    x + cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius, y + cornerRadius + cos(
-                        Math.toRadians(i.toDouble())
-                    ) * cornerRadius, 0.0
-                ).color(
-                    topLeftColor.red.toFloat(),
-                    topLeftColor.green.toFloat(),
-                    topLeftColor.blue.toFloat(),
-                    topLeftColor.alpha.toFloat()
-                ).next()
-            }
-            bufferBuilder.vertex(x, y + cornerRadius, 0.0).color(
-                topLeftColor.red.toFloat(),
-                topLeftColor.green.toFloat(),
-                topLeftColor.blue.toFloat(),
-                topLeftColor.alpha.toFloat()
+            bufferBuilder.vertex(x, y, 0.0).color(
+                topRightColor.red.toFloat(),
+                topRightColor.green.toFloat(),
+                topRightColor.blue.toFloat(),
+                topRightColor.alpha.toFloat()
             ).next()
-            bufferBuilder.vertex(x, y + height - cornerRadius, 0.0).color(
-                bottomLeftColor.red.toFloat(),
-                bottomLeftColor.green.toFloat(),
-                bottomLeftColor.blue.toFloat(),
-                bottomLeftColor.alpha.toFloat()
-            ).next()
-            for (i in 270..359) {
-                bufferBuilder.vertex(
-                    x + cornerRadius + sin(Math.toRadians(i.toDouble())) * cornerRadius,
-                    y + height - cornerRadius + cos(
-                        Math.toRadians(i.toDouble())
-                    ) * cornerRadius,
-                    0.0
-                ).color(
-                    bottomLeftColor.red.toFloat(),
-                    bottomLeftColor.green.toFloat(),
-                    bottomLeftColor.blue.toFloat(),
-                    bottomLeftColor.alpha.toFloat()
-                ).next()
-            }
-            tessellator.draw()
+            tessellator.draw()*/
 
             //GlStateManager.color4f(1f, 1f, 1f, 1f)
         }
+
+        GL30.glBindVertexArray(prevBoundVertexArray)
+        GL15.glBindBuffer(prevBoundBufferTarget, prevBoundBuffer)
+        GL20.glUseProgram(prevProgram)
+        //println(prevProgram)
     }
 
     override fun drawRectangleBorder(

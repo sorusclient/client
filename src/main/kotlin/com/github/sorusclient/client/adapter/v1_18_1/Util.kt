@@ -3,7 +3,7 @@ package com.github.sorusclient.client.adapter.v1_18_1
 import com.github.sorusclient.client.adapter.*
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import org.lwjgl.glfw.GLFW
+import v1_18_1.org.lwjgl.glfw.GLFW
 import v1_18_1.net.minecraft.client.gui.screen.GameMenuScreen
 import v1_18_1.net.minecraft.client.gui.screen.Screen
 import v1_18_1.net.minecraft.item.Item

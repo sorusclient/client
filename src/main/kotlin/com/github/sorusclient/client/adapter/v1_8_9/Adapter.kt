@@ -4,8 +4,8 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
-import org.lwjgl.input.Mouse
-import org.lwjgl.opengl.Display
+import v1_8_9.org.lwjgl.input.Mouse
+import v1_8_9.org.lwjgl.opengl.Display
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.screen.ConnectScreen
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen

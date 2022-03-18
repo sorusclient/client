@@ -12,7 +12,7 @@ class ScoreboardScoreImpl(private val scoreInternal: ScoreboardPlayerScore) : IS
         get() {
             val playerName = scoreInternal.playerName
             val var14 = scoreInternal.scoreboard.getPlayerTeam(playerName)
-            return Util.textToApiText(LiteralText(Team.method_5565(var14, playerName)))
+            return Util.textToApiText(LiteralText(Team.decorateName(var14, playerName)))
         }
 
     override val score: Int

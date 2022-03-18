@@ -7,11 +7,11 @@ import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.RenderBuffer.DrawMode
 import com.github.sorusclient.client.util.Color
 import org.apache.commons.io.IOUtils
-import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30
+import v1_8_9.org.lwjgl.BufferUtils
+import v1_8_9.org.lwjgl.opengl.GL11
+import v1_8_9.org.lwjgl.opengl.GL15
+import v1_8_9.org.lwjgl.opengl.GL20
+import v1_8_9.org.lwjgl.opengl.GL30
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.render.GameRenderer

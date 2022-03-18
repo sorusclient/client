@@ -5,6 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URL
+import java.nio.charset.StandardCharsets
 import java.util.jar.JarInputStream
 import java.util.zip.ZipEntry
 
@@ -21,12 +22,12 @@ object AssetUtil {
         val map = HashMap<String, String>()
         try {
             val inputStream = URL(serversJsonUrl).openStream()
-            val jsonString = IOUtils.toString(inputStream)
+            val jsonString = IOUtils.toString(inputStream, StandardCharsets.UTF_8)
             inputStream.close()
             val json = JSONObject(jsonString).toMap()
             for ((key, _) in json) {
                 val inputStream1 = URL("${baseServersUrl}/$key/metadata.json").openStream()
-                val serverJson = IOUtils.toString(inputStream1)
+                val serverJson = IOUtils.toString(inputStream1, StandardCharsets.UTF_8)
                 inputStream1.close()
                 map[key] = serverJson
             }
@@ -40,13 +41,13 @@ object AssetUtil {
     fun getJsonForServer(ip: String): String? {
         try {
             val inputStream = URL(serversJsonUrl).openStream()
-            val jsonString = IOUtils.toString(inputStream)
+            val jsonString = IOUtils.toString(inputStream, StandardCharsets.UTF_8)
             inputStream.close()
             val json = JSONObject(jsonString).toMap()
             for ((key, value) in json) {
                 if (ip.matches((value as String).toRegex())) {
                     val inputStream1 = URL("${baseServersUrl}/$key/metadata.json").openStream()
-                    val serverJson = IOUtils.toString(inputStream1)
+                    val serverJson = IOUtils.toString(inputStream1, StandardCharsets.UTF_8)
                     inputStream1.close()
                     return serverJson
                 }
@@ -57,10 +58,11 @@ object AssetUtil {
         return null
     }
 
+    @Suppress("UNCHECKED_CAST")
     @JvmStatic
     fun getAllPlugins(): List<String> {
         val inputStream = URL(pluginsJsonUrl).openStream()
-        val jsonString = IOUtils.toString(inputStream)
+        val jsonString = IOUtils.toString(inputStream, StandardCharsets.UTF_8)
         inputStream.close()
         return JSONArray(jsonString).toList() as List<String>
     }

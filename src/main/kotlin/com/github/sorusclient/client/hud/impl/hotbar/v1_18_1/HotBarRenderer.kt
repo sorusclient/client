@@ -4,12 +4,9 @@ import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.hud.impl.hotbar.IHotBarRenderer
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11C
 import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.client.render.*
-import v1_18_1.net.minecraft.client.util.math.MatrixStack
 import v1_18_1.net.minecraft.item.ItemStack
 
 class HotBarRenderer : Listener, IHotBarRenderer {

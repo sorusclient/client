@@ -20,13 +20,6 @@ class BlockOverlayTransformer: Transformer(), Listener {
         setHookClass(BlockOverlayHook::class.java)
         register("v1_18_1/net/minecraft/client/render/WorldRenderer", this::transformWorldRenderer)
         register("v1_18_1/com/mojang/blaze3d/systems/RenderSystem", this::transformRenderSystem)
-
-    }
-
-    override fun transform(name: String, data: ByteArray): ByteArray {
-        val bytes = super.transform(name, data)
-        FileUtils.writeByteArrayToFile(File(name + ".class"), bytes)
-        return bytes
     }
 
     private fun transformWorldRenderer(classNode: ClassNode) {
