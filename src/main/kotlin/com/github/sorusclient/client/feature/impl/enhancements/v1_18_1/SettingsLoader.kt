@@ -19,6 +19,7 @@ class SettingsLoader: ISettingsLoader {
 
         map["sensitivity"] = options.mouseSensitivity
         map["graphics"] = Enhancements.Graphics.values()[options.graphicsMode.id]
+        map["autoJump"] = options.autoJump
 
         for (i in 1..9) {
             map["hotbar_$i"] = getKey(options.keysHotbar[i - 1])
@@ -47,6 +48,9 @@ class SettingsLoader: ISettingsLoader {
 
         if (map.containsKey("graphics")) {
             options.graphicsMode = GraphicsMode.byId((map["graphics"] as Enhancements.Graphics).ordinal)
+        }
+        if (map.containsKey("autoJump")) {
+            options.autoJump = map["autoJump"] as Boolean
         }
 
         for (i in 1..9) {

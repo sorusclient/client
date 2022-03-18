@@ -1,5 +1,6 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
+import com.github.glassmc.loader.util.Identifier
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
@@ -7,6 +8,8 @@ import com.github.sorusclient.client.feature.impl.enhancements.ISettingsLoader
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.options.GameOptions
 import v1_8_9.net.minecraft.client.options.KeyBinding
+import v1_8_9.net.minecraft.util.collection.IntObjectStorage
+import java.lang.reflect.Field
 
 class SettingsLoader: ISettingsLoader {
 
@@ -59,9 +62,17 @@ class SettingsLoader: ISettingsLoader {
         setKey(options.keyTogglePerspective, map, "perspective")
     }
 
+    private val keyMap: Field = run {
+        val keyMap = Identifier.parse("v1_8_9/net/minecraft/client/options/KeyBinding#KEY_MAP")
+        val field = KeyBinding::class.java.getDeclaredField(keyMap.fieldName)
+        field.isAccessible =  true
+        field
+    }
+
     private fun setKey(keyBinding: KeyBinding, settings: Map<String, Any>, id: String) {
         if (settings.containsKey(id)) {
             keyBinding.code = Util.getKeyCode(settings[id] as Key)
+            (keyMap.get(null) as IntObjectStorage<KeyBinding>).set(keyBinding.code, keyBinding)
         }
     }
 

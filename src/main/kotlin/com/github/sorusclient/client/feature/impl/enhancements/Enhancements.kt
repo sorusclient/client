@@ -69,6 +69,7 @@ class Enhancements {
                 "perspective" -> map[key] = Util.toJava(Key::class.java, value)!!
                 "socialInteractions" -> map[key] = Util.toJava(Key::class.java, value)!!
                 "graphics" -> map[key] = Util.toJava(Graphics::class.java, value)!!
+                "autoJump" -> map[key] = value
                 else -> {
                     if (key.startsWith("hotbar_")) {
                         map[key] = Util.toJava(Key::class.java, value)!!
