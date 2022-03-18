@@ -17,11 +17,35 @@ class EnhancementsTransformer : Transformer(), Listener {
     init {
         this.setHookClass(EnhancementsHook::class.java)
 
+        register("v1_18_1/net/minecraft/client/gui/hud/InGameOverlayRenderer") { classNode: ClassNode ->
+            transformInGameOverlayRenderer(
+                classNode
+            )
+        }
         register("v1_18_1/net/minecraft/client/option/GameOptions") { classNode: ClassNode ->
             transformGameOptions(
                 classNode
             )
         }
+    }
+
+    private fun transformInGameOverlayRenderer(classNode: ClassNode) {
+        val renderFireOverlay = Identifier.parse("v1_18_1/net/minecraft/client/gui/hud/InGameOverlayRenderer#renderFireOverlay(Lv1_18_1/net/minecraft/client/MinecraftClient;Lv1_18_1/net/minecraft/client/util/math/MatrixStack;)V")
+
+        findMethod(classNode, renderFireOverlay)
+            .apply(Applier.Insert(createList { insnList ->
+                insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                insnList.add(this.getHook("onPreRenderFire"))
+            }))
+
+        findMethod(classNode, renderFireOverlay)
+            .apply { methodNode ->
+                findReturns(methodNode)
+                    .apply(Applier.InsertBefore(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                        insnList.add(this.getHook("onPostRenderFire"))
+                    }))
+            }
     }
 
     private fun transformGameOptions(classNode: ClassNode) {
