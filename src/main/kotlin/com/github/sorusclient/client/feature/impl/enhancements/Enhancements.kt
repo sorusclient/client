@@ -64,6 +64,11 @@ class Enhancements {
                 "sensitivity" -> map[key] = Util.toJava(Double::class.java, value)!!
                 "chat" -> map[key] = Util.toJava(Key::class.java, value)!!
                 "command" -> map[key] = Util.toJava(Key::class.java, value)!!
+                "sprint" -> map[key] = Util.toJava(Key::class.java, value)!!
+                "sneak" -> map[key] = Util.toJava(Key::class.java, value)!!
+                "perspective" -> map[key] = Util.toJava(Key::class.java, value)!!
+                "socialInteractions" -> map[key] = Util.toJava(Key::class.java, value)!!
+                "graphics" -> map[key] = Util.toJava(Graphics::class.java, value)!!
                 else -> {
                     if (key.startsWith("hotbar_")) {
                         map[key] = Util.toJava(Key::class.java, value)!!
@@ -73,6 +78,13 @@ class Enhancements {
         }
 
         settingsLoader.load(map)
+        settings = map
+    }
+
+    enum class Graphics {
+        FAST,
+        FANCY,
+        FABULOUS
     }
 
 }

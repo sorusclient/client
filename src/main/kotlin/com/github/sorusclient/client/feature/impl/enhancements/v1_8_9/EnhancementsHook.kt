@@ -2,14 +2,9 @@ package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
 import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
-import org.apache.commons.io.FileUtils
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
-import v1_8_9.net.minecraft.client.options.GameOptions
-import java.io.File
-import java.io.ObjectInput
-import java.nio.charset.StandardCharsets
-import kotlin.properties.Delegates
+import v1_8_9.org.lwjgl.opengl.Display
 
 object EnhancementsHook {
 
@@ -58,6 +53,11 @@ object EnhancementsHook {
     fun onLoad(options: Any) {
         this.options = options
         FeatureManager.get<Enhancements>().loadSettings()
+    }
+
+    @JvmStatic
+    fun onStop() {
+        Display.destroy()
     }
 
 }

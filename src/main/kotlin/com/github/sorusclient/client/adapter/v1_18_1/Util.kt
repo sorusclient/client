@@ -89,6 +89,18 @@ object Util {
         keyMap[GLFW.GLFW_KEY_9] = Key.NINE
         keyMap[GLFW.GLFW_KEY_0] = Key.ZERO
         keyMap[GLFW.GLFW_KEY_SLASH] = Key.SLASH
+        keyMap[GLFW.GLFW_KEY_F1] = Key.F1
+        keyMap[GLFW.GLFW_KEY_F2] = Key.F2
+        keyMap[GLFW.GLFW_KEY_F3] = Key.F3
+        keyMap[GLFW.GLFW_KEY_F4] = Key.F4
+        keyMap[GLFW.GLFW_KEY_F5] = Key.F5
+        keyMap[GLFW.GLFW_KEY_F6] = Key.F6
+        keyMap[GLFW.GLFW_KEY_F7] = Key.F7
+        keyMap[GLFW.GLFW_KEY_F8] = Key.F8
+        keyMap[GLFW.GLFW_KEY_F9] = Key.F9
+        keyMap[GLFW.GLFW_KEY_F10] = Key.F10
+        keyMap[GLFW.GLFW_KEY_F11] = Key.F11
+        keyMap[GLFW.GLFW_KEY_F12] = Key.F12
     }
 
     fun getKey(id: Int): Key {

@@ -53,6 +53,12 @@ class EnhancementsTransformer : Transformer(), Listener {
                 classNode
             )
         }
+
+        register("v1_8_9/net/minecraft/client/MinecraftClient") { classNode: ClassNode ->
+            transformMinecraftClient(
+                classNode
+            )
+        }
     }
 
     private fun transformHeldItemRenderer(classNode: ClassNode) {
@@ -315,6 +321,15 @@ class EnhancementsTransformer : Transformer(), Listener {
                         insnList.add(this.getHook("onLoad"))
                     }))
             }
+    }
+
+    private fun transformMinecraftClient(classNode: ClassNode) {
+        val stop = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#stop()V")
+
+        findMethod(classNode, stop)
+            .apply(Applier.Insert(createList { insnList ->
+                insnList.add(this.getHook("onStop"))
+            }))
     }
 
 }
