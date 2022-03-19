@@ -2,7 +2,9 @@ package com.github.sorusclient.client.hud.impl.hunger
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.hud.HUDElement
+import com.github.sorusclient.client.hud.HUDManager
 
 class Hunger : HUDElement("hunger") {
 
@@ -15,6 +17,8 @@ class Hunger : HUDElement("hunger") {
         get() = "Hunger"
 
     override fun render(x: Double, y: Double, scale: Double) {
+        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+
         val player = AdapterManager.getAdapter().player!!
         val hunger = player.hunger.toInt()
         val hungerRenderer = GlassLoader.getInstance().getInterface(IHungerRenderer::class.java)

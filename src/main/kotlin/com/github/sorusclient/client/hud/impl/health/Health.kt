@@ -2,9 +2,11 @@ package com.github.sorusclient.client.hud.impl.health
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.adapter.ILivingEntity
 import com.github.sorusclient.client.adapter.IPotionEffect
 import com.github.sorusclient.client.hud.HUDElement
+import com.github.sorusclient.client.hud.HUDManager
 import kotlin.math.ceil
 
 class Health : HUDElement("health") {
@@ -31,6 +33,8 @@ class Health : HUDElement("health") {
     private var regenStartTime: Long = 0
     private var prevHasRegen = false
     override fun render(x: Double, y: Double, scale: Double) {
+        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+
         val player: ILivingEntity = AdapterManager.getAdapter().player!!
         var hasRegen = false
         for (effect in player.effects) {

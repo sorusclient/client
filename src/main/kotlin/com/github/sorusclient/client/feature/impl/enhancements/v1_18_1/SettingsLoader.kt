@@ -5,6 +5,7 @@ import com.github.sorusclient.client.adapter.v1_18_1.Util
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import com.github.sorusclient.client.feature.impl.enhancements.ISettingsLoader
 import v1_18_1.net.minecraft.client.MinecraftClient
+import v1_18_1.net.minecraft.client.option.AttackIndicator
 import v1_18_1.net.minecraft.client.option.GameOptions
 import v1_18_1.net.minecraft.client.option.GraphicsMode
 import v1_18_1.net.minecraft.client.option.KeyBinding
@@ -20,6 +21,8 @@ class SettingsLoader: ISettingsLoader {
         map["sensitivity"] = options.mouseSensitivity
         map["graphics"] = Enhancements.Graphics.values()[options.graphicsMode.id]
         map["autoJump"] = options.autoJump
+        map["attackIndicator"] = Enhancements.AttackIndicator.values()[options.attackIndicator.id]
+        map["skipMultiplayerWarning"] = options.skipMultiplayerWarning
 
         for (i in 1..9) {
             map["hotbar_$i"] = getKey(options.keysHotbar[i - 1])
@@ -51,6 +54,12 @@ class SettingsLoader: ISettingsLoader {
         }
         if (map.containsKey("autoJump")) {
             options.autoJump = map["autoJump"] as Boolean
+        }
+        if (map.containsKey("attackIndicator")) {
+            options.attackIndicator = AttackIndicator.byId((map["attackIndicator"] as Enhancements.AttackIndicator).ordinal)
+        }
+        if (map.containsKey("skipMultiplayerWarning")) {
+            options.skipMultiplayerWarning = map["skipMultiplayerWarning"] as Boolean
         }
 
         for (i in 1..9) {

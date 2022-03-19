@@ -2,6 +2,7 @@ package com.github.sorusclient.client.hud.impl.armor
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.github.sorusclient.client.hud.HUDElement
@@ -71,6 +72,8 @@ class Armor : HUDElement("armor") {
                 }
             }
             Mode.TOTAL -> {
+                if ((!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) || player.armorProtection == 0.0) && !HUDManager.isHudEditScreenOpen.get()) return
+
                 val armor = player.armorProtection.toInt()
                 var i = 0
                 while (i < 10) {

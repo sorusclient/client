@@ -19,6 +19,7 @@ import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.entity.Entity
 import v1_8_9.net.minecraft.network.ServerAddress
 import v1_8_9.net.minecraft.text.LiteralText
+import v1_8_9.net.minecraft.world.level.LevelInfo
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
@@ -159,6 +160,15 @@ class Adapter : Listener, IAdapter {
         MinecraftClient.getInstance().currentServerEntry = ServerInfo("", ip, false)
         MinecraftClient.getInstance().openScreen(ConnectScreen(TitleScreen(), MinecraftClient.getInstance(), serverAddress.address, serverAddress.port))
     }
+
+    override val gameMode: GameMode
+        get() = when(MinecraftClient.getInstance().interactionManager.currentGameMode) {
+            LevelInfo.GameMode.SURVIVAL -> GameMode.SURVIVAL
+            LevelInfo.GameMode.CREATIVE -> GameMode.CREATIVE
+            LevelInfo.GameMode.ADVENTURE -> GameMode.ADVENTURE
+            LevelInfo.GameMode.SPECTATOR -> GameMode.SPECTATOR
+            else -> GameMode.UNKNOWN
+        }
 
     override fun createText(string: String): IText {
         return Util.textToApiText(LiteralText(string))

@@ -2,6 +2,7 @@ package com.github.sorusclient.client.adapter.v1_18_1
 
 import com.github.sorusclient.client.adapter.IPlayerEntity
 import com.github.sorusclient.client.adapter.IPlayerInventory
+import v1_18_1.net.minecraft.client.MinecraftClient
 import v1_18_1.net.minecraft.entity.Entity
 import v1_18_1.net.minecraft.entity.player.PlayerEntity
 

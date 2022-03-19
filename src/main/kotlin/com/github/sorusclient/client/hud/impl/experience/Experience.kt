@@ -26,13 +26,16 @@ class Experience : HUDElement("experience") {
         val renderer = AdapterManager.getAdapter().renderer
         val minecraftFontRenderer = renderer.getFontRenderer("minecraft")!!
         val experienceLevel = player.experienceLevel.toString()
-        drawExperienceLevel(
-            minecraftFontRenderer,
-            experienceLevel,
-            x + width / 2 * scale - minecraftFontRenderer.getWidth(experienceLevel) / 2 * scale,
-            y - 1 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
-            scale
-        )
+
+        if  (player.experienceLevel > 0) {
+            drawExperienceLevel(
+                minecraftFontRenderer,
+                experienceLevel,
+                x + width / 2 * scale - minecraftFontRenderer.getWidth(experienceLevel) / 2 * scale,
+                y - 1 * scale - minecraftFontRenderer.getHeight() / 2 * scale,
+                scale
+            )
+        }
     }
 
     private fun drawExperienceLevel(

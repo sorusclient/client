@@ -70,6 +70,8 @@ class Enhancements {
                 "socialInteractions" -> map[key] = Util.toJava(Key::class.java, value)!!
                 "graphics" -> map[key] = Util.toJava(Graphics::class.java, value)!!
                 "autoJump" -> map[key] = value
+                "attackIndicator" -> map[key] = Util.toJava(AttackIndicator::class.java, value)!!
+                "skipMultiplayerWarning" -> map[key] = value
                 else -> {
                     if (key.startsWith("hotbar_")) {
                         map[key] = Util.toJava(Key::class.java, value)!!
@@ -86,6 +88,12 @@ class Enhancements {
         FAST,
         FANCY,
         FABULOUS
+    }
+
+    enum class AttackIndicator {
+        OFF,
+        CROSSHAIR,
+        HOTBAR
     }
 
 }

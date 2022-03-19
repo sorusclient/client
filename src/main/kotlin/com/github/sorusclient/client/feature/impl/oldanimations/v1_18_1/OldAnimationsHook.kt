@@ -16,7 +16,7 @@ object OldAnimationsHook {
     @JvmStatic
     fun modifyRedColor(color: Float): Float {
         return if (showArmorDamage() && livingEntity!!.hurtTime > 0) {
-            1f
+            color * 1f
         } else {
             color
         }
@@ -25,7 +25,7 @@ object OldAnimationsHook {
     @JvmStatic
     fun modifyGreenColor(color: Float): Float {
         return if (showArmorDamage() && livingEntity!!.hurtTime > 0) {
-            0.6f
+            color * 0.6f
         } else {
             color
         }
@@ -34,7 +34,7 @@ object OldAnimationsHook {
     @JvmStatic
     fun modifyBlueColor(color: Float): Float {
         return if (showArmorDamage() && livingEntity!!.hurtTime > 0) {
-            0.6f
+            color * 0.6f
         } else {
             color
         }

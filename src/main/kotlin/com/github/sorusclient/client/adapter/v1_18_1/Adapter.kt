@@ -123,6 +123,15 @@ class Adapter: Listener, IAdapter {
         ConnectScreen.connect(TitleScreen(), MinecraftClient.getInstance(), serverAddress, serverInfo)
     }
 
+    override val gameMode: GameMode
+        get() = when(MinecraftClient.getInstance().interactionManager!!.currentGameMode) {
+            v1_18_1.net.minecraft.world.GameMode.SURVIVAL -> GameMode.SURVIVAL
+            v1_18_1.net.minecraft.world.GameMode.CREATIVE -> GameMode.CREATIVE
+            v1_18_1.net.minecraft.world.GameMode.ADVENTURE -> GameMode.ADVENTURE
+            v1_18_1.net.minecraft.world.GameMode.SPECTATOR -> GameMode.SPECTATOR
+            else -> GameMode.UNKNOWN
+        }
+
     override fun createText(string: String): IText {
         return Util.textToApiText(LiteralText(string))
     }

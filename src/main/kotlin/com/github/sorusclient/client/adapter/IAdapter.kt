@@ -17,6 +17,7 @@ interface IAdapter {
     fun setDisplayIcon(iconSmall: String, iconLarge: String)
     fun leaveWorld()
     fun joinServer(ip: String)
+    val gameMode: GameMode
 
     fun createText(string: String): IText
 
