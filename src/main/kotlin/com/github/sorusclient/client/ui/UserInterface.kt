@@ -192,6 +192,7 @@ object UserInterface {
         }
 
         override fun onSelect() {
+            ThemeManager.currentTheme.closeGui()
             ThemeManager.currentTheme.openSettingsScreen(linkedCategory)
         }
 
@@ -200,6 +201,7 @@ object UserInterface {
     class MenuSearchResult(private val menu: String, name: String) : SearchResult(name, name, "sorus/ui/sorus.png") {
 
         override fun onSelect() {
+            ThemeManager.currentTheme.closeGui()
             ThemeManager.currentTheme.openUIScreen(menu)
         }
 

@@ -3964,6 +3964,7 @@ class DefaultTheme: Theme() {
     }
 
     private var openedMainGui: Container? = null
+    private var openedSearchGui: Container? = null
 
     override fun onOpenMainGui() {
         mainGui
@@ -3987,6 +3988,7 @@ class DefaultTheme: Theme() {
 
     override fun onOpenSearchBar() {
         ContainerRenderer.open(searchGui)
+        openedSearchGui = searchGui
         AdapterManager.getAdapter().renderer.loadBlur()
     }
 
@@ -4001,6 +4003,7 @@ class DefaultTheme: Theme() {
         }
 
         ContainerRenderer.open(mainGui)
+        openedMainGui = mainGui
         AdapterManager.getAdapter().renderer.loadBlur()
     }
 
@@ -4012,6 +4015,7 @@ class DefaultTheme: Theme() {
         }
 
         ContainerRenderer.open(mainGui)
+        openedMainGui = mainGui
         AdapterManager.getAdapter().renderer.loadBlur()
     }
 
@@ -4028,7 +4032,12 @@ class DefaultTheme: Theme() {
 
     override fun closeGui() {
         ContainerRenderer.close(colorPickerGui)
-        ContainerRenderer.close(mainGui)
+        if (openedMainGui != null) {
+            ContainerRenderer.close(openedMainGui!!)
+        }
+        if (openedSearchGui != null) {
+            ContainerRenderer.close(openedSearchGui!!)
+        }
     }
 
 }
