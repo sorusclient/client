@@ -58,15 +58,6 @@ object WebSocketManager {
                                 jsonObject.put("uuid", session.getUUID())
                                 sendMessage("authenticate", jsonObject)
 
-                                connected = true
-                                if (failedToConnect) {
-                                    failedToConnect = false
-                                    NotificationManager.notifications += Notification().apply {
-                                        title = "Websocket"
-                                        content = "Websocket connected!"
-                                    }
-                                }
-
                                 while (true) {
                                     if (incoming.isClosedForReceive) return@webSocket
                                     val othersMessage = incoming.receive() as? Frame.Text ?: continue
@@ -104,6 +95,17 @@ object WebSocketManager {
 
     private suspend fun onReceiveMessage(id: String, json: JSONObject) {
         println("$id $json")
+
+        if (id == "connected") {
+            connected = true
+            if (failedToConnect) {
+                failedToConnect = false
+                NotificationManager.notifications += Notification().apply {
+                    title = "Websocket"
+                    content = "Websocket connected!"
+                }
+            }
+        }
 
         listeners[id]?.let { it(json) }
     }

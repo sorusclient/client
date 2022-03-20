@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationTargetException
 import java.net.URL
 import kotlin.math.ceil
 import kotlin.math.max
+import kotlin.math.min
 
 class DefaultTheme: Theme() {
 
@@ -3764,7 +3765,7 @@ class DefaultTheme: Theme() {
                 children += List(com.github.sorusclient.client.ui.framework.List.VERTICAL)
                     .apply {
                         x = Side.POSITIVE.toSide()
-                        width = 0.15.toRelative()
+                        width = 0.2.toRelative()
                         setPadding(0.005.toRelative())
 
                         val renderedNotifications = HashMap<Notification, Container>()
@@ -3788,7 +3789,7 @@ class DefaultTheme: Theme() {
 
                                             contentSplit.removeIf { it.isEmpty() }
 
-                                            val height2 = 1.0 + contentSplit.size * 0.6 + if (notification.interactions.isNotEmpty()) { 1.25 } else { 0.0 }
+                                            val height2 = max(2.2, 1.0 + contentSplit.size * 0.6 + if (notification.interactions.isNotEmpty()) { 1.25 } else { 0.0 })
                                             height = {
                                                 (0.12 * height2).toCopy()
                                             }.toDependent()
@@ -3803,7 +3804,7 @@ class DefaultTheme: Theme() {
                                             children += Container()
                                                 .apply {
                                                     x = Side.NEGATIVE.toSide()
-                                                    width = 0.225.toRelative()
+                                                    width = 0.275.toRelative()
 
                                                     for (icon in notification.icons) {
                                                         children += Container()
@@ -3830,13 +3831,9 @@ class DefaultTheme: Theme() {
                                                         .apply {
                                                             height = (1.0 / height2).toRelative()
 
-                                                            //setPadding(0.001.toAbsolute())
-
                                                             children += Text()
                                                                 .apply {
                                                                     x = Side.NEGATIVE.toSide()
-
-                                                                    setPadding(0.001.toRelative())
 
                                                                     fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
                                                                     scale = 0.01.toRelative()
