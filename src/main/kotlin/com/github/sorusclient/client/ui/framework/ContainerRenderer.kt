@@ -32,16 +32,6 @@ object ContainerRenderer {
         this.containers.remove(container)
     }
 
-    fun close(container: Class<out Container>) {
-        this.containers.removeIf {
-            it.javaClass == container
-        }
-    }
-
-    fun close() {
-        this.containers.clear()
-    }
-
     fun render() {
         if (containers.isNotEmpty()) {
             val screenDimensions = AdapterManager.getAdapter().screenDimensions

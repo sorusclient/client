@@ -2,8 +2,10 @@ package com.github.sorusclient.client.hud.impl.experience
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.hud.HUDElement
+import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.util.Color
 
 class Experience : HUDElement("experience") {
@@ -17,6 +19,8 @@ class Experience : HUDElement("experience") {
         get() = "Experience"
 
     override fun render(x: Double, y: Double, scale: Double) {
+        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+
         val player = AdapterManager.getAdapter().player!!
         val experiencePercent = player.experiencePercentUntilNextLevel
         val experienceRenderer = GlassLoader.getInstance().getInterface(

@@ -3,6 +3,7 @@ package com.github.sorusclient.client.websocket
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.notification.Icon
 import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.NotificationManager
 import io.ktor.client.*
@@ -82,6 +83,8 @@ object WebSocketManager {
                         NotificationManager.notifications += Notification().apply {
                             title = "Websocket"
                             content = "Websocket failed to connect."
+
+                            subIcon = Icon("sorus/ui/error.png")
                         }
                     }
                 }.start()
@@ -104,6 +107,7 @@ object WebSocketManager {
                     title = "Websocket"
                     content = "Websocket connected!"
                 }
+                println("test")
             }
         }
 
