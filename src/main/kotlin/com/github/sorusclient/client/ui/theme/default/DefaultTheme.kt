@@ -3960,9 +3960,14 @@ class DefaultTheme: Theme() {
                     }
             }
 
+        if (openedNotificationsUI != null) {
+            ContainerRenderer.close(openedNotificationsUI!!)
+        }
         ContainerRenderer.containers += notificationsUi
+        openedNotificationsUI = notificationsUi
     }
 
+    private var openedNotificationsUI: Container? = null
     private var openedMainGui: Container? = null
     private var openedSearchGui: Container? = null
 
