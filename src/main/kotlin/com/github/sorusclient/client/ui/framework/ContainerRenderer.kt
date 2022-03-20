@@ -20,7 +20,7 @@ object ContainerRenderer {
         eventManager.register { e: KeyEvent -> keyEvents.add(e) }
         eventManager.register { e: MouseEvent -> mouseEvents.add(e) }
         eventManager.register { e: KeyCharEvent -> keyCharEvents.add(e) }
-        eventManager.register { e: RenderEvent -> render() }
+        eventManager.register { _: RenderEvent -> render() }
     }
 
     fun open(container: Container) {
@@ -30,6 +30,12 @@ object ContainerRenderer {
 
     fun close(container: Container) {
         this.containers.remove(container)
+    }
+
+    fun close(container: Class<out Container>) {
+        this.containers.removeIf {
+            it.javaClass == container
+        }
     }
 
     fun close() {

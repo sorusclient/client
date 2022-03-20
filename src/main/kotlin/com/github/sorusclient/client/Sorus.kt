@@ -9,13 +9,16 @@ import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.hud.HUDManager
+import com.github.sorusclient.client.notification.NotificationManager
 import com.github.sorusclient.client.plugin.PluginManager
 import com.github.sorusclient.client.server.ServerIntegrationManager
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.social.SocialManager
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.ui.framework.ContainerRenderer
 import com.github.sorusclient.client.ui.theme.ThemeManager
 import com.github.sorusclient.client.util.keybind.KeyBindManager
+import com.github.sorusclient.client.websocket.WebSocketManager
 import java.util.*
 
 class Sorus : Listener {
@@ -36,11 +39,14 @@ class Sorus : Listener {
         this.register(HUDManager)
         this.register(IAdapter::class.java, GlassLoader.getInstance().getInterface(IAdapter::class.java))
         this.register(KeyBindManager)
+        this.register(NotificationManager)
         this.register(PluginManager)
         this.register(ServerIntegrationManager)
         this.register(SettingManager)
+        this.register(SocialManager)
         this.register(ThemeManager)
         this.register(UserInterface)
+        this.register(WebSocketManager)
 
         PluginManager.findPlugins()
 

@@ -208,7 +208,7 @@ object UserInterface {
     class MinecraftMenuSearchResult(val name: String, val type: ScreenType) : SearchResult(name, "Minecraft $name", "sorus/ui/grass_block.png") {
 
         override fun onSelect() {
-            ContainerRenderer.close()
+            ThemeManager.currentTheme.closeGui()
             AdapterManager.getAdapter().renderer.unloadBlur()
             AdapterManager.getAdapter().openScreen(type)
         }
@@ -218,7 +218,7 @@ object UserInterface {
     class ServerSearchResult(name: String, private val ip: String, image: String) : SearchResult(name, name, image) {
 
         override fun onSelect() {
-            ContainerRenderer.close()
+            ThemeManager.currentTheme.closeGui()
             AdapterManager.getAdapter().openScreen(ScreenType.IN_GAME)
             AdapterManager.getAdapter().leaveWorld()
             AdapterManager.getAdapter().joinServer(ip)

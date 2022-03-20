@@ -29,6 +29,8 @@ open class Container : Component() {
             value?.getStringValue(null)?.let { AdapterManager.getAdapter().renderer.createTexture(it) }
             field = value
         }
+    var backgroundImageBounds: Array<Double> = arrayOf(0.0, 0.0, 1.0, 1.0)
+
     var paddingLeft: Constraint = Absolute(0.0)
     var paddingRight: Constraint = Absolute(0.0)
     var paddingTop: Constraint = Absolute(0.0)
@@ -162,6 +164,10 @@ open class Container : Component() {
                     width,
                     height,
                     container.backgroundCornerRadius.getCornerRadiusValue(this),
+                    backgroundImageBounds[0],
+                    backgroundImageBounds[1],
+                    backgroundImageBounds[2],
+                    backgroundImageBounds[3],
                     true,
                     color
                 )

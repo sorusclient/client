@@ -53,7 +53,7 @@ object Util {
         keyMap[Keyboard.KEY_8] = Key.EIGHT
         keyMap[Keyboard.KEY_9] = Key.NINE
         keyMap[Keyboard.KEY_0] = Key.ZERO
-        keyMap[Keyboard.KEY_BACKSLASH] = Key.BACKSPACE
+        keyMap[Keyboard.KEY_BACK] = Key.BACKSPACE
         keyMap[Keyboard.KEY_Q] = Key.Q
         keyMap[Keyboard.KEY_W] = Key.W
         keyMap[Keyboard.KEY_E] = Key.E

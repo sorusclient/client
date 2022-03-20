@@ -151,7 +151,9 @@ class Adapter : Listener, IAdapter {
     }
 
     override fun leaveWorld() {
-        MinecraftClient.getInstance().world.disconnect()
+        if (MinecraftClient.getInstance().world != null) {
+            MinecraftClient.getInstance().world.disconnect()
+        }
         MinecraftClient.getInstance().connect(null)
     }
 
@@ -169,6 +171,8 @@ class Adapter : Listener, IAdapter {
             LevelInfo.GameMode.SPECTATOR -> GameMode.SPECTATOR
             else -> GameMode.UNKNOWN
         }
+    override val session: ISession
+        get() = SessionImpl()
 
     override fun createText(string: String): IText {
         return Util.textToApiText(LiteralText(string))

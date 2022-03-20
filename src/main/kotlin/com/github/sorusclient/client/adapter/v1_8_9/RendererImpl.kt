@@ -5,6 +5,8 @@ import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.IRenderer
 import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.RenderBuffer.DrawMode
+import com.github.sorusclient.client.adapter.event.RenderEvent
+import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.util.Color
 import org.apache.commons.io.IOUtils
 import v1_8_9.org.lwjgl.BufferUtils
@@ -27,10 +29,23 @@ import java.lang.reflect.Method
 import java.nio.ByteBuffer
 import java.util.*
 import javax.imageio.ImageIO
+import kotlin.collections.ArrayList
 import kotlin.math.cos
 import kotlin.math.sin
 
 class RendererImpl : IRenderer {
+
+    private val tasks: MutableList<() -> Unit> = ArrayList()
+
+    init {
+        EventManager.register<RenderEvent> {
+            for (task in ArrayList(tasks)) {
+                task()
+            }
+
+            tasks.clear()
+        }
+    }
 
     override fun draw(buffer: RenderBuffer) {
         val mode: Int = when (buffer.drawMode) {
@@ -352,28 +367,14 @@ class RendererImpl : IRenderer {
         var texture = textures[id] ?: -1
         if (texture == -1) {
             createTexture(id)
-            texture = textures[id]!!
+            texture = textures.getOrDefault(id, -1)
         }
         return texture
     }
 
-    private fun setupTexture(bytes: ByteArray, antialias: Boolean): Int {
-        var glId = -1
+    private fun setupTextureData(bytes: ByteArray): Array<Any> {
         try {
             val bufferedImage = ImageIO.read(ByteArrayInputStream(bytes))
-            glId = GL11.glGenTextures()
-            GlStateManager.bindTexture(glId)
-            val filter1: Int
-            val filter2: Int
-            if (antialias) {
-                filter1 = GL11.GL_LINEAR
-                filter2 = GL11.GL_LINEAR_MIPMAP_LINEAR
-            } else {
-                filter1 = GL11.GL_NEAREST
-                filter2 = GL11.GL_NEAREST_MIPMAP_NEAREST
-            }
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter1.toFloat())
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter2.toFloat())
             val buffer = ByteBuffer.allocateDirect(bufferedImage.width * bufferedImage.height * 4)
             val rgba = IntArray(bufferedImage.width * bufferedImage.height)
             bufferedImage.getRGB(0, 0, bufferedImage.width, bufferedImage.height, rgba, 0, bufferedImage.width)
@@ -396,7 +397,32 @@ class RendererImpl : IRenderer {
                 }
             }
             buffer.flip()
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, bufferedImage.width, bufferedImage.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
+
+            return arrayOf(buffer, bufferedImage.width, bufferedImage.height)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null!!
+    }
+
+    private fun setupTextureOpenGl(buffer: ByteBuffer, width: Int, height: Int, antialias: Boolean): Int {
+        var glId = -1
+        try {
+            glId = GL11.glGenTextures()
+            GlStateManager.bindTexture(glId)
+            val filter1: Int
+            val filter2: Int
+            if (antialias) {
+                filter1 = GL11.GL_LINEAR
+                filter2 = GL11.GL_LINEAR_MIPMAP_LINEAR
+            } else {
+                filter1 = GL11.GL_NEAREST
+                filter2 = GL11.GL_NEAREST_MIPMAP_NEAREST
+            }
+
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter1.toFloat())
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter2.toFloat())
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0)
         } catch (e: IOException) {
@@ -405,8 +431,10 @@ class RendererImpl : IRenderer {
         return glId
     }
 
-    override fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, antialias: Boolean, color: Color) {
+    override fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, textureX: Double, textureY: Double, textureWidth: Double, textureHeight: Double, antialias: Boolean, color: Color) {
         val glId: Int = getTexture(id)
+        if (glId == -1) return
+
         GlStateManager.bindTexture(glId)
         createPrograms()
         GlStateManager.enableBlend()
@@ -419,7 +447,7 @@ class RendererImpl : IRenderer {
         GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
         GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
         GL20.glUniform1f(4, cornerRadius.toFloat())
-        GL20.glUniform4f(5, 0f, 0f, 1f, 1f)
+        GL20.glUniform4f(5, textureX.toFloat(), textureY.toFloat(), textureWidth.toFloat(), textureHeight.toFloat())
         GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
         GL20.glDisableVertexAttribArray(0)
         GL20.glDisableVertexAttribArray(1)
@@ -431,8 +459,14 @@ class RendererImpl : IRenderer {
 
     override fun createTexture(id: String, bytes: ByteArray, antialias: Boolean) {
         if (this.textures.getOrDefault(id, -1) != -1) return
-        val texture = setupTexture(bytes, antialias)
-        this.textures[id] = texture
+        Thread {
+            val data = setupTextureData(bytes)
+
+            tasks += {
+                val texture = setupTextureOpenGl(data[0] as ByteBuffer, data[1] as Int, data[2] as Int, antialias)
+                this.textures[id] = texture
+            }
+        }.start()
     }
 
     override fun scissor(x: Double, y: Double, width: Double, height: Double) {

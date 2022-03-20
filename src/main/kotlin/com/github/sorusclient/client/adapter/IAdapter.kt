@@ -18,6 +18,7 @@ interface IAdapter {
     fun leaveWorld()
     fun joinServer(ip: String)
     val gameMode: GameMode
+    val session: ISession
 
     fun createText(string: String): IText
 

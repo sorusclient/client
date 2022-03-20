@@ -432,16 +432,7 @@ class RendererImpl: IRenderer {
         return glId
     }
 
-    override fun drawImage(
-        id: String,
-        x: Double,
-        y: Double,
-        width: Double,
-        height: Double,
-        cornerRadius: Double,
-        antialias: Boolean,
-        color: Color
-    ) {
+    override fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, textureX: Double, textureY: Double, textureWidth: Double, textureHeight: Double, antialias: Boolean, color: Color) {
         val glId: Int = getTexture(id)
         RenderSystem.bindTexture(glId)
         createPrograms()
@@ -455,7 +446,7 @@ class RendererImpl: IRenderer {
         GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
         GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
         GL20.glUniform1f(4, cornerRadius.toFloat())
-        GL20.glUniform4f(5, 0f, 0f, 1f, 1f)
+        GL20.glUniform4f(5, textureX.toFloat(), textureY.toFloat(), textureX.toFloat(), textureY.toFloat())
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
         GL20.glDisableVertexAttribArray(0)
         GL20.glDisableVertexAttribArray(1)

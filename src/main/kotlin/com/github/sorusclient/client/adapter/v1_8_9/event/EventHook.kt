@@ -64,7 +64,7 @@ object EventHook {
         val repeat = Keyboard.isRepeatEvent()
         EventManager.call(KeyEvent(Util.getKey(key), pressed, repeat))
 
-        var string = "0123456789abcdefghijklmnoppqrstuvwxyz "
+        var string = "0123456789abcdefghijklmnoppqrstuvwxyz .,/"
         string += string.uppercase()
 
         if (string.contains(Keyboard.getEventCharacter())) {

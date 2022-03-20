@@ -20,5 +20,6 @@ abstract class Theme {
     abstract fun openUIScreen(tab: String)
 
     abstract fun onForceClose()
+    abstract fun closeGui()
 
 }

@@ -42,6 +42,9 @@ dependencies {
     shadowImplementation "commons-io:commons-io:2.11.0"
     shadowImplementation 'com.google.guava:guava:31.1-jre'
     shadowImplementation "org.json:json:20211205"
+
+    shadowImplementation "io.ktor:ktor-client-websockets:1.6.8"
+    shadowImplementation "io.ktor:ktor-client-cio:1.6.8"
 }
 
 kiln {
