@@ -339,7 +339,7 @@ class DefaultTheme: Theme() {
                                                 setting.setting.setValueRaw(ArrayList(pressedKeys))
                                                 setting.setting.overriden = true
                                             } else {
-                                                state.first["selected"] = false
+                                                state.first["selected2"] = false
                                                 pressedKeys.clear()
                                             }
                                         }
@@ -348,7 +348,7 @@ class DefaultTheme: Theme() {
                                             .apply {
                                                 fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
                                                 text = { state: Map<String, Any> ->
-                                                    if (pressedKeys.isEmpty() && state["selected"] as Boolean) {
+                                                    if (pressedKeys.isEmpty() && state["selected2"] as Boolean) {
                                                         "..."
                                                     } else {
                                                         setting.setting.value.joinToString(" + ")
@@ -366,6 +366,10 @@ class DefaultTheme: Theme() {
                                 }
 
                                 storedState += "selected2"
+
+                                onInit += { state ->
+                                    state.second["selected2"] = false
+                                }
                             }
                     }
             }

@@ -9,6 +9,7 @@ import com.github.sorusclient.client.ui.framework.constraint.Absolute
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.ui.toAbsolute
 import com.github.sorusclient.client.util.Color
+import java.util.Arrays
 import java.util.function.Consumer
 import kotlin.collections.List
 

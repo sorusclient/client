@@ -51,4 +51,8 @@ class Color constructor(
         return super.equals(other)
     }
 
+    override fun toString(): String {
+        return "Color {r=$red, g=$green, b=$blue, a=$alpha }"
+    }
+
 }

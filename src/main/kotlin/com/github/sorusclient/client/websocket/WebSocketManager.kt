@@ -71,7 +71,7 @@ object WebSocketManager {
                                 }
                             }
                         } catch(e: Exception) {
-                            e.printStackTrace()
+                            //e.printStackTrace()
                         }
                     }
 

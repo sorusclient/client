@@ -29,7 +29,7 @@ class Perspective {
                 data["perspective"] = CategoryData()
                     .apply {
                         data["enabled"] = SettingData(Setting(false).also { enabled = it })
-                        data["key"] = SettingData(Setting(arrayListOf(Key.F)).also { key = it })
+                        data["key"] = SettingData(Setting(arrayListOf(Key.X)).also { key = it })
                     }
             }
 

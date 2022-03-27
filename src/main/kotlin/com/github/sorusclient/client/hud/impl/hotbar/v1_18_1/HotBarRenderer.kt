@@ -1,13 +1,13 @@
-package com.github.sorusclient.client.hud.impl.hotbar.v1_18_1
+package com.github.sorusclient.client.hud.impl.hotbar.v1_18_2
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.hud.impl.hotbar.IHotBarRenderer
-import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
-import v1_18_1.net.minecraft.client.MinecraftClient
-import v1_18_1.net.minecraft.client.render.*
-import v1_18_1.net.minecraft.item.ItemStack
+import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
+import v1_18_2.net.minecraft.client.MinecraftClient
+import v1_18_2.net.minecraft.client.render.*
+import v1_18_2.net.minecraft.item.ItemStack
 
 class HotBarRenderer : Listener, IHotBarRenderer {
 
@@ -18,7 +18,7 @@ class HotBarRenderer : Listener, IHotBarRenderer {
     override fun renderBackground(x: Double, y: Double, scale: Double) {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
-        RenderSystem.setShaderTexture(0, v1_18_1.net.minecraft.util.Identifier("textures/gui/widgets.png"))
+        RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/widgets.png"))
         drawTexture(x, y, 0.0, 0.0, 182 * scale, 22 * scale, 182, 22)
     }
 
@@ -30,7 +30,7 @@ class HotBarRenderer : Listener, IHotBarRenderer {
     override fun renderSelectedSlot(x: Double, y: Double, scale: Double) {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
-        RenderSystem.setShaderTexture(0, v1_18_1.net.minecraft.util.Identifier("textures/gui/widgets.png"))
+        RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/widgets.png"))
         drawTexture(x, y, 0.0, 22.0, 24 * scale, 24 * scale, 24, 24)
     }
 

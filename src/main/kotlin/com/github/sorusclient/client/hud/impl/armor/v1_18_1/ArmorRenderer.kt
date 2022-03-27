@@ -1,15 +1,15 @@
-package com.github.sorusclient.client.hud.impl.armor.v1_18_1
+package com.github.sorusclient.client.hud.impl.armor.v1_18_2
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.IItem
-import com.github.sorusclient.client.adapter.v1_18_1.Util
+import com.github.sorusclient.client.adapter.v1_18_2.Util
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer.ArmorRenderType
-import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
-import v1_18_1.net.minecraft.client.MinecraftClient
-import v1_18_1.net.minecraft.client.render.*
-import v1_18_1.net.minecraft.item.ItemStack
+import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
+import v1_18_2.net.minecraft.client.MinecraftClient
+import v1_18_2.net.minecraft.client.render.*
+import v1_18_2.net.minecraft.item.ItemStack
 
 class ArmorRenderer : Listener, IArmorRenderer {
 
@@ -32,7 +32,7 @@ class ArmorRenderer : Listener, IArmorRenderer {
     override fun renderArmorPlateBackground(x: Double, y: Double, scale: Double) {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
-        RenderSystem.setShaderTexture(0, v1_18_1.net.minecraft.util.Identifier("textures/gui/icons.png"))
+        RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/icons.png"))
 
         drawTexture(x, y, 16.0, 9.0, 9 * scale, 9 * scale, 9, 9)
     }
@@ -40,7 +40,7 @@ class ArmorRenderer : Listener, IArmorRenderer {
     override fun renderArmorPlate(x: Double, y: Double, scale: Double, armorRenderType: ArmorRenderType?) {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
-        RenderSystem.setShaderTexture(0, v1_18_1.net.minecraft.util.Identifier("textures/gui/icons.png"))
+        RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/icons.png"))
 
         if (armorRenderType === ArmorRenderType.FULL) {
             drawTexture(x, y, 43.0, 9.0, 9 * scale, 9 * scale, 9, 9)

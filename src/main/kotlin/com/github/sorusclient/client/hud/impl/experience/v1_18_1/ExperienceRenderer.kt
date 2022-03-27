@@ -1,10 +1,10 @@
-package com.github.sorusclient.client.hud.impl.experience.v1_18_1
+package com.github.sorusclient.client.hud.impl.experience.v1_18_2
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.hud.impl.experience.IExperienceRenderer
-import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
-import v1_18_1.net.minecraft.client.render.*
+import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
+import v1_18_2.net.minecraft.client.render.*
 
 class ExperienceRenderer : Listener, IExperienceRenderer {
 
@@ -15,7 +15,7 @@ class ExperienceRenderer : Listener, IExperienceRenderer {
     override fun renderExperienceBar(x: Double, y: Double, scale: Double, percent: Double) {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
-        RenderSystem.setShaderTexture(0, v1_18_1.net.minecraft.util.Identifier("textures/gui/icons.png"))
+        RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/icons.png"))
 
         drawTexture(x, y, 0.0, 64.0, 183 * scale, 5 * scale, 183, 5)
         drawTexture(x, y, 0.0, 69.0, (183 * percent) * scale, 5 * scale, (183 * percent).toInt(), 5)

@@ -1,0 +1,31 @@
+namespace = "com.github.sorusclient.client"
+
+[listeners]
+initialize = [
+    "adapter.v1_18_2.event.EventTransformer",
+    "feature.impl.environmentchanger.v1_18_2.EnvironmentChangerTransformer",
+    "feature.impl.itemphysics.v1_18_2.ItemPhysicsTransformer",
+    "feature.impl.oldanimations.v1_18_2.OldAnimationsTransformer",
+    "feature.impl.blockoverlay.v1_18_2.BlockOverlayTransformer",
+    "feature.impl.perspective.v1_18_2.PerspectiveTransformer",
+    "feature.impl.perspective.v1_18_2.PerspectiveHelper",
+    "feature.impl.particles.v1_18_2.ParticlesTransformer",
+    "feature.impl.togglesprintsneak.v1_18_2.ToggleSprintSneakTransformer",
+    "feature.impl.enhancements.v1_18_2.EnhancementsTransformer",
+    "feature.impl.enhancements.v1_18_2.EnhancementsInitializeListener",
+    "hud.impl.potionstatus.v1_18_2.PotionEffectRenderer",
+    "hud.impl.health.v1_18_2.HealthRenderer",
+    "hud.impl.bossbar.v1_18_2.BossBarRenderer",
+    "hud.impl.hotbar.v1_18_2.HotBarRenderer",
+    "hud.impl.experience.v1_18_2.ExperienceRenderer",
+    "hud.impl.armor.v1_18_2.ArmorRenderer",
+    "hud.impl.hunger.v1_18_2.HungerRenderer",
+]
+
+pre-initialize = [
+    "adapter.v1_18_2.Adapter",
+]
+
+[environment]
+    [environment.has]
+    client = "1.18.2"

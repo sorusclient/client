@@ -1,10 +1,10 @@
-package com.github.sorusclient.client.hud.impl.bossbar.v1_18_1
+package com.github.sorusclient.client.hud.impl.bossbar.v1_18_2
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.hud.impl.bossbar.IBossBarRenderer
-import v1_18_1.com.mojang.blaze3d.systems.RenderSystem
-import v1_18_1.net.minecraft.client.render.*
+import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
+import v1_18_2.net.minecraft.client.render.*
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.DrawableHelper
@@ -19,7 +19,7 @@ class BossBarRenderer : Listener, IBossBarRenderer {
     override fun renderBossBar(x: Double, y: Double, scale: Double, percent: Double) {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
-        RenderSystem.setShaderTexture(0, v1_18_1.net.minecraft.util.Identifier("textures/gui/icons.png"))
+        RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/icons.png"))
 
         drawTexture(x, y, 0.0, 74.0, 183 * scale, 5 * scale, 183, 5)
         drawTexture(x, y, 0.0, 79.0, (183 * percent) * scale, 5 * scale, (183 * percent).toInt(), 5)
