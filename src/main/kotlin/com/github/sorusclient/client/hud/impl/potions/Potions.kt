@@ -6,8 +6,7 @@ import com.github.sorusclient.client.adapter.IPotionEffect
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
-import com.github.sorusclient.client.hud.impl.potionstatus.IPotionEffectRenderer
-import com.github.sorusclient.client.ui.UserInterface
+import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import com.github.sorusclient.client.util.Color
 
 class Potions : HUDElement("potionStatus") {

@@ -3991,8 +3991,10 @@ class DefaultTheme: Theme() {
     override fun onCloseGui() {
         if (openedMainGui != null) {
             ContainerRenderer.close(openedMainGui!!)
-            AdapterManager.getAdapter().renderer.unloadBlur()
+        } else if (openedSearchGui != null) {
+            ContainerRenderer.close(openedSearchGui!!)
         }
+        AdapterManager.getAdapter().renderer.unloadBlur()
     }
 
     override fun onOpenSearchBar() {

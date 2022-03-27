@@ -1,7 +1,6 @@
 package com.github.sorusclient.client.hud.impl.sidebar
 
 import com.github.sorusclient.client.adapter.*
-import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.setting.display.DisplayedSetting

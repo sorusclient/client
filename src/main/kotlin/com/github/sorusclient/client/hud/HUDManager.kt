@@ -29,6 +29,8 @@ import com.github.sorusclient.client.ui.framework.constraint.Relative
 import com.github.sorusclient.client.ui.framework.constraint.Side
 import com.github.sorusclient.client.util.Axis
 import com.github.sorusclient.client.util.Color
+import com.github.sorusclient.client.util.keybind.KeyBind
+import com.github.sorusclient.client.util.keybind.KeyBindManager
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -277,7 +279,12 @@ object HUDManager {
             render()
         }
         eventManager.register(this::onClick)
-        eventManager.register(this::onKey)
+
+        KeyBindManager.register(KeyBind({ listOf(Key.ESCAPE) }, {pressed ->
+            if (pressed) {
+                isHudEditScreenOpen.set(false)
+            }
+        }))
 
         eventManager.register<InitializeEvent> {
             initializeUserInterface()
@@ -778,12 +785,6 @@ object HUDManager {
             }
             snapped = emptyArray()
             draggedHud = null
-        }
-    }
-
-    private fun onKey(event: KeyEvent) {
-        if (event.isPressed && event.key == Key.ESCAPE) {
-            isHudEditScreenOpen.set(false)
         }
     }
 

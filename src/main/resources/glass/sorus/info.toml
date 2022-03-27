@@ -15,3 +15,7 @@ initialize = [
 post-initialize = [
     "feature.FeatureListener"
 ]
+
+[environment]
+    [environment.has]
+    client = "*"

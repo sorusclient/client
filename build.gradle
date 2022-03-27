@@ -34,20 +34,17 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.glassmc:loader:0.9.6:mapped"
+    api "com.github.glassmc:loader:0.9.6:mapped"
 
-    shadowImplementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
+    shadowApi "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
-    implementation "org.ow2.asm:asm-tree:9.2"
-    shadowImplementation "commons-io:commons-io:2.11.0"
-    shadowImplementation 'com.google.guava:guava:31.1-jre'
-    shadowImplementation "org.json:json:20211205"
+    api "org.ow2.asm:asm-tree:9.2"
+    shadowApi "commons-io:commons-io:2.11.0"
+    shadowApi 'com.google.guava:guava:31.1-jre'
+    shadowApi "org.json:json:20211205"
 
     shadowImplementation "io.ktor:ktor-client-websockets:1.6.8"
     shadowImplementation "io.ktor:ktor-client-cio:1.6.8"
-
-    compileOnly "net.minecraft:client-1.8.9:yarn"
-    compileOnly "net.minecraft:client-1.18.2:yarn"
 }
 
 kiln {
