@@ -40,6 +40,15 @@ class PotionEffectRenderer : Listener, IPotionEffectRenderer {
             PotionType.HEALTH_BOOST -> StatusEffects.HEALTH_BOOST
             PotionType.ABSORPTION -> StatusEffects.ABSORPTION
             PotionType.SATURATION -> StatusEffects.SATURATION
+            PotionType.GLOWING -> StatusEffects.GLOWING
+            PotionType.LEVITATION -> StatusEffects.LEVITATION
+            PotionType.LUCK -> StatusEffects.LUCK
+            PotionType.UNLUCK -> StatusEffects.UNLUCK
+            PotionType.SLOW_FALLING -> StatusEffects.SLOW_FALLING
+            PotionType.CONDUIT_POWER -> StatusEffects.CONDUIT_POWER
+            PotionType.DOLPHINS_GRACE -> StatusEffects.DOLPHINS_GRACE
+            PotionType.BAD_OMEN -> StatusEffects.BAD_OMEN
+            PotionType.HERO_OF_THE_VILLAGE -> StatusEffects.HERO_OF_THE_VILLAGE
             else -> null!!
         }
 

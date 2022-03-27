@@ -51,6 +51,15 @@ class PotionEffectImpl(protected val effect: StatusEffectInstance) : IPotionEffe
             21 -> PotionType.HEALTH_BOOST
             22 -> PotionType.ABSORPTION
             23 -> PotionType.SATURATION
+            24 -> PotionType.GLOWING
+            25 -> PotionType.LEVITATION
+            26 -> PotionType.LUCK
+            27 -> PotionType.UNLUCK
+            28 -> PotionType.SLOW_FALLING
+            29 -> PotionType.CONDUIT_POWER
+            30 -> PotionType.DOLPHINS_GRACE
+            31 -> PotionType.BAD_OMEN
+            32 -> PotionType.HERO_OF_THE_VILLAGE
             else -> PotionType.UNKNOWN
         }
 
