@@ -2,6 +2,7 @@ package com.github.sorusclient.client.hud.impl.bossbar.v1_8_9
 
 import com.github.glassmc.loader.api.GlassLoader
 import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.adapter.BossBarColor
 import com.github.sorusclient.client.hud.impl.bossbar.IBossBarRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -14,7 +15,7 @@ class BossBarRenderer : Listener, IBossBarRenderer {
         GlassLoader.getInstance().registerInterface(IBossBarRenderer::class.java, this)
     }
 
-    override fun renderBossBar(x: Double, y: Double, scale: Double, percent: Double) {
+    override fun renderBossBar(x: Double, y: Double, scale: Double, percent: Double, color: BossBarColor) {
         GlStateManager.pushMatrix()
         GlStateManager.translated(x, y, 0.0)
         GlStateManager.scaled(scale, scale, 1.0)

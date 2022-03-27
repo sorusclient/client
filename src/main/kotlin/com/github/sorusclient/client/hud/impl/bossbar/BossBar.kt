@@ -22,7 +22,7 @@ class BossBar : HUDElement("bossBar") {
         val percent = bossBars[0].percentage
         val bossBarRenderer = GlassLoader.getInstance().getInterface(IBossBarRenderer::class.java)
 
-        bossBarRenderer.renderBossBar(x + 1 * scale, y + 11 * scale, scale, percent)
+        bossBarRenderer.renderBossBar(x + 1 * scale, y + 11 * scale, scale, percent, bossBars[0].color)
         val renderer = AdapterManager.getAdapter().renderer
         val minecraftFontRenderer = renderer.getFontRenderer("minecraft")!!
         val bossBarName = bossBars[0].name!!
