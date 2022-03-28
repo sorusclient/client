@@ -29,6 +29,7 @@ class BossBarRenderer : Listener, IBossBarRenderer {
         val width = width - 0.1
 
         RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 
         val var9 = Tessellator.getInstance()
         val var10 = var9.buffer

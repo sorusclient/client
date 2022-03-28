@@ -40,6 +40,7 @@ class HungerRenderer : Listener, IHungerRenderer {
         val width = width - 0.1
 
         RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 
         val var9 = v1_18_2.net.minecraft.client.render.Tessellator.getInstance()
         val var10 = var9.buffer

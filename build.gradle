@@ -38,10 +38,10 @@ dependencies {
 
     shadowApi "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
-    api "org.ow2.asm:asm-tree:9.2"
+    shadowApi "org.ow2.asm:asm-tree:9.2"
     shadowApi "commons-io:commons-io:2.11.0"
     shadowApi 'com.google.guava:guava:31.1-jre'
-    shadowApi "org.json:json:20211205"
+    shadowApi 'org.json:json:20220320'
 
     shadowImplementation "io.ktor:ktor-client-websockets:1.6.8"
     shadowImplementation "io.ktor:ktor-client-cio:1.6.8"

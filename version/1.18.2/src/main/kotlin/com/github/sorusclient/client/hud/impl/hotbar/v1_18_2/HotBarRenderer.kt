@@ -19,7 +19,6 @@ class HotBarRenderer : Listener, IHotBarRenderer {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
         RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/widgets.png"))
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         drawTexture(x, y, 0.0, 0.0, 182 * scale, 22 * scale, 182, 22)
     }
 
@@ -32,7 +31,6 @@ class HotBarRenderer : Listener, IHotBarRenderer {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
         RenderSystem.setShaderTexture(0, v1_18_2.net.minecraft.util.Identifier("textures/gui/widgets.png"))
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         drawTexture(x, y, 0.0, 22.0, 24 * scale, 24 * scale, 24, 24)
     }
 
@@ -41,6 +39,7 @@ class HotBarRenderer : Listener, IHotBarRenderer {
         val width = width - 0.1
 
         RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
 
         val var9 = Tessellator.getInstance()
         val var10 = var9.buffer
