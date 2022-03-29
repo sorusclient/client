@@ -1,6 +1,8 @@
 package com.github.sorusclient.client.social
 
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.event.GameJoinEvent
+import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.notification.Icon
@@ -9,19 +11,25 @@ import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.NotificationManager
 import com.github.sorusclient.client.util.MojangUtil
 import com.github.sorusclient.client.websocket.WebSocketManager
+import com.github.sorusclient.client.util.Pair
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
 object SocialManager {
 
     var currentGroup: Group? = null
+    val friends: MutableList<Pair<String, Pair<String, String>>> = ArrayList()
 
     private var serverToJoin: String? = null
 
     init {
         WebSocketManager.listeners["acceptGroup"] = this::onAcceptGroup
+        WebSocketManager.listeners["friendRequest"] = this::onFriendRequest
+        WebSocketManager.listeners["addFriend"] = this::onAddFriend
         WebSocketManager.listeners["addUserToGroup"] = this::onAddUserToGroup
         WebSocketManager.listeners["groupWarp"] = this::onWarpGroup
+        WebSocketManager.listeners["updateStatus"] = this::onUpdateStatus
+        WebSocketManager.listeners["requestUpdateStatus"] = this::onRequestUpdateStatus
 
         EventManager.register<TickEvent> {
             if (serverToJoin != null) {
@@ -31,10 +39,24 @@ object SocialManager {
                 serverToJoin = null
             }
         }
+
+        EventManager.register<GameJoinEvent> {
+            val server = AdapterManager.getAdapter().currentServer
+
+            if (server != null) {
+                updateStatus(server.ip)
+            } else {
+                updateStatus("")
+            }
+        }
+
+        EventManager.register<GameLeaveEvent> {
+            updateStatus("")
+        }
     }
 
     private suspend fun onAcceptGroup(json: JSONObject) {
-        val inviter = "d0a684fdcbe445d5abb39990ae1cfc3a"
+        val inviter = json.getString("inviter")
 
         Thread {
             AdapterManager.getAdapter().renderer.createTexture("$inviter-skin", MojangUtil.getSkin(inviter).openStream(), false)
@@ -50,10 +72,40 @@ object SocialManager {
                 onClick = {
                     runBlocking {
                         WebSocketManager.sendMessage("acceptGroup", JSONObject().apply {
-                            put("inviter", json.getString("inviter"))
+                            put("inviter", inviter)
                         })
                         currentGroup = Group(false)
                         currentGroup!!.members.add(AdapterManager.getAdapter().session.getUUID())
+                    }
+                }
+            }
+
+            interactions += Interaction.Button().apply {
+                text = "Deny"
+            }
+        }
+    }
+
+    private suspend fun onFriendRequest(json: JSONObject) {
+        val user = json.getString("user")
+
+        Thread {
+            AdapterManager.getAdapter().renderer.createTexture("$user-skin", MojangUtil.getSkin(user).openStream(), false)
+        }.start()
+
+        NotificationManager.notifications += Notification().apply {
+            title = "Friend Request"
+            content = "${MojangUtil.getUsername(user)} friended you."
+            icons = listOf(Icon("$user-skin", arrayOf(0.125, 0.125, 0.125, 0.125)), Icon("$user-skin", arrayOf(0.625, 0.125, 0.125, 0.125)))
+
+            interactions += Interaction.Button().apply {
+                text = "Accept"
+                onClick = {
+                    runBlocking {
+                        WebSocketManager.sendMessage("acceptFriend", JSONObject().apply {
+                            put("user", user)
+                        })
+                        friends.add(Pair(user, Pair("", "offline")))
                     }
                 }
             }
@@ -70,6 +122,30 @@ object SocialManager {
 
     private suspend fun onWarpGroup(json: JSONObject) {
         serverToJoin = json.getString("ip")
+    }
+
+    private suspend fun onAddFriend(json: JSONObject) {
+        friends.add(Pair(json.getString("user"), Pair("", "offline")))
+    }
+
+    private suspend fun onUpdateStatus(json: JSONObject) {
+        val user = json.getString("user")
+        for (friend in friends) {
+            if (friend.first == user) {
+                friend.second.first = json.getString("version")
+                friend.second.second = json.getString("action")
+            }
+        }
+    }
+
+    private suspend fun onRequestUpdateStatus(json: JSONObject) {
+        val server = AdapterManager.getAdapter().currentServer
+
+        if (server != null) {
+            updateStatus(server.ip)
+        } else {
+            updateStatus("")
+        }
     }
 
     fun createGroup() {
@@ -90,10 +166,29 @@ object SocialManager {
         }
     }
 
+    fun sendFriend(uuid: String) {
+        if (uuid == AdapterManager.getAdapter().session.getUUID()) return
+
+        runBlocking {
+            WebSocketManager.sendMessage("sendFriend", JSONObject().apply {
+                put("user", uuid)
+            })
+        }
+    }
+
     fun warpGroup() {
         runBlocking {
             WebSocketManager.sendMessage("groupWarp", JSONObject().apply {
                 put("ip", AdapterManager.getAdapter().currentServer!!.ip)
+            })
+        }
+    }
+
+    fun updateStatus(action: String) {
+        runBlocking {
+            WebSocketManager.sendMessage("updateStatus", JSONObject().apply {
+                put("action", action)
+                put("version", AdapterManager.getAdapter().version)
             })
         }
     }

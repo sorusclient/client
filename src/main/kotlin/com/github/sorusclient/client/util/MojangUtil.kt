@@ -21,8 +21,12 @@ object MojangUtil {
         if (uuidToUsername.containsKey(uuid)) return uuidToUsername[uuid]!!
 
         val username = runBlocking {
-            val userResponse = JSONArray(httpClient.get<String>("https://api.mojang.com/user/profiles/$uuid/names"))
-            userResponse.getJSONObject(0).getString("name")
+            try {
+                val userResponse = JSONArray(httpClient.get<String>("https://api.mojang.com/user/profiles/$uuid/names"))
+                userResponse.getJSONObject(0).getString("name")
+            } catch(e: Exception) {
+                uuid.substring(0, 16)
+            }
         }
         uuidToUsername[uuid] = username
         return username
@@ -43,9 +47,13 @@ object MojangUtil {
         if (uuidToSkin.containsKey(uuid)) return uuidToSkin[uuid]!!
 
         val skinURL = URL(runBlocking {
-            val userResponse = JSONObject(httpClient.get<String>("https://sessionserver.mojang.com/session/minecraft/profile/$uuid"))
-            val textures = JSONObject(String(Base64.getDecoder().decode(userResponse.getJSONArray("properties").getJSONObject(0).getString("value"))))
-            textures.getJSONObject("textures").getJSONObject("SKIN").getString("url")
+            try {
+                val userResponse = JSONObject(httpClient.get<String>("https://sessionserver.mojang.com/session/minecraft/profile/$uuid"))
+                val textures = JSONObject(String(Base64.getDecoder().decode(userResponse.getJSONArray("properties").getJSONObject(0).getString("value"))))
+                textures.getJSONObject("textures").getJSONObject("SKIN").getString("url")
+            } catch (e: Exception) {
+                ""
+            }
         })
         uuidToSkin[uuid] = skinURL
         return skinURL

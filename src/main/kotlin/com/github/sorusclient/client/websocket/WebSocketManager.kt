@@ -25,6 +25,15 @@ object WebSocketManager {
     var failedToConnect = false
 
     init {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            runBlocking {
+                sendMessage("updateStatus", JSONObject().apply {
+                    put("version", AdapterManager.getAdapter().version)
+                    put("action", "offline")
+                }, true)
+            }
+        })
+
         EventManager.register<TickEvent> {
             if (System.currentTimeMillis() - lastConnectTime > 10000 && !connected) {
                 lastConnectTime = System.currentTimeMillis()
@@ -57,7 +66,7 @@ object WebSocketManager {
                                 val jsonObject = JSONObject()
                                 jsonObject.put("username", session.getUsername())
                                 jsonObject.put("uuid", session.getUUID())
-                                sendMessage("authenticate", jsonObject)
+                                sendMessage("authenticate", jsonObject, true)
 
                                 while (true) {
                                     if (incoming.isClosedForReceive) return@webSocket
@@ -71,7 +80,7 @@ object WebSocketManager {
                                 }
                             }
                         } catch(e: Exception) {
-                            //e.printStackTrace()
+                            e.printStackTrace()
                         }
                     }
 
@@ -92,8 +101,10 @@ object WebSocketManager {
         }
     }
 
-    suspend fun sendMessage(id: String, json: JSONObject = JSONObject()) {
-        webSocket.send("$id $json")
+    suspend fun sendMessage(id: String, json: JSONObject = JSONObject(), override: Boolean = false) {
+        if (override || connected) {
+            webSocket.send("$id $json")
+        }
     }
 
     private suspend fun onReceiveMessage(id: String, json: JSONObject) {
@@ -107,8 +118,12 @@ object WebSocketManager {
                     title = "Websocket"
                     content = "Websocket connected!"
                 }
-                println("test")
             }
+
+            sendMessage("updateStatus", JSONObject().apply {
+                put("version", AdapterManager.getAdapter().version)
+                put("action", "")
+            }, true)
         }
 
         listeners[id]?.let { it(json) }

@@ -3342,14 +3342,534 @@ class DefaultTheme: Theme() {
                                                 borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                 borderThickness = 0.4.toAbsolute()
 
-                                                storedState += "hasInitSettings"
+                                                children += Container()
+                                                    .apply {
+                                                        y = Side.NEGATIVE.toSide()
+                                                        height = 0.035.toRelative()
+                                                        setPadding(0.0275.toRelative())
 
-                                                onStateUpdate["hasInitSettings"] = { state ->
-                                                    if (state["hasInitSettings"] == false) {
-                                                        state["hasInitSettings"] = true
-                                                        state["hasInit"] = false
+                                                        children += Text()
+                                                            .apply {
+                                                                x = Side.NEGATIVE.toSide()
+
+                                                                fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
+                                                                scale = 0.0032.toRelative()
+                                                                text = "Friends".toAbsolute()
+                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                            }
                                                     }
-                                                }
+
+                                                children += TabHolder()
+                                                    .apply {
+                                                        onUpdate += { state ->
+                                                            if (!WebSocketManager.connected) {
+                                                                state["groupsTab"] = "noSocket"
+                                                            } else {
+                                                                state["groupsTab"] = "friendsList"
+                                                            }
+                                                        }
+
+                                                        storedState += "groupsTab"
+                                                        stateId = "groupsTab"
+
+                                                        addChild("noSocket", Container()
+                                                            .apply {
+                                                                children += Text()
+                                                                    .apply {
+                                                                        y = (-0.05).toRelative()
+
+                                                                        scale = 0.003.toRelative()
+                                                                        fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
+                                                                        text = "Socket Not Connected".toAbsolute()
+                                                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                    }
+                                                            })
+
+                                                        addChild("noGroup", Container()
+                                                            .apply {
+                                                                children += Container()
+                                                                    .apply {
+                                                                        y = (-0.05).toRelative()
+                                                                        width = 0.4.toRelative()
+                                                                        height = 0.3.toCopy()
+
+                                                                        backgroundCornerRadius = 0.025.toRelative()
+                                                                        backgroundColor = Dependent { state ->
+                                                                            if (state["clicked"] != null && state["clicked"] as Boolean) {
+                                                                                { this@DefaultTheme.selectedColor.value }.toDependent()
+                                                                            } else {
+                                                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                            }
+                                                                        }
+                                                                        borderThickness = 0.4.toAbsolute()
+                                                                        borderColor = Dependent { state ->
+                                                                            if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
+                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                                                            } else {
+                                                                                { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                            }
+                                                                        }
+
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                width = 1.0.toCopy()
+                                                                                height = 0.5.toRelative()
+                                                                                setPadding(Relative(0.2, true))
+
+                                                                                backgroundImage = "sorus/ui/groups/invite.png".toAbsolute()
+                                                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                            }
+
+                                                                        children += Text()
+                                                                            .apply {
+                                                                                setPadding(Relative(0.2, true))
+
+                                                                                scale = 0.012.toRelative()
+                                                                                fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
+                                                                                text = "Create".toAbsolute()
+                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                            }
+
+                                                                        onClick = { state ->
+                                                                            SocialManager.createGroup()
+                                                                            state["hasInitGroups"] = false
+                                                                        }
+                                                                    }
+                                                            })
+
+                                                        addChild("friendsList", Container()
+                                                            .apply {
+                                                                onInit += {
+                                                                    clear()
+
+                                                                    /*if (SocialManager.currentGroup!!.owner) {
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                y = Side.NEGATIVE.toSide()
+                                                                                height = 0.06125.toRelative()
+
+                                                                                paddingLeft = 0.075.toRelative()
+                                                                                paddingRight = 0.075.toRelative()
+
+                                                                                children += Container()
+                                                                                    .apply {
+                                                                                        x = Side.NEGATIVE.toSide()
+                                                                                        width = 0.475.toRelative()
+
+                                                                                        backgroundCornerRadius = 0.025.toRelative()
+                                                                                        backgroundColor = Dependent { state ->
+                                                                                            if (state["clicked"] != null && state["clicked"] as Boolean && AdapterManager.getAdapter().currentServer != null) {
+                                                                                                { this@DefaultTheme.selectedColor.value }.toDependent()
+                                                                                            } else {
+                                                                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                                            }
+                                                                                        }
+                                                                                        borderThickness = 0.4.toAbsolute()
+                                                                                        borderColor = Dependent { state ->
+                                                                                            if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && AdapterManager.getAdapter().currentServer != null) {
+                                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                                                                            } else {
+                                                                                                { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                                            }
+                                                                                        }
+
+                                                                                        children += Container()
+                                                                                            .apply {
+                                                                                                x = Side.NEGATIVE.toSide()
+                                                                                                width = 1.0.toCopy()
+                                                                                                height = 0.5.toRelative()
+                                                                                                setPadding(Relative(0.2, true))
+
+                                                                                                backgroundImage = "sorus/ui/groups/warp.png".toAbsolute()
+                                                                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                            }
+
+                                                                                        children += Text()
+                                                                                            .apply {
+                                                                                                x = Side.NEGATIVE.toSide()
+                                                                                                setPadding(Relative(0.2, true))
+
+                                                                                                scale = 0.012.toRelative()
+                                                                                                fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
+                                                                                                text = "Warp".toAbsolute()
+                                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                            }
+
+                                                                                        onClick = {
+                                                                                            if (AdapterManager.getAdapter().currentServer != null) {
+                                                                                                SocialManager.warpGroup()
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                            }
+
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                y = Side.NEGATIVE.toSide()
+                                                                                height = 0.06125.toRelative()
+                                                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                                backgroundCornerRadius = 0.025.toRelative()
+                                                                                borderThickness = 0.4.toAbsolute()
+
+                                                                                paddingLeft = 0.075.toRelative()
+                                                                                paddingRight = 0.075.toRelative()
+                                                                                paddingTop = 0.0375.toRelative()
+                                                                                paddingBottom = 0.0375.toRelative()
+
+                                                                                var message = ""
+                                                                                var selected = false
+
+                                                                                onStateUpdate["selected"] = { state ->
+                                                                                    selected = state["selected"] as Boolean
+                                                                                }
+
+                                                                                var prevKeyTime = System.currentTimeMillis()
+
+                                                                                onChar = { state ->
+                                                                                    message += state.second.character
+                                                                                    prevKeyTime = System.currentTimeMillis()
+                                                                                }
+
+                                                                                onKey = { state ->
+                                                                                    if (state.second.isPressed) {
+                                                                                        when (state.second.key) {
+                                                                                            Key.BACKSPACE -> message = message.substring(0, message.length - 1)
+                                                                                            Key.ENTER -> {
+                                                                                                SocialManager.invite(MojangUtil.getUUID(message))
+                                                                                                message = ""
+                                                                                            }
+                                                                                        }
+                                                                                        prevKeyTime = System.currentTimeMillis()
+                                                                                    }
+                                                                                }
+
+                                                                                children += Container()
+                                                                                    .apply {
+                                                                                        x = Side.NEGATIVE.toSide()
+                                                                                        width = 1.0.toCopy()
+                                                                                        height = 0.5.toRelative()
+                                                                                        setPadding(Relative(0.2, true))
+
+                                                                                        backgroundImage = "sorus/ui/groups/invite.png".toAbsolute()
+                                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                    }
+
+                                                                                children += Text().apply {
+                                                                                    x = Side.NEGATIVE.toSide()
+                                                                                    y = 0.0.toRelative()
+
+                                                                                    paddingLeft = 0.05.toRelative()
+
+                                                                                    text = {
+                                                                                        if (message.isNotEmpty() || selected) { message } else { "Invite..." }
+                                                                                    }.toDependent()
+                                                                                    fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
+
+                                                                                    scale = 0.0065.toRelative()
+                                                                                }
+
+                                                                                children += Container()
+                                                                                    .apply {
+                                                                                        x = Side.NEGATIVE.toSide()
+                                                                                        width = 0.2.toAbsolute()
+                                                                                        height = 0.6.toRelative()
+
+                                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+
+                                                                                        onUpdate += { state ->
+                                                                                            state["hidden"] = !selected || ((System.currentTimeMillis() - prevKeyTime) % 1000 > 500)
+                                                                                        }
+                                                                                    }
+                                                                            }
+
+                                                                        children += Container()
+                                                                            .apply {
+                                                                                y = Side.NEGATIVE.toSide()
+                                                                                width = 0.8.toRelative()
+                                                                                height = 0.6.toAbsolute()
+
+                                                                                paddingLeft = 0.05.toRelative()
+                                                                                paddingRight = 0.05.toRelative()
+                                                                                paddingTop = 0.025.toRelative()
+                                                                                paddingBottom = 0.025.toRelative()
+
+                                                                                backgroundColor = { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                            }
+                                                                    }*/
+
+                                                                    children += Container()
+                                                                        .apply {
+                                                                            y = Side.NEGATIVE.toSide()
+                                                                            width = 0.3.toRelative()
+                                                                            height = 0.06125.toRelative()
+                                                                            backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                            borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                            backgroundCornerRadius = 0.0125.toRelative()
+                                                                            borderThickness = 0.4.toAbsolute()
+
+                                                                            paddingLeft = 0.025.toRelative()
+                                                                            paddingRight = 0.025.toRelative()
+                                                                            paddingTop = 0.0125.toRelative()
+                                                                            paddingBottom = 0.0125.toRelative()
+
+                                                                            var message = ""
+                                                                            var selected = false
+
+                                                                            onStateUpdate["selected"] = { state ->
+                                                                                selected = state["selected"] as Boolean
+                                                                            }
+
+                                                                            var prevKeyTime = System.currentTimeMillis()
+
+                                                                            onChar = { state ->
+                                                                                message += state.second.character
+                                                                                prevKeyTime = System.currentTimeMillis()
+                                                                            }
+
+                                                                            onKey = { state ->
+                                                                                if (state.second.isPressed) {
+                                                                                    when (state.second.key) {
+                                                                                        Key.BACKSPACE -> message = message.substring(0, message.length - 1)
+                                                                                        Key.ENTER -> {
+                                                                                            SocialManager.sendFriend(MojangUtil.getUUID(message))
+                                                                                            message = ""
+                                                                                        }
+                                                                                    }
+                                                                                    prevKeyTime = System.currentTimeMillis()
+                                                                                }
+                                                                            }
+
+                                                                            children += Container()
+                                                                                .apply {
+                                                                                    x = Side.NEGATIVE.toSide()
+                                                                                    width = 1.0.toCopy()
+                                                                                    height = 0.5.toRelative()
+                                                                                    setPadding(Relative(0.2, true))
+
+                                                                                    backgroundImage = "sorus/ui/groups/invite.png".toAbsolute()
+                                                                                    backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                }
+
+                                                                            children += Text().apply {
+                                                                                x = Side.NEGATIVE.toSide()
+                                                                                y = 0.0.toRelative()
+
+                                                                                paddingLeft = 0.05.toRelative()
+
+                                                                                text = {
+                                                                                    if (message.isNotEmpty() || selected) { message } else { "Send Friend Request..." }
+                                                                                }.toDependent()
+                                                                                fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
+
+                                                                                scale = 0.0065.toRelative()
+                                                                            }
+
+                                                                            children += Container()
+                                                                                .apply {
+                                                                                    x = Side.NEGATIVE.toSide()
+                                                                                    width = 0.2.toAbsolute()
+                                                                                    height = 0.6.toRelative()
+
+                                                                                    backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+
+                                                                                    onUpdate += { state ->
+                                                                                        state["hidden"] = !selected || ((System.currentTimeMillis() - prevKeyTime) % 1000 > 500)
+                                                                                    }
+                                                                                }
+                                                                        }
+
+                                                                    children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
+                                                                        .apply {
+                                                                            x = Side.NEGATIVE.toSide()
+                                                                            width = 0.5.toRelative()
+                                                                            paddingLeft = 0.025.toRelative()
+                                                                            paddingRight = 0.025.toRelative()
+                                                                            paddingTop = 0.0125.toRelative()
+                                                                            paddingBottom = 0.0125.toRelative()
+
+                                                                            var cachedFriends = 0
+
+                                                                            onUpdate += { state ->
+                                                                                if (SocialManager.friends.size != cachedFriends) {
+                                                                                    cachedFriends = SocialManager.friends.size
+                                                                                    state["hasInit"] = false
+                                                                                }
+                                                                            }
+
+                                                                            onInit += {
+                                                                                clear()
+
+                                                                                for (friend in SocialManager.friends) {
+                                                                                    addChild(Container()
+                                                                                        .apply {
+                                                                                            height = 0.24.toCopy()
+
+                                                                                            children += Container()
+                                                                                                .apply {
+                                                                                                    x = Side.POSITIVE.toSide()
+
+                                                                                                    backgroundCornerRadius = 0.02.toRelative()
+                                                                                                    borderThickness = 0.4.toAbsolute()
+
+                                                                                                    backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+
+                                                                                                    borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
+
+                                                                                                    Thread {
+                                                                                                        AdapterManager.getAdapter().renderer.createTexture("${friend.first}-skin", MojangUtil.getSkin(friend.first).openStream(), false)
+                                                                                                    }.start()
+
+                                                                                                    children += Container()
+                                                                                                        .apply {
+                                                                                                            y = Side.NEGATIVE.toSide()
+                                                                                                            height = 0.5.toRelative()
+
+                                                                                                            children += Container()
+                                                                                                                .apply {
+                                                                                                                    x = Side.NEGATIVE.toSide()
+                                                                                                                    width = 1.0.toCopy()
+                                                                                                                    height = 0.6.toRelative()
+                                                                                                                    setPadding(Relative(0.2, true))
+
+                                                                                                                    children += Container()
+                                                                                                                        .apply {
+                                                                                                                            x = 0.0.toRelative()
+                                                                                                                            y = 0.0.toRelative()
+                                                                                                                            width = 1.0.toRelative()
+                                                                                                                            height = 1.0.toRelative()
+
+                                                                                                                            backgroundCornerRadius = 0.15.toRelative()
+                                                                                                                            backgroundImage = "${friend.first}-skin".toAbsolute()
+                                                                                                                            backgroundImageBounds = arrayOf(0.125, 0.125, 0.125, 0.125)
+                                                                                                                        }
+
+                                                                                                                    children += Container()
+                                                                                                                        .apply {
+                                                                                                                            x = 0.0.toRelative()
+                                                                                                                            y = 0.0.toRelative()
+                                                                                                                            width = 1.0.toRelative()
+                                                                                                                            height = 1.0.toRelative()
+
+                                                                                                                            backgroundCornerRadius = 0.15.toRelative()
+                                                                                                                            backgroundImage = "${friend.first}-skin".toAbsolute()
+                                                                                                                            backgroundImageBounds = arrayOf(0.625, 0.125, 0.125, 0.125)
+                                                                                                                        }
+                                                                                                                }
+
+                                                                                                            children += Text()
+                                                                                                                .apply {
+                                                                                                                    x = Side.NEGATIVE.toSide()
+
+                                                                                                                    scale = 0.007.toRelative()
+                                                                                                                    fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
+
+                                                                                                                    var name = ""
+
+                                                                                                                    Thread {
+                                                                                                                        name = MojangUtil.getUsername(friend.first)
+                                                                                                                    }.start()
+
+                                                                                                                    text = { name }.toDependent()
+                                                                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                                                }
+
+                                                                                                            children += Container()
+                                                                                                                .apply {
+                                                                                                                    x = Side.POSITIVE.toSide()
+                                                                                                                    width = 1.0.toCopy()
+                                                                                                                    height = 0.8.toRelative()
+
+                                                                                                                    setPadding(Relative(0.1, true))
+
+                                                                                                                    backgroundCornerRadius = 0.015.toRelative()
+                                                                                                                    borderThickness = 0.4.toAbsolute()
+
+                                                                                                                    backgroundColor = Dependent { state ->
+                                                                                                                        if (state["clicked"] != null && state["clicked"] as Boolean && SocialManager.currentGroup != null) {
+                                                                                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
+                                                                                                                        } else {
+                                                                                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                    borderThickness = 0.4.toAbsolute()
+                                                                                                                    borderColor = Dependent { state ->
+                                                                                                                        if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && SocialManager.currentGroup != null) {
+                                                                                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                                                                                                        } else {
+                                                                                                                            { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                                                                        }
+                                                                                                                    }
+
+                                                                                                                    children += Container()
+                                                                                                                        .apply {
+                                                                                                                            x = Side.NEGATIVE.toSide()
+                                                                                                                            width = 1.0.toCopy()
+                                                                                                                            height = 0.5.toRelative()
+                                                                                                                            setPadding(Relative(0.2, true))
+
+                                                                                                                            backgroundImage = "sorus/ui/groups/invite.png".toAbsolute()
+                                                                                                                            backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                                                        }
+
+                                                                                                                    onClick = {
+                                                                                                                        SocialManager.invite(friend.first)
+                                                                                                                    }
+                                                                                                                }
+                                                                                                        }
+
+                                                                                                    children += Container()
+                                                                                                        .apply {
+                                                                                                            y = Side.POSITIVE.toSide()
+                                                                                                            setPadding(0.005.toRelative())
+
+                                                                                                            children += Text()
+                                                                                                                .apply {
+                                                                                                                    x = Side.NEGATIVE.toSide()
+
+                                                                                                                    paddingLeft = 0.125.toRelative()
+
+                                                                                                                    scale = 0.0055.toRelative()
+                                                                                                                    fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
+                                                                                                                    text = {
+                                                                                                                        if (friend.second.second == "offline") {
+                                                                                                                            "Offline"
+                                                                                                                        } else if (!friend.second.second.isEmpty()) {
+                                                                                                                            "Playing ${friend.second.second} on ${friend.second.first}"
+                                                                                                                        } else {
+                                                                                                                            "Playing on ${friend.second.first}"
+                                                                                                                        }
+                                                                                                                    }.toDependent()
+                                                                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        })
+
+                                                                                    addChild(Container()
+                                                                                        .apply {
+                                                                                            height = 0.05.toCopy()
+                                                                                        })
+                                                                                }
+                                                                            }
+
+                                                                            for (onInit in onInit) {
+                                                                                onInit(Pair(this, HashMap()))
+                                                                            }
+
+                                                                            onStateUpdate["hasInitProfiles"] = { state ->
+                                                                                if (state["hasInitProfiles"] == false) {
+                                                                                    state["hasInitProfiles"] = true
+                                                                                    state["hasInit"] = false
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                }
+                                                            })
+                                                    }
+
+                                                storedState += "hasInitGroups"
                                             }
                                     })
 

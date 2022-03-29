@@ -377,7 +377,7 @@ class RendererImpl: IRenderer {
         var texture = textures[id] ?: -1
         if (texture == -1) {
             createTexture(id)
-            texture = textures[id]!!
+            texture = textures.getOrDefault(id, -1)
         }
         return texture
     }
