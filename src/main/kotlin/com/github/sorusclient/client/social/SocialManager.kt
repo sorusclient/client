@@ -26,6 +26,7 @@ object SocialManager {
         WebSocketManager.listeners["acceptGroup"] = this::onAcceptGroup
         WebSocketManager.listeners["friendRequest"] = this::onFriendRequest
         WebSocketManager.listeners["addFriend"] = this::onAddFriend
+        WebSocketManager.listeners["removeFriend"] = this::onRemoveFriend
         WebSocketManager.listeners["addUserToGroup"] = this::onAddUserToGroup
         WebSocketManager.listeners["groupWarp"] = this::onWarpGroup
         WebSocketManager.listeners["updateStatus"] = this::onUpdateStatus
@@ -128,6 +129,10 @@ object SocialManager {
         friends.add(Pair(json.getString("user"), Pair("", "offline")))
     }
 
+    private suspend fun onRemoveFriend(json: JSONObject) {
+        friends.removeIf { friend -> friend.first == json.getString("user") }
+    }
+
     private suspend fun onUpdateStatus(json: JSONObject) {
         val user = json.getString("user")
         for (friend in friends) {
@@ -171,6 +176,15 @@ object SocialManager {
 
         runBlocking {
             WebSocketManager.sendMessage("sendFriend", JSONObject().apply {
+                put("user", uuid)
+            })
+        }
+    }
+
+    fun unfriend(uuid: String) {
+        friends.removeIf { friend -> friend.first == uuid }
+        runBlocking {
+            WebSocketManager.sendMessage("unfriend", JSONObject().apply {
                 put("user", uuid)
             })
         }

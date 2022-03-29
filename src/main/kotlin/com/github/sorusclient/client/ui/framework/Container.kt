@@ -205,7 +205,7 @@ open class Container : Component() {
             placedComponents.add(Pair(null, doubleArrayOf(0.0, -height / 2 - 0.5, width + 1, 1.0, 0.0, 0.0, 0.0, 0.0)))
 
             if (scissor) {
-                renderer.scissor(x - width / 2, y - height / 2, width, height)
+                renderer.scissor(x - width / 2 - 0.5, y - height / 2 - 0.5, width + 1, height + 1)
             }
 
             for (child in getChildren()) {
