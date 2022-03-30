@@ -72,6 +72,7 @@ class Enhancements {
                 "autoJump" -> map[key] = value
                 "attackIndicator" -> map[key] = Util.toJava(AttackIndicator::class.java, value)!!
                 "skipMultiplayerWarning" -> map[key] = value
+                "rawInput" -> map[key] = value
                 else -> {
                     if (key.startsWith("hotbar_")) {
                         map[key] = Util.toJava(Key::class.java, value)!!

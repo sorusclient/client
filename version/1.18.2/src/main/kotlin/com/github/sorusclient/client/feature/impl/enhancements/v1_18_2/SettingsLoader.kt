@@ -23,6 +23,7 @@ class SettingsLoader: ISettingsLoader {
         map["autoJump"] = options.autoJump
         map["attackIndicator"] = Enhancements.AttackIndicator.values()[options.attackIndicator.id]
         map["skipMultiplayerWarning"] = options.skipMultiplayerWarning
+        map["rawInput"] = options.rawMouseInput
 
         for (i in 1..9) {
             map["hotbar_$i"] = getKey(options.hotbarKeys[i - 1])
@@ -54,6 +55,9 @@ class SettingsLoader: ISettingsLoader {
         }
         if (map.containsKey("autoJump")) {
             options.autoJump = map["autoJump"] as Boolean
+        }
+        if (map.containsKey("rawInput")) {
+            options.rawMouseInput = map["rawInput"] as Boolean
         }
         if (map.containsKey("attackIndicator")) {
             options.attackIndicator = AttackIndicator.byId((map["attackIndicator"] as Enhancements.AttackIndicator).ordinal)

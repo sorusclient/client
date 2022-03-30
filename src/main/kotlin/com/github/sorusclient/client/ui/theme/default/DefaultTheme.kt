@@ -3426,7 +3426,7 @@ class DefaultTheme: Theme() {
                                                 children += Container()
                                                     .apply {
                                                         y = Side.NEGATIVE.toSide()
-                                                        height = 0.035.toRelative()
+                                                        height = 0.02625.toRelative()
                                                         setPadding(0.05.toRelative())
 
                                                         children += Text()
@@ -3434,7 +3434,7 @@ class DefaultTheme: Theme() {
                                                                 x = Side.NEGATIVE.toSide()
 
                                                                 fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
-                                                                scale = 0.0075.toRelative()
+                                                                scale = 0.005625.toRelative()
                                                                 text = "Friends".toAbsolute()
                                                                 textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                             }
