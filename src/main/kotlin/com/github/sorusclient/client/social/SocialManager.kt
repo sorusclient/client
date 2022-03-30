@@ -24,6 +24,8 @@ object SocialManager {
 
     init {
         WebSocketManager.listeners["acceptGroup"] = this::onAcceptGroup
+        WebSocketManager.listeners["leaveGroup"] = this::onLeaveGroup
+        WebSocketManager.listeners["removeGroupMember"] = this::onRemoveGroupMember
         WebSocketManager.listeners["friendRequest"] = this::onFriendRequest
         WebSocketManager.listeners["addFriend"] = this::onAddFriend
         WebSocketManager.listeners["removeFriend"] = this::onRemoveFriend
@@ -85,6 +87,10 @@ object SocialManager {
                 text = "Deny"
             }
         }
+    }
+
+    private suspend fun onLeaveGroup(json: JSONObject) {
+        currentGroup = null
     }
 
     private suspend fun onFriendRequest(json: JSONObject) {
@@ -153,6 +159,12 @@ object SocialManager {
         }
     }
 
+    private suspend fun onRemoveGroupMember(json: JSONObject) {
+        runBlocking {
+            currentGroup!!.members.remove(json.getString("user"))
+        }
+    }
+
     fun createGroup() {
         runBlocking {
             currentGroup = Group(true)
@@ -204,6 +216,21 @@ object SocialManager {
                 put("action", action)
                 put("version", AdapterManager.getAdapter().version)
             })
+        }
+    }
+
+    fun disbandGroup() {
+        runBlocking {
+            WebSocketManager.sendMessage("disbandGroup")
+        }
+    }
+
+    fun removeGroupMember(uuid: String) {
+        runBlocking {
+            WebSocketManager.sendMessage("removeGroupMember", JSONObject().apply {
+                put("user", uuid)
+            })
+            currentGroup!!.members.remove(uuid)
         }
     }
 

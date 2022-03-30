@@ -58,6 +58,7 @@ open class Container : Component() {
         onInit += { state ->
             state.second["hovered"] = false
             state.second["selected"] = selectedByDefault
+            state.second["clicked"] = false
         }
     }
 

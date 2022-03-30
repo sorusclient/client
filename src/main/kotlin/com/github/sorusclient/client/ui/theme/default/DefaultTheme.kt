@@ -2846,19 +2846,6 @@ class DefaultTheme: Theme() {
                                                                                 textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                             }
 
-                                                                        /*children += Text()
-                                                                            .apply {
-                                                                                x = Side.NEGATIVE.toSide()
-                                                                                y = Side.POSITIVE.toSide()
-                                                                                setPadding(Relative(0.175, true))
-
-                                                                                fontRenderer =
-                                                                                    "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
-                                                                                scale = 0.0035.toRelative()
-                                                                                text = (plugin.third["description"] as String?).toAbsolute()
-                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                            }*/
-
                                                                         children += Container()
                                                                             .apply {
                                                                                 x = Side.POSITIVE.toSide()
@@ -2870,8 +2857,7 @@ class DefaultTheme: Theme() {
                                                                                     0.015.toRelative()
                                                                                 borderThickness = 0.4.toAbsolute()
 
-                                                                                backgroundColor =
-                                                                                    { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
                                                                                 borderColor =
                                                                                     { state: Map<String, Any> ->
                                                                                         if (state["hovered"] as Boolean) {
@@ -3116,6 +3102,56 @@ class DefaultTheme: Theme() {
                                                                                                 }
                                                                                             }
                                                                                         }
+
+                                                                                    children += Container()
+                                                                                        .apply {
+                                                                                            x = Side.POSITIVE.toSide()
+                                                                                            width = 0.475.toRelative()
+
+                                                                                            backgroundCornerRadius = 0.025.toRelative()
+                                                                                            backgroundColor = Dependent { state ->
+                                                                                                if (state["clicked"] != null && state["clicked"] as Boolean) {
+                                                                                                    { this@DefaultTheme.selectedColor.value }.toDependent()
+                                                                                                } else {
+                                                                                                    { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                                                }
+                                                                                            }
+                                                                                            borderThickness = 0.4.toAbsolute()
+                                                                                            borderColor = Dependent { state ->
+                                                                                                if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean)) {
+                                                                                                    { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                                                                                } else {
+                                                                                                    { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                                                }
+                                                                                            }
+
+                                                                                            children += Container()
+                                                                                                .apply {
+                                                                                                    x = Side.NEGATIVE.toSide()
+                                                                                                    width = 1.0.toCopy()
+                                                                                                    height = 0.5.toRelative()
+                                                                                                    setPadding(Relative(0.2, true))
+
+                                                                                                    backgroundImage = "sorus/ui/groups/disband.png".toAbsolute()
+                                                                                                    backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                                }
+
+                                                                                            children += Text()
+                                                                                                .apply {
+                                                                                                    x = Side.NEGATIVE.toSide()
+                                                                                                    setPadding(Relative(0.2, true))
+
+                                                                                                    scale = 0.012.toRelative()
+                                                                                                    fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
+                                                                                                    text = "Disband".toAbsolute()
+                                                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                                }
+
+                                                                                            onClick = {
+                                                                                                SocialManager.disbandGroup()
+                                                                                                SocialManager.currentGroup = null
+                                                                                            }
+                                                                                        }
                                                                                 }
 
                                                                             children += Container()
@@ -3301,6 +3337,46 @@ class DefaultTheme: Theme() {
 
                                                                                                                 text = { name }.toDependent()
                                                                                                                 textColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                                            }
+
+                                                                                                        children += Container()
+                                                                                                            .apply {
+                                                                                                                x = Side.POSITIVE.toSide()
+                                                                                                                width = 1.0.toCopy()
+                                                                                                                height = 0.65.toRelative()
+
+                                                                                                                setPadding(Relative(0.175, true))
+
+                                                                                                                backgroundCornerRadius = 0.0175.toRelative()
+                                                                                                                borderThickness = 0.4.toAbsolute()
+
+                                                                                                                backgroundColor = Dependent { state ->
+                                                                                                                    if (state["clicked"] != null && state["clicked"] as Boolean) {
+                                                                                                                        { this@DefaultTheme.selectedColor.value }.toDependent()
+                                                                                                                    } else {
+                                                                                                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                borderColor = Dependent { state ->
+                                                                                                                    if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean)) {
+                                                                                                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                                                                                                    } else {
+                                                                                                                        { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                                                                    }
+                                                                                                                }
+
+                                                                                                                children += Container()
+                                                                                                                    .apply {
+                                                                                                                        width = 0.55.toRelative()
+                                                                                                                        height = 1.0.toCopy()
+
+                                                                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
+                                                                                                                        backgroundImage = "sorus/ui/friends/unfriend.png".toAbsolute()
+                                                                                                                    }
+
+                                                                                                                onClick = {
+                                                                                                                    SocialManager.removeGroupMember(member)
+                                                                                                                }
                                                                                                             }
                                                                                                     }
                                                                                             })
@@ -3770,6 +3846,9 @@ class DefaultTheme: Theme() {
                                                                                                                             backgroundCornerRadius = 0.15.toRelative()
                                                                                                                             backgroundImage = "${friend.first}-skin".toAbsolute()
                                                                                                                             backgroundImageBounds = arrayOf(0.625, 0.125, 0.125, 0.125)
+
+                                                                                                                            borderThickness = 0.055.toRelative()
+                                                                                                                            borderColor = Dependent { if (friend.second.second == "offline") { Color.fromRGB(0, 0, 0, 0).toAbsolute() } else { Color.fromRGB(45, 175, 60, 255).toAbsolute() } }
                                                                                                                         }
                                                                                                                 }
 
