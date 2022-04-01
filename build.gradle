@@ -43,6 +43,7 @@ dependencies {
     shadowApi 'com.google.guava:guava:31.1-jre'
     shadowApi 'org.json:json:20220320'
 
+    shadowImplementation 'org.java-websocket:Java-WebSocket:1.5.2'
     shadowImplementation "io.ktor:ktor-client-websockets:1.6.8"
     shadowImplementation "io.ktor:ktor-client-cio:1.6.8"
 }
