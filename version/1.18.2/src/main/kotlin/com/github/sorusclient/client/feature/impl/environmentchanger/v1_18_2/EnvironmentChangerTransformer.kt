@@ -3,6 +3,9 @@ package com.github.sorusclient.client.feature.impl.environmentchanger.v1_18_2
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier.InsertAfter
 import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.findMethod
+import com.github.sorusclient.client.transform.findMethodCalls
+import com.github.sorusclient.client.transform.isMethodCall
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
 
@@ -22,9 +25,9 @@ class EnvironmentChangerTransformer : Transformer() {
         val getSkyAngle = "v1_18_2/net/minecraft/world/World#getSkyAngle(F)F".toIdentifier()
         val getSkyAngleRadians = "v1_18_2/net/minecraft/world/World#getSkyAngleRadians(F)F".toIdentifier()
 
-        findMethod(classNode, getSkyAngleRadians)
+        classNode.findMethod(getSkyAngleRadians)
             .apply { methodNode: MethodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
     }
@@ -33,33 +36,33 @@ class EnvironmentChangerTransformer : Transformer() {
         val getSkyColor = "v1_18_2/net/minecraft/client/world/ClientWorld#getSkyColor(Lv1_18_2/net/minecraft/util/math/Vec3d;F)Lv1_18_2/net/minecraft/util/math/Vec3d;".toIdentifier()
         val getSkyAngle = "v1_18_2/net/minecraft/client/world/ClientWorld#getSkyAngle(F)F".toIdentifier()
 
-        findMethod(classNode, getSkyColor)
+        classNode.findMethod(getSkyColor)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
 
         val method23787 = "v1_18_2/net/minecraft/client/world/ClientWorld#method_23787(F)F".toIdentifier()
 
-        findMethod(classNode, method23787)
+        classNode.findMethod(method23787)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
 
         val getStarBrightness = "v1_18_2/net/minecraft/client/world/ClientWorld#getStarBrightness(F)F".toIdentifier()
 
-        findMethod(classNode, getStarBrightness)
+        classNode.findMethod(getStarBrightness)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
 
         val getCloudsColor = "v1_18_2/net/minecraft/client/world/ClientWorld#getCloudsColor(F)Lv1_18_2/net/minecraft/util/math/Vec3d;".toIdentifier()
 
-        findMethod(classNode, getCloudsColor)
+        classNode.findMethod(getCloudsColor)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
     }
@@ -69,9 +72,9 @@ class EnvironmentChangerTransformer : Transformer() {
 
         val getSkyAngle = "v1_18_2/net/minecraft/client/world/ClientWorld#getSkyAngle(F)F".toIdentifier()
 
-        findMethod(classNode, render)
+        classNode.findMethod(render)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
     }
@@ -79,18 +82,18 @@ class EnvironmentChangerTransformer : Transformer() {
     private fun transformWorldRenderer(classNode: ClassNode) {
         val getSkyAngle = "v1_18_2/net/minecraft/client/world/ClientWorld#getSkyAngle(F)F".toIdentifier()
         val renderSky = "v1_18_2/net/minecraft/client/render/WorldRenderer#renderSky(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/util/math/Matrix4f;FLjava/lang/Runnable;)V".toIdentifier()
-        findMethod(classNode, renderSky)
+        classNode.findMethod(renderSky)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
 
         val render = "v1_18_2/net/minecraft/client/render/WorldRenderer#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;FJZLv1_18_2/net/minecraft/client/render/Camera;Lv1_18_2/net/minecraft/client/render/GameRenderer;Lv1_18_2/net/minecraft/client/render/LightmapTextureManager;Lv1_18_2/net/minecraft/util/math/Matrix4f;)V".toIdentifier()
         val getTime = "v1_18_2/net/minecraft/client/world/ClientWorld#getTime()J".toIdentifier()
 
-        findMethod(classNode, render)
+        classNode.findMethod(render)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getTime)
+                methodNode.findMethodCalls(getTime)
                     .apply(InsertAfter(methodNode, this.getHook("modifyTime")))
             }
 
@@ -98,9 +101,9 @@ class EnvironmentChangerTransformer : Transformer() {
 
         val renderWeather = "v1_18_2/net/minecraft/client/render/WorldRenderer#renderWeather(Lv1_18_2/net/minecraft/client/render/LightmapTextureManager;FDDD)V".toIdentifier()
 
-        findMethod(classNode, renderWeather)
+        classNode.findMethod(renderWeather)
             .apply { methodNode ->
-                findMethodCalls(methodNode, getRainGradient)
+                methodNode.findMethodCalls(getRainGradient)
                     .apply(InsertAfter(methodNode, this.getHook("modifyRainGradient")))
             }
     }
@@ -112,14 +115,14 @@ class EnvironmentChangerTransformer : Transformer() {
         val updateFog = "v1_8_9/net/minecraft/client/render/GameRenderer#updateFog(F)V".toIdentifier()
         val getRainGradient = "v1_8_9/net/minecraft/world/World#getRainGradient(F)F".toIdentifier()
         val getRainGradient2 = "v1_8_9/net/minecraft/client/world/ClientWorld#getRainGradient(F)F".toIdentifier()
-        findMethod(classNode, method9891)
+        classNode.findMethod(method9891)
             .apply { methodNode: MethodNode ->
-                findMethodCalls(methodNode, getSkyAngle2)
+                methodNode.findMethodCalls(getSkyAngle2)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
-        findMethod(classNode, updateFog)
+        classNode.findMethod(updateFog)
             .apply { methodNode: MethodNode ->
-                findMethodCalls(methodNode, getSkyAngle)
+                methodNode.findMethodCalls(getSkyAngle)
                     .apply(InsertAfter(methodNode, this.getHook("modifySkyAngle")))
             }
         for (methodNode in classNode.methods) {

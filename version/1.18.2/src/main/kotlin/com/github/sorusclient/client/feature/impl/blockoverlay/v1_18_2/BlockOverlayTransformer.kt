@@ -3,6 +3,8 @@ package com.github.sorusclient.client.feature.impl.blockoverlay.v1_18_2
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.findMethod
+import com.github.sorusclient.client.transform.findMethodCalls
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -19,9 +21,9 @@ class BlockOverlayTransformer: Transformer() {
         val render = "v1_18_2/net/minecraft/client/render/WorldRenderer#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;FJZLv1_18_2/net/minecraft/client/render/Camera;Lv1_18_2/net/minecraft/client/render/GameRenderer;Lv1_18_2/net/minecraft/client/render/LightmapTextureManager;Lv1_18_2/net/minecraft/util/math/Matrix4f;)V".toIdentifier()
         val drawBlockOutline = "v1_18_2/net/minecraft/client/render/WorldRenderer#drawBlockOutline(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumer;Lv1_18_2/net/minecraft/entity/Entity;DDDLv1_18_2/net/minecraft/util/math/BlockPos;Lv1_18_2/net/minecraft/block/BlockState;)V".toIdentifier()
 
-        findMethod(classNode, render)
+        classNode.findMethod(render)
             .apply { methodNode ->
-                findMethodCalls(methodNode, drawBlockOutline)
+                methodNode.findMethodCalls(drawBlockOutline)
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
                         insnList.add(VarInsnNode(Opcodes.ALOAD, 6))
@@ -29,7 +31,7 @@ class BlockOverlayTransformer: Transformer() {
                     }))
             }
 
-        findMethod(classNode, drawBlockOutline)
+        classNode.findMethod(drawBlockOutline)
             .apply { methodNode ->
                 var i = 0
                 for (node in methodNode.instructions) {
@@ -53,7 +55,7 @@ class BlockOverlayTransformer: Transformer() {
     private fun transformRenderSystem(classNode: ClassNode) {
         val lineWidth = "v1_18_2/com/mojang/blaze3d/systems/RenderSystem#lineWidth(F)V".toIdentifier()
 
-        findMethod(classNode, lineWidth)
+        classNode.findMethod(lineWidth)
             .apply(Applier.Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.FLOAD, 0))
                 insnList.add(this.getHook("modifyLineWidth"))

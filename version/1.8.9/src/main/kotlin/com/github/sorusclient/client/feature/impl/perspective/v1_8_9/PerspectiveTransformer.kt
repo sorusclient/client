@@ -2,6 +2,8 @@ package com.github.sorusclient.client.feature.impl.perspective.v1_8_9
 
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.findClassMethod
+import com.github.sorusclient.client.transform.findMethod
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -20,7 +22,7 @@ class PerspectiveTransformer : Transformer() {
     private fun transformEntity(classNode: ClassNode) {
         val increaseTransforms = "v1_8_9/net/minecraft/entity/Entity#increaseTransforms(FF)V".toIdentifier()
 
-        findMethod(classNode, increaseTransforms)
+        classNode.findMethod(increaseTransforms)
             .apply { methodNode ->
                 val insnList = InsnList()
                 insnList.add(VarInsnNode(Opcodes.FLOAD, 1))
@@ -49,47 +51,42 @@ class PerspectiveTransformer : Transformer() {
 
     private fun transformGameRenderer(classNode: ClassNode) {
         val transformCamera = "v1_8_9/net/minecraft/client/render/GameRenderer#transformCamera(F)V".toIdentifier()
-        for (methodNode in classNode.methods) {
-            if (methodNode.name == transformCamera.methodName && methodNode.desc == transformCamera.methodDesc) {
+        findClassMethod(classNode, transformCamera)
+            .apply { methodNode ->
                 transformRotationCalls(methodNode)
             }
-        }
     }
 
     private fun transformEntityRenderDispatcher(classNode: ClassNode) {
         val transformCamera = "v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher#method_10200(Lv1_8_9/net/minecraft/world/World;Lv1_8_9/net/minecraft/client/font/TextRenderer;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/client/options/GameOptions;F)V".toIdentifier()
-        for (methodNode in classNode.methods) {
-            if (methodNode.name == transformCamera.methodName && methodNode.desc == transformCamera.methodDesc) {
+        findClassMethod(classNode, transformCamera)
+            .apply { methodNode ->
                 transformRotationCalls(methodNode)
             }
-        }
     }
 
     private fun transformWorldRenderer(classNode: ClassNode) {
         val method9906 = "v1_8_9/net/minecraft/client/render/WorldRenderer#method_9906(Lv1_8_9/net/minecraft/entity/Entity;DLv1_8_9/net/minecraft/client/render/debug/CameraView;IZ)V".toIdentifier()
-        for (methodNode in classNode.methods) {
-            if (methodNode.name == method9906.methodName && methodNode.desc == method9906.methodDesc) {
+        findClassMethod(classNode, method9906)
+            .apply { methodNode ->
                 transformRotationCalls(methodNode)
             }
-        }
     }
 
     private fun transformParticleManager(classNode: ClassNode) {
         val method1299 = "v1_8_9/net/minecraft/client/particle/ParticleManager#method_1299(Lv1_8_9/net/minecraft/entity/Entity;F)V".toIdentifier()
-        for (methodNode in classNode.methods) {
-            if (methodNode.name == method1299.methodName && methodNode.desc == method1299.methodDesc) {
+        findClassMethod(classNode, method1299)
+            .apply { methodNode ->
                 transformRotationCalls(methodNode)
             }
-        }
     }
 
     private fun transformClass321(classNode: ClassNode) {
         val method1299 = "v1_8_9/net/minecraft/client/class_321#method_804(Lv1_8_9/net/minecraft/entity/player/PlayerEntity;Z)V".toIdentifier()
-        for (methodNode in classNode.methods) {
-            if (methodNode.name == method1299.methodName && methodNode.desc == method1299.methodDesc) {
+        findClassMethod(classNode, method1299)
+            .apply { methodNode ->
                 transformRotationCalls(methodNode)
             }
-        }
     }
 
     private fun transformRotationCalls(methodNode: MethodNode) {

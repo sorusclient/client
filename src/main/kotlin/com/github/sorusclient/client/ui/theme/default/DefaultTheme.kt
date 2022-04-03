@@ -7,6 +7,7 @@ import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.notification.Interaction
 import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.NotificationManager
+import com.github.sorusclient.client.notification.close
 import com.github.sorusclient.client.plugin.PluginManager
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
@@ -4781,7 +4782,7 @@ class DefaultTheme: Theme() {
                                                                                         interaction.onClick!!()
                                                                                     }
                                                                                     if (interaction.closeOnInteract) {
-                                                                                        NotificationManager.notifications.remove(notification)
+                                                                                        notification.close()
                                                                                     }
                                                                                 }
                                                                             }

@@ -2,6 +2,7 @@ package com.github.sorusclient.client.feature.impl.perspective.v1_18_2
 
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.findMethod
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -16,7 +17,7 @@ class PerspectiveTransformer : Transformer() {
     private fun transformEntity(classNode: ClassNode) {
         val changeLookDirection = "v1_18_2/net/minecraft/entity/Entity#changeLookDirection(DD)V".toIdentifier()
 
-        findMethod(classNode, changeLookDirection)
+        classNode.findMethod(changeLookDirection)
             .apply { methodNode ->
                 val insnList = InsnList()
                 insnList.add(VarInsnNode(Opcodes.DLOAD, 1))

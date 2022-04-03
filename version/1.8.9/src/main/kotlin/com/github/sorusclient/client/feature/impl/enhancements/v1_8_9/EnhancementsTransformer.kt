@@ -1,8 +1,7 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
 import com.github.sorusclient.client.toIdentifier
-import com.github.sorusclient.client.transform.Applier
-import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.*
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -107,7 +106,7 @@ class EnhancementsTransformer : Transformer() {
         val clientPlayerEntity = "v1_8_9/net/minecraft/entity/player/ClientPlayerEntity".toIdentifier()
         val entity = "v1_8_9/net/minecraft/entity/Entity".toIdentifier()
 
-        findMethod(classNode, getRotationVector)
+        classNode.findMethod(getRotationVector)
             .apply(Applier.Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
                 insnList.add(TypeInsnNode(Opcodes.INSTANCEOF, clientPlayerEntity.className))
@@ -124,12 +123,12 @@ class EnhancementsTransformer : Transformer() {
     private fun transformLinuxKeyboard(classNode: ClassNode) {
         val getKeyCode = "org/lwjgl/opengl/LinuxKeyboard#getKeycode(JI)I".toIdentifier()
 
-        findMethod(classNode, getKeyCode)
+        classNode.findMethod(getKeyCode)
             .apply { methodNode ->
                 methodNode.instructions.clear()
             }
 
-        findMethod(classNode, getKeyCode)
+        classNode.findMethod(getKeyCode)
             .apply(Applier.Insert(createList { insnList ->
                 val label0 = LabelNode()
                 insnList.add(label0)
@@ -232,7 +231,7 @@ class EnhancementsTransformer : Transformer() {
                 insnList.add(InsnNode(Opcodes.IRETURN))
             }))
 
-        findMethod(classNode, getKeyCode)
+        classNode.findMethod(getKeyCode)
             .apply { methodNode ->
                 methodNode.maxLocals = 8
                 methodNode.maxStack = 6
@@ -241,9 +240,9 @@ class EnhancementsTransformer : Transformer() {
 
     private fun transformTextRenderer(classNode: ClassNode) {
         val method959 = "v1_8_9/net/minecraft/client/font/TextRenderer#method_959(Ljava/lang/String;Z)V".toIdentifier()
-        findMethod(classNode, method959)
+        classNode.findMethod(method959)
             .apply { methodNode ->
-                findVarReferences(methodNode, 6, VarReferenceType.LOAD)
+                methodNode.findVarReferences(6, VarReferenceType.LOAD)
                     .nth(9)
                     .apply(Applier.InsertAfter(methodNode, createList { insnList ->
                         insnList.add(LdcInsnNode(0.99f))
@@ -251,9 +250,9 @@ class EnhancementsTransformer : Transformer() {
                     }))
             }
 
-        findMethod(classNode, method959)
+        classNode.findMethod(method959)
             .apply { methodNode ->
-                findVarReferences(methodNode, 6, VarReferenceType.LOAD)
+                methodNode.findVarReferences(6, VarReferenceType.LOAD)
                     .nth(12)
                     .apply(Applier.InsertAfter(methodNode, createList { insnList ->
                         insnList.add(LdcInsnNode(0.99f))
@@ -266,17 +265,17 @@ class EnhancementsTransformer : Transformer() {
         val save = "v1_8_9/net/minecraft/client/options/GameOptions#save()V".toIdentifier()
         val load = "v1_8_9/net/minecraft/client/options/GameOptions#load()V".toIdentifier()
 
-        findMethod(classNode, save)
+        classNode.findMethod(save)
             .apply { methodNode ->
-                findReturns(methodNode)
+                methodNode.findReturns()
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(this.getHook("onSave"))
                     }))
             }
 
-        findMethod(classNode, load)
+        classNode.findMethod(load)
             .apply { methodNode ->
-                findReturns(methodNode)
+                methodNode.findReturns()
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
                         insnList.add(this.getHook("onLoad"))
@@ -287,7 +286,7 @@ class EnhancementsTransformer : Transformer() {
     private fun transformMinecraftClient(classNode: ClassNode) {
         val stop = "v1_8_9/net/minecraft/client/MinecraftClient#stop()V".toIdentifier()
 
-        findMethod(classNode, stop)
+        classNode.findMethod(stop)
             .apply(Applier.Insert(createList { insnList ->
                 insnList.add(this.getHook("onStop"))
             }))

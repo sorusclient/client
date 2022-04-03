@@ -33,6 +33,7 @@ repositories {
 
 dependencies {
     "shadowApi"("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    "shadowApi"("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
     "shadowApi"("org.ow2.asm:asm-tree:9.2")
     "shadowApi"("commons-io:commons-io:2.11.0")

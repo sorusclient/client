@@ -3,6 +3,8 @@ package com.github.sorusclient.client.feature.impl.enhancements.v1_18_2
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.findMethod
+import com.github.sorusclient.client.transform.findReturns
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -19,15 +21,15 @@ class EnhancementsTransformer : Transformer() {
     private fun transformInGameOverlayRenderer(classNode: ClassNode) {
         val renderFireOverlay = "v1_18_2/net/minecraft/client/gui/hud/InGameOverlayRenderer#renderFireOverlay(Lv1_18_2/net/minecraft/client/MinecraftClient;Lv1_18_2/net/minecraft/client/util/math/MatrixStack;)V".toIdentifier()
 
-        findMethod(classNode, renderFireOverlay)
+        classNode.findMethod(renderFireOverlay)
             .apply(Applier.Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
                 insnList.add(this.getHook("onPreRenderFire"))
             }))
 
-        findMethod(classNode, renderFireOverlay)
+        classNode.findMethod(renderFireOverlay)
             .apply { methodNode ->
-                findReturns(methodNode)
+                methodNode.findReturns()
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
                         insnList.add(this.getHook("onPostRenderFire"))
@@ -39,17 +41,17 @@ class EnhancementsTransformer : Transformer() {
         val load = "v1_18_2/net/minecraft/client/option/GameOptions#load()V".toIdentifier()
         val write = "v1_18_2/net/minecraft/client/option/GameOptions#write()V".toIdentifier()
 
-        findMethod(classNode, write)
+        classNode.findMethod(write)
             .apply { methodNode ->
-                findReturns(methodNode)
+                methodNode.findReturns()
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(this.getHook("onWrite"))
                     }))
             }
 
-        findMethod(classNode, load)
+        classNode.findMethod(load)
             .apply { methodNode ->
-                findReturns(methodNode)
+                methodNode.findReturns()
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
                         insnList.add(this.getHook("onLoad"))

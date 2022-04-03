@@ -14,7 +14,7 @@ object WebSocketManager {
 
     private lateinit var webSocket: Websocket
 
-    val listeners: MutableMap<String, suspend (JSONObject) -> Unit> = HashMap()
+    val listeners: MutableMap<String, (JSONObject) -> Unit> = HashMap()
 
     var lastConnectTime = System.currentTimeMillis()
     var connected = false

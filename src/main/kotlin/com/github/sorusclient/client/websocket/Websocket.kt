@@ -3,6 +3,7 @@ package com.github.sorusclient.client.websocket
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.NotificationManager
+import com.github.sorusclient.client.notification.display
 import kotlinx.coroutines.runBlocking
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -25,10 +26,10 @@ class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml:8443")) {
         if (id == "connected") {
             if (WebSocketManager.failedToConnect) {
                 WebSocketManager.failedToConnect = false
-                NotificationManager.notifications += Notification().apply {
+                Notification().apply {
                     title = "Websocket"
                     content = "Websocket connected!"
-                }
+                }.display()
             }
 
             WebSocketManager.sendMessage("updateStatus", JSONObject().apply {

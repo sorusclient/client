@@ -5,10 +5,7 @@ import com.github.sorusclient.client.adapter.event.GameJoinEvent
 import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.notification.Icon
-import com.github.sorusclient.client.notification.Interaction
-import com.github.sorusclient.client.notification.Notification
-import com.github.sorusclient.client.notification.NotificationManager
+import com.github.sorusclient.client.notification.*
 import com.github.sorusclient.client.util.MojangUtil
 import com.github.sorusclient.client.websocket.WebSocketManager
 import com.github.sorusclient.client.util.Pair
@@ -58,14 +55,14 @@ object SocialManager {
         }
     }
 
-    private suspend fun onAcceptGroup(json: JSONObject) {
+    private fun onAcceptGroup(json: JSONObject) {
         val inviter = json.getString("inviter")
 
         Thread {
             AdapterManager.adapter.renderer.createTexture("$inviter-skin", MojangUtil.getSkin(inviter).openStream(), false)
         }.start()
 
-        NotificationManager.notifications += Notification().apply {
+        Notification().apply {
             title = "Group Invite"
             content = "${MojangUtil.getUsername(inviter)} invited you."
             icons = listOf(Icon("$inviter-skin", arrayOf(0.125, 0.125, 0.125, 0.125)), Icon("$inviter-skin", arrayOf(0.625, 0.125, 0.125, 0.125)))
@@ -86,21 +83,22 @@ object SocialManager {
             interactions += Interaction.Button().apply {
                 text = "Deny"
             }
-        }
+        }.display()
     }
 
-    private suspend fun onLeaveGroup(json: JSONObject) {
+    private fun onLeaveGroup(@Suppress("UNUSED_PARAMETER") json: JSONObject) {
         currentGroup = null
     }
 
-    private suspend fun onFriendRequest(json: JSONObject) {
+    @Suppress()
+    private fun onFriendRequest(json: JSONObject) {
         val user = json.getString("user")
 
         Thread {
             AdapterManager.adapter.renderer.createTexture("$user-skin", MojangUtil.getSkin(user).openStream(), false)
         }.start()
 
-        NotificationManager.notifications += Notification().apply {
+        Notification().apply {
             title = "Friend Request"
             content = "${MojangUtil.getUsername(user)} friended you."
             icons = listOf(Icon("$user-skin", arrayOf(0.125, 0.125, 0.125, 0.125)), Icon("$user-skin", arrayOf(0.625, 0.125, 0.125, 0.125)))
@@ -120,26 +118,26 @@ object SocialManager {
             interactions += Interaction.Button().apply {
                 text = "Deny"
             }
-        }
+        }.display()
     }
 
-    private suspend fun onAddUserToGroup(json: JSONObject) {
+    private fun onAddUserToGroup(json: JSONObject) {
         currentGroup!!.members.add(json.getString("user"))
     }
 
-    private suspend fun onWarpGroup(json: JSONObject) {
+    private fun onWarpGroup(json: JSONObject) {
         serverToJoin = json.getString("ip")
     }
 
-    private suspend fun onAddFriend(json: JSONObject) {
+    private fun onAddFriend(json: JSONObject) {
         friends.add(Pair(json.getString("user"), Pair("", "offline")))
     }
 
-    private suspend fun onRemoveFriend(json: JSONObject) {
+    private fun onRemoveFriend(json: JSONObject) {
         friends.removeIf { friend -> friend.first == json.getString("user") }
     }
 
-    private suspend fun onUpdateStatus(json: JSONObject) {
+    private fun onUpdateStatus(json: JSONObject) {
         val user = json.getString("user")
         for (friend in friends) {
             if (friend.first == user) {
@@ -149,7 +147,7 @@ object SocialManager {
         }
     }
 
-    private suspend fun onRequestUpdateStatus(json: JSONObject) {
+    private fun onRequestUpdateStatus(@Suppress("UNUSED_PARAMETER") json: JSONObject) {
         val server = AdapterManager.adapter.currentServer
 
         if (server != null) {
@@ -159,7 +157,7 @@ object SocialManager {
         }
     }
 
-    private suspend fun onRemoveGroupMember(json: JSONObject) {
+    private fun onRemoveGroupMember(json: JSONObject) {
         runBlocking {
             currentGroup!!.members.remove(json.getString("user"))
         }
@@ -210,7 +208,7 @@ object SocialManager {
         }
     }
 
-    fun updateStatus(action: String) {
+    private fun updateStatus(action: String) {
         runBlocking {
             WebSocketManager.sendMessage("updateStatus", JSONObject().apply {
                 put("action", action)

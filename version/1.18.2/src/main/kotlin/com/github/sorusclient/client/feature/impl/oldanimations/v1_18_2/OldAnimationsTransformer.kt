@@ -2,6 +2,7 @@ package com.github.sorusclient.client.feature.impl.oldanimations.v1_18_2
 
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.findMethod
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -16,7 +17,7 @@ class OldAnimationsTransformer : Transformer() {
     private fun transformArmorFeatureRenderer(classNode: ClassNode) {
         val renderArmor = "v1_18_2/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer#renderArmor(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumerProvider;Lv1_18_2/net/minecraft/entity/LivingEntity;Lv1_18_2/net/minecraft/entity/EquipmentSlot;ILv1_18_2/net/minecraft/client/render/entity/model/BipedEntityModel;)V".toIdentifier()
 
-        findMethod(classNode, renderArmor)
+        classNode.findMethod(renderArmor)
             .apply { methodNode ->
                 methodNode.instructions.insert(this.getHook("init"))
                 methodNode.instructions.insert(VarInsnNode(Opcodes.ALOAD, 3))

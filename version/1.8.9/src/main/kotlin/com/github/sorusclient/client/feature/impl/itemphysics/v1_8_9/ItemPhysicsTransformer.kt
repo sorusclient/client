@@ -4,6 +4,9 @@ import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier.InsertAfter
 import com.github.sorusclient.client.transform.Applier.InsertBefore
 import com.github.sorusclient.client.transform.Transformer
+import com.github.sorusclient.client.transform.findMethod
+import com.github.sorusclient.client.transform.findMethodCalls
+import com.github.sorusclient.client.transform.findVarReferences
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InsnList
@@ -21,13 +24,13 @@ class ItemPhysicsTransformer : Transformer() {
     private fun transformItemEntityRenderer(classNode: ClassNode) {
         val method10221 = "v1_8_9/net/minecraft/client/render/entity/ItemEntityRenderer#method_10221(Lv1_8_9/net/minecraft/entity/ItemEntity;DDDFLv1_8_9/net/minecraft/client/render/model/BakedModel;)I".toIdentifier()
         val color4f = "v1_8_9/com/mojang/blaze3d/platform/GlStateManager#color4f(FFFF)V".toIdentifier()
-        findMethod(classNode, method10221)
+        classNode.findMethod(method10221)
             .apply { methodNode: MethodNode ->
-                findVarReferences(methodNode, 15, VarReferenceType.STORE)
+                methodNode.findVarReferences(15, VarReferenceType.STORE)
                     .apply(InsertBefore(methodNode, this.getHook("modifyItemBob")))
-                findVarReferences(methodNode, 17, VarReferenceType.STORE)
+                methodNode.findVarReferences(17, VarReferenceType.STORE)
                     .apply(InsertBefore(methodNode, this.getHook("modifyItemRotate")))
-                findMethodCalls(methodNode, color4f)
+                methodNode.findMethodCalls(color4f)
                     .apply(InsertAfter(methodNode, createList { insnList: InsnList ->
                         insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
                         insnList.add(this.getHook("preRenderItem"))

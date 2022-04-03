@@ -2,10 +2,12 @@ package com.github.sorusclient.client.notification
 
 import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
+import kotlinx.collections.immutable.persistentListOf
 
 object NotificationManager {
 
-    val notifications: MutableList<Notification> = ArrayList()
+    var notifications: List<Notification> = persistentListOf()
+        private set
 
     private val notificationTimes: MutableMap<Notification, Long> = HashMap()
 
@@ -19,11 +21,19 @@ object NotificationManager {
 
             for ((notification, startTime) in HashMap(notificationTimes)) {
                 if (System.currentTimeMillis() - startTime > 5000L) {
-                    notifications.remove(notification)
+                    notifications -= notification
                     notificationTimes.remove(notification)
                 }
             }
         }
+    }
+
+    fun display(notification: Notification) {
+        notifications += notification
+    }
+
+    fun close(notification: Notification) {
+        notifications -= notification
     }
 
 }
