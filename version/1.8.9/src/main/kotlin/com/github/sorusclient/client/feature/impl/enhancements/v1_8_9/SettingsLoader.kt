@@ -1,10 +1,10 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
-import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import com.github.sorusclient.client.feature.impl.enhancements.ISettingsLoader
+import com.github.sorusclient.client.toIdentifier
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.options.GameOptions
 import v1_8_9.net.minecraft.client.options.KeyBinding
@@ -63,7 +63,7 @@ class SettingsLoader: ISettingsLoader {
     }
 
     private val keyMap: Field = run {
-        val keyMap = Identifier.parse("v1_8_9/net/minecraft/client/options/KeyBinding#KEY_MAP")
+        val keyMap = "v1_8_9/net/minecraft/client/options/KeyBinding#KEY_MAP".toIdentifier()
         val field = KeyBinding::class.java.getDeclaredField(keyMap.fieldName)
         field.isAccessible =  true
         field

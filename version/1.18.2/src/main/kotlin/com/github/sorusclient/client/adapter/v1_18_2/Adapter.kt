@@ -4,6 +4,7 @@ import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.bootstrap.Initializer
+import com.github.sorusclient.client.toIdentifier
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.gui.screen.ConnectScreen
 import v1_18_2.net.minecraft.client.gui.screen.GameMenuScreen
@@ -147,7 +148,7 @@ class Adapter: IAdapter, Initializer {
     override val renderer: IRenderer = RendererImpl()
 
     private val currentFps: Field = run {
-        val currentFps = Identifier.parse("v1_18_2/net/minecraft/client/MinecraftClient#currentFps")
+        val currentFps = "v1_18_2/net/minecraft/client/MinecraftClient#currentFps".toIdentifier()
         val field = MinecraftClient::class.java.getDeclaredField(currentFps.fieldName)
         field.isAccessible = true
 

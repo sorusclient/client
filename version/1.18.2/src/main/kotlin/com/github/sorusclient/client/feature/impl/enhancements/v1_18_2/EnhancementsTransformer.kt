@@ -1,30 +1,23 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_18_2
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
+@Suppress("UNUSED")
 class EnhancementsTransformer : Transformer() {
 
     init {
         this.setHookClass(EnhancementsHook::class.java)
 
-        register("v1_18_2/net/minecraft/client/gui/hud/InGameOverlayRenderer") { classNode: ClassNode ->
-            transformInGameOverlayRenderer(
-                classNode
-            )
-        }
-        register("v1_18_2/net/minecraft/client/option/GameOptions") { classNode: ClassNode ->
-            transformGameOptions(
-                classNode
-            )
-        }
+        register("v1_18_2/net/minecraft/client/gui/hud/InGameOverlayRenderer", this::transformInGameOverlayRenderer)
+        register("v1_18_2/net/minecraft/client/option/GameOptions", this::transformGameOptions)
     }
 
     private fun transformInGameOverlayRenderer(classNode: ClassNode) {
-        val renderFireOverlay = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/InGameOverlayRenderer#renderFireOverlay(Lv1_18_2/net/minecraft/client/MinecraftClient;Lv1_18_2/net/minecraft/client/util/math/MatrixStack;)V")
+        val renderFireOverlay = "v1_18_2/net/minecraft/client/gui/hud/InGameOverlayRenderer#renderFireOverlay(Lv1_18_2/net/minecraft/client/MinecraftClient;Lv1_18_2/net/minecraft/client/util/math/MatrixStack;)V".toIdentifier()
 
         findMethod(classNode, renderFireOverlay)
             .apply(Applier.Insert(createList { insnList ->
@@ -43,8 +36,8 @@ class EnhancementsTransformer : Transformer() {
     }
 
     private fun transformGameOptions(classNode: ClassNode) {
-        val load = Identifier.parse("v1_18_2/net/minecraft/client/option/GameOptions#load()V")
-        val write = Identifier.parse("v1_18_2/net/minecraft/client/option/GameOptions#write()V")
+        val load = "v1_18_2/net/minecraft/client/option/GameOptions#load()V".toIdentifier()
+        val write = "v1_18_2/net/minecraft/client/option/GameOptions#write()V".toIdentifier()
 
         findMethod(classNode, write)
             .apply { methodNode ->

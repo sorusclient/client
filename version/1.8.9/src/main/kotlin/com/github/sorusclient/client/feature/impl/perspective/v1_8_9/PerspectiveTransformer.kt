@@ -1,39 +1,24 @@
 package com.github.sorusclient.client.feature.impl.perspective.v1_8_9
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
+@Suppress("UNUSED")
 class PerspectiveTransformer : Transformer() {
 
     init {
-        register("v1_8_9/net/minecraft/entity/Entity") { classNode: ClassNode -> transformEntity(classNode) }
-        register("v1_8_9/net/minecraft/client/render/GameRenderer") { classNode: ClassNode ->
-            transformGameRenderer(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher") { classNode: ClassNode ->
-            transformEntityRenderDispatcher(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/render/WorldRenderer") { classNode: ClassNode ->
-            transformWorldRenderer(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/particle/ParticleManager") { classNode: ClassNode ->
-            transformParticleManager(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/class_321") { classNode: ClassNode -> transformClass321(classNode) }
+        register("v1_8_9/net/minecraft/entity/Entity", this::transformEntity)
+        register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
+        register("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher", this::transformEntityRenderDispatcher)
+        register("v1_8_9/net/minecraft/client/render/WorldRenderer", this::transformWorldRenderer)
+        register("v1_8_9/net/minecraft/client/particle/ParticleManager", this::transformParticleManager)
+        register("v1_8_9/net/minecraft/client/class_321", this::transformClass321)
     }
 
     private fun transformEntity(classNode: ClassNode) {
-        val increaseTransforms = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#increaseTransforms(FF)V")
+        val increaseTransforms = "v1_8_9/net/minecraft/entity/Entity#increaseTransforms(FF)V".toIdentifier()
 
         findMethod(classNode, increaseTransforms)
             .apply { methodNode ->
@@ -63,7 +48,7 @@ class PerspectiveTransformer : Transformer() {
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {
-        val transformCamera = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#transformCamera(F)V")
+        val transformCamera = "v1_8_9/net/minecraft/client/render/GameRenderer#transformCamera(F)V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == transformCamera.methodName && methodNode.desc == transformCamera.methodDesc) {
                 transformRotationCalls(methodNode)
@@ -72,7 +57,7 @@ class PerspectiveTransformer : Transformer() {
     }
 
     private fun transformEntityRenderDispatcher(classNode: ClassNode) {
-        val transformCamera = Identifier.parse("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher#method_10200(Lv1_8_9/net/minecraft/world/World;Lv1_8_9/net/minecraft/client/font/TextRenderer;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/client/options/GameOptions;F)V")
+        val transformCamera = "v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher#method_10200(Lv1_8_9/net/minecraft/world/World;Lv1_8_9/net/minecraft/client/font/TextRenderer;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/client/options/GameOptions;F)V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == transformCamera.methodName && methodNode.desc == transformCamera.methodDesc) {
                 transformRotationCalls(methodNode)
@@ -81,7 +66,7 @@ class PerspectiveTransformer : Transformer() {
     }
 
     private fun transformWorldRenderer(classNode: ClassNode) {
-        val method9906 = Identifier.parse("v1_8_9/net/minecraft/client/render/WorldRenderer#method_9906(Lv1_8_9/net/minecraft/entity/Entity;DLv1_8_9/net/minecraft/client/render/debug/CameraView;IZ)V")
+        val method9906 = "v1_8_9/net/minecraft/client/render/WorldRenderer#method_9906(Lv1_8_9/net/minecraft/entity/Entity;DLv1_8_9/net/minecraft/client/render/debug/CameraView;IZ)V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == method9906.methodName && methodNode.desc == method9906.methodDesc) {
                 transformRotationCalls(methodNode)
@@ -90,7 +75,7 @@ class PerspectiveTransformer : Transformer() {
     }
 
     private fun transformParticleManager(classNode: ClassNode) {
-        val method1299 = Identifier.parse("v1_8_9/net/minecraft/client/particle/ParticleManager#method_1299(Lv1_8_9/net/minecraft/entity/Entity;F)V")
+        val method1299 = "v1_8_9/net/minecraft/client/particle/ParticleManager#method_1299(Lv1_8_9/net/minecraft/entity/Entity;F)V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == method1299.methodName && methodNode.desc == method1299.methodDesc) {
                 transformRotationCalls(methodNode)
@@ -99,7 +84,7 @@ class PerspectiveTransformer : Transformer() {
     }
 
     private fun transformClass321(classNode: ClassNode) {
-        val method1299 = Identifier.parse("v1_8_9/net/minecraft/client/class_321#method_804(Lv1_8_9/net/minecraft/entity/player/PlayerEntity;Z)V")
+        val method1299 = "v1_8_9/net/minecraft/client/class_321#method_804(Lv1_8_9/net/minecraft/entity/player/PlayerEntity;Z)V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == method1299.methodName && methodNode.desc == method1299.methodDesc) {
                 transformRotationCalls(methodNode)
@@ -108,12 +93,12 @@ class PerspectiveTransformer : Transformer() {
     }
 
     private fun transformRotationCalls(methodNode: MethodNode) {
-        val entity = Identifier.parse("v1_8_9/net/minecraft/entity/Entity")
-        val playerEntity = Identifier.parse("v1_8_9/net/minecraft/entity/player/PlayerEntity")
-        val pitch = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#pitch")
-        val prevPitch = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#prevPitch")
-        val yaw = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#yaw")
-        val prevYaw = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#prevYaw")
+        val entity = "v1_8_9/net/minecraft/entity/Entity".toIdentifier()
+        val playerEntity = "v1_8_9/net/minecraft/entity/player/PlayerEntity".toIdentifier()
+        val pitch = "v1_8_9/net/minecraft/entity/Entity#pitch".toIdentifier()
+        val prevPitch = "v1_8_9/net/minecraft/entity/Entity#prevPitch".toIdentifier()
+        val yaw = "v1_8_9/net/minecraft/entity/Entity#yaw".toIdentifier()
+        val prevYaw = "v1_8_9/net/minecraft/entity/Entity#prevYaw".toIdentifier()
         for (insnNode in methodNode.instructions) {
             if (insnNode is FieldInsnNode && (insnNode.owner == entity.className || insnNode.owner == playerEntity.className) && insnNode.name == pitch.fieldName) {
                 methodNode.instructions.insert(

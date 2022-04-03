@@ -1,33 +1,22 @@
 package com.github.sorusclient.client.feature.impl.oldanimations.v1_8_9
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
+@Suppress("UNUSED")
 class OldAnimationsTransformer : Transformer() {
 
     init {
-        register("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer") { classNode: ClassNode ->
-            transformHeldItemRenderer(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/MinecraftClient") { classNode: ClassNode ->
-            transformMinecraftClient(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer") { classNode: ClassNode ->
-            transformArmorFeatureRenderer(
-                classNode
-            )
-        }
+        register("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer", this::transformHeldItemRenderer)
+        register("v1_8_9/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
+        register("v1_8_9/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer", this::transformArmorFeatureRenderer)
     }
 
     private fun transformHeldItemRenderer(classNode: ClassNode) {
-        val method1354 = Identifier.parse("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_1354(F)V")
-        val method9873 = Identifier.parse("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_9873(FF)V")
+        val method1354 = "v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_1354(F)V".toIdentifier()
+        val method9873 = "v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_9873(FF)V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == method1354.methodName && methodNode.desc == method1354.methodDesc) {
                 for (node in methodNode.instructions) {
@@ -51,7 +40,7 @@ class OldAnimationsTransformer : Transformer() {
     }
 
     private fun transformMinecraftClient(classNode: ClassNode) {
-        val tick = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#tick()V")
+        val tick = "v1_8_9/net/minecraft/client/MinecraftClient#tick()V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == tick.methodName && methodNode.desc == tick.methodDesc) {
                 methodNode.instructions.insert(
@@ -68,7 +57,7 @@ class OldAnimationsTransformer : Transformer() {
 
     private fun transformArmorFeatureRenderer(classNode: ClassNode) {
         val combineTextures =
-            Identifier.parse("v1_8_9/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer#combineTextures()Z")
+            "v1_8_9/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer#combineTextures()Z".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == combineTextures.methodName && methodNode.desc == combineTextures.methodDesc) {
                 val insnList = InsnList()

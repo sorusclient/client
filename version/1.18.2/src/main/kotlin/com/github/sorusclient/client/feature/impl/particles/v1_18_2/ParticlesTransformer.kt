@@ -1,10 +1,11 @@
 package com.github.sorusclient.client.feature.impl.particles.v1_18_2
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.tree.ClassNode
 
+@Suppress("UNUSED")
 class ParticlesTransformer: Transformer() {
 
     init {
@@ -14,7 +15,7 @@ class ParticlesTransformer: Transformer() {
     }
 
     private fun transformEmitterParticle(classNode: ClassNode) {
-        val tick = Identifier.parse("v1_18_2/net/minecraft/client/particle/EmitterParticle#tick()V")
+        val tick = "v1_18_2/net/minecraft/client/particle/EmitterParticle#tick()V".toIdentifier()
         findMethod(classNode, tick)
                 .apply { methodNode ->
                     findValues(methodNode, 16)
@@ -25,7 +26,7 @@ class ParticlesTransformer: Transformer() {
     }
 
     private fun transformPlayerEntity(classNode: ClassNode) {
-        val attack = Identifier.parse("v1_18_2/net/minecraft/entity/player/PlayerEntity#attack(Lv1_18_2/net/minecraft/entity/Entity;)V")
+        val attack = "v1_18_2/net/minecraft/entity/player/PlayerEntity#attack(Lv1_18_2/net/minecraft/entity/Entity;)V".toIdentifier()
 
         findMethod(classNode, attack)
                 .apply { methodNode ->

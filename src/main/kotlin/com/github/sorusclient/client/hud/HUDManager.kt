@@ -57,7 +57,7 @@ object HUDManager {
     private var hoveredAddButton = false
 
     var isHudEditScreenOpen = AtomicBoolean(false)
-    var prevIsHudEditScreenOpen = false
+    private var prevIsHudEditScreenOpen = false
 
     private lateinit var addHudUI: Container
 
@@ -239,34 +239,44 @@ object HUDManager {
         hotBar.addAttached(null, AttachType(0.0, 0.0, Axis.X))
         hotBar.addAttached(null, AttachType(1.0, 1.0, Axis.Y))
         add(hotBar)
+
         val experience = Experience()
         experience.addAttached(hotBar, AttachType(0.0, 0.0, Axis.X))
         experience.addAttached(hotBar, AttachType(1.0, -1.0, Axis.Y))
         add(experience)
+
         hotBar.addAttached(experience, AttachType(0.0, 0.0, Axis.X))
         hotBar.addAttached(experience, AttachType(-1.0, 1.0, Axis.Y))
+
         val health = Health()
         health.addAttached(experience, AttachType(-1.0, -1.0, Axis.X))
         health.addAttached(experience, AttachType(1.0, -1.0, Axis.Y))
         add(health)
+
         experience.addAttached(health, AttachType(-1.0, -1.0, Axis.X))
         experience.addAttached(health, AttachType(-1.0, 1.0, Axis.Y))
+
         val armor = Armor()
         armor.addAttached(health, AttachType(-1.0, -1.0, Axis.X))
         armor.addAttached(health, AttachType(1.0, -1.0, Axis.Y))
         add(armor)
+
         health.addAttached(armor, AttachType(-1.0, -1.0, Axis.X))
         health.addAttached(armor, AttachType(-1.0, 1.0, Axis.Y))
+
         val hunger = Hunger()
         hunger.addAttached(experience, AttachType(1.0, 1.0, Axis.X))
         hunger.addAttached(experience, AttachType(1.0, -1.0, Axis.Y))
         add(hunger)
+
         experience.addAttached(hunger, AttachType(1.0, 1.0, Axis.X))
         experience.addAttached(hunger, AttachType(-1.0, 1.0, Axis.Y))
+
         val bossBar = BossBar()
         bossBar.addAttached(null, AttachType(0.0, 0.0, Axis.X))
         bossBar.addAttached(null, AttachType(-1.0, -1.0, Axis.Y))
         add(bossBar)
+
         val sideBar = SideBar()
         sideBar.addAttached(null, AttachType(1.0, 1.0, Axis.X))
         sideBar.addAttached(null, AttachType(0.0, 0.0, Axis.Y))
@@ -274,45 +284,41 @@ object HUDManager {
     }
 
     fun initialize() {
-        val eventManager = EventManager
-        eventManager.register { _: RenderInGameEvent ->
-            render()
-        }
-        eventManager.register(this::onClick)
+        EventManager.apply {
+            register<RenderInGameEvent> { render() }
+            register(this@HUDManager::onClick)
+            register<InitializeEvent> { initializeUserInterface() }
 
-        KeyBindManager.register(KeyBind({ listOf(Key.ESCAPE) }, {pressed ->
+            register { event: KeyEvent ->
+                if (event.isPressed && !event.isRepeat && event.key === Key.U) {
+                    initializeUserInterface()
+                }
+            }
+        }
+
+        KeyBindManager.register(KeyBind({ listOf(Key.ESCAPE) }, { pressed ->
             if (pressed) {
                 isHudEditScreenOpen.set(false)
             }
         }))
-
-        eventManager.register<InitializeEvent> {
-            initializeUserInterface()
-        }
-
-        eventManager.register { event: KeyEvent ->
-            if (event.isPressed && !event.isRepeat && event.key === Key.U) {
-                initializeUserInterface()
-            }
-        }
     }
 
     private fun initializePossibleElements() {
-        registerPossibleElement(Armor::class.java, "Armor", "yes yersy")
-        registerPossibleElement(BossBar::class.java, "BossBar", "yes yersy")
-        registerPossibleElement(Coordinates::class.java, "Coordinates", "yes yersy")
-        registerPossibleElement(CPS::class.java, "CPS", "yes yersy")
-        registerPossibleElement(Experience::class.java, "Experience", "yes yersy")
-        registerPossibleElement(FPS::class.java, "FPS", "yes yersy")
-        registerPossibleElement(Health::class.java, "Health", "yes yersy")
-        registerPossibleElement(HotBar::class.java, "HotBar", "yes yersy")
-        registerPossibleElement(Hunger::class.java, "Hunger", "yes yersy")
-        registerPossibleElement(Potions::class.java, "PotionStatus", "yes yersy")
-        registerPossibleElement(SideBar::class.java, "Sidebar", "yes yersy")
-        registerPossibleElement(Timer::class.java, "Timer", "yes yersy")
+        register(Armor::class.java, "Armor", "yes yersy")
+        register(BossBar::class.java, "BossBar", "yes yersy")
+        register(Coordinates::class.java, "Coordinates", "yes yersy")
+        register(CPS::class.java, "CPS", "yes yersy")
+        register(Experience::class.java, "Experience", "yes yersy")
+        register(FPS::class.java, "FPS", "yes yersy")
+        register(Health::class.java, "Health", "yes yersy")
+        register(HotBar::class.java, "HotBar", "yes yersy")
+        register(Hunger::class.java, "Hunger", "yes yersy")
+        register(Potions::class.java, "PotionStatus", "yes yersy")
+        register(SideBar::class.java, "Sidebar", "yes yersy")
+        register(Timer::class.java, "Timer", "yes yersy")
     }
 
-    private fun registerPossibleElement(hudClass: Class<out HUDElement>, name: String, description: String) {
+    private fun register(hudClass: Class<out HUDElement>, name: String, description: String) {
         possibleHuds.add(HUDData(hudClass, name, description))
     }
 

@@ -5,6 +5,7 @@ import com.github.sorusclient.client.adapter.Button
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_18_2.Util
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.event.call
 import v1_18_2.org.lwjgl.opengl.GL11
 import v1_18_2.org.lwjgl.opengl.GL11C
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
@@ -15,10 +16,8 @@ object EventHook {
     @JvmStatic
     @Suppress("Unused")
     fun onInGameRender() {
-        //val textureEnabled = GL11C.glIsEnabled(GL11C.GL_TEXTURE_2D)
         val blendEnabled = GL11C.glIsEnabled(GL11C.GL_BLEND)
-        EventManager.call(RenderInGameEvent())
-        //setEnabled(GL11C.GL_TEXTURE_2D, textureEnabled)
+        RenderInGameEvent().call()
         setEnabled(GL11C.GL_BLEND, blendEnabled)
     }
 
@@ -45,7 +44,7 @@ object EventHook {
     @Suppress("Unused")
     fun onSideBarRender(): SideBarRenderEvent {
         val event = SideBarRenderEvent()
-        EventManager.call(event)
+        event.call()
         return event
     }
 
@@ -53,7 +52,7 @@ object EventHook {
     @Suppress("Unused")
     fun onBossBarRender(): BossBarRenderEvent {
         val event = BossBarRenderEvent()
-        EventManager.call(event)
+        event.call()
         return event
     }
 
@@ -61,7 +60,7 @@ object EventHook {
     @Suppress("Unused")
     fun onHotBarRender(): HotBarRenderEvent {
         val event = HotBarRenderEvent()
-        EventManager.call(event)
+        event.call()
         return event
     }
 
@@ -69,7 +68,7 @@ object EventHook {
     @Suppress("Unused")
     fun onExperienceBarRender(): ExperienceBarRenderEvent {
         val event = ExperienceBarRenderEvent()
-        EventManager.call(event)
+        event.call()
         return event
     }
 
@@ -77,7 +76,7 @@ object EventHook {
     @Suppress("Unused")
     fun onHealthBarRender(): HealthBarRenderEvent {
         val event = HealthBarRenderEvent()
-        EventManager.call(event)
+        event.call()
         return event
     }
 
@@ -85,7 +84,7 @@ object EventHook {
     @Suppress("Unused")
     fun onArmorBarRender(): ArmorBarRenderEvent {
         val event = ArmorBarRenderEvent()
-        EventManager.call(event)
+        event.call()
         return event
     }
 
@@ -93,7 +92,7 @@ object EventHook {
     @Suppress("Unused")
     fun onHungerBarRender(): HungerBarRenderEvent {
         val event = HungerBarRenderEvent()
-        EventManager.call(event)
+        event.call()
         return event
     }
 
@@ -102,29 +101,27 @@ object EventHook {
     fun onKey(keyCode: Int, action: Int) {
         val pressed = action == 1 || action == 2
         val repeat = action == 2
-        EventManager.call(KeyEvent(Util.getKey(keyCode), pressed, repeat))
+        KeyEvent(Util.getKey(keyCode), pressed, repeat).call()
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onChar(char: Int) {
-        EventManager.call(KeyCharEvent(char.toChar()))
+        KeyCharEvent(char.toChar()).call()
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onInitialize() {
         val event = InitializeEvent()
-        EventManager.call(event)
+        event.call()
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onRender() {
-        //val textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
         val blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND)
-        EventManager.call(RenderEvent())
-        //EventHook.setEnabled(GL11.GL_TEXTURE_2D, textureEnabled)
+        RenderEvent().call()
         setEnabled(GL11.GL_BLEND, blendEnabled)
     }
 
@@ -137,15 +134,7 @@ object EventHook {
         val pressed = state == 1
         val x = AdapterManager.adapter.mouseLocation[0]
         val y = AdapterManager.adapter.mouseLocation[1]
-        EventManager.call(
-            MouseEvent(
-                Util.getButton(buttonCode),
-                pressed,
-                x,
-                y,
-                0.0
-            )
-        )
+        MouseEvent(Util.getButton(buttonCode), pressed, x, y, 0.0).call()
 
         pressedButton = Util.getButton(buttonCode)
         this.pressed = pressed
@@ -156,15 +145,7 @@ object EventHook {
     fun onMouseMove() {
         val x = AdapterManager.adapter.mouseLocation[0]
         val y = AdapterManager.adapter.mouseLocation[1]
-        EventManager.call(
-            MouseEvent(
-                Button.NONE,
-                false,
-                x,
-                y,
-                0.0
-            )
-        )
+        MouseEvent(Button.NONE, false, x, y, 0.0).call()
     }
 
     @JvmStatic
@@ -172,22 +153,14 @@ object EventHook {
     fun onMouseScroll(amount: Double) {
         val x = AdapterManager.adapter.mouseLocation[0]
         val y = AdapterManager.adapter.mouseLocation[1]
-        EventManager.call(
-            MouseEvent(
-                Button.UNKNOWN,
-                false,
-                x,
-                y,
-                amount
-            )
-        )
+        MouseEvent(Button.UNKNOWN, false, x, y, amount).call()
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onTick() {
         val event = TickEvent()
-        EventManager.call(event)
+        event.call()
     }
 
     @JvmStatic
@@ -213,7 +186,6 @@ object EventHook {
     @JvmStatic
     @Suppress("Unused")
     fun onUseProgram(program: Int) {
-        //println(program)
         lastBoundProgram = program
     }
 
@@ -221,7 +193,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetFOV(fov: Double): Double {
         val event = GetFOVEvent(fov)
-        EventManager.call(event)
+        event.call()
         return event.fov
     }
 
@@ -229,7 +201,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetSensitivity(sensitivity: Double): Double {
         val event = GetSensitivityEvent(sensitivity)
-        EventManager.call(event)
+        event.call()
         return event.sensitivity
     }
 
@@ -243,7 +215,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetUseCinematicCamera(useCinematicCamera: Boolean): Boolean {
         val event = GetUseCinematicCamera(useCinematicCamera)
-        EventManager.call(event)
+        event.call()
         return event.useCinematicCamera
     }
 
@@ -251,7 +223,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetGamma(gamma: Float): Float {
         val event = GetGammaEvent(gamma.toDouble())
-        EventManager.call(event)
+        event.call()
         return event.gamma.toFloat()
     }
 
@@ -259,20 +231,20 @@ object EventHook {
     @Suppress("Unused")
     fun onCustomPayload(packet: CustomPayloadS2CPacket) {
         if (packet.channel.namespace.equals("sorus")) {
-            EventManager.call(SorusCustomPacketEvent(packet.channel.path, packet.data.readString(32767)))
+            SorusCustomPacketEvent(packet.channel.path, packet.data.readString(32767)).call()
         }
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onGameJoin() {
-        EventManager.call(GameJoinEvent())
+        GameJoinEvent().call()
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onDisconnect() {
-        EventManager.call(GameLeaveEvent())
+        GameLeaveEvent().call()
     }
 
 }

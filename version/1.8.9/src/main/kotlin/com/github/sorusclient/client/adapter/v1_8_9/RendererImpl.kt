@@ -1,12 +1,12 @@
 package com.github.sorusclient.client.adapter.v1_8_9
 
-import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.IRenderer
 import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.RenderBuffer.DrawMode
 import com.github.sorusclient.client.adapter.event.RenderEvent
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.util.Color
 import org.apache.commons.io.IOUtils
 import v1_8_9.org.lwjgl.BufferUtils
@@ -670,7 +670,7 @@ class RendererImpl : IRenderer {
     private val loadShader: Method
 
     init {
-        val loadShader = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#loadShader(Lv1_8_9/net/minecraft/util/Identifier;)V")
+        val loadShader = "v1_8_9/net/minecraft/client/render/GameRenderer#loadShader(Lv1_8_9/net/minecraft/util/Identifier;)V".toIdentifier()
         this.loadShader = GameRenderer::class.java.getDeclaredMethod(loadShader.methodName, v1_8_9.net.minecraft.util.Identifier::class.java)
         this.loadShader.isAccessible = true
     }

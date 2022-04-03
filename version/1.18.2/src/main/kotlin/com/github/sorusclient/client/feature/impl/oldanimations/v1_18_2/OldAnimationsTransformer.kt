@@ -1,23 +1,20 @@
 package com.github.sorusclient.client.feature.impl.oldanimations.v1_18_2
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
+@Suppress("UNUSED")
 class OldAnimationsTransformer : Transformer() {
 
     init {
         setHookClass(OldAnimationsHook::class.java)
-        register("v1_18_2/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer") { classNode: ClassNode ->
-            transformArmorFeatureRenderer(
-                classNode
-            )
-        }
+        register("v1_18_2/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer", this::transformArmorFeatureRenderer)
     }
 
     private fun transformArmorFeatureRenderer(classNode: ClassNode) {
-        val renderArmor = Identifier.parse("v1_18_2/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer#renderArmor(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumerProvider;Lv1_18_2/net/minecraft/entity/LivingEntity;Lv1_18_2/net/minecraft/entity/EquipmentSlot;ILv1_18_2/net/minecraft/client/render/entity/model/BipedEntityModel;)V")
+        val renderArmor = "v1_18_2/net/minecraft/client/render/entity/feature/ArmorFeatureRenderer#renderArmor(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumerProvider;Lv1_18_2/net/minecraft/entity/LivingEntity;Lv1_18_2/net/minecraft/entity/EquipmentSlot;ILv1_18_2/net/minecraft/client/render/entity/model/BipedEntityModel;)V".toIdentifier()
 
         findMethod(classNode, renderArmor)
             .apply { methodNode ->

@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.adapter.v1_8_9.event
 
-import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.event.*
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier.Insert
 import com.github.sorusclient.client.transform.Applier.InsertAfter
 import com.github.sorusclient.client.transform.Applier.InsertBefore
@@ -14,44 +14,24 @@ class EventTransformer : Transformer() {
 
     init {
         setHookClass(EventHook::class.java)
-        register("v1_8_9/net/minecraft/client/render/GameRenderer") { classNode: ClassNode ->
-            transformGameRenderer(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/MinecraftClient") { classNode: ClassNode ->
-            transformMinecraftClient(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/gui/screen/Screen") { classNode: ClassNode -> transformScreen(classNode) }
-        register("v1_8_9/net/minecraft/client/gui/hud/InGameHud") { classNode: ClassNode -> transformInGameHud(classNode) }
-        register("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler") { classNode: ClassNode ->
-            transformClientPlayerNetworkHandler(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/gui/hud/ChatHud") { classNode: ClassNode ->
-            transformChatHud(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/ClientBrandRetriever") { classNode: ClassNode ->
-            transformClientBrandRetriever(
-                    classNode
-            )
-        }
+        register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
+        register("v1_8_9/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
+        register("v1_8_9/net/minecraft/client/gui/screen/Screen", this::transformScreen)
+        register("v1_8_9/net/minecraft/client/gui/hud/InGameHud", this::transformInGameHud)
+        register("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler", this::transformClientPlayerNetworkHandler)
+        register("v1_8_9/net/minecraft/client/gui/hud/ChatHud", this::transformChatHud)
+        register("v1_8_9/net/minecraft/client/ClientBrandRetriever", this::transformClientBrandRetriever)
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {
-        val render = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#render(FJ)V")
+        val render = "v1_8_9/net/minecraft/client/render/GameRenderer#render(FJ)V".toIdentifier()
         findMethod(classNode, render)
             .apply { methodNode: MethodNode ->
                 findReturns(methodNode)
                     .apply(InsertBefore(methodNode, this.getHook("onRender")))
             }
 
-        val getFov = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#getFov(FZ)F")
+        val getFov = "v1_8_9/net/minecraft/client/render/GameRenderer#getFov(FZ)F".toIdentifier()
 
         findMethod(classNode, getFov)
                 .apply { methodNode ->
@@ -71,7 +51,7 @@ class EventTransformer : Transformer() {
                 }
 
 
-        val updateLightmap = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#updateLightmap(F)V")
+        val updateLightmap = "v1_8_9/net/minecraft/client/render/GameRenderer#updateLightmap(F)V".toIdentifier()
 
         findMethod(classNode, updateLightmap)
                 .apply { methodNode ->
@@ -82,8 +62,8 @@ class EventTransformer : Transformer() {
                             }))
                 }
 
-        val tick = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#tick()V")
-        val smoothCameraEnabled = Identifier.parse("v1_8_9/net/minecraft/client/options/GameOptions#smoothCameraEnabled")
+        val tick = "v1_8_9/net/minecraft/client/render/GameRenderer#tick()V".toIdentifier()
+        val smoothCameraEnabled = "v1_8_9/net/minecraft/client/options/GameOptions#smoothCameraEnabled".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == render.methodName && methodNode.desc == render.methodDesc) {
                 for (node in methodNode.instructions.toArray()) {
@@ -107,8 +87,8 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformMinecraftClient(classNode: ClassNode) {
-        val handleKeyInput = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#handleKeyInput()V")
-        val connect = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#connect(Lv1_8_9/net/minecraft/client/world/ClientWorld;Ljava/lang/String;)V")
+        val handleKeyInput = "v1_8_9/net/minecraft/client/MinecraftClient#handleKeyInput()V".toIdentifier()
+        val connect = "v1_8_9/net/minecraft/client/MinecraftClient#connect(Lv1_8_9/net/minecraft/client/world/ClientWorld;Ljava/lang/String;)V".toIdentifier()
         findMethod(classNode, handleKeyInput)
             .apply(Insert(this.getHook("onKey")))
         findMethod(classNode, connect)
@@ -118,8 +98,8 @@ class EventTransformer : Transformer() {
                 insnList.add(this.getHook("onConnect"))
             }))
 
-        val initializeGame = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#initializeGame()V")
-        val createContext = Identifier.parse("v1_8_9/com/mojang/blaze3d/platform/GLX#createContext()V")
+        val initializeGame = "v1_8_9/net/minecraft/client/MinecraftClient#initializeGame()V".toIdentifier()
+        val createContext = "v1_8_9/com/mojang/blaze3d/platform/GLX#createContext()V".toIdentifier()
         findMethod(classNode, initializeGame)
                 .apply { methodNode ->
                     findMethodCalls(methodNode, createContext)
@@ -128,20 +108,20 @@ class EventTransformer : Transformer() {
                             }))
                 }
 
-        val tick = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#tick()V")
+        val tick = "v1_8_9/net/minecraft/client/MinecraftClient#tick()V".toIdentifier()
         findMethod(classNode, tick)
                 .apply(Insert(createList { insnList ->
                     insnList.add(this.getHook("onTick"))
                 }))
 
-        val openScreen = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#openScreen(Lv1_8_9/net/minecraft/client/gui/Screen;)V")
+        val openScreen = "v1_8_9/net/minecraft/client/MinecraftClient#openScreen(Lv1_8_9/net/minecraft/client/gui/Screen;)V".toIdentifier()
         findMethod(classNode, openScreen)
             .apply(Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
                 insnList.add(this.getHook("onOpenScreen"))
             }))
 
-        val getEventButton = Identifier.parse("org/lwjgl/input/Mouse#getEventButton()I")
+        val getEventButton = "org/lwjgl/input/Mouse#getEventButton()I".toIdentifier()
 
         findMethod(classNode, tick)
             .apply { methoNode ->
@@ -153,14 +133,14 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformScreen(classNode: ClassNode) {
-        val handleMouse = Identifier.parse("v1_8_9/net/minecraft/client/gui/screen/Screen#handleMouse()V")
+        val handleMouse = "v1_8_9/net/minecraft/client/gui/screen/Screen#handleMouse()V".toIdentifier()
         findMethod(classNode, handleMouse)
             .apply(Insert(this.getHook("onMouse")))
     }
 
     private fun transformInGameHud(classNode: ClassNode) {
-        val render = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#render(F)V")
-        val setupHudMatrixMode = Identifier.parse("v1_8_9/net/minecraft/client/render/GameRenderer#setupHudMatrixMode()V")
+        val render = "v1_8_9/net/minecraft/client/gui/hud/InGameHud#render(F)V".toIdentifier()
+        val setupHudMatrixMode = "v1_8_9/net/minecraft/client/render/GameRenderer#setupHudMatrixMode()V".toIdentifier()
 
         findMethod(classNode, render)
             .apply { methodNode: MethodNode ->
@@ -168,9 +148,9 @@ class EventTransformer : Transformer() {
                     .apply(InsertAfter(methodNode, this.getHook("onInGameRender")))
             }
 
-        val renderStatusBars = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderStatusBars(Lv1_8_9/net/minecraft/client/util/Window;)V")
-        val push = Identifier.parse("v1_8_9/net/minecraft/util/profiler/Profiler#push(Ljava/lang/String;)V")
-        val swap = Identifier.parse("v1_8_9/net/minecraft/util/profiler/Profiler#swap(Ljava/lang/String;)V")
+        val renderStatusBars = "v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderStatusBars(Lv1_8_9/net/minecraft/client/util/Window;)V".toIdentifier()
+        val push = "v1_8_9/net/minecraft/util/profiler/Profiler#push(Ljava/lang/String;)V".toIdentifier()
+        val swap = "v1_8_9/net/minecraft/util/profiler/Profiler#swap(Ljava/lang/String;)V".toIdentifier()
         findMethod(classNode, renderStatusBars)
             .apply { methodNode: MethodNode ->
                 val labelNode = LabelNode()
@@ -195,8 +175,8 @@ class EventTransformer : Transformer() {
                     }
             }
 
-        val renderBossBar = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderBossBar()V")
-        val framesToLive = Identifier.parse("v1_8_9/net/minecraft/entity/boss/BossBar#framesToLive")
+        val renderBossBar = "v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderBossBar()V".toIdentifier()
+        val framesToLive = "v1_8_9/net/minecraft/entity/boss/BossBar#framesToLive".toIdentifier()
         findMethod(classNode, renderBossBar)
             .apply { methodNode: MethodNode ->
                 findFieldReferences(methodNode, framesToLive, FieldReferenceType.PUT)
@@ -215,8 +195,7 @@ class EventTransformer : Transformer() {
                     }))
             }
 
-        val renderExperienceBar =
-            Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderExperienceBar(Lv1_8_9/net/minecraft/client/util/Window;I)V")
+        val renderExperienceBar = "v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderExperienceBar(Lv1_8_9/net/minecraft/client/util/Window;I)V".toIdentifier()
         findMethod(classNode, renderExperienceBar)
             .apply(Insert { methodNode: MethodNode ->
                 createList { insnList: InsnList ->
@@ -234,7 +213,7 @@ class EventTransformer : Transformer() {
                 }
             })
 
-        val vehicle = Identifier.parse("v1_8_9/net/minecraft/entity/player/PlayerEntity#vehicle")
+        val vehicle = "v1_8_9/net/minecraft/entity/player/PlayerEntity#vehicle".toIdentifier()
         findMethod(classNode, renderStatusBars)
             .apply { methodNode: MethodNode ->
                 val labelNode = LabelNode()
@@ -259,7 +238,7 @@ class EventTransformer : Transformer() {
                     }
             }
 
-        val renderHotBar = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderHotbar(Lv1_8_9/net/minecraft/client/util/Window;F)V")
+        val renderHotBar = "v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderHotbar(Lv1_8_9/net/minecraft/client/util/Window;F)V".toIdentifier()
         findMethod(classNode, renderHotBar)
             .apply(Insert { methodNode: MethodNode ->
                 createList { insnList: InsnList ->
@@ -300,8 +279,7 @@ class EventTransformer : Transformer() {
                         )
                     }
             }
-        val renderScoreboardObjective =
-            Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderScoreboardObjective(Lv1_8_9/net/minecraft/scoreboard/ScoreboardObjective;Lv1_8_9/net/minecraft/client/util/Window;)V")
+        val renderScoreboardObjective = "v1_8_9/net/minecraft/client/gui/hud/InGameHud#renderScoreboardObjective(Lv1_8_9/net/minecraft/scoreboard/ScoreboardObjective;Lv1_8_9/net/minecraft/client/util/Window;)V".toIdentifier()
         findMethod(classNode, renderScoreboardObjective)
             .apply(Insert { methodNode: MethodNode ->
                 createList { insnList: InsnList ->
@@ -321,7 +299,7 @@ class EventTransformer : Transformer() {
 
         for (methodNode in classNode.methods) {
             if (methodNode.name == render.methodName && methodNode.desc == render.methodDesc) {
-                val method9429 = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/InGameHud#method_9429()Z")
+                val method9429 = "v1_8_9/net/minecraft/client/gui/hud/InGameHud#method_9429()Z".toIdentifier()
                 for (node in methodNode.instructions) {
                     if (node is MethodInsnNode && node.owner == method9429.className && node.name == method9429.methodName && node.desc == method9429.methodDesc) {
                         val jumpInsnNode = node.getNext() as JumpInsnNode
@@ -344,8 +322,8 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformClientPlayerNetworkHandler(classNode: ClassNode) {
-        val onCustomPayload = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onCustomPayload(Lv1_8_9/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;)V")
-        val onGameJoin = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_8_9/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V")
+        val onCustomPayload = "v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onCustomPayload(Lv1_8_9/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;)V".toIdentifier()
+        val onGameJoin = "v1_8_9/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_8_9/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V".toIdentifier()
         findMethod(classNode, onCustomPayload)
             .apply(Insert(createList { insnList: InsnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
@@ -356,7 +334,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformChatHud(classNode: ClassNode) {
-        val addMessage = Identifier.parse("v1_8_9/net/minecraft/client/gui/hud/ChatHud#addMessage(Lv1_8_9/net/minecraft/text/Text;I)V")
+        val addMessage = "v1_8_9/net/minecraft/client/gui/hud/ChatHud#addMessage(Lv1_8_9/net/minecraft/text/Text;I)V".toIdentifier()
         findMethod(classNode, addMessage)
             .apply(Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
@@ -366,7 +344,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformClientBrandRetriever(classNode: ClassNode) {
-        val getClientModName = Identifier.parse("v1_8_9/net/minecraft/client/ClientBrandRetriever#getClientModName()Ljava/lang/String;")
+        val getClientModName = "v1_8_9/net/minecraft/client/ClientBrandRetriever#getClientModName()Ljava/lang/String;".toIdentifier()
 
         findMethod(classNode, getClientModName)
                 .apply { methodNode ->

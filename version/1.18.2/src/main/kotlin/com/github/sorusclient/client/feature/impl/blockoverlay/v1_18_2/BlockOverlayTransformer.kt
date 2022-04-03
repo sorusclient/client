@@ -1,11 +1,12 @@
 package com.github.sorusclient.client.feature.impl.blockoverlay.v1_18_2
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
+@Suppress("UNUSED")
 class BlockOverlayTransformer: Transformer() {
 
     init {
@@ -15,8 +16,8 @@ class BlockOverlayTransformer: Transformer() {
     }
 
     private fun transformWorldRenderer(classNode: ClassNode) {
-        val render = Identifier.parse("v1_18_2/net/minecraft/client/render/WorldRenderer#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;FJZLv1_18_2/net/minecraft/client/render/Camera;Lv1_18_2/net/minecraft/client/render/GameRenderer;Lv1_18_2/net/minecraft/client/render/LightmapTextureManager;Lv1_18_2/net/minecraft/util/math/Matrix4f;)V")
-        val drawBlockOutline = Identifier.parse("v1_18_2/net/minecraft/client/render/WorldRenderer#drawBlockOutline(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumer;Lv1_18_2/net/minecraft/entity/Entity;DDDLv1_18_2/net/minecraft/util/math/BlockPos;Lv1_18_2/net/minecraft/block/BlockState;)V")
+        val render = "v1_18_2/net/minecraft/client/render/WorldRenderer#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;FJZLv1_18_2/net/minecraft/client/render/Camera;Lv1_18_2/net/minecraft/client/render/GameRenderer;Lv1_18_2/net/minecraft/client/render/LightmapTextureManager;Lv1_18_2/net/minecraft/util/math/Matrix4f;)V".toIdentifier()
+        val drawBlockOutline = "v1_18_2/net/minecraft/client/render/WorldRenderer#drawBlockOutline(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumer;Lv1_18_2/net/minecraft/entity/Entity;DDDLv1_18_2/net/minecraft/util/math/BlockPos;Lv1_18_2/net/minecraft/block/BlockState;)V".toIdentifier()
 
         findMethod(classNode, render)
             .apply { methodNode ->
@@ -50,7 +51,7 @@ class BlockOverlayTransformer: Transformer() {
     }
 
     private fun transformRenderSystem(classNode: ClassNode) {
-        val lineWidth = Identifier.parse("v1_18_2/com/mojang/blaze3d/systems/RenderSystem#lineWidth(F)V")
+        val lineWidth = "v1_18_2/com/mojang/blaze3d/systems/RenderSystem#lineWidth(F)V".toIdentifier()
 
         findMethod(classNode, lineWidth)
             .apply(Applier.Insert(createList { insnList ->

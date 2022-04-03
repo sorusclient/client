@@ -21,24 +21,7 @@ import java.util.*
 
 object Sorus {
 
-    private val components: MutableMap<Class<*>, Any> = HashMap()
-
     fun initialize() {
-        this.register(ContainerRenderer)
-        this.register(EventManager)
-        this.register(FeatureManager)
-        this.register(HUDManager)
-        this.register(IAdapter::class.java, InterfaceManager.get<IAdapter>())
-        this.register(KeyBindManager)
-        this.register(NotificationManager)
-        this.register(PluginManager)
-        this.register(ServerIntegrationManager)
-        this.register(SettingManager)
-        this.register(SocialManager)
-        this.register(ThemeManager)
-        this.register(UserInterface)
-        this.register(WebSocketManager)
-
         PluginManager.findPlugins()
 
         HUDManager.initialize()
@@ -55,21 +38,13 @@ object Sorus {
 
         SettingManager.initialize()
 
-        EventManager.register<GetClientBrandEvent> { event ->
-            event.brand = "sorus"
+        EventManager.register<GetClientBrandEvent> {
+            it.brand = "sorus"
         }
 
         Runtime.getRuntime().addShutdownHook(Thread {
             SettingManager.saveCurrent()
         })
-    }
-
-    fun register(component: Any) {
-        this.register(component.javaClass, component)
-    }
-
-    fun register(clazz: Class<*>, component: Any) {
-        components[clazz] = component
     }
 
 }

@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.feature.impl.itemphysics.v1_18_2
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Applier.InsertBefore
 import com.github.sorusclient.client.transform.Transformer
@@ -9,20 +9,17 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
 
+@Suppress("UNUSED")
 class ItemPhysicsTransformer : Transformer() {
 
     init {
         setHookClass(ItemPhysicsHook::class.java)
-        register("v1_18_2/net/minecraft/client/render/entity/ItemEntityRenderer") { classNode: ClassNode ->
-            transformItemEntityRenderer(
-                classNode
-            )
-        }
+        register("v1_18_2/net/minecraft/client/render/entity/ItemEntityRenderer", this::transformItemEntityRenderer)
     }
 
     private fun transformItemEntityRenderer(classNode: ClassNode) {
-        val render = Identifier.parse("v1_18_2/net/minecraft/client/render/entity/ItemEntityRenderer#render(Lv1_18_2/net/minecraft/entity/ItemEntity;FFLv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumerProvider;I)V")
-        val push = Identifier.parse("v1_18_2/net/minecraft/client/util/math/MatrixStack#push()V")
+        val render = "v1_18_2/net/minecraft/client/render/entity/ItemEntityRenderer#render(Lv1_18_2/net/minecraft/entity/ItemEntity;FFLv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/client/render/VertexConsumerProvider;I)V".toIdentifier()
+        val push = "v1_18_2/net/minecraft/client/util/math/MatrixStack#push()V".toIdentifier()
 
         findMethod(classNode, render)
             .apply { methodNode: MethodNode ->

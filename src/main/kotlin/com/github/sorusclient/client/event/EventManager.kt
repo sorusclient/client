@@ -1,21 +1,19 @@
 package com.github.sorusclient.client.event
 
-import java.util.function.Consumer
-
 object EventManager {
 
-    val consumers: MutableMap<Class<Event>, MutableList<Consumer<Event>>> = HashMap()
+    val consumers: MutableMap<Class<*>, MutableList<(Any) -> Unit>> = HashMap()
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : Event> register(consumer: Consumer<T>) {
-        consumers.computeIfAbsent(T::class.java as Class<Event>) { ArrayList() }
-            .add(consumer as Consumer<Event>)
+    inline fun <reified T> register(noinline consumer: (T) -> Unit) {
+        consumers.computeIfAbsent(T::class.java as Class<*>) { ArrayList() }
+            .add(consumer as (Any) -> Unit)
     }
 
-    fun call(event: Event) {
+    fun call(event: Any) {
         val consumers = consumers[event.javaClass] ?: return
         for (consumer in consumers) {
-            consumer.accept(event)
+            consumer(event)
         }
     }
 

@@ -1,30 +1,23 @@
 package com.github.sorusclient.client.feature.impl.togglesprintsneak.v1_8_9
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier.InsertAfter
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
 
+@Suppress("UNUSED")
 class ToggleSprintSneakTransformer : Transformer() {
 
     init {
         setHookClass(ToggleSprintSneakHook::class.java)
-        register("v1_8_9/net/minecraft/client/network/ClientPlayerEntity") { classNode: ClassNode ->
-            transformClientPlayerEntity(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/input/KeyboardInput") { classNode: ClassNode ->
-            transformKeyboardInput(
-                classNode
-            )
-        }
+        register("v1_8_9/net/minecraft/client/network/ClientPlayerEntity", this::transformClientPlayerEntity)
+        register("v1_8_9/net/minecraft/client/input/KeyboardInput", this::transformKeyboardInput)
     }
 
     private fun transformClientPlayerEntity(classNode: ClassNode) {
-        val tickMovement = Identifier.parse("v1_8_9/net/minecraft/client/network/ClientPlayerEntity#tickMovement()V")
-        val isPressed = Identifier.parse("v1_8_9/net/minecraft/client/options/KeyBinding#isPressed()Z")
+        val tickMovement = "v1_8_9/net/minecraft/client/network/ClientPlayerEntity#tickMovement()V".toIdentifier()
+        val isPressed = "v1_8_9/net/minecraft/client/options/KeyBinding#isPressed()Z".toIdentifier()
         findMethod(classNode, tickMovement)
             .apply { methodNode: MethodNode ->
                 findMethodCalls(methodNode, isPressed)
@@ -33,8 +26,8 @@ class ToggleSprintSneakTransformer : Transformer() {
     }
 
     private fun transformKeyboardInput(classNode: ClassNode) {
-        val method1302 = Identifier.parse("v1_8_9/net/minecraft/client/input/KeyboardInput#method_1302()V")
-        val isPressed = Identifier.parse("v1_8_9/net/minecraft/client/options/KeyBinding#isPressed()Z")
+        val method1302 = "v1_8_9/net/minecraft/client/input/KeyboardInput#method_1302()V".toIdentifier()
+        val isPressed = "v1_8_9/net/minecraft/client/options/KeyBinding#isPressed()Z".toIdentifier()
         findMethod(classNode, method1302)
             .apply { methodNode: MethodNode ->
                 findMethodCalls(methodNode, isPressed)

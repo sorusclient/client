@@ -1,62 +1,29 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
-import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
+@Suppress("UNUSED")
 class EnhancementsTransformer : Transformer() {
 
     init {
         this.setHookClass(EnhancementsHook::class.java)
 
-        register("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer") { classNode: ClassNode ->
-            transformHeldItemRenderer(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/gui/screen/ingame/InventoryScreen") { classNode: ClassNode ->
-            transformInventoryScreen(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher") { classNode: ClassNode ->
-            transformEntityRenderDispatcher(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/entity/LivingEntity") { classNode: ClassNode ->
-            transformLivingEntity(
-                classNode
-            )
-        }
-        register("org/lwjgl/opengl/LinuxKeyboard") { classNode: ClassNode ->
-            transformLinuxKeyboard(
-                classNode
-            )
-        }
-        register("v1_8_9/net/minecraft/client/font/TextRenderer") { classNode: ClassNode ->
-            transformTextRenderer(
-                classNode
-            )
-        }
-
-        register("v1_8_9/net/minecraft/client/options/GameOptions") { classNode: ClassNode ->
-            transformGameOptions(
-                classNode
-            )
-        }
-
-        register("v1_8_9/net/minecraft/client/MinecraftClient") { classNode: ClassNode ->
-            transformMinecraftClient(
-                classNode
-            )
-        }
+        register("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer", this::transformHeldItemRenderer)
+        register("v1_8_9/net/minecraft/client/gui/screen/ingame/InventoryScreen", this::transformInventoryScreen)
+        register("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher", this::transformEntityRenderDispatcher)
+        register("v1_8_9/net/minecraft/entity/LivingEntity", this::transformLivingEntity)
+        register("org/lwjgl/opengl/LinuxKeyboard", this::transformLinuxKeyboard)
+        register("v1_8_9/net/minecraft/client/font/TextRenderer", this::transformTextRenderer)
+        register("v1_8_9/net/minecraft/client/options/GameOptions", this::transformGameOptions)
+        register("v1_8_9/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
     }
 
     private fun transformHeldItemRenderer(classNode: ClassNode) {
-        val method1362 = Identifier.parse("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_1362(F)V")
+        val method1362 = "v1_8_9/net/minecraft/client/render/item/HeldItemRenderer#method_1362(F)V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == method1362.methodName && methodNode.desc == method1362.methodDesc) {
                 methodNode.instructions.insert(
@@ -86,7 +53,7 @@ class EnhancementsTransformer : Transformer() {
 
     private fun transformInventoryScreen(classNode: ClassNode) {
         val applyStatusEffectOffset =
-            Identifier.parse("v1_8_9/net/minecraft/client/gui/screen/ingame/InventoryScreen#applyStatusEffectOffset()V")
+            "v1_8_9/net/minecraft/client/gui/screen/ingame/InventoryScreen#applyStatusEffectOffset()V".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == applyStatusEffectOffset.methodName && methodNode.desc == applyStatusEffectOffset.methodDesc) {
                 for (node in methodNode.instructions) {
@@ -108,9 +75,9 @@ class EnhancementsTransformer : Transformer() {
 
     private fun transformEntityRenderDispatcher(classNode: ClassNode) {
         val transformCamera =
-            Identifier.parse("v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher#method_10200(Lv1_8_9/net/minecraft/world/World;Lv1_8_9/net/minecraft/client/font/TextRenderer;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/client/options/GameOptions;F)V")
-        val pitch = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#pitch")
-        val prevPitch = Identifier.parse("v1_8_9/net/minecraft/entity/Entity#prevPitch")
+            "v1_8_9/net/minecraft/client/render/entity/EntityRenderDispatcher#method_10200(Lv1_8_9/net/minecraft/world/World;Lv1_8_9/net/minecraft/client/font/TextRenderer;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/entity/Entity;Lv1_8_9/net/minecraft/client/options/GameOptions;F)V".toIdentifier()
+        val pitch = "v1_8_9/net/minecraft/entity/Entity#pitch".toIdentifier()
+        val prevPitch = "v1_8_9/net/minecraft/entity/Entity#prevPitch".toIdentifier()
         for (methodNode in classNode.methods) {
             if (methodNode.name == transformCamera.methodName && methodNode.desc == transformCamera.methodDesc) {
                 for (insnNode in methodNode.instructions) {
@@ -136,9 +103,9 @@ class EnhancementsTransformer : Transformer() {
     }
 
     private fun transformLivingEntity(classNode: ClassNode) {
-        val getRotationVector = Identifier.parse("v1_8_9/net/minecraft/entity/LivingEntity#getRotationVector(F)Lv1_8_9/net/minecraft/util/math/Vec3d;")
-        val clientPlayerEntity = Identifier.parse("v1_8_9/net/minecraft/entity/player/ClientPlayerEntity")
-        val entity = Identifier.parse("v1_8_9/net/minecraft/entity/Entity")
+        val getRotationVector = "v1_8_9/net/minecraft/entity/LivingEntity#getRotationVector(F)Lv1_8_9/net/minecraft/util/math/Vec3d;".toIdentifier()
+        val clientPlayerEntity = "v1_8_9/net/minecraft/entity/player/ClientPlayerEntity".toIdentifier()
+        val entity = "v1_8_9/net/minecraft/entity/Entity".toIdentifier()
 
         findMethod(classNode, getRotationVector)
             .apply(Applier.Insert(createList { insnList ->
@@ -155,7 +122,7 @@ class EnhancementsTransformer : Transformer() {
     }
 
     private fun transformLinuxKeyboard(classNode: ClassNode) {
-        val getKeyCode = Identifier.parse("org/lwjgl/opengl/LinuxKeyboard#getKeycode(JI)I")
+        val getKeyCode = "org/lwjgl/opengl/LinuxKeyboard#getKeycode(JI)I".toIdentifier()
 
         findMethod(classNode, getKeyCode)
             .apply { methodNode ->
@@ -273,8 +240,8 @@ class EnhancementsTransformer : Transformer() {
     }
 
     private fun transformTextRenderer(classNode: ClassNode) {
-        val method_959 = Identifier.parse("v1_8_9/net/minecraft/client/font/TextRenderer#method_959(Ljava/lang/String;Z)V")
-        findMethod(classNode, method_959)
+        val method959 = "v1_8_9/net/minecraft/client/font/TextRenderer#method_959(Ljava/lang/String;Z)V".toIdentifier()
+        findMethod(classNode, method959)
             .apply { methodNode ->
                 findVarReferences(methodNode, 6, VarReferenceType.LOAD)
                     .nth(9)
@@ -284,7 +251,7 @@ class EnhancementsTransformer : Transformer() {
                     }))
             }
 
-        findMethod(classNode, method_959)
+        findMethod(classNode, method959)
             .apply { methodNode ->
                 findVarReferences(methodNode, 6, VarReferenceType.LOAD)
                     .nth(12)
@@ -296,8 +263,8 @@ class EnhancementsTransformer : Transformer() {
     }
 
     private fun transformGameOptions(classNode: ClassNode) {
-        val save = Identifier.parse("v1_8_9/net/minecraft/client/options/GameOptions#save()V")
-        val load = Identifier.parse("v1_8_9/net/minecraft/client/options/GameOptions#load()V")
+        val save = "v1_8_9/net/minecraft/client/options/GameOptions#save()V".toIdentifier()
+        val load = "v1_8_9/net/minecraft/client/options/GameOptions#load()V".toIdentifier()
 
         findMethod(classNode, save)
             .apply { methodNode ->
@@ -318,7 +285,7 @@ class EnhancementsTransformer : Transformer() {
     }
 
     private fun transformMinecraftClient(classNode: ClassNode) {
-        val stop = Identifier.parse("v1_8_9/net/minecraft/client/MinecraftClient#stop()V")
+        val stop = "v1_8_9/net/minecraft/client/MinecraftClient#stop()V".toIdentifier()
 
         findMethod(classNode, stop)
             .apply(Applier.Insert(createList { insnList ->

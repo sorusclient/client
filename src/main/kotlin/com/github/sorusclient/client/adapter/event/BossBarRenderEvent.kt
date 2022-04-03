@@ -1,5 +1,3 @@
 package com.github.sorusclient.client.adapter.event
 
-import com.github.sorusclient.client.event.EventCancelable
-
-class BossBarRenderEvent : EventCancelable()
+class BossBarRenderEvent : CancelableEvent()

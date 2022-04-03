@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.adapter.v1_18_2.event
 
-import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.event.*
+import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Applier.Insert
 import com.github.sorusclient.client.transform.Transformer
@@ -28,14 +28,14 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformInGameHud(classNode: ClassNode) {
-        val render = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/InGameHud#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;F)V")
+        val render = "v1_18_2/net/minecraft/client/gui/hud/InGameHud#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;F)V".toIdentifier()
 
         findMethod(classNode, render)
             .apply(Insert(createList { insnList ->
                 insnList.add(this.getHook("onInGameRender"))
             }))
 
-        val renderScoreboardSidebar = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderScoreboardSidebar(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/scoreboard/ScoreboardObjective;)V")
+        val renderScoreboardSidebar = "v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderScoreboardSidebar(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/scoreboard/ScoreboardObjective;)V".toIdentifier()
 
         findMethod(classNode, renderScoreboardSidebar)
             .apply(Insert(createList { insnList ->
@@ -48,7 +48,7 @@ class EventTransformer : Transformer() {
                 insnList.add(labelNode)
             }))
 
-        val renderHotbar = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderHotbar(FLv1_18_2/net/minecraft/client/util/math/MatrixStack;)V")
+        val renderHotbar = "v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderHotbar(FLv1_18_2/net/minecraft/client/util/math/MatrixStack;)V".toIdentifier()
 
         findMethod(classNode, renderHotbar)
             .apply(Insert(createList { insnList ->
@@ -61,7 +61,7 @@ class EventTransformer : Transformer() {
                 insnList.add(labelNode)
             }))
 
-        val renderExperienceBar = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderExperienceBar(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;I)V")
+        val renderExperienceBar = "v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderExperienceBar(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;I)V".toIdentifier()
 
         findMethod(classNode, renderExperienceBar)
             .apply(Insert(createList { insnList ->
@@ -74,7 +74,7 @@ class EventTransformer : Transformer() {
                 insnList.add(labelNode)
             }))
 
-        val renderHealthBar = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderHealthBar(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V")
+        val renderHealthBar = "v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderHealthBar(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;Lv1_18_2/net/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V".toIdentifier()
 
         findMethod(classNode, renderHealthBar)
             .apply(Insert(createList { insnList ->
@@ -87,7 +87,7 @@ class EventTransformer : Transformer() {
                 insnList.add(labelNode)
             }))
 
-        val renderStatusBars = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderStatusBars(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;)V")
+        val renderStatusBars = "v1_18_2/net/minecraft/client/gui/hud/InGameHud#renderStatusBars(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;)V".toIdentifier()
 
         findMethod(classNode, renderStatusBars)
             .apply { methodNode ->
@@ -137,7 +137,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformBossBarHud(classNode: ClassNode) {
-        val render = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/BossBarHud#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;)V")
+        val render = "v1_18_2/net/minecraft/client/gui/hud/BossBarHud#render(Lv1_18_2/net/minecraft/client/util/math/MatrixStack;)V".toIdentifier()
 
         findMethod(classNode, render)
             .apply(Insert(createList { insnList ->
@@ -152,7 +152,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformKeyboard(classNode: ClassNode) {
-        val onKey = Identifier.parse("v1_18_2/net/minecraft/client/Keyboard#onKey(JIIII)V")
+        val onKey = "v1_18_2/net/minecraft/client/Keyboard#onKey(JIIII)V".toIdentifier()
 
         findMethod(classNode, onKey)
             .apply { methodNode ->
@@ -164,8 +164,8 @@ class EventTransformer : Transformer() {
                     }))
             }
 
-        val onChar = Identifier.parse("v1_18_2/net/minecraft/client/Keyboard#onChar(JII)V")
-        val currentScreen = Identifier.parse("v1_18_2/net/minecraft/client/MinecraftClient#currentScreen")
+        val onChar = "v1_18_2/net/minecraft/client/Keyboard#onChar(JII)V".toIdentifier()
+        val currentScreen = "v1_18_2/net/minecraft/client/MinecraftClient#currentScreen".toIdentifier()
 
         findMethod(classNode, onChar)
             .apply { methodNode ->
@@ -179,8 +179,8 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformMinecraftClient(classNode: ClassNode) {
-        val init = Identifier.parse("v1_18_2/net/minecraft/client/MinecraftClient#<init>(Lv1_18_2/net/minecraft/client/RunArgs;)V")
-        val initRenderer = Identifier.parse("v1_18_2/com/mojang/blaze3d/systems/RenderSystem#initRenderer(IZ)V")
+        val init = "v1_18_2/net/minecraft/client/MinecraftClient#<init>(Lv1_18_2/net/minecraft/client/RunArgs;)V".toIdentifier()
+        val initRenderer = "v1_18_2/com/mojang/blaze3d/systems/RenderSystem#initRenderer(IZ)V".toIdentifier()
 
         findMethod(classNode, init, true)
             .apply { methodNode ->
@@ -190,14 +190,14 @@ class EventTransformer : Transformer() {
                     }))
             }
 
-        val tick = Identifier.parse("v1_18_2/net/minecraft/client/MinecraftClient#tick()V")
+        val tick = "v1_18_2/net/minecraft/client/MinecraftClient#tick()V".toIdentifier()
 
         findMethod(classNode, tick)
             .apply(Insert(createList { insnList ->
                 insnList.add(this.getHook("onTick"))
             }))
 
-        val disconnect = Identifier.parse("v1_18_2/net/minecraft/client/MinecraftClient#disconnect(Lv1_18_2/net/minecraft/client/gui/screen/Screen;)V")
+        val disconnect = "v1_18_2/net/minecraft/client/MinecraftClient#disconnect(Lv1_18_2/net/minecraft/client/gui/screen/Screen;)V".toIdentifier()
         findMethod(classNode, disconnect)
             .apply(Insert(createList { insnList: InsnList ->
                 insnList.add(this.getHook("onDisconnect"))
@@ -205,14 +205,14 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {
-        val render = Identifier.parse("v1_18_2/net/minecraft/client/render/GameRenderer#render(FJZ)V")
+        val render = "v1_18_2/net/minecraft/client/render/GameRenderer#render(FJZ)V".toIdentifier()
         findMethod(classNode, render)
             .apply { methodNode: MethodNode ->
                 findReturns(methodNode)
                     .apply(Applier.InsertBefore(methodNode, this.getHook("onRender")))
             }
 
-        val getFov = Identifier.parse("v1_18_2/net/minecraft/client/render/GameRenderer#getFov(Lv1_18_2/net/minecraft/client/render/Camera;FZ)D")
+        val getFov = "v1_18_2/net/minecraft/client/render/GameRenderer#getFov(Lv1_18_2/net/minecraft/client/render/Camera;FZ)D".toIdentifier()
 
         findMethod(classNode, getFov)
             .apply { methodNode ->
@@ -224,7 +224,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformMouse(classNode: ClassNode) {
-        val onMouseButton = Identifier.parse("v1_18_2/net/minecraft/client/Mouse#onMouseButton(JIII)V")
+        val onMouseButton = "v1_18_2/net/minecraft/client/Mouse#onMouseButton(JIII)V".toIdentifier()
 
         findMethod(classNode, onMouseButton)
             .apply { methodNode ->
@@ -236,7 +236,7 @@ class EventTransformer : Transformer() {
                     }))
             }
 
-        val onCursorPos = Identifier.parse("v1_18_2/net/minecraft/client/Mouse#onCursorPos(JDD)V")
+        val onCursorPos = "v1_18_2/net/minecraft/client/Mouse#onCursorPos(JDD)V".toIdentifier()
 
         findMethod(classNode, onCursorPos)
             .apply { methodNode ->
@@ -246,7 +246,7 @@ class EventTransformer : Transformer() {
                     }))
             }
 
-        val onMouseScroll = Identifier.parse("v1_18_2/net/minecraft/client/Mouse#onMouseScroll(JDD)V")
+        val onMouseScroll = "v1_18_2/net/minecraft/client/Mouse#onMouseScroll(JDD)V".toIdentifier()
 
         findMethod(classNode, onMouseScroll)
             .apply { methodNode ->
@@ -257,8 +257,8 @@ class EventTransformer : Transformer() {
                     }))
             }
 
-        val updateMouse = Identifier.parse("v1_18_2/net/minecraft/client/Mouse#updateMouse()V")
-        val smoothCameraEnabled = Identifier.parse("v1_18_2/net/minecraft/client/option/GameOptions#smoothCameraEnabled")
+        val updateMouse = "v1_18_2/net/minecraft/client/Mouse#updateMouse()V".toIdentifier()
+        val smoothCameraEnabled = "v1_18_2/net/minecraft/client/option/GameOptions#smoothCameraEnabled".toIdentifier()
 
         findMethod(classNode, updateMouse)
             .apply { methodNode ->
@@ -275,7 +275,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformGl30(classNode: ClassNode) {
-        val glUseProgram = Identifier.parse("org/lwjgl/opengl/GL30#glBindVertexArray(I)V")
+        val glUseProgram = "org/lwjgl/opengl/GL30#glBindVertexArray(I)V".toIdentifier()
         findMethod(classNode, glUseProgram)
             .apply(Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
@@ -284,7 +284,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformGl15(classNode: ClassNode) {
-        val glUseProgram = Identifier.parse("org/lwjgl/opengl/GL15#glBindBuffer(II)V")
+        val glUseProgram = "org/lwjgl/opengl/GL15#glBindBuffer(II)V".toIdentifier()
         findMethod(classNode, glUseProgram)
             .apply(Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
@@ -294,7 +294,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformGl20(classNode: ClassNode) {
-        val glUseProgram = Identifier.parse("org/lwjgl/opengl/GL20#glUseProgram(I)V")
+        val glUseProgram = "org/lwjgl/opengl/GL20#glUseProgram(I)V".toIdentifier()
         findMethod(classNode, glUseProgram)
             .apply(Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ILOAD, 0))
@@ -303,7 +303,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformWindow(classNode: ClassNode) {
-        val setTitle = Identifier.parse("v1_18_2/net/minecraft/client/util/Window#setTitle(Ljava/lang/String;)V")
+        val setTitle = "v1_18_2/net/minecraft/client/util/Window#setTitle(Ljava/lang/String;)V".toIdentifier()
         findMethod(classNode, setTitle)
             .apply(Insert(createList { insnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
@@ -316,7 +316,7 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformLightMapTextureManager(classNode: ClassNode) {
-        val update = Identifier.parse("v1_18_2/net/minecraft/client/render/LightmapTextureManager#update(F)V")
+        val update = "v1_18_2/net/minecraft/client/render/LightmapTextureManager#update(F)V".toIdentifier()
 
         findMethod(classNode, update)
             .apply { methodNode ->
@@ -329,8 +329,8 @@ class EventTransformer : Transformer() {
     }
 
     private fun transformClientPlayerNetworkHandler(classNode: ClassNode) {
-        val onCustomPayload = Identifier.parse("v1_18_2/net/minecraft/client/network/ClientPlayNetworkHandler#onCustomPayload(Lv1_18_2/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;)V")
-        val onGameJoin = Identifier.parse("v1_18_2/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_18_2/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V")
+        val onCustomPayload = "v1_18_2/net/minecraft/client/network/ClientPlayNetworkHandler#onCustomPayload(Lv1_18_2/net/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;)V".toIdentifier()
+        val onGameJoin = "v1_18_2/net/minecraft/client/network/ClientPlayNetworkHandler#onGameJoin(Lv1_18_2/net/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V".toIdentifier()
         findMethod(classNode, onCustomPayload)
             .apply(Insert(createList { insnList: InsnList ->
                 insnList.add(VarInsnNode(Opcodes.ALOAD, 1))

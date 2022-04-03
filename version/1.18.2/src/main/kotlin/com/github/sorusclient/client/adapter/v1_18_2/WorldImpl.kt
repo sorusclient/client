@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.adapter.v1_18_2
 
-import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.IBossBar
 import com.github.sorusclient.client.adapter.IScoreboard
 import com.github.sorusclient.client.adapter.IWorld
+import com.github.sorusclient.client.toIdentifier
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.gui.hud.BossBarHud
 import v1_18_2.net.minecraft.client.gui.hud.ClientBossBar
@@ -17,7 +17,7 @@ class WorldImpl(private val world: World) : IWorld {
         get() = ScoreboardImpl(world.scoreboard)
 
     private val bossBarsField: Field = run {
-        val bossBars = Identifier.parse("v1_18_2/net/minecraft/client/gui/hud/BossBarHud#bossBars")
+        val bossBars = "v1_18_2/net/minecraft/client/gui/hud/BossBarHud#bossBars".toIdentifier()
         val field = BossBarHud::class.java.getDeclaredField(bossBars.fieldName)
         field.isAccessible = true
         field
