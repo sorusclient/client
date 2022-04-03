@@ -1,8 +1,6 @@
 package com.github.sorusclient.client.adapter.v1_18_2.event
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Applier.Insert
@@ -11,11 +9,7 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
 @Suppress("UNUSED")
-class EventTransformer : Transformer(), Listener {
-
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(EventTransformer::class.java)
-    }
+class EventTransformer : Transformer() {
 
     init {
         setHookClass(EventHook::class.java)

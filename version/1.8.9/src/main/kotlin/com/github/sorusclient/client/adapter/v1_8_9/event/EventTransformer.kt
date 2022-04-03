@@ -1,8 +1,6 @@
 package com.github.sorusclient.client.adapter.v1_8_9.event
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.transform.Applier.Insert
 import com.github.sorusclient.client.transform.Applier.InsertAfter
@@ -12,14 +10,10 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
 @Suppress("UNUSED")
-class EventTransformer : Transformer(), Listener {
-
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(com.github.sorusclient.client.adapter.v1_8_9.event.EventTransformer::class.java)
-    }
+class EventTransformer : Transformer() {
 
     init {
-        setHookClass(com.github.sorusclient.client.adapter.v1_8_9.event.EventHook::class.java)
+        setHookClass(EventHook::class.java)
         register("v1_8_9/net/minecraft/client/render/GameRenderer") { classNode: ClassNode ->
             transformGameRenderer(
                 classNode
@@ -335,7 +329,7 @@ class EventTransformer : Transformer(), Listener {
                         insnList.add(
                             MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                com.github.sorusclient.client.adapter.v1_8_9.event.EventHook::class.java.name.replace(".", "/"),
+                                EventHook::class.java.name.replace(".", "/"),
                                 "onRenderCrosshair",
                                 "()Z"
                             )

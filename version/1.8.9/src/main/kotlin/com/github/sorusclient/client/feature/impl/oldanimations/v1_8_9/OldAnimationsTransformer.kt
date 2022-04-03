@@ -1,17 +1,11 @@
 package com.github.sorusclient.client.feature.impl.oldanimations.v1_8_9
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
-class OldAnimationsTransformer : Transformer(), Listener {
-
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(this.javaClass)
-    }
+class OldAnimationsTransformer : Transformer() {
 
     init {
         register("v1_8_9/net/minecraft/client/render/item/HeldItemRenderer") { classNode: ClassNode ->

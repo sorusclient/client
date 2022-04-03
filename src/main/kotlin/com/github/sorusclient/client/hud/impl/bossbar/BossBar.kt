@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.hud.impl.bossbar
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.util.Color
@@ -16,14 +16,14 @@ class BossBar : HUDElement("bossBar") {
         get() = "BossBar"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val bossBars = AdapterManager.getAdapter().world.bossBars
+        val bossBars = AdapterManager.adapter.world.bossBars
         if (bossBars.isEmpty()) return
 
         val percent = bossBars[0].percentage
-        val bossBarRenderer = GlassLoader.getInstance().getInterface(IBossBarRenderer::class.java)
+        val bossBarRenderer = InterfaceManager.get<IBossBarRenderer>()
 
         bossBarRenderer.renderBossBar(x + 1 * scale, y + 11 * scale, scale, percent, bossBars[0].color)
-        val renderer = AdapterManager.getAdapter().renderer
+        val renderer = AdapterManager.adapter.renderer
         val minecraftFontRenderer = renderer.getFontRenderer("minecraft")!!
         val bossBarName = bossBars[0].name!!
         minecraftFontRenderer.drawString(

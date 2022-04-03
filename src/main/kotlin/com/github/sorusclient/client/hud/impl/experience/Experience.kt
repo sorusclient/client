@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.hud.impl.experience
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.adapter.IFontRenderer
@@ -19,15 +19,13 @@ class Experience : HUDElement("experience") {
         get() = "Experience"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+        if (!(AdapterManager.adapter.gameMode == GameMode.SURVIVAL || AdapterManager.adapter.gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
 
-        val player = AdapterManager.getAdapter().player!!
+        val player = AdapterManager.adapter.player!!
         val experiencePercent = player.experiencePercentUntilNextLevel
-        val experienceRenderer = GlassLoader.getInstance().getInterface(
-            IExperienceRenderer::class.java
-        )
+        val experienceRenderer = InterfaceManager.get<IExperienceRenderer>()
         experienceRenderer.renderExperienceBar(x + 1 * scale, y + 1 * scale, scale, experiencePercent)
-        val renderer = AdapterManager.getAdapter().renderer
+        val renderer = AdapterManager.adapter.renderer
         val minecraftFontRenderer = renderer.getFontRenderer("minecraft")!!
         val experienceLevel = player.experienceLevel.toString()
 

@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.hud.impl.armor.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.adapter.v1_18_2.Util
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer.ArmorRenderType
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
@@ -11,10 +11,10 @@ import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.item.ItemStack
 
-class ArmorRenderer : Listener, IArmorRenderer {
+class ArmorRenderer : IArmorRenderer, Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IArmorRenderer::class.java, this)
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun render(item: IItem, x: Double, y: Double, scale: Double) {

@@ -1,0 +1,27 @@
+{
+  "namespace": "com.github.sorusclient.client",
+  "initializers": [
+    "adapter.v1_8_9.Adapter",
+    "feature.v1_8_9.FeatureListener",
+    "feature.impl.perspective.v1_8_9.PerspectiveHelper",
+    "feature.impl.enhancements.v1_8_9.EnhancementsInitializeListener",
+    "hud.impl.potions.v1_8_9.PotionEffectRenderer",
+    "hud.impl.armor.v1_8_9.ArmorRenderer",
+    "hud.impl.health.v1_8_9.HealthRenderer",
+    "hud.impl.hunger.v1_8_9.HungerRenderer",
+    "hud.impl.experience.v1_8_9.ExperienceRenderer",
+    "hud.impl.bossbar.v1_8_9.BossBarRenderer",
+    "hud.impl.hotbar.v1_8_9.HotBarRenderer"
+  ],
+  "transformers": [
+    "adapter.v1_8_9.event.EventTransformer",
+    "feature.impl.itemphysics.v1_8_9.ItemPhysicsTransformer",
+    "feature.impl.environmentchanger.v1_8_9.EnvironmentChangerTransformer",
+    "feature.impl.oldanimations.v1_8_9.OldAnimationsTransformer",
+    "feature.impl.perspective.v1_8_9.PerspectiveTransformer",
+    "feature.impl.particles.v1_8_9.ParticlesTransformer",
+    "feature.impl.enhancements.v1_8_9.EnhancementsTransformer",
+    "feature.impl.blockoverlay.v1_8_9.BlockOverlayTransformer",
+    "feature.impl.togglesprintsneak.v1_8_9.ToggleSprintSneakTransformer"
+  ]
+}

@@ -22,7 +22,7 @@ object ServerIntegrationManager {
     }
 
     private fun onGameJoin() {
-        val server = AdapterManager.getAdapter().currentServer
+        val server = AdapterManager.adapter.currentServer
         if (server != null) {
             Thread {
                 val json = AssetUtil.getJsonForServer(server.ip)

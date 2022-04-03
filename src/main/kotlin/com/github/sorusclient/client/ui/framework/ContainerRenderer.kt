@@ -34,7 +34,7 @@ object ContainerRenderer {
 
     fun render() {
         if (containers.isNotEmpty()) {
-            val screenDimensions = AdapterManager.getAdapter().screenDimensions
+            val screenDimensions = AdapterManager.adapter.screenDimensions
             for (container in containers) {
                 container.runtime.render(
                     screenDimensions[0] / 2,

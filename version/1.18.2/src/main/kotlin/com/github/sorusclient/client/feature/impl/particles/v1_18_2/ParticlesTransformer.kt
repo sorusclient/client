@@ -1,17 +1,11 @@
 package com.github.sorusclient.client.feature.impl.particles.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.tree.ClassNode
 
-class ParticlesTransformer: Transformer(), Listener {
-
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(ParticlesTransformer::class.java)
-    }
+class ParticlesTransformer: Transformer() {
 
     init {
         register("v1_18_2/net/minecraft/client/particle/EmitterParticle", this::transformEmitterParticle)

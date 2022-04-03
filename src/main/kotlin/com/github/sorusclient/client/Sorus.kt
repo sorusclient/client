@@ -1,7 +1,5 @@
 package com.github.sorusclient.client
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IAdapter
 import com.github.sorusclient.client.adapter.event.GetClientBrandEvent
@@ -21,23 +19,16 @@ import com.github.sorusclient.client.util.keybind.KeyBindManager
 import com.github.sorusclient.client.websocket.WebSocketManager
 import java.util.*
 
-class Sorus : Listener {
-
-    override fun run() {
-        val sorus = Sorus()
-        GlassLoader.getInstance().registerAPI(sorus)
-        sorus.initialize()
-    }
+object Sorus {
 
     private val components: MutableMap<Class<*>, Any> = HashMap()
 
-    private fun initialize() {
-        GlassLoader.getInstance().runHooks("pre-initialize")
+    fun initialize() {
         this.register(ContainerRenderer)
         this.register(EventManager)
         this.register(FeatureManager)
         this.register(HUDManager)
-        this.register(IAdapter::class.java, GlassLoader.getInstance().getInterface(IAdapter::class.java))
+        this.register(IAdapter::class.java, InterfaceManager.get<IAdapter>())
         this.register(KeyBindManager)
         this.register(NotificationManager)
         this.register(PluginManager)
@@ -54,15 +45,13 @@ class Sorus : Listener {
         ContainerRenderer.initialize()
 
         EventManager.register<InitializeEvent> {
-            val adapter = AdapterManager.getAdapter()
-            adapter.setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
+            val adapter = AdapterManager.adapter
+            adapter.setDisplayTitle("Sorus | " + AdapterManager.adapter.version)
             adapter.setDisplayIcon("sorus/icon_16x.png", "sorus/icon_32x.png")
         }
 
         UserInterface.initialize()
         ThemeManager.initialize()
-
-        GlassLoader.getInstance().runHooks("post-initialize")
 
         SettingManager.initialize()
 
@@ -81,11 +70,6 @@ class Sorus : Listener {
 
     fun register(clazz: Class<*>, component: Any) {
         components[clazz] = component
-    }
-
-    companion object {
-        val instance: Sorus
-            get() = Objects.requireNonNull(GlassLoader.getInstance().getAPI(Sorus::class.java))
     }
 
 }

@@ -4,17 +4,20 @@ import org.apache.commons.io.IOUtils
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import java.nio.charset.StandardCharsets
 
+//TODO: reimplment
 object PluginManager {
 
     private val plugins: MutableList<Plugin> = ArrayList()
 
     fun findPlugins() {
+        if (true) return
         plugins.clear()
         val resources = PluginManager::class.java.classLoader.getResources("plugin.json")
         while (resources.hasMoreElements()) {
             val resource = resources.nextElement()
-            val contents = IOUtils.toString(resource.openStream())
+            val contents = IOUtils.toString(resource.openStream(), StandardCharsets.UTF_8)
             val json = JSONObject(contents)
             val id = json.getString("id")
 

@@ -1,11 +1,10 @@
 package com.github.sorusclient.client.adapter
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 
 object AdapterManager {
 
-    fun getAdapter(): IAdapter {
-        return GlassLoader.getInstance().getInterface(IAdapter::class.java)
-    }
+    val adapter: IAdapter
+        get() = InterfaceManager.get()
 
 }

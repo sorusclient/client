@@ -1,8 +1,8 @@
 package com.github.sorusclient.client.hud.impl.potions.v1_8_9
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -10,9 +10,10 @@ import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.entity.effect.StatusEffect
 import v1_8_9.net.minecraft.util.Identifier
 
-class PotionEffectRenderer : Listener, IPotionEffectRenderer {
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IPotionEffectRenderer::class.java, this)
+class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
+
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun render(type: PotionType?, x: Double, y: Double, scale: Double) {
@@ -53,4 +54,5 @@ class PotionEffectRenderer : Listener, IPotionEffectRenderer {
         DrawableHelper().drawTexture(0, 0, index % 8 * 18, 198 + index / 8 * 18, 18, 18)
         GlStateManager.popMatrix()
     }
+
 }

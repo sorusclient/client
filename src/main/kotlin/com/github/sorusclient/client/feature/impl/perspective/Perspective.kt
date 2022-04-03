@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.feature.impl.perspective
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.PerspectiveMode
@@ -56,12 +56,12 @@ class Perspective {
     }
 
     private fun onKeyUpdate(pressed: Boolean) {
-        val adapter = AdapterManager.getAdapter()
+        val adapter = AdapterManager.adapter
         if (isEnabled() && adapter.openScreen == ScreenType.IN_GAME) {
 
             if (pressed) {
                 previousPerspective = adapter.perspective
-                GlassLoader.getInstance().getInterface(IPerspectiveHelper::class.java).onToggle()
+                InterfaceManager.get<IPerspectiveHelper>().onToggle()
                 adapter.perspective = PerspectiveMode.THIRD_PERSON_BACK
             } else {
                 adapter.perspective = previousPerspective

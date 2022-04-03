@@ -47,7 +47,7 @@ class AutoGG {
         EventManager.register { event: ChatReceivedEvent ->
             if (enabled.value) {
                 if (isAutoGGTrigger(event.message)) {
-                    AdapterManager.getAdapter().sendPlayerMessage("gg")
+                    AdapterManager.adapter.sendPlayerMessage("gg")
                 }
             }
         }

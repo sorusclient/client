@@ -18,7 +18,7 @@ class Text : Component() {
 
     var fontRenderer: Constraint? = null
         set(value) {
-            value?.getStringValue(null)?.let { AdapterManager.getAdapter().renderer.createFont(it) }
+            value?.getStringValue(null)?.let { AdapterManager.adapter.renderer.createFont(it) }
             field = value
         }
     var text: Constraint? = null
@@ -72,10 +72,10 @@ class Text : Component() {
         override fun render(x: Double, y: Double, width: Double, height: Double) {
             if (cachedFontId != fontRenderer!!.getStringValue(this)) {
                 cachedFontId = fontRenderer!!.getStringValue(this)
-                AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
+                AdapterManager.adapter.renderer.createFont(cachedFontId!!)
             }
 
-            AdapterManager.getAdapter().renderer.drawText(
+            AdapterManager.adapter.renderer.drawText(
                     cachedFontId!!,
                     text!!.getStringValue(this)!!,
                     x - this.width / 2,
@@ -118,18 +118,18 @@ class Text : Component() {
             get() {
                 if (cachedFontId != fontRenderer!!.getStringValue(this)) {
                     cachedFontId = fontRenderer!!.getStringValue(this)
-                    AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
+                    AdapterManager.adapter.renderer.createFont(cachedFontId!!)
                 }
-                return max(0.01, AdapterManager.getAdapter().renderer.getTextWidth(cachedFontId!!, text!!.getStringValue(this)!!) * scale.getPaddingValue(this))
+                return max(0.01, AdapterManager.adapter.renderer.getTextWidth(cachedFontId!!, text!!.getStringValue(this)!!) * scale.getPaddingValue(this))
             }
 
         override val height: Double
             get() {
                 if (cachedFontId != fontRenderer!!.getStringValue(this)) {
                     cachedFontId = fontRenderer!!.getStringValue(this)
-                    AdapterManager.getAdapter().renderer.createFont(cachedFontId!!)
+                    AdapterManager.adapter.renderer.createFont(cachedFontId!!)
                 }
-                return AdapterManager.getAdapter().renderer.getTextHeight(cachedFontId!!) * scale.getPaddingValue(this)
+                return AdapterManager.adapter.renderer.getTextHeight(cachedFontId!!) * scale.getPaddingValue(this)
             }
 
         override fun handleMouseEvent(event: MouseEvent): Boolean {

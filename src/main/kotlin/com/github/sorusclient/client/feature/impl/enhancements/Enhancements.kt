@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.feature.impl.enhancements
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting.*
@@ -41,7 +41,7 @@ class Enhancements {
     }
 
     private var settings: Map<String, Any> = HashMap()
-    private var settingsLoader: ISettingsLoader = GlassLoader.getInstance().getInterface(ISettingsLoader::class.java)
+    private var settingsLoader: ISettingsLoader = InterfaceManager.get()
 
     fun saveSettings() {
         val jsonObject = settingsLoader.save(settings)

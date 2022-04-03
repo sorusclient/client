@@ -27,7 +27,7 @@ open class Container : Component() {
 
     var backgroundImage: Constraint? = null
         set(value) {
-            value?.getStringValue(null)?.let { AdapterManager.getAdapter().renderer.createTexture(it) }
+            value?.getStringValue(null)?.let { AdapterManager.adapter.renderer.createTexture(it) }
             field = value
         }
     var backgroundImageBounds: Array<Double> = arrayOf(0.0, 0.0, 1.0, 1.0)
@@ -153,7 +153,7 @@ open class Container : Component() {
                 return
             }
 
-            val renderer = AdapterManager.getAdapter().renderer
+            val renderer = AdapterManager.adapter.renderer
             if (container.backgroundImage != null) {
                 var color = Color.WHITE
                 if (container.backgroundColor != null) {

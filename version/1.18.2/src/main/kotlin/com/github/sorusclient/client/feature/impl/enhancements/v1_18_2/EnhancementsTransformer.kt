@@ -1,18 +1,12 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
-class EnhancementsTransformer : Transformer(), Listener {
-
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(EnhancementsTransformer::class.java)
-    }
+class EnhancementsTransformer : Transformer() {
 
     init {
         this.setHookClass(EnhancementsHook::class.java)

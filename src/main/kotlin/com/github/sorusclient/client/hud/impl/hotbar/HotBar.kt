@@ -1,10 +1,9 @@
 package com.github.sorusclient.client.hud.impl.hotbar
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IPlayerInventory
 import com.github.sorusclient.client.hud.HUDElement
-import com.github.sorusclient.client.util.Color
 
 class HotBar : HUDElement("hotBar") {
 
@@ -17,8 +16,8 @@ class HotBar : HUDElement("hotBar") {
         get() = "HotBar"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val inventory = AdapterManager.getAdapter().player!!.inventory
-        val hotBarRenderer = GlassLoader.getInstance().getInterface(IHotBarRenderer::class.java)
+        val inventory = AdapterManager.adapter.player!!.inventory
+        val hotBarRenderer = InterfaceManager.get<IHotBarRenderer>()
         hotBarRenderer.renderBackground(x + 1 * scale, y + 1 * scale, scale)
         hotBarRenderer.renderSelectedSlot(x + 20 * inventory.selectedSlot.ordinal * scale, y, scale)
         for (i in 0..8) {

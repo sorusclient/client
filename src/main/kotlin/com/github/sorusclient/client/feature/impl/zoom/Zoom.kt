@@ -77,7 +77,7 @@ class Zoom {
     }
 
     private fun onKeyUpdate(pressed: Boolean) {
-        if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME) {
+        if (AdapterManager.adapter.openScreen == ScreenType.IN_GAME) {
             toggled = pressed
         }
     }

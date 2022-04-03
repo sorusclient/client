@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.hud.impl.armor
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.adapter.IItem
@@ -49,10 +49,10 @@ class Armor : HUDElement("armor") {
         get() = "Armor"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val player = AdapterManager.getAdapter().player!!
-        val renderer = AdapterManager.getAdapter().renderer
+        val player = AdapterManager.adapter.player!!
+        val renderer = AdapterManager.adapter.renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
-        val armorRenderer = GlassLoader.getInstance().getInterface(IArmorRenderer::class.java)
+        val armorRenderer = InterfaceManager.get<IArmorRenderer>()
         when (mode.value) {
             Mode.INDIVIDUAL -> {
                 renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
@@ -72,7 +72,7 @@ class Armor : HUDElement("armor") {
                 }
             }
             Mode.TOTAL -> {
-                if ((!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) || player.armorProtection == 0.0) && !HUDManager.isHudEditScreenOpen.get()) return
+                if ((!(AdapterManager.adapter.gameMode == GameMode.SURVIVAL || AdapterManager.adapter.gameMode == GameMode.ADVENTURE) || player.armorProtection == 0.0) && !HUDManager.isHudEditScreenOpen.get()) return
 
                 val armor = player.armorProtection.toInt()
                 var i = 0
@@ -120,7 +120,7 @@ class Armor : HUDElement("armor") {
 
     private val armor: List<IItem>
         get() {
-            val adapter = AdapterManager.getAdapter()
+            val adapter = AdapterManager.adapter
             val editing = HUDManager.isHudEditScreenOpen.get()
             val realArmor = adapter.player!!.armor
             return if (!editing || realArmor.stream().anyMatch { o: IItem? ->
@@ -148,7 +148,7 @@ class Armor : HUDElement("armor") {
         get() {
             return when (mode.value) {
                 Mode.INDIVIDUAL -> {
-                    val renderer = AdapterManager.getAdapter().renderer
+                    val renderer = AdapterManager.adapter.renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
                     val index = AtomicInteger(0)
                     val armor = armor.stream().filter { item: IItem? ->

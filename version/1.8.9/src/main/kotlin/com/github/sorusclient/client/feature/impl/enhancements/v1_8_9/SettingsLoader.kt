@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements

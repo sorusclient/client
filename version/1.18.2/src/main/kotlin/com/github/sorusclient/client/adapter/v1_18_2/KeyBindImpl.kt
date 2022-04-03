@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.adapter.v1_18_2
 
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.IKeyBind
 import com.github.sorusclient.client.adapter.Key
 import v1_18_2.net.minecraft.client.option.KeyBinding

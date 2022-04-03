@@ -14,21 +14,21 @@ class SideBar : HUDElement("sideBar") {
 
     private val sidebarObjective: IScoreboardObjective?
         get() {
-            val scoreboard = AdapterManager.getAdapter().world.scoreboard
+            val scoreboard = AdapterManager.adapter.world.scoreboard
             val sidebarObjective = scoreboard.getObjective(IScoreboard.Slot.SIDEBAR)
             val editing = HUDManager.isHudEditScreenOpen.get()
             return if (sidebarObjective != null || !editing) {
                 sidebarObjective
             } else {
                 val fakeScores: MutableList<IScoreboardScore> = ArrayList()
-                fakeScores.add(FakeScoreboardScore(AdapterManager.getAdapter().createText("Steve"), 0))
-                fakeScores.add(FakeScoreboardScore(AdapterManager.getAdapter().createText("Alex"), 1))
-                FakeScoreboardObjective(fakeScores, AdapterManager.getAdapter().createText("Points"))
+                fakeScores.add(FakeScoreboardScore(AdapterManager.adapter.createText("Steve"), 0))
+                fakeScores.add(FakeScoreboardScore(AdapterManager.adapter.createText("Alex"), 1))
+                FakeScoreboardObjective(fakeScores, AdapterManager.adapter.createText("Points"))
             }
         }
     override val width: Double
         get() {
-            val renderer = AdapterManager.getAdapter().renderer
+            val renderer = AdapterManager.adapter.renderer
             val fontRenderer = renderer.getFontRenderer("minecraft")!!
             val sidebarObjective = sidebarObjective ?: return 0.0
             var maxWidth = fontRenderer.getWidth(sidebarObjective.name)
@@ -40,7 +40,7 @@ class SideBar : HUDElement("sideBar") {
         }
     override val height: Double
         get() {
-            val renderer = AdapterManager.getAdapter().renderer
+            val renderer = AdapterManager.adapter.renderer
             val fontRenderer = renderer.getFontRenderer("minecraft")!!
             val sidebarObjective = sidebarObjective ?: return 0.0
             return (sidebarObjective.scores.size + 1) * (fontRenderer.getHeight() + 2)
@@ -62,7 +62,7 @@ class SideBar : HUDElement("sideBar") {
     }
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val renderer = AdapterManager.getAdapter().renderer
+        val renderer = AdapterManager.adapter.renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 80))
         val sidebarObjective = sidebarObjective ?: return

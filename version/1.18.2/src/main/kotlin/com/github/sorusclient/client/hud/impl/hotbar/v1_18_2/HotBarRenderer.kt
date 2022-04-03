@@ -1,18 +1,18 @@
 package com.github.sorusclient.client.hud.impl.hotbar.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IItem
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.hotbar.IHotBarRenderer
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.item.ItemStack
 
-class HotBarRenderer : Listener, IHotBarRenderer {
+class HotBarRenderer : IHotBarRenderer, Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IHotBarRenderer::class.java, this)
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun renderBackground(x: Double, y: Double, scale: Double) {

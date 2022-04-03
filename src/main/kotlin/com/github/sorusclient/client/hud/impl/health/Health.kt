@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.hud.impl.health
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.adapter.ILivingEntity
@@ -15,7 +15,7 @@ class Health : HUDElement("health") {
         get() = (1 + 8 * 10 + 1 + 1).toDouble()
     override val height: Double
         get() {
-            val player: ILivingEntity = AdapterManager.getAdapter().player!!
+            val player: ILivingEntity = AdapterManager.adapter.player!!
             val absorption = player.absorption
             val absorptionInt = ceil(absorption).toInt()
             val totalHealth = (ceil(player.maxHealth).toInt() + absorptionInt) / 2
@@ -33,9 +33,9 @@ class Health : HUDElement("health") {
     private var regenStartTime: Long = 0
     private var prevHasRegen = false
     override fun render(x: Double, y: Double, scale: Double) {
-        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+        if (!(AdapterManager.adapter.gameMode == GameMode.SURVIVAL || AdapterManager.adapter.gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
 
-        val player: ILivingEntity = AdapterManager.getAdapter().player!!
+        val player: ILivingEntity = AdapterManager.adapter.player!!
         var hasRegen = false
         for (effect in player.effects) {
             if (effect.type == IPotionEffect.PotionType.REGENERATION) {
@@ -73,7 +73,7 @@ class Health : HUDElement("health") {
                 showDamageEffect = true
             }
         }
-        val healthRenderer = GlassLoader.getInstance().getInterface(IHealthRenderer::class.java)
+        val healthRenderer = InterfaceManager.get<IHealthRenderer>()
         val totalHealth = (ceil(player.maxHealth).toInt() + absorptionInt) / 2
         val totalRows = ceil(totalHealth / 10.0).toInt()
         for (i in 0 until totalHealth) {

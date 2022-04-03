@@ -135,8 +135,8 @@ object EventHook {
     @Suppress("Unused")
     fun onMousePress(buttonCode: Int, state: Int) {
         val pressed = state == 1
-        val x = AdapterManager.getAdapter().mouseLocation[0]
-        val y = AdapterManager.getAdapter().mouseLocation[1]
+        val x = AdapterManager.adapter.mouseLocation[0]
+        val y = AdapterManager.adapter.mouseLocation[1]
         EventManager.call(
             MouseEvent(
                 Util.getButton(buttonCode),
@@ -154,8 +154,8 @@ object EventHook {
     @JvmStatic
     @Suppress("Unused")
     fun onMouseMove() {
-        val x = AdapterManager.getAdapter().mouseLocation[0]
-        val y = AdapterManager.getAdapter().mouseLocation[1]
+        val x = AdapterManager.adapter.mouseLocation[0]
+        val y = AdapterManager.adapter.mouseLocation[1]
         EventManager.call(
             MouseEvent(
                 Button.NONE,
@@ -170,8 +170,8 @@ object EventHook {
     @JvmStatic
     @Suppress("Unused")
     fun onMouseScroll(amount: Double) {
-        val x = AdapterManager.getAdapter().mouseLocation[0]
-        val y = AdapterManager.getAdapter().mouseLocation[1]
+        val x = AdapterManager.adapter.mouseLocation[0]
+        val y = AdapterManager.adapter.mouseLocation[1]
         EventManager.call(
             MouseEvent(
                 Button.UNKNOWN,

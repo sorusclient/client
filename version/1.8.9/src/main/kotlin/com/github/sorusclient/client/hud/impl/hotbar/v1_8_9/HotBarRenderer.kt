@@ -1,8 +1,8 @@
 package com.github.sorusclient.client.hud.impl.hotbar.v1_8_9
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IItem
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.hotbar.IHotBarRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -11,9 +11,10 @@ import v1_8_9.net.minecraft.client.render.GuiLighting
 import v1_8_9.net.minecraft.item.ItemStack
 import v1_8_9.net.minecraft.util.Identifier
 
-class HotBarRenderer : Listener, IHotBarRenderer {
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IHotBarRenderer::class.java, this)
+class HotBarRenderer : IHotBarRenderer, Initializer {
+
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun renderBackground(x: Double, y: Double, scale: Double) {
@@ -51,4 +52,5 @@ class HotBarRenderer : Listener, IHotBarRenderer {
         drawableHelper.drawTexture(0, 0, 0, 22, 24, 24)
         GlStateManager.popMatrix()
     }
+
 }

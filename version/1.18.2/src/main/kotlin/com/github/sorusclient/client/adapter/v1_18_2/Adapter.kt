@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.adapter.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.*
+import com.github.sorusclient.client.bootstrap.Initializer
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.gui.screen.ConnectScreen
 import v1_18_2.net.minecraft.client.gui.screen.GameMenuScreen
@@ -18,10 +18,10 @@ import v1_18_2.net.minecraft.text.LiteralText
 import v1_18_2.net.minecraft.client.option.KeyBinding
 import java.lang.reflect.Field
 
-class Adapter: Listener, IAdapter {
+class Adapter: IAdapter, Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IAdapter::class.java, this)
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override val openScreen: ScreenType

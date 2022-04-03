@@ -1,19 +1,18 @@
 package com.github.sorusclient.client.hud.impl.potions
 
-import com.github.glassmc.loader.api.GlassLoader
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IPotionEffect
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
-import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import com.github.sorusclient.client.util.Color
 
 class Potions : HUDElement("potionStatus") {
 
     override val width: Double
         get() {
-            val renderer = AdapterManager.getAdapter().renderer
+            val renderer = AdapterManager.adapter.renderer
             val fontRenderer = renderer.getFontRenderer("minecraft")!!
             var maxWidth = 0.0
             for (effect in effects) {
@@ -24,7 +23,7 @@ class Potions : HUDElement("potionStatus") {
         }
     override val height: Double
         get() {
-            val renderer = AdapterManager.getAdapter().renderer
+            val renderer = AdapterManager.adapter.renderer
             val fontRenderer = renderer.getFontRenderer("minecraft")!!
             val effects = effects
             return if (effects.isEmpty()) 0.0 else 3 + effects.size * (5 + fontRenderer.getHeight() * 2)
@@ -34,11 +33,9 @@ class Potions : HUDElement("potionStatus") {
         get() = "Potions"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val renderer = AdapterManager.getAdapter().renderer
+        val renderer = AdapterManager.adapter.renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
-        val potionEffectRenderer = GlassLoader.getInstance().getInterface(
-            IPotionEffectRenderer::class.java
-        )
+        val potionEffectRenderer = InterfaceManager.get<IPotionEffectRenderer>()
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
         var textY = y + 3 * scale
         for (effect in effects) {
@@ -73,7 +70,7 @@ class Potions : HUDElement("potionStatus") {
 
     private val effects: List<IPotionEffect>
         get() {
-            val adapter = AdapterManager.getAdapter()
+            val adapter = AdapterManager.adapter
             val editing = HUDManager.isHudEditScreenOpen.get()
             val realEffects = adapter.player!!.effects
             return if (!editing || realEffects.isNotEmpty()) {

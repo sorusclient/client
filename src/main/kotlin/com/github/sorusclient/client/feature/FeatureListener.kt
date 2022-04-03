@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.feature
 
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.feature.impl.autogg.AutoGG
 import com.github.sorusclient.client.feature.impl.blockoverlay.BlockOverlay
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
@@ -13,9 +13,9 @@ import com.github.sorusclient.client.feature.impl.perspective.Perspective
 import com.github.sorusclient.client.feature.impl.togglesprintsneak.ToggleSprintSneak
 import com.github.sorusclient.client.feature.impl.zoom.Zoom
 
-class FeatureListener: Listener {
+class FeatureListener: Initializer {
 
-    override fun run() {
+    override fun initialize() {
         FeatureManager.features.add(AutoGG())
         FeatureManager.features.add(BlockOverlay())
         FeatureManager.features.add(Enhancements())

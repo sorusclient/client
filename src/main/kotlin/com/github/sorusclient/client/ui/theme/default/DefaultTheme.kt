@@ -1,7 +1,5 @@
 package com.github.sorusclient.client.ui.theme.default
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.impl.GlassLoaderImpl
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.KeyEvent
@@ -837,7 +835,7 @@ class DefaultTheme: Theme() {
                                                                             children += Container()
                                                                                 .apply {
                                                                                     width = {
-                                                                                        max(35.0, AdapterManager.getAdapter().renderer.getTextWidth("sorus/ui/font/Quicksand-SemiBold.ttf", element.first)) * 0.6575 + Relative(0.15, true).getWidthValue(this.runtime) * 2
+                                                                                        max(35.0, AdapterManager.adapter.renderer.getTextWidth("sorus/ui/font/Quicksand-SemiBold.ttf", element.first)) * 0.6575 + Relative(0.15, true).getWidthValue(this.runtime) * 2
                                                                                     }.toDependent()
                                                                                     setPadding(0.0125.toRelative())
 
@@ -1687,6 +1685,8 @@ class DefaultTheme: Theme() {
 
                                 addChild("plugins", Container()
                                     .apply {
+                                        if (true) return@apply
+
                                         storedState += "hasInitPlugins"
                                         onStateUpdate["hasInitPlugins"] = { state ->
                                             if (state["hasInitPlugins"] != null && state["hasInitPlugins"] == false) {
@@ -1808,10 +1808,10 @@ class DefaultTheme: Theme() {
 
                                                                                 onClick = { state ->
                                                                                     PluginManager.remove(plugin)
-                                                                                    UserInterface.javaClass.classLoader.javaClass.getMethod("removeURL", URL::class.java).invoke(
-                                                                                        UserInterface.javaClass.classLoader, plugin.file.toURI().toURL())
-                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).preLoad()
-                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).loadUpdateShards()
+                                                                                    //UserInterface.javaClass.classLoader.javaClass.getMethod("removeURL", URL::class.java).invoke(
+                                                                                    //    UserInterface.javaClass.classLoader, plugin.file.toURI().toURL())
+                                                                                    //(GlassLoader.getInstance() as GlassLoaderImpl).preLoad()
+                                                                                    //(GlassLoader.getInstance() as GlassLoaderImpl).loadUpdateShards()
                                                                                     state["hasInitPlugins"] = false
                                                                                 }
                                                                             }
@@ -1870,7 +1870,7 @@ class DefaultTheme: Theme() {
                                                                 if (PluginManager.getPlugins().any { it.id == plugin.first }) continue
 
                                                                 val logoData = plugin.second[plugin.third["logo"]!!]!!
-                                                                AdapterManager.getAdapter().renderer.createTexture("plugin-${plugin.first}", logoData, true)
+                                                                AdapterManager.adapter.renderer.createTexture("plugin-${plugin.first}", logoData, true)
 
                                                                 children += Container()
                                                                     .apply {
@@ -1948,8 +1948,8 @@ class DefaultTheme: Theme() {
                                                                                 onClick = { state ->
                                                                                     val url = URL("${AssetUtil.basePluginsUrl}/$plugin.jar")
                                                                                     FileUtils.copyInputStreamToFile(url.openStream(), File("shards/$plugin.jar"))
-                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).preLoad()
-                                                                                    (GlassLoader.getInstance() as GlassLoaderImpl).loadUpdateShards()
+                                                                                    //(GlassLoader.getInstance() as GlassLoaderImpl).preLoad()
+                                                                                    //(GlassLoader.getInstance() as GlassLoaderImpl).loadUpdateShards()
                                                                                     PluginManager.findPlugins()
                                                                                     state["hasInitPlugins"] = false
                                                                                 }
@@ -2326,7 +2326,7 @@ class DefaultTheme: Theme() {
                                                                 for (theme in ThemeManager.registeredThemes) {
                                                                     /*val logoData =
                                                                         plugin.second[plugin.third["logo"]!!]!!
-                                                                    AdapterManager.getAdapter().renderer.createTexture(
+                                                                    AdapterManager.adapter.renderer.createTexture(
                                                                         "plugin-${plugin.first}",
                                                                         logoData,
                                                                         true
@@ -2804,7 +2804,7 @@ class DefaultTheme: Theme() {
                                                             for (theme in ThemeManager.registeredThemes) {
                                                                 /*val logoData =
                                                                     plugin.second[plugin.third["logo"]!!]!!
-                                                                AdapterManager.getAdapter().renderer.createTexture(
+                                                                AdapterManager.adapter.renderer.createTexture(
                                                                     "plugin-${plugin.first}",
                                                                     logoData,
                                                                     true
@@ -3059,7 +3059,7 @@ class DefaultTheme: Theme() {
 
                                                                                             backgroundCornerRadius = 0.025.toRelative()
                                                                                             backgroundColor = Dependent { state ->
-                                                                                                if (state["clicked"] != null && state["clicked"] as Boolean && AdapterManager.getAdapter().currentServer != null) {
+                                                                                                if (state["clicked"] != null && state["clicked"] as Boolean && AdapterManager.adapter.currentServer != null) {
                                                                                                     { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                                                 } else {
                                                                                                     { this@DefaultTheme.midgroundColor.value }.toDependent()
@@ -3067,7 +3067,7 @@ class DefaultTheme: Theme() {
                                                                                             }
                                                                                             borderThickness = 0.4.toAbsolute()
                                                                                             borderColor = Dependent { state ->
-                                                                                                if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && AdapterManager.getAdapter().currentServer != null) {
+                                                                                                if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && AdapterManager.adapter.currentServer != null) {
                                                                                                     { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                                 } else {
                                                                                                     { this@DefaultTheme.borderColor.value }.toDependent()
@@ -3097,7 +3097,7 @@ class DefaultTheme: Theme() {
                                                                                                 }
 
                                                                                             onClick = {
-                                                                                                if (AdapterManager.getAdapter().currentServer != null) {
+                                                                                                if (AdapterManager.adapter.currentServer != null) {
                                                                                                     SocialManager.warpGroup()
                                                                                                 }
                                                                                             }
@@ -3287,7 +3287,7 @@ class DefaultTheme: Theme() {
                                                                                                         borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
 
                                                                                                         Thread {
-                                                                                                            AdapterManager.getAdapter().renderer.createTexture("$member-skin", MojangUtil.getSkin(member).openStream(), false)
+                                                                                                            AdapterManager.adapter.renderer.createTexture("$member-skin", MojangUtil.getSkin(member).openStream(), false)
                                                                                                         }.start()
 
                                                                                                         children += Container()
@@ -3540,7 +3540,7 @@ class DefaultTheme: Theme() {
 
                                                                                         backgroundCornerRadius = 0.025.toRelative()
                                                                                         backgroundColor = Dependent { state ->
-                                                                                            if (state["clicked"] != null && state["clicked"] as Boolean && AdapterManager.getAdapter().currentServer != null) {
+                                                                                            if (state["clicked"] != null && state["clicked"] as Boolean && AdapterManager.adapter.currentServer != null) {
                                                                                                 { this@DefaultTheme.selectedColor.value }.toDependent()
                                                                                             } else {
                                                                                                 { this@DefaultTheme.midgroundColor.value }.toDependent()
@@ -3548,7 +3548,7 @@ class DefaultTheme: Theme() {
                                                                                         }
                                                                                         borderThickness = 0.4.toAbsolute()
                                                                                         borderColor = Dependent { state ->
-                                                                                            if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && AdapterManager.getAdapter().currentServer != null) {
+                                                                                            if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && AdapterManager.adapter.currentServer != null) {
                                                                                                 { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                             } else {
                                                                                                 { this@DefaultTheme.borderColor.value }.toDependent()
@@ -3578,7 +3578,7 @@ class DefaultTheme: Theme() {
                                                                                             }
 
                                                                                         onClick = {
-                                                                                            if (AdapterManager.getAdapter().currentServer != null) {
+                                                                                            if (AdapterManager.adapter.currentServer != null) {
                                                                                                 SocialManager.warpGroup()
                                                                                             }
                                                                                         }
@@ -3814,7 +3814,7 @@ class DefaultTheme: Theme() {
                                                                                                             setPadding(0.001.toRelative())
 
                                                                                                             Thread {
-                                                                                                                AdapterManager.getAdapter().renderer.createTexture("${friend.first}-skin", MojangUtil.getSkin(friend.first).openStream(), false)
+                                                                                                                AdapterManager.adapter.renderer.createTexture("${friend.first}-skin", MojangUtil.getSkin(friend.first).openStream(), false)
                                                                                                             }.start()
 
                                                                                                             children += Container()
@@ -4041,7 +4041,7 @@ class DefaultTheme: Theme() {
                                                                                                     borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
 
                                                                                                     Thread {
-                                                                                                        AdapterManager.getAdapter().renderer.createTexture("${friend.first}-skin", MojangUtil.getSkin(friend.first).openStream(), false)
+                                                                                                        AdapterManager.adapter.renderer.createTexture("${friend.first}-skin", MojangUtil.getSkin(friend.first).openStream(), false)
                                                                                                     }.start()
 
                                                                                                     children += Container()
@@ -4627,7 +4627,7 @@ class DefaultTheme: Theme() {
                                             val contentSplit = ArrayList<String>()
                                             var currentLine = ""
                                             for (word in notification.content.split(" ")) {
-                                                if (AdapterManager.getAdapter().renderer.getTextWidth("sorus/ui/font/Quicksand-Medium.ttf", "$currentLine$word") > 115) {
+                                                if (AdapterManager.adapter.renderer.getTextWidth("sorus/ui/font/Quicksand-Medium.ttf", "$currentLine$word") > 115) {
                                                     contentSplit.add(currentLine)
                                                     currentLine = "$word "
                                                 } else {
@@ -4828,7 +4828,7 @@ class DefaultTheme: Theme() {
 
         ContainerRenderer.open(mainGui)
         openedMainGui = mainGui
-        AdapterManager.getAdapter().renderer.loadBlur()
+        AdapterManager.adapter.renderer.loadBlur()
     }
 
     override fun onCloseGui() {
@@ -4840,13 +4840,13 @@ class DefaultTheme: Theme() {
             ContainerRenderer.close(openedSearchGui!!)
             openedSearchGui = null
         }
-        AdapterManager.getAdapter().renderer.unloadBlur()
+        AdapterManager.adapter.renderer.unloadBlur()
     }
 
     override fun onOpenSearchBar() {
         ContainerRenderer.open(searchGui)
         openedSearchGui = searchGui
-        AdapterManager.getAdapter().renderer.loadBlur()
+        AdapterManager.adapter.renderer.loadBlur()
     }
 
     override fun openSettingsScreen(category: DisplayedCategory) {
@@ -4861,7 +4861,7 @@ class DefaultTheme: Theme() {
 
         ContainerRenderer.open(mainGui)
         openedMainGui = mainGui
-        AdapterManager.getAdapter().renderer.loadBlur()
+        AdapterManager.adapter.renderer.loadBlur()
     }
 
     override fun openUIScreen(tab: String) {
@@ -4873,7 +4873,7 @@ class DefaultTheme: Theme() {
 
         ContainerRenderer.open(mainGui)
         openedMainGui = mainGui
-        AdapterManager.getAdapter().renderer.loadBlur()
+        AdapterManager.adapter.renderer.loadBlur()
     }
 
     override fun onForceClose() {

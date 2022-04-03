@@ -1,14 +1,15 @@
 package com.github.sorusclient.client.feature.impl.perspective.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.feature.impl.perspective.IPerspectiveHelper
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.option.Perspective
 
-class PerspectiveHelper : Listener, IPerspectiveHelper {
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IPerspectiveHelper::class.java, PerspectiveHelper())
+class PerspectiveHelper : Initializer, IPerspectiveHelper {
+
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun onToggle() {
@@ -23,4 +24,5 @@ class PerspectiveHelper : Listener, IPerspectiveHelper {
             PerspectiveHook.prevPitch = -PerspectiveHook.prevPitch
         }
     }
+
 }

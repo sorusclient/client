@@ -36,13 +36,13 @@ class Enhancements {
             }
 
         EventManager.register { event: RenderCrosshairEvent ->
-            if (AdapterManager.getAdapter().perspective != PerspectiveMode.FIRST_PERSON && hideCrossHairThirdPerson.value) {
+            if (AdapterManager.adapter.perspective != PerspectiveMode.FIRST_PERSON && hideCrossHairThirdPerson.value) {
                 event.canceled = true
             }
         }
 
         EventManager.register { event: RenderCrosshairEvent ->
-            if (AdapterManager.getAdapter().perspective != PerspectiveMode.FIRST_PERSON && hideCrossHairThirdPerson.value) {
+            if (AdapterManager.adapter.perspective != PerspectiveMode.FIRST_PERSON && hideCrossHairThirdPerson.value) {
                 event.canceled = true
             }
         }

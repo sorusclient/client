@@ -1,0 +1,10 @@
+{
+  "namespace": "com.github.sorusclient.client",
+  "initializers": [
+    "feature.FeatureListener"
+  ],
+  "versions": {
+    "1.8.9": "sorus-1.8.9.json",
+    "1.18.2": "sorus-1.18.2.json"
+  }
+}

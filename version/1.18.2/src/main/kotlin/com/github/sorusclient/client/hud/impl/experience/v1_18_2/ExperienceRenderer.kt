@@ -1,15 +1,15 @@
 package com.github.sorusclient.client.hud.impl.experience.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.experience.IExperienceRenderer
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_2.net.minecraft.client.render.*
 
-class ExperienceRenderer : Listener, IExperienceRenderer {
+class ExperienceRenderer : IExperienceRenderer, Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IExperienceRenderer::class.java, this)
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun renderExperienceBar(x: Double, y: Double, scale: Double, percent: Double) {

@@ -31,14 +31,14 @@ class Coordinates : HUDElement("coordinates") {
         get() {
             return when (mode.value) {
                 Mode.STANDARD -> {
-                    val renderer = AdapterManager.getAdapter().renderer
+                    val renderer = AdapterManager.adapter.renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
                     val numberShown = (if (showX.value) 1 else 0) + (if (showY.value) 1 else 0) + (if (showZ.value) 1 else 0)
                     fontRenderer.getHeight() * numberShown + 3 * (numberShown + 1)
                 }
                 Mode.CUSTOM -> {
-                    val renderer = AdapterManager.getAdapter().renderer
+                    val renderer = AdapterManager.adapter.renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
                     val numberShown = customText.value.size
@@ -92,8 +92,8 @@ class Coordinates : HUDElement("coordinates") {
     }
 
     private fun renderStandard(x: Double, y: Double, scale: Double) {
-        val player: IEntity = AdapterManager.getAdapter().player!!
-        val renderer = AdapterManager.getAdapter().renderer
+        val player: IEntity = AdapterManager.adapter.player!!
+        val renderer = AdapterManager.adapter.renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
         var textY = y + 3 * scale
@@ -136,7 +136,7 @@ class Coordinates : HUDElement("coordinates") {
     }
 
     private fun renderCustom(x: Double, y: Double, scale: Double) {
-        val renderer = AdapterManager.getAdapter().renderer
+        val renderer = AdapterManager.adapter.renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
@@ -164,7 +164,7 @@ class Coordinates : HUDElement("coordinates") {
     }
 
     private fun applyValues(string: String): String {
-        val player: IEntity = AdapterManager.getAdapter().player!!
+        val player: IEntity = AdapterManager.adapter.player!!
         var string = string
         string = string.replace("\$X", String.format("%.0f", player.x))
         string = string.replace("\$Y", String.format("%.0f", player.y))

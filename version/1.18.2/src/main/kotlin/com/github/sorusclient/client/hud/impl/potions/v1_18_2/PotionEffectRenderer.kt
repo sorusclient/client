@@ -1,18 +1,18 @@
 package com.github.sorusclient.client.hud.impl.potions.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.entity.effect.StatusEffects
 
-class PotionEffectRenderer : Listener, IPotionEffectRenderer {
+class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IPotionEffectRenderer::class.java, this)
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun render(type: PotionType?, x: Double, y: Double, scale: Double) {

@@ -1,6 +1,6 @@
 package com.github.sorusclient.client.adapter.v1_18_2
 
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.IBossBar
 import com.github.sorusclient.client.adapter.IScoreboard
 import com.github.sorusclient.client.adapter.IWorld

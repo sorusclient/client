@@ -1,17 +1,12 @@
 package com.github.sorusclient.client.feature.impl.environmentchanger.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.transform.Applier.InsertAfter
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
 
-class EnvironmentChangerTransformer : Transformer(), Listener {
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(EnvironmentChangerTransformer::class.java)
-    }
+class EnvironmentChangerTransformer : Transformer() {
 
     init {
         setHookClass(EnvironmentChangerHook::class.java)

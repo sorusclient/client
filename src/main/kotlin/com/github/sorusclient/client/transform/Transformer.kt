@@ -1,6 +1,7 @@
 package com.github.sorusclient.client.transform
 
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
+import com.github.sorusclient.client.bootstrap.transformer.Transformer
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
@@ -8,7 +9,7 @@ import org.objectweb.asm.Type
 import org.objectweb.asm.tree.*
 import java.util.function.Consumer
 
-open class Transformer : com.github.glassmc.loader.api.loader.Transformer {
+open class Transformer : Transformer {
 
     private var hookClass: Class<*>? = null
     private val transformers: MutableMap<String, Consumer<ClassNode>> = HashMap()

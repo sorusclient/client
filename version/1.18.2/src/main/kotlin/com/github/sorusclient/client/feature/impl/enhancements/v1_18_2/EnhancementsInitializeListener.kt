@@ -1,13 +1,12 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.sorusclient.client.feature.impl.enhancements.ISettingsLoader
+import com.github.sorusclient.client.InterfaceManager
+import com.github.sorusclient.client.bootstrap.Initializer
 
-class EnhancementsInitializeListener: Listener {
+class EnhancementsInitializeListener: Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(ISettingsLoader::class.java, SettingsLoader())
+    override fun initialize() {
+        InterfaceManager.register(SettingsLoader())
     }
 
 }

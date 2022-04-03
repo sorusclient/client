@@ -1,7 +1,7 @@
 package com.github.sorusclient.client.hud.impl.hunger.v1_8_9
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.hunger.IHungerRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -9,10 +9,10 @@ import v1_8_9.net.minecraft.client.render.Tessellator
 import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.util.Identifier
 
-class HungerRenderer : Listener, IHungerRenderer {
+class HungerRenderer : IHungerRenderer, Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IHungerRenderer::class.java, this)
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun renderHunger(x: Double, y: Double, scale: Double, heartRenderType: IHungerRenderer.HeartRenderType) {

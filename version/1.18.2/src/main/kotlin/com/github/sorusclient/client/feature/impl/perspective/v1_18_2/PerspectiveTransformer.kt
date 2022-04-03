@@ -1,16 +1,11 @@
 package com.github.sorusclient.client.feature.impl.perspective.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.transform.Transformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
-class PerspectiveTransformer : Transformer(), Listener {
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(PerspectiveTransformer::class.java)
-    }
+class PerspectiveTransformer : Transformer() {
 
     init {
         register("v1_18_2/net/minecraft/entity/Entity") { classNode: ClassNode -> transformEntity(classNode) }

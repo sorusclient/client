@@ -1,12 +1,11 @@
 package com.github.sorusclient.client.hud.impl.health.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
+import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.BackgroundType
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.HeartType
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
-import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.render.BufferRenderer
 import v1_18_2.net.minecraft.client.render.GameRenderer
 import v1_18_2.net.minecraft.client.render.Tessellator
@@ -14,10 +13,10 @@ import v1_18_2.net.minecraft.client.render.VertexFormat
 import v1_18_2.net.minecraft.client.render.VertexFormats
 import v1_18_2.net.minecraft.util.Identifier
 
-class HealthRenderer : Listener, IHealthRenderer {
+class HealthRenderer : IHealthRenderer, Initializer {
 
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IHealthRenderer::class.java, this)
+    override fun initialize() {
+        InterfaceManager.register(this)
     }
 
     override fun renderHeart(

@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.adapter.v1_8_9
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
+import com.github.sorusclient.client.bootstrap.Initializer
 import v1_8_9.org.lwjgl.input.Mouse
 import v1_8_9.org.lwjgl.opengl.Display
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -23,16 +23,15 @@ import v1_8_9.net.minecraft.world.level.LevelInfo
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
-class Adapter : Listener, IAdapter {
-    override fun run() {
-        GlassLoader.getInstance().registerInterface(IAdapter::class.java,
-            com.github.sorusclient.client.adapter.v1_8_9.Adapter()
-        )
+class Adapter : IAdapter, Initializer {
+
+    override fun initialize() {
+        InterfaceManager.register(Adapter())
     }
 
     override val openScreen: ScreenType
         get() {
-            return com.github.sorusclient.client.adapter.v1_8_9.Util.screenToScreenType(MinecraftClient.getInstance().currentScreen)
+            return Util.screenToScreenType(MinecraftClient.getInstance().currentScreen)
         }
 
     override val screenDimensions: DoubleArray
@@ -54,14 +53,14 @@ class Adapter : Listener, IAdapter {
     override val player: IPlayerEntity?
         get() {
             val player: Entity? = MinecraftClient.getInstance().player
-            return player?.let { com.github.sorusclient.client.adapter.v1_8_9.PlayerEntityImpl(it) }
+            return player?.let { PlayerEntityImpl(it) }
         }
     override val world: IWorld
-        get() = com.github.sorusclient.client.adapter.v1_8_9.WorldImpl(MinecraftClient.getInstance().world)
+        get() = WorldImpl(MinecraftClient.getInstance().world)
 
     override fun openScreen(screenType: ScreenType) {
         val screen = when (screenType) {
-            ScreenType.DUMMY -> com.github.sorusclient.client.adapter.v1_8_9.DummyScreen()
+            ScreenType.DUMMY -> DummyScreen()
             ScreenType.SETTINGS -> createSettingsScreen()
             ScreenType.CONTROLS -> ControlsOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options)
             ScreenType.VIDEO_SETTINGS -> VideoOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options)
@@ -98,7 +97,7 @@ class Adapter : Listener, IAdapter {
         get() {
             val serverInfo = MinecraftClient.getInstance().currentServerEntry
             return if (serverInfo != null) {
-                com.github.sorusclient.client.adapter.v1_8_9.ServerImpl(serverInfo)
+                ServerImpl(serverInfo)
             } else {
                 null
             }
@@ -110,7 +109,7 @@ class Adapter : Listener, IAdapter {
             KeyBindType.SPRINT -> options.keySprint
             KeyBindType.SNEAK -> options.keySneak
         }
-        return com.github.sorusclient.client.adapter.v1_8_9.KeyBindImpl(keyBinding)
+        return KeyBindImpl(keyBinding)
     }
 
     override fun sendPlayerMessage(message: String) {
@@ -130,7 +129,7 @@ class Adapter : Listener, IAdapter {
     }
 
     private fun getByteBuffer(path: String): ByteBuffer {
-        val bufferedImage = ImageIO.read(com.github.sorusclient.client.adapter.v1_8_9.Adapter::class.java.classLoader.getResourceAsStream(path))
+        val bufferedImage = ImageIO.read(Adapter::class.java.classLoader.getResourceAsStream(path))
         val buffer = ByteBuffer.allocateDirect(bufferedImage.width * bufferedImage.height * 4)
         val rgba = IntArray(bufferedImage.width * bufferedImage.height)
         bufferedImage.getRGB(0, 0, bufferedImage.width, bufferedImage.height, rgba, 0, bufferedImage.width)
@@ -174,16 +173,17 @@ class Adapter : Listener, IAdapter {
             else -> GameMode.UNKNOWN
         }
     override val session: ISession
-        get() = com.github.sorusclient.client.adapter.v1_8_9.SessionImpl()
+        get() = SessionImpl()
 
     override fun createText(string: String): IText {
-        return com.github.sorusclient.client.adapter.v1_8_9.Util.textToApiText(LiteralText(string))
+        return Util.textToApiText(LiteralText(string))
     }
 
     override val version = "1.8.9"
 
-    override val renderer: IRenderer = com.github.sorusclient.client.adapter.v1_8_9.RendererImpl()
+    override val renderer: IRenderer = RendererImpl()
 
     override val fps: Int
         get() = MinecraftClient.getCurrentFps()
+
 }

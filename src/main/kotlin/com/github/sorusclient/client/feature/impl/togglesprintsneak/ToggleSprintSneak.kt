@@ -80,12 +80,12 @@ class ToggleSprintSneak {
 
     private val sprintKey: Key
         get() {
-            val adapter = AdapterManager.getAdapter()
+            val adapter = AdapterManager.adapter
             return if (useCustomSprintKey.value) customSprintKey.value[0] else adapter.getKeyBind(IKeyBind.KeyBindType.SPRINT).key
         }
     private val sneakKey: Key
         get() {
-            val adapter = AdapterManager.getAdapter()
+            val adapter = AdapterManager.adapter
             return if (useCustomSneakKey.value) customSneakKey.value[0] else adapter.getKeyBind(IKeyBind.KeyBindType.SNEAK).key
         }
 

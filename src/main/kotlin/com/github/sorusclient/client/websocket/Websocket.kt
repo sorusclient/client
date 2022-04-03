@@ -10,10 +10,10 @@ import org.json.JSONObject
 import java.lang.Exception
 import java.net.URI
 
-class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml")) {
+class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml:8443")) {
 
     override fun onOpen(handshakedata: ServerHandshake?) {
-        WebSocketManager.connected = true
+
     }
 
     override fun onMessage(message: String) {
@@ -23,7 +23,6 @@ class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml")) {
         println("$id $json")
 
         if (id == "connected") {
-            WebSocketManager.connected = true
             if (WebSocketManager.failedToConnect) {
                 WebSocketManager.failedToConnect = false
                 NotificationManager.notifications += Notification().apply {
@@ -33,9 +32,11 @@ class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml")) {
             }
 
             WebSocketManager.sendMessage("updateStatus", JSONObject().apply {
-                put("version", AdapterManager.getAdapter().version)
+                put("version", AdapterManager.adapter.version)
                 put("action", "")
             }, true)
+
+            WebSocketManager.connected = true
         }
 
         runBlocking {

@@ -36,7 +36,7 @@ object SocialManager {
 
         EventManager.register<TickEvent> {
             if (serverToJoin != null) {
-                val adapter = AdapterManager.getAdapter()
+                val adapter = AdapterManager.adapter
                 adapter.leaveWorld()
                 adapter.joinServer(serverToJoin!!)
                 serverToJoin = null
@@ -44,7 +44,7 @@ object SocialManager {
         }
 
         EventManager.register<GameJoinEvent> {
-            val server = AdapterManager.getAdapter().currentServer
+            val server = AdapterManager.adapter.currentServer
 
             if (server != null) {
                 updateStatus(server.ip)
@@ -62,7 +62,7 @@ object SocialManager {
         val inviter = json.getString("inviter")
 
         Thread {
-            AdapterManager.getAdapter().renderer.createTexture("$inviter-skin", MojangUtil.getSkin(inviter).openStream(), false)
+            AdapterManager.adapter.renderer.createTexture("$inviter-skin", MojangUtil.getSkin(inviter).openStream(), false)
         }.start()
 
         NotificationManager.notifications += Notification().apply {
@@ -78,7 +78,7 @@ object SocialManager {
                             put("inviter", inviter)
                         })
                         currentGroup = Group(false)
-                        currentGroup!!.members.add(AdapterManager.getAdapter().session.getUUID())
+                        currentGroup!!.members.add(AdapterManager.adapter.session.getUUID())
                     }
                 }
             }
@@ -97,7 +97,7 @@ object SocialManager {
         val user = json.getString("user")
 
         Thread {
-            AdapterManager.getAdapter().renderer.createTexture("$user-skin", MojangUtil.getSkin(user).openStream(), false)
+            AdapterManager.adapter.renderer.createTexture("$user-skin", MojangUtil.getSkin(user).openStream(), false)
         }.start()
 
         NotificationManager.notifications += Notification().apply {
@@ -150,7 +150,7 @@ object SocialManager {
     }
 
     private suspend fun onRequestUpdateStatus(json: JSONObject) {
-        val server = AdapterManager.getAdapter().currentServer
+        val server = AdapterManager.adapter.currentServer
 
         if (server != null) {
             updateStatus(server.ip)
@@ -168,13 +168,13 @@ object SocialManager {
     fun createGroup() {
         runBlocking {
             currentGroup = Group(true)
-            currentGroup!!.members.add(AdapterManager.getAdapter().session.getUUID())
+            currentGroup!!.members.add(AdapterManager.adapter.session.getUUID())
             WebSocketManager.sendMessage("createGroup")
         }
     }
 
     fun invite(uuid: String) {
-        if (uuid == AdapterManager.getAdapter().session.getUUID()) return
+        if (uuid == AdapterManager.adapter.session.getUUID()) return
 
         runBlocking {
             WebSocketManager.sendMessage("inviteToGroup", JSONObject().apply {
@@ -184,7 +184,7 @@ object SocialManager {
     }
 
     fun sendFriend(uuid: String) {
-        if (uuid == AdapterManager.getAdapter().session.getUUID()) return
+        if (uuid == AdapterManager.adapter.session.getUUID()) return
 
         runBlocking {
             WebSocketManager.sendMessage("sendFriend", JSONObject().apply {
@@ -205,7 +205,7 @@ object SocialManager {
     fun warpGroup() {
         runBlocking {
             WebSocketManager.sendMessage("groupWarp", JSONObject().apply {
-                put("ip", AdapterManager.getAdapter().currentServer!!.ip)
+                put("ip", AdapterManager.adapter.currentServer!!.ip)
             })
         }
     }
@@ -214,7 +214,7 @@ object SocialManager {
         runBlocking {
             WebSocketManager.sendMessage("updateStatus", JSONObject().apply {
                 put("action", action)
-                put("version", AdapterManager.getAdapter().version)
+                put("version", AdapterManager.adapter.version)
             })
         }
     }

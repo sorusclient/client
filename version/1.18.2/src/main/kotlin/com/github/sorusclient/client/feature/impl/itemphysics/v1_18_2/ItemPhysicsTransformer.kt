@@ -1,8 +1,6 @@
 package com.github.sorusclient.client.feature.impl.itemphysics.v1_18_2
 
-import com.github.glassmc.loader.api.GlassLoader
-import com.github.glassmc.loader.api.Listener
-import com.github.glassmc.loader.util.Identifier
+import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.transform.Applier
 import com.github.sorusclient.client.transform.Applier.InsertBefore
 import com.github.sorusclient.client.transform.Transformer
@@ -11,11 +9,7 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
 
-class ItemPhysicsTransformer : Transformer(), Listener {
-
-    override fun run() {
-        GlassLoader.getInstance().registerTransformer(ItemPhysicsTransformer::class.java)
-    }
+class ItemPhysicsTransformer : Transformer() {
 
     init {
         setHookClass(ItemPhysicsHook::class.java)
