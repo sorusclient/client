@@ -34,21 +34,21 @@ object UserInterface {
         KeyBindManager.register(KeyBind({ mainGuiKey.value }, { pressed ->
             if (pressed && adapter.openScreen == ScreenType.IN_GAME) {
                 adapter.openScreen(ScreenType.DUMMY)
-                ThemeManager.currentTheme.onOpenMainGui()
+                ThemeManager.openMainGui()
             }
         }))
 
         KeyBindManager.register(KeyBind({ listOf(Key.ESCAPE) }, { pressed ->
             if (pressed && adapter.openScreen == ScreenType.DUMMY) {
                 adapter.openScreen(ScreenType.IN_GAME)
-                ThemeManager.currentTheme.onCloseGui()
+                ThemeManager.closeGui()
             }
         }))
 
         KeyBindManager.register(KeyBind({ searchBarKey.value }, {
             if (it && adapter.openScreen == ScreenType.IN_GAME) {
                 adapter.openScreen(ScreenType.DUMMY)
-                ThemeManager.currentTheme.onOpenSearchBar()
+                ThemeManager.openSearchGui()
             }
         }))
 
@@ -90,7 +90,7 @@ object UserInterface {
 
         EventManager.register<TickEvent> {
             if (AdapterManager.adapter.openScreen == ScreenType.IN_GAME && ContainerRenderer.containers.size > 0) {
-                ThemeManager.currentTheme.onForceClose()
+                ThemeManager.closeGui()
             }
         }
     }
@@ -192,8 +192,8 @@ object UserInterface {
         }
 
         override fun onSelect() {
-            ThemeManager.currentTheme.closeGui()
-            ThemeManager.currentTheme.openSettingsScreen(linkedCategory)
+            ThemeManager.closeGui()
+            ThemeManager.openSettingsGui(linkedCategory)
         }
 
     }
@@ -201,8 +201,8 @@ object UserInterface {
     class MenuSearchResult(private val menu: String, name: String) : SearchResult(name, name, "sorus/ui/sorus.png") {
 
         override fun onSelect() {
-            ThemeManager.currentTheme.closeGui()
-            ThemeManager.currentTheme.openUIScreen(menu)
+            ThemeManager.closeGui()
+            ThemeManager.openMenuGui(menu)
         }
 
     }
@@ -210,7 +210,7 @@ object UserInterface {
     class MinecraftMenuSearchResult(val name: String, val type: ScreenType) : SearchResult(name, "Minecraft $name", "sorus/ui/grass_block.png") {
 
         override fun onSelect() {
-            ThemeManager.currentTheme.closeGui()
+            ThemeManager.closeGui()
             AdapterManager.adapter.renderer.unloadBlur()
             AdapterManager.adapter.openScreen(type)
         }
@@ -220,7 +220,7 @@ object UserInterface {
     class ServerSearchResult(name: String, private val ip: String, image: String) : SearchResult(name, name, image) {
 
         override fun onSelect() {
-            ThemeManager.currentTheme.closeGui()
+            ThemeManager.closeGui()
             AdapterManager.adapter.openScreen(ScreenType.IN_GAME)
             AdapterManager.adapter.leaveWorld()
             AdapterManager.adapter.joinServer(ip)

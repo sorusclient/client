@@ -4,6 +4,7 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.event.call
 import com.github.sorusclient.client.notification.Interaction
 import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.NotificationManager
@@ -18,6 +19,7 @@ import com.github.sorusclient.client.social.SocialManager
 import com.github.sorusclient.client.ui.*
 import com.github.sorusclient.client.ui.framework.*
 import com.github.sorusclient.client.ui.framework.constraint.*
+import com.github.sorusclient.client.ui.theme.DefaultThemeInitializeEvent
 import com.github.sorusclient.client.ui.theme.Theme
 import com.github.sorusclient.client.ui.theme.ThemeManager
 import com.github.sorusclient.client.util.AssetUtil
@@ -31,6 +33,7 @@ import java.lang.reflect.InvocationTargetException
 import java.net.URL
 import kotlin.math.ceil
 import kotlin.math.max
+import kotlin.math.min
 
 class DefaultTheme: Theme() {
 
@@ -45,6 +48,8 @@ class DefaultTheme: Theme() {
     private lateinit var searchGui: Container
     private lateinit var colorPickerGui: Container
     private lateinit var notificationsUi: Container
+
+    override val items: MutableMap<String, Container> = mutableMapOf()
 
     init {
         EventManager.register { event: KeyEvent ->
@@ -524,90 +529,6 @@ class DefaultTheme: Theme() {
                             }
                     }
             }
-            /*is ClickThrough -> {
-                return Container()
-                        .apply {
-                            height = 15.0.toAbsolute()
-                            onUpdate += { state ->
-                                state["hidden"] = false
-                            }
-
-                            children += Container()
-                                    .apply {
-                                        x = Side.NEGATIVE.toSide()
-                                        width = 0.05.toRelative()
-                                    }
-
-                            children += Text()
-                                    .apply {
-                                        x = Side.NEGATIVE.toSide()
-                                        fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                        text = setting.displayName.toAbsolute()
-                                        scale = 0.0025.toRelative()
-                                    }
-
-                            children += Container()
-                                    .apply {
-                                        x = Side.NEGATIVE.toSide()
-                                        width = 0.05.toRelative()
-                                    }
-
-                            children += TabHolder()
-                                    .apply {
-                                        x = Side.NEGATIVE.toSide()
-                                        width = 5.0.toCopy()
-                                        height = 0.6.toRelative()
-                                        setPadding(Relative(0.2, true)
-
-                                        addChild("view", Container()
-                                                .apply {
-                                                    backgroundColor = Color.fromRGB(255, 0, 0, 255).toAbsolute()
-                                                })
-
-                                        addChild("edit", Container()
-                                                .apply {
-                                                    val values = (setting.setting.type.getDeclaredMethod("values").invoke(null) as Array<*>)
-
-                                                    children += Container()
-                                                            .apply {
-                                                                y = ((values.size).toDouble() / 2).toRelative()
-                                                                width = 1.0.toRelative()
-
-                                                                height = (values.size + 1).toDouble().toRelative()
-
-                                                                backgroundColor = Color.fromRGB(0, 255, 0, 255).toAbsolute()
-                                                            }
-
-                                                    for (value in values) {
-                                                        val value = value as Enum<*>
-
-                                                        children += Text()
-                                                                .apply {
-                                                                    x = 0.0.toRelative()
-                                                                    y = (1.0 + value.ordinal).toRelative()
-                                                                    text = value.name.toAbsolute()
-                                                                    fontRenderer = "Quicksand-Medium.ttf".toAbsolute()
-                                                                    scale = 0.015.toRelative()
-                                                                }
-                                                    }
-                                                })
-
-                                        stateId = "state"
-
-                                        storedState += "state"
-
-                                        onInit = {
-                                            it.second["state"] = "view"
-                                        }
-
-                                        onStateUpdate["selected"] = { state ->
-                                            if (state["selected"] != null) {
-                                                state["state"] = if (state["selected"] as Boolean) { "edit" } else { "view" }
-                                            }
-                                        }
-                                    }
-                        }
-            }*/
             is DisplayedSetting.ColorPicker -> {
                 return Container()
                     .apply {
@@ -978,10 +899,6 @@ class DefaultTheme: Theme() {
                                             }
                                     }
                             }
-
-
-
-                        /**/
                     }
             }
             is DisplayedSetting.Dependent<*> -> {
@@ -2030,7 +1947,7 @@ class DefaultTheme: Theme() {
                                                                                 borderThickness = 0.4.toAbsolute()
 
                                                                                 backgroundColor = {
-                                                                                    if (ThemeManager.currentTheme == theme) {
+                                                                                    if (false) {
                                                                                         this@DefaultTheme.selectedColor.value
                                                                                     } else {
                                                                                         this@DefaultTheme.midgroundColor.value
@@ -2038,7 +1955,7 @@ class DefaultTheme: Theme() {
                                                                                 }.toDependent()
 
                                                                                 borderColor = {
-                                                                                    if (ThemeManager.currentTheme == theme) {
+                                                                                    if (false) {
                                                                                         this@DefaultTheme.selectedBorderColor.value
                                                                                     } else {
                                                                                         this@DefaultTheme.borderColor.value
@@ -2067,18 +1984,6 @@ class DefaultTheme: Theme() {
                                                                                         textColor = { this@DefaultTheme.elementColor.value }.toDependent()
                                                                                     }
 
-                                                                                /*children += Text()
-                                                                                    .apply {
-                                                                                        x = Side.NEGATIVE.toSide()
-                                                                                        y = Side.POSITIVE.toSide()
-                                                                                        setPadding(Relative(0.175, true))
-
-                                                                                        fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
-                                                                                        scale = 0.0035.toRelative()
-                                                                                        text = plugin.description.toAbsolute()
-                                                                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                    }*/
-
                                                                                 children += Container()
                                                                                     .apply {
                                                                                         x = Side.POSITIVE.toSide()
@@ -2091,12 +1996,11 @@ class DefaultTheme: Theme() {
 
                                                                                         backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
 
-                                                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                         borderColor = { state: Map<String, Any> ->
-                                                                                            if (state["hovered"] as Boolean) {
+                                                                                            if (state["hovered"] as Boolean && ThemeManager.configuredThemes.indexOf(theme) < ThemeManager.configuredThemes.size - 1) {
                                                                                                 { this@DefaultTheme.selectedBorderColor.value }.toDependent()
                                                                                             } else {
-                                                                                                Color.fromRGB(10, 10, 10, 150)
+                                                                                                { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                             }
                                                                                         }.toDependent()
 
@@ -2110,47 +2014,12 @@ class DefaultTheme: Theme() {
                                                                                             }
 
                                                                                         onClick = { state ->
-                                                                                            if (ThemeManager.currentTheme != theme) {
+                                                                                            if (ThemeManager.configuredThemes.indexOf(theme) < ThemeManager.configuredThemes.size - 1) {
                                                                                                 ThemeManager.configuredThemes.remove(theme)
+                                                                                                ThemeManager.closeGui()
+                                                                                                ThemeManager.openMenuGui("themes")
                                                                                                 state["hasInitThemes"] = false
                                                                                             }
-                                                                                        }
-                                                                                    }
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.POSITIVE.toSide()
-                                                                                        width = 1.0.toCopy()
-
-                                                                                        setPadding(Relative(0.2, true))
-
-                                                                                        backgroundCornerRadius = 0.015.toRelative()
-                                                                                        borderThickness = 0.4.toAbsolute()
-
-                                                                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-
-                                                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                        borderColor = { state: Map<String, Any> ->
-                                                                                            if (state["hovered"] as Boolean) {
-                                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                            } else {
-                                                                                                Color.fromRGB(10, 10, 10, 150)
-                                                                                            }
-                                                                                        }.toDependent()
-
-                                                                                        children += Container()
-                                                                                            .apply {
-                                                                                                width = 0.5.toRelative()
-                                                                                                height = 1.0.toCopy()
-
-                                                                                                //backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
-                                                                                                //backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                            }
-
-                                                                                        onClick = {
-                                                                                            ThemeManager.currentTheme = theme
-                                                                                            ContainerRenderer.close(mainGui)
-                                                                                            theme.openUIScreen("themes")
                                                                                         }
                                                                                     }
 
@@ -2187,8 +2056,75 @@ class DefaultTheme: Theme() {
                                                                                         onClick = { state ->
                                                                                             state["editedTheme"] = theme
                                                                                             state["themeScreen"] = "themeEdit"
-                                                                                            //ThemeManager.currentTheme = theme
                                                                                         }
+                                                                                    }
+
+                                                                                children += Container()
+                                                                                    .apply {
+                                                                                        x = Side.POSITIVE.toSide()
+                                                                                        width = 1.0.toCopy()
+
+                                                                                        setPadding(Relative(0.2, true))
+
+                                                                                        children += Container()
+                                                                                            .apply {
+                                                                                                y = Side.NEGATIVE.toSide()
+                                                                                                height = 0.45.toRelative()
+
+                                                                                                backgroundCornerRadius = 0.1375.toRelative()
+                                                                                                borderThickness = 0.4.toAbsolute()
+
+                                                                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+
+                                                                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                                                borderColor = { state: Map<String, Any> ->
+                                                                                                    if (state["hovered"] as Boolean && ThemeManager.configuredThemes.indexOf(theme) > 0) {
+                                                                                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                                                                                    } else {
+                                                                                                        Color.fromRGB(10, 10, 10, 150)
+                                                                                                    }
+                                                                                                }.toDependent()
+
+                                                                                                onClick = { state ->
+                                                                                                    val index = ThemeManager.configuredThemes.indexOf(theme)
+                                                                                                    ThemeManager.configuredThemes.removeAt(index)
+                                                                                                    ThemeManager.configuredThemes.add(max(0, index - 1), theme)
+
+                                                                                                    ThemeManager.closeGui()
+                                                                                                    ThemeManager.openMenuGui("themes")
+                                                                                                    state["hasInitThemes"] = false
+                                                                                                }
+                                                                                            }
+
+                                                                                        children += Container()
+                                                                                            .apply {
+                                                                                                y = Side.POSITIVE.toSide()
+                                                                                                height = 0.45.toRelative()
+
+                                                                                                backgroundCornerRadius = 0.1375.toRelative()
+                                                                                                borderThickness = 0.4.toAbsolute()
+
+                                                                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
+
+                                                                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
+                                                                                                borderColor = { state: Map<String, Any> ->
+                                                                                                    if (state["hovered"] as Boolean && ThemeManager.configuredThemes.indexOf(theme) < ThemeManager.configuredThemes.size - 1) {
+                                                                                                        { this@DefaultTheme.selectedBorderColor.value }.toDependent()
+                                                                                                    } else {
+                                                                                                        Color.fromRGB(10, 10, 10, 150)
+                                                                                                    }
+                                                                                                }.toDependent()
+
+                                                                                                onClick = { state ->
+                                                                                                    val index = ThemeManager.configuredThemes.indexOf(theme)
+                                                                                                    ThemeManager.configuredThemes.removeAt(index)
+                                                                                                    ThemeManager.configuredThemes.add(min(index + 1, ThemeManager.configuredThemes.size), theme)
+
+                                                                                                    ThemeManager.closeGui()
+                                                                                                    ThemeManager.openMenuGui("themes")
+                                                                                                    state["hasInitThemes"] = false
+                                                                                                }
+                                                                                            }
                                                                                     }
                                                                             }
                                                                     }
@@ -2211,486 +2147,9 @@ class DefaultTheme: Theme() {
                                                             }
                                                         }
 
-                                                        onInit += { state ->
-                                                            val theme = state.second["editedTheme"] as Theme? ?: ThemeManager.currentTheme
-                                                            val category = theme.uiCategory
+                                                        onInit += onInit@{ state ->
+                                                            val theme = state.second["editedTheme"] as Theme? ?: return@onInit
 
-                                                            children.clear()
-
-                                                            children += Container()
-                                                                .apply {
-                                                                    y = Side.NEGATIVE.toSide()
-                                                                    height = 0.05.toRelative()
-                                                                    setPadding(0.037.toRelative())
-
-                                                                    children += Text()
-                                                                        .apply {
-                                                                            x = Side.NEGATIVE.toSide()
-                                                                            y = Side.NEGATIVE.toSide()
-
-                                                                            fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
-                                                                            scale = 0.005.toRelative()
-                                                                            text = "Settings | ${category.displayName}".toAbsolute()
-                                                                            textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                        }
-
-                                                                    children += Container()
-                                                                        .apply {
-                                                                            x = Side.POSITIVE.toSide()
-                                                                            width = 1.0.toCopy()
-                                                                            height = 0.98.toRelative()
-
-                                                                            backgroundCornerRadius = 0.0075.toRelative()
-                                                                            setPadding(Relative(0.01, true))
-
-                                                                            backgroundColor = Dependent { state ->
-                                                                                if (state["clicked"] != null && state["clicked"] as Boolean) {
-                                                                                    { this@DefaultTheme.selectedColor.value }.toDependent()
-                                                                                } else {
-                                                                                    { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                                }
-                                                                            }
-                                                                            borderThickness = 0.4.toAbsolute()
-                                                                            borderColor = Dependent { state ->
-                                                                                if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
-                                                                                    { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                } else {
-                                                                                    { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                }
-                                                                            }
-
-                                                                            children += Container()
-                                                                                .apply {
-                                                                                    width = 0.5.toRelative()
-                                                                                    height = 0.5.toRelative()
-
-                                                                                    backgroundImage = "sorus/ui/settings/back.png".toAbsolute()
-                                                                                    backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                }
-
-                                                                            onClick = { state ->
-                                                                                state["themeScreen"] = "themeList"
-                                                                            }
-                                                                        }
-                                                                }
-
-                                                            children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                                                .apply {
-                                                                    for (setting in category.components) {
-                                                                        if (setting is DisplayedSetting) {
-                                                                            addChild(getSetting(setting))
-                                                                        }
-                                                                    }
-                                                                }
-                                                        }
-
-                                                        for (onInit in onInit) {
-                                                            onInit(Pair(this, HashMap()))
-                                                        }
-                                                    })
-                                            }
-
-                                            children += Container()
-                                                .apply {
-                                                    x = Side.POSITIVE.toSide()
-
-                                                    setPadding(0.0125.toRelative())
-                                                    backgroundCornerRadius = 0.0155.toRelative()
-
-                                                    backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
-                                                    borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                    borderThickness = 0.4.toAbsolute()
-
-                                                    onInit += {
-                                                        clear()
-
-                                                        children += Container()
-                                                            .apply {
-                                                                y = Side.NEGATIVE.toSide()
-                                                                height = 0.035.toRelative()
-                                                                setPadding(0.035.toRelative())
-                                                                paddingBottom = 0.0.toAbsolute()
-
-                                                                children += Text()
-                                                                    .apply {
-                                                                        x = Side.NEGATIVE.toSide()
-
-                                                                        fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
-                                                                        scale = 0.0045.toRelative()
-                                                                        text = "Available Themes".toAbsolute()
-                                                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                    }
-                                                            }
-
-                                                        children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                                            .apply {
-                                                                for (theme in ThemeManager.registeredThemes) {
-                                                                    /*val logoData =
-                                                                        plugin.second[plugin.third["logo"]!!]!!
-                                                                    AdapterManager.adapter.renderer.createTexture(
-                                                                        "plugin-${plugin.first}",
-                                                                        logoData,
-                                                                        true
-                                                                    )*/
-
-                                                                    children += Container()
-                                                                        .apply {
-                                                                            height = 0.125.toCopy()
-                                                                            setPadding(0.025.toRelative())
-
-                                                                            backgroundCornerRadius = 0.025.toRelative()
-                                                                            borderThickness = 0.4.toAbsolute()
-
-                                                                            backgroundColor =
-                                                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                            borderColor =
-                                                                                { this@DefaultTheme.borderColor.value }.toDependent()
-
-                                                                            children += Container()
-                                                                                .apply {
-                                                                                    x = Side.NEGATIVE.toSide()
-                                                                                    width = 1.0.toCopy()
-                                                                                    setPadding(Relative(0.15, true))
-
-                                                                                    backgroundCornerRadius = 0.025.toRelative()
-                                                                                    backgroundImage = theme.value.second.toAbsolute()
-                                                                                }
-
-                                                                            children += Text()
-                                                                                .apply {
-                                                                                    x = Side.NEGATIVE.toSide()
-                                                                                    y = Side.NEGATIVE.toSide()
-                                                                                    setPadding(Relative(0.175, true))
-
-                                                                                    fontRenderer =
-                                                                                        "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
-                                                                                    scale = 0.005.toRelative()
-                                                                                    text = theme.value.first.toAbsolute()
-                                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                }
-
-                                                                            /*children += Text()
-                                                                                .apply {
-                                                                                    x = Side.NEGATIVE.toSide()
-                                                                                    y = Side.POSITIVE.toSide()
-                                                                                    setPadding(Relative(0.175, true))
-
-                                                                                    fontRenderer =
-                                                                                        "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
-                                                                                    scale = 0.0035.toRelative()
-                                                                                    text = (plugin.third["description"] as String?).toAbsolute()
-                                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                }*/
-
-                                                                            children += Container()
-                                                                                .apply {
-                                                                                    x = Side.POSITIVE.toSide()
-                                                                                    width = 1.0.toCopy()
-
-                                                                                    setPadding(Relative(0.2, true))
-
-                                                                                    backgroundCornerRadius =
-                                                                                        0.015.toRelative()
-                                                                                    borderThickness = 0.4.toAbsolute()
-
-                                                                                    backgroundColor =
-                                                                                        { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                                    borderColor =
-                                                                                        { state: Map<String, Any> ->
-                                                                                            if (state["hovered"] as Boolean) {
-                                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                            } else {
-                                                                                                Color.fromRGB(
-                                                                                                    10,
-                                                                                                    10,
-                                                                                                    10,
-                                                                                                    150
-                                                                                                )
-                                                                                            }
-                                                                                        }.toDependent()
-
-                                                                                    children += Container()
-                                                                                        .apply {
-                                                                                            width = 0.5.toRelative()
-                                                                                            height = 1.0.toCopy()
-
-                                                                                            backgroundImage = "sorus/ui/themes/add.png".toAbsolute()
-                                                                                            backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                        }
-
-                                                                                    onClick = { state ->
-                                                                                        val theme = theme.key.getConstructor().newInstance()
-                                                                                        ThemeManager.configuredThemes += theme
-                                                                                        ThemeManager.currentTheme = theme
-                                                                                        theme.initialize()
-                                                                                        ContainerRenderer.close(mainGui)
-                                                                                        theme.openUIScreen("themes")
-                                                                                        state["hasInitThemes"] = false
-                                                                                    }
-                                                                                }
-                                                                        }
-                                                                }
-
-                                                            }
-
-                                                    }
-
-                                                }
-
-
-                                            for (onInit in onInit) {
-                                                onInit(Pair(this, HashMap()))
-                                            }
-
-                                    })
-
-                                addChild("themes", Container()
-                                    .apply {
-                                        storedState += "hasInitThemes"
-                                        onStateUpdate["hasInitThemes"] = { state ->
-                                            if (state["hasInitThemes"] != null && state["hasInitThemes"] == false) {
-                                                state["hasInitThemes"] = true
-                                                state["hasInit"] = false
-                                            }
-                                        }
-
-                                        children += TabHolder()
-                                            .apply {
-                                                x = Side.NEGATIVE.toSide()
-                                                width = 0.475.toRelative()
-
-                                                setPadding(0.0125.toRelative())
-                                                paddingLeft = 0.0.toAbsolute()
-                                                backgroundCornerRadius = 0.0155.toRelative()
-
-                                                backgroundColor = { this@DefaultTheme.backgroundColor.value }.toDependent()
-                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                borderThickness = 0.425.toAbsolute()
-
-                                                storedState += "themeScreen"
-                                                storedState += "editedTheme"
-
-                                                defaultTab = "themeList"
-                                                stateId = "themeScreen"
-
-                                                addChild("themeList", Container()
-                                                    .apply {
-                                                        onInit += {
-                                                            clear()
-
-                                                            children += Container()
-                                                                .apply {
-                                                                    y = Side.NEGATIVE.toSide()
-                                                                    height = 0.035.toRelative()
-                                                                    setPadding(0.035.toRelative())
-                                                                    paddingBottom = 0.0.toAbsolute()
-
-                                                                    children += Text()
-                                                                        .apply {
-                                                                            x = Side.NEGATIVE.toSide()
-
-                                                                            fontRenderer = "sorus/ui/font/Quicksand-Bold.ttf".toAbsolute()
-                                                                            scale = 0.005.toRelative()
-                                                                            text = "Themes".toAbsolute()
-                                                                            textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                        }
-                                                                }
-
-                                                            children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                                                .apply {
-                                                                    for (theme in ThemeManager.configuredThemes) {
-                                                                        children += Container()
-                                                                            .apply {
-                                                                                height = 0.125.toCopy()
-                                                                                setPadding(0.025.toRelative())
-
-                                                                                backgroundCornerRadius = 0.025.toRelative()
-                                                                                borderThickness = 0.4.toAbsolute()
-
-                                                                                backgroundColor = {
-                                                                                    if (ThemeManager.currentTheme == theme) {
-                                                                                        this@DefaultTheme.selectedColor.value
-                                                                                    } else {
-                                                                                        this@DefaultTheme.midgroundColor.value
-                                                                                    }
-                                                                                }.toDependent()
-
-                                                                                borderColor = {
-                                                                                    if (ThemeManager.currentTheme == theme) {
-                                                                                        this@DefaultTheme.selectedBorderColor.value
-                                                                                    } else {
-                                                                                        this@DefaultTheme.borderColor.value
-                                                                                    }
-                                                                                }.toDependent()
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.NEGATIVE.toSide()
-                                                                                        width = 1.0.toCopy()
-                                                                                        setPadding(Relative(0.15, true))
-
-                                                                                        backgroundCornerRadius = 0.02.toRelative()
-                                                                                        backgroundImage = ThemeManager.registeredThemes[theme.javaClass]!!.second.toAbsolute()
-                                                                                    }
-
-                                                                                children += Text()
-                                                                                    .apply {
-                                                                                        x = Side.NEGATIVE.toSide()
-                                                                                        y = Side.NEGATIVE.toSide()
-                                                                                        setPadding(Relative(0.175, true))
-
-                                                                                        fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
-                                                                                        scale = 0.005.toRelative()
-                                                                                        text = ThemeManager.registeredThemes[theme.javaClass]!!.first.toAbsolute()
-                                                                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                    }
-
-                                                                                /*children += Text()
-                                                                                    .apply {
-                                                                                        x = Side.NEGATIVE.toSide()
-                                                                                        y = Side.POSITIVE.toSide()
-                                                                                        setPadding(Relative(0.175, true))
-
-                                                                                        fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
-                                                                                        scale = 0.0035.toRelative()
-                                                                                        text = plugin.description.toAbsolute()
-                                                                                        textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                    }*/
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.POSITIVE.toSide()
-                                                                                        width = 1.0.toCopy()
-
-                                                                                        setPadding(Relative(0.2, true))
-
-                                                                                        backgroundCornerRadius = 0.015.toRelative()
-                                                                                        borderThickness = 0.4.toAbsolute()
-
-                                                                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-
-                                                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                        borderColor = { state: Map<String, Any> ->
-                                                                                            if (state["hovered"] as Boolean) {
-                                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                            } else {
-                                                                                                Color.fromRGB(10, 10, 10, 150)
-                                                                                            }
-                                                                                        }.toDependent()
-
-                                                                                        children += Container()
-                                                                                            .apply {
-                                                                                                width = 0.5.toRelative()
-                                                                                                height = 1.0.toCopy()
-
-                                                                                                backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
-                                                                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                            }
-
-                                                                                        onClick = { state ->
-                                                                                            if (ThemeManager.currentTheme != theme) {
-                                                                                                ThemeManager.configuredThemes.remove(theme)
-                                                                                                state["hasInitThemes"] = false
-                                                                                            }
-                                                                                        }
-                                                                                    }
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.POSITIVE.toSide()
-                                                                                        width = 1.0.toCopy()
-
-                                                                                        setPadding(Relative(0.2, true))
-
-                                                                                        backgroundCornerRadius = 0.015.toRelative()
-                                                                                        borderThickness = 0.4.toAbsolute()
-
-                                                                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-
-                                                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                        borderColor = { state: Map<String, Any> ->
-                                                                                            if (state["hovered"] as Boolean) {
-                                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                            } else {
-                                                                                                Color.fromRGB(10, 10, 10, 150)
-                                                                                            }
-                                                                                        }.toDependent()
-
-                                                                                        children += Container()
-                                                                                            .apply {
-                                                                                                width = 0.5.toRelative()
-                                                                                                height = 1.0.toCopy()
-
-                                                                                                //backgroundImage = "sorus/ui/profiles/delete.png".toAbsolute()
-                                                                                                //backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                            }
-
-                                                                                        onClick = {
-                                                                                            ThemeManager.currentTheme = theme
-                                                                                            ContainerRenderer.close(mainGui)
-                                                                                            theme.openUIScreen("themes")
-                                                                                        }
-                                                                                    }
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.POSITIVE.toSide()
-                                                                                        width = 1.0.toCopy()
-
-                                                                                        setPadding(Relative(0.2, true))
-
-                                                                                        backgroundCornerRadius = 0.015.toRelative()
-                                                                                        borderThickness = 0.4.toAbsolute()
-
-                                                                                        backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-
-                                                                                        borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                        borderColor = { state: Map<String, Any> ->
-                                                                                            if (state["hovered"] as Boolean) {
-                                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                            } else {
-                                                                                                Color.fromRGB(10, 10, 10, 150)
-                                                                                            }
-                                                                                        }.toDependent()
-
-                                                                                        children += Container()
-                                                                                            .apply {
-                                                                                                width = 0.5.toRelative()
-                                                                                                height = 1.0.toCopy()
-
-                                                                                                backgroundImage = "sorus/ui/navbar/settings.png".toAbsolute()
-                                                                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                            }
-
-                                                                                        onClick = { state ->
-                                                                                            state["editedTheme"] = theme
-                                                                                            state["themeScreen"] = "themeEdit"
-                                                                                            //ThemeManager.currentTheme = theme
-                                                                                        }
-                                                                                    }
-                                                                            }
-                                                                    }
-                                                                }
-                                                        }
-
-                                                        for (onInit in onInit) {
-                                                            onInit(Pair(this, HashMap()))
-                                                        }
-                                                    })
-
-                                                addChild("themeEdit", Container()
-                                                    .apply {
-                                                        storedState += "hasInitSettings"
-
-                                                        onStateUpdate["hasInitSettings"] = { state ->
-                                                            if (state["hasInitSettings"] == false) {
-                                                                state["hasInitSettings"] = true
-                                                                state["hasInit"] = false
-                                                            }
-                                                        }
-
-                                                        onInit += { state ->
-                                                            val theme = state.second["editedTheme"] as Theme? ?: ThemeManager.currentTheme
                                                             val category = theme.uiCategory
 
                                                             children.clear()
@@ -2803,14 +2262,6 @@ class DefaultTheme: Theme() {
                                                     children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
                                                         .apply {
                                                             for (theme in ThemeManager.registeredThemes) {
-                                                                /*val logoData =
-                                                                    plugin.second[plugin.third["logo"]!!]!!
-                                                                AdapterManager.adapter.renderer.createTexture(
-                                                                    "plugin-${plugin.first}",
-                                                                    logoData,
-                                                                    true
-                                                                )*/
-
                                                                 children += Container()
                                                                     .apply {
                                                                         height = 0.125.toCopy()
@@ -2884,11 +2335,10 @@ class DefaultTheme: Theme() {
 
                                                                                 onClick = { state ->
                                                                                     val theme = theme.key.getConstructor().newInstance()
-                                                                                    ThemeManager.configuredThemes += theme
-                                                                                    ThemeManager.currentTheme = theme
+                                                                                    ThemeManager.configuredThemes.add(0, theme)
                                                                                     theme.initialize()
-                                                                                    ContainerRenderer.close(mainGui)
-                                                                                    theme.openUIScreen("themes")
+                                                                                    ThemeManager.closeGui()
+                                                                                    ThemeManager.openMenuGui("themes")
                                                                                     state["hasInitThemes"] = false
                                                                                 }
                                                                             }
@@ -3525,162 +2975,6 @@ class DefaultTheme: Theme() {
                                                                 onInit += {
                                                                     clear()
 
-                                                                    /*if (SocialManager.currentGroup!!.owner) {
-                                                                        children += Container()
-                                                                            .apply {
-                                                                                y = Side.NEGATIVE.toSide()
-                                                                                height = 0.06125.toRelative()
-
-                                                                                paddingLeft = 0.075.toRelative()
-                                                                                paddingRight = 0.075.toRelative()
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.NEGATIVE.toSide()
-                                                                                        width = 0.475.toRelative()
-
-                                                                                        backgroundCornerRadius = 0.025.toRelative()
-                                                                                        backgroundColor = Dependent { state ->
-                                                                                            if (state["clicked"] != null && state["clicked"] as Boolean && AdapterManager.adapter.currentServer != null) {
-                                                                                                { this@DefaultTheme.selectedColor.value }.toDependent()
-                                                                                            } else {
-                                                                                                { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                                            }
-                                                                                        }
-                                                                                        borderThickness = 0.4.toAbsolute()
-                                                                                        borderColor = Dependent { state ->
-                                                                                            if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && AdapterManager.adapter.currentServer != null) {
-                                                                                                { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                            } else {
-                                                                                                { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                            }
-                                                                                        }
-
-                                                                                        children += Container()
-                                                                                            .apply {
-                                                                                                x = Side.NEGATIVE.toSide()
-                                                                                                width = 1.0.toCopy()
-                                                                                                height = 0.5.toRelative()
-                                                                                                setPadding(Relative(0.2, true))
-
-                                                                                                backgroundImage = "sorus/ui/groups/warp.png".toAbsolute()
-                                                                                                backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                            }
-
-                                                                                        children += Text()
-                                                                                            .apply {
-                                                                                                x = Side.NEGATIVE.toSide()
-                                                                                                setPadding(Relative(0.2, true))
-
-                                                                                                scale = 0.012.toRelative()
-                                                                                                fontRenderer = "sorus/ui/font/Quicksand-SemiBold.ttf".toAbsolute()
-                                                                                                text = "Warp".toAbsolute()
-                                                                                                textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                            }
-
-                                                                                        onClick = {
-                                                                                            if (AdapterManager.adapter.currentServer != null) {
-                                                                                                SocialManager.warpGroup()
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                            }
-
-                                                                        children += Container()
-                                                                            .apply {
-                                                                                y = Side.NEGATIVE.toSide()
-                                                                                height = 0.06125.toRelative()
-                                                                                backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                                borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                backgroundCornerRadius = 0.025.toRelative()
-                                                                                borderThickness = 0.4.toAbsolute()
-
-                                                                                paddingLeft = 0.075.toRelative()
-                                                                                paddingRight = 0.075.toRelative()
-                                                                                paddingTop = 0.0375.toRelative()
-                                                                                paddingBottom = 0.0375.toRelative()
-
-                                                                                var message = ""
-                                                                                var selected = false
-
-                                                                                onStateUpdate["selected"] = { state ->
-                                                                                    selected = state["selected"] as Boolean
-                                                                                }
-
-                                                                                var prevKeyTime = System.currentTimeMillis()
-
-                                                                                onChar = { state ->
-                                                                                    message += state.second.character
-                                                                                    prevKeyTime = System.currentTimeMillis()
-                                                                                }
-
-                                                                                onKey = { state ->
-                                                                                    if (state.second.isPressed) {
-                                                                                        when (state.second.key) {
-                                                                                            Key.BACKSPACE -> message = message.substring(0, message.length - 1)
-                                                                                            Key.ENTER -> {
-                                                                                                SocialManager.invite(MojangUtil.getUUID(message))
-                                                                                                message = ""
-                                                                                            }
-                                                                                        }
-                                                                                        prevKeyTime = System.currentTimeMillis()
-                                                                                    }
-                                                                                }
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.NEGATIVE.toSide()
-                                                                                        width = 1.0.toCopy()
-                                                                                        height = 0.5.toRelative()
-                                                                                        setPadding(Relative(0.2, true))
-
-                                                                                        backgroundImage = "sorus/ui/groups/invite.png".toAbsolute()
-                                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                    }
-
-                                                                                children += Text().apply {
-                                                                                    x = Side.NEGATIVE.toSide()
-                                                                                    y = 0.0.toRelative()
-
-                                                                                    paddingLeft = 0.05.toRelative()
-
-                                                                                    text = {
-                                                                                        if (message.isNotEmpty() || selected) { message } else { "Invite..." }
-                                                                                    }.toDependent()
-                                                                                    fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
-
-                                                                                    scale = 0.0065.toRelative()
-                                                                                }
-
-                                                                                children += Container()
-                                                                                    .apply {
-                                                                                        x = Side.NEGATIVE.toSide()
-                                                                                        width = 0.2.toAbsolute()
-                                                                                        height = 0.6.toRelative()
-
-                                                                                        backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-
-                                                                                        onUpdate += { state ->
-                                                                                            state["hidden"] = !selected || ((System.currentTimeMillis() - prevKeyTime) % 1000 > 500)
-                                                                                        }
-                                                                                    }
-                                                                            }
-
-                                                                        children += Container()
-                                                                            .apply {
-                                                                                y = Side.NEGATIVE.toSide()
-                                                                                width = 0.8.toRelative()
-                                                                                height = 0.6.toAbsolute()
-
-                                                                                paddingLeft = 0.05.toRelative()
-                                                                                paddingRight = 0.05.toRelative()
-                                                                                paddingTop = 0.025.toRelative()
-                                                                                paddingBottom = 0.025.toRelative()
-
-                                                                                backgroundColor = { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                            }
-                                                                    }*/
-
                                                                     children += Container()
                                                                         .apply {
                                                                             y = Side.NEGATIVE.toSide()
@@ -4003,192 +3297,6 @@ class DefaultTheme: Theme() {
                                                                                 }
                                                                             }
                                                                         }
-
-                                                                    /*children += Scroll(com.github.sorusclient.client.ui.framework.List.VERTICAL)
-                                                                        .apply {
-                                                                            x = Side.NEGATIVE.toSide()
-                                                                            width = 0.5.toRelative()
-                                                                            paddingLeft = 0.025.toRelative()
-                                                                            paddingRight = 0.025.toRelative()
-                                                                            paddingTop = 0.0125.toRelative()
-                                                                            paddingBottom = 0.0125.toRelative()
-
-                                                                            var cachedFriends = 0
-
-                                                                            onUpdate += { state ->
-                                                                                if (SocialManager.friends.size != cachedFriends) {
-                                                                                    cachedFriends = SocialManager.friends.size
-                                                                                    state["hasInit"] = false
-                                                                                }
-                                                                            }
-
-                                                                            onInit += {
-                                                                                clear()
-
-                                                                                for (friend in SocialManager.friends) {
-                                                                                    addChild(Container()
-                                                                                        .apply {
-                                                                                            height = 0.24.toCopy()
-
-                                                                                            children += Container()
-                                                                                                .apply {
-                                                                                                    x = Side.POSITIVE.toSide()
-
-                                                                                                    backgroundCornerRadius = 0.02.toRelative()
-                                                                                                    borderThickness = 0.4.toAbsolute()
-
-                                                                                                    backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-
-                                                                                                    borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
-
-                                                                                                    Thread {
-                                                                                                        AdapterManager.adapter.renderer.createTexture("${friend.first}-skin", MojangUtil.getSkin(friend.first).openStream(), false)
-                                                                                                    }.start()
-
-                                                                                                    children += Container()
-                                                                                                        .apply {
-                                                                                                            y = Side.NEGATIVE.toSide()
-                                                                                                            height = 0.5.toRelative()
-
-                                                                                                            children += Container()
-                                                                                                                .apply {
-                                                                                                                    x = Side.NEGATIVE.toSide()
-                                                                                                                    width = 1.0.toCopy()
-                                                                                                                    height = 0.6.toRelative()
-                                                                                                                    setPadding(Relative(0.2, true))
-
-                                                                                                                    children += Container()
-                                                                                                                        .apply {
-                                                                                                                            x = 0.0.toRelative()
-                                                                                                                            y = 0.0.toRelative()
-                                                                                                                            width = 1.0.toRelative()
-                                                                                                                            height = 1.0.toRelative()
-
-                                                                                                                            backgroundCornerRadius = 0.15.toRelative()
-                                                                                                                            backgroundImage = "${friend.first}-skin".toAbsolute()
-                                                                                                                            backgroundImageBounds = arrayOf(0.125, 0.125, 0.125, 0.125)
-                                                                                                                        }
-
-                                                                                                                    children += Container()
-                                                                                                                        .apply {
-                                                                                                                            x = 0.0.toRelative()
-                                                                                                                            y = 0.0.toRelative()
-                                                                                                                            width = 1.0.toRelative()
-                                                                                                                            height = 1.0.toRelative()
-
-                                                                                                                            backgroundCornerRadius = 0.15.toRelative()
-                                                                                                                            backgroundImage = "${friend.first}-skin".toAbsolute()
-                                                                                                                            backgroundImageBounds = arrayOf(0.625, 0.125, 0.125, 0.125)
-                                                                                                                        }
-                                                                                                                }
-
-                                                                                                            children += Text()
-                                                                                                                .apply {
-                                                                                                                    x = Side.NEGATIVE.toSide()
-
-                                                                                                                    scale = 0.007.toRelative()
-                                                                                                                    fontRenderer = "sorus/ui/font/Quicksand-Medium.ttf".toAbsolute()
-
-                                                                                                                    var name = ""
-
-                                                                                                                    Thread {
-                                                                                                                        name = MojangUtil.getUsername(friend.first)
-                                                                                                                    }.start()
-
-                                                                                                                    text = { name }.toDependent()
-                                                                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                                                }
-
-                                                                                                            children += Container()
-                                                                                                                .apply {
-                                                                                                                    x = Side.POSITIVE.toSide()
-                                                                                                                    width = 1.0.toCopy()
-                                                                                                                    height = 0.8.toRelative()
-
-                                                                                                                    setPadding(Relative(0.1, true))
-
-                                                                                                                    backgroundCornerRadius = 0.015.toRelative()
-                                                                                                                    borderThickness = 0.4.toAbsolute()
-
-                                                                                                                    backgroundColor = Dependent { state ->
-                                                                                                                        if (state["clicked"] != null && state["clicked"] as Boolean && SocialManager.currentGroup != null) {
-                                                                                                                            { this@DefaultTheme.selectedColor.value }.toDependent()
-                                                                                                                        } else {
-                                                                                                                            { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                                                                        }
-                                                                                                                    }
-                                                                                                                    borderThickness = 0.4.toAbsolute()
-                                                                                                                    borderColor = Dependent { state ->
-                                                                                                                        if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && SocialManager.currentGroup != null) {
-                                                                                                                            { this@DefaultTheme.selectedBorderColor.value }.toDependent()
-                                                                                                                        } else {
-                                                                                                                            { this@DefaultTheme.borderColor.value }.toDependent()
-                                                                                                                        }
-                                                                                                                    }
-
-                                                                                                                    children += Container()
-                                                                                                                        .apply {
-                                                                                                                            x = Side.NEGATIVE.toSide()
-                                                                                                                            width = 1.0.toCopy()
-                                                                                                                            height = 0.5.toRelative()
-                                                                                                                            setPadding(Relative(0.2, true))
-
-                                                                                                                            backgroundImage = "sorus/ui/groups/invite.png".toAbsolute()
-                                                                                                                            backgroundColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                                                        }
-
-                                                                                                                    onClick = {
-                                                                                                                        SocialManager.invite(friend.first)
-                                                                                                                    }
-                                                                                                                }
-                                                                                                        }
-
-                                                                                                    children += Container()
-                                                                                                        .apply {
-                                                                                                            y = Side.POSITIVE.toSide()
-                                                                                                            setPadding(0.005.toRelative())
-
-                                                                                                            children += Text()
-                                                                                                                .apply {
-                                                                                                                    x = Side.NEGATIVE.toSide()
-
-                                                                                                                    paddingLeft = 0.125.toRelative()
-
-                                                                                                                    scale = 0.0055.toRelative()
-                                                                                                                    fontRenderer = "sorus/ui/font/Quicksand-Regular.ttf".toAbsolute()
-                                                                                                                    text = {
-                                                                                                                        if (friend.second.second == "offline") {
-                                                                                                                            "Offline"
-                                                                                                                        } else if (!friend.second.second.isEmpty()) {
-                                                                                                                            "Playing ${friend.second.second} on ${friend.second.first}"
-                                                                                                                        } else {
-                                                                                                                            "Playing on ${friend.second.first}"
-                                                                                                                        }
-                                                                                                                    }.toDependent()
-                                                                                                                    textColor = { this@DefaultTheme.elementColor.value }.toDependent()
-                                                                                                                }
-                                                                                                        }
-                                                                                                }
-                                                                                        })
-
-                                                                                    addChild(Container()
-                                                                                        .apply {
-                                                                                            height = 0.05.toCopy()
-                                                                                        })
-                                                                                }
-                                                                            }
-
-                                                                            for (onInit in onInit) {
-                                                                                onInit(Pair(this, HashMap()))
-                                                                            }
-
-                                                                            onStateUpdate["hasInitProfiles"] = { state ->
-                                                                                if (state["hasInitProfiles"] == false) {
-                                                                                    state["hasInitProfiles"] = true
-                                                                                    state["hasInit"] = false
-                                                                                }
-                                                                            }
-                                                                        }*/
                                                                 }
                                                             })
                                                     }
@@ -4813,71 +3921,46 @@ class DefaultTheme: Theme() {
         }
         ContainerRenderer.containers += notificationsUi
         openedNotificationsUI = notificationsUi
+
+        items["mainGui"] = mainGui
+        items["searchGui"] = searchGui
+
+        DefaultThemeInitializeEvent(this).call()
     }
 
     private var openedNotificationsUI: Container? = null
-    private var openedMainGui: Container? = null
-    private var openedSearchGui: Container? = null
 
-    override fun onOpenMainGui() {
-        mainGui
-            .apply {
-                children[0].runtime.apply {
-                    setState("tab", "home")
+    override fun onOpenGui(id: String, vararg arguments: Any) {
+        AdapterManager.adapter.renderer.loadBlur()
+
+        when (id) {
+            "mainGui" -> {
+                if (arguments.isNotEmpty()) {
+                    when (arguments[0]) {
+                        is String -> {
+                            mainGui.apply {
+                                children[0].apply {
+                                    runtime.setState("tab", arguments[0])
+                                }
+                            }
+                        }
+                        is DisplayedCategory -> {
+                            mainGui.apply {
+                                children[0].apply {
+                                    runtime.setState("tab", "settings")
+                                    runtime.setState("currentSettingsCategory", arguments[0] as DisplayedCategory)
+                                    runtime.setState("resetSettingsScreen", false)
+                                    (arguments[0] as DisplayedCategory).onShow()
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
-        ContainerRenderer.open(mainGui)
-        openedMainGui = mainGui
-        AdapterManager.adapter.renderer.loadBlur()
-    }
-
-    override fun onCloseGui() {
-        if (openedMainGui != null) {
-            ContainerRenderer.close(openedMainGui!!)
-            openedMainGui = null
         }
-        if (openedSearchGui != null) {
-            ContainerRenderer.close(openedSearchGui!!)
-            openedSearchGui = null
-        }
-        AdapterManager.adapter.renderer.unloadBlur()
     }
 
-    override fun onOpenSearchBar() {
-        ContainerRenderer.open(searchGui)
-        openedSearchGui = searchGui
-        AdapterManager.adapter.renderer.loadBlur()
-    }
-
-    override fun openSettingsScreen(category: DisplayedCategory) {
-        mainGui.apply {
-            children[0].apply {
-                runtime.setState("tab", "settings")
-                runtime.setState("currentSettingsCategory", category)
-                runtime.setState("resetSettingsScreen", false)
-                category.onShow()
-            }
-        }
-
-        ContainerRenderer.open(mainGui)
-        openedMainGui = mainGui
-        AdapterManager.adapter.renderer.loadBlur()
-    }
-
-    override fun openUIScreen(tab: String) {
-        mainGui.apply {
-            children[0].apply {
-                runtime.setState("tab", tab)
-            }
-        }
-
-        ContainerRenderer.open(mainGui)
-        openedMainGui = mainGui
-        AdapterManager.adapter.renderer.loadBlur()
-    }
-
-    override fun onForceClose() {
+    override fun closeGui() {
         mainGui.apply {
             children[0].apply {
                 if (runtime.getState("currentSettingsCategory") != null) {
@@ -4885,17 +3968,8 @@ class DefaultTheme: Theme() {
                 }
             }
         }
-        onCloseGui()
-    }
 
-    override fun closeGui() {
-        ContainerRenderer.close(colorPickerGui)
-        if (openedMainGui != null) {
-            ContainerRenderer.close(openedMainGui!!)
-        }
-        if (openedSearchGui != null) {
-            ContainerRenderer.close(openedSearchGui!!)
-        }
+        AdapterManager.adapter.renderer.unloadBlur()
     }
 
 }

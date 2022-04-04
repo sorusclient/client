@@ -2,8 +2,9 @@ package com.github.sorusclient.client.ui.theme
 
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.SettingManager
-import com.github.sorusclient.client.setting.Util
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.ui.framework.Container
+import com.github.sorusclient.client.ui.framework.ContainerRenderer
 import com.github.sorusclient.client.ui.theme.default.DefaultTheme
 import com.github.sorusclient.client.util.Pair
 import org.apache.commons.io.IOUtils
@@ -11,11 +12,11 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.charset.StandardCharsets
 
 object ThemeManager {
 
     val configuredThemes: MutableList<Theme> = ArrayList()
-    lateinit var currentTheme: Theme
     val registeredThemes: MutableMap<Class<out Theme>, Pair<String, String>> = HashMap()
 
     fun initialize() {
@@ -23,17 +24,15 @@ object ThemeManager {
 
         val file = File("sorus/themes.json")
         if (file.exists()) {
-            val json = JSONObject(IOUtils.toString(FileInputStream(file))).toMap()
+            val json = JSONObject(IOUtils.toString(FileInputStream(file), StandardCharsets.UTF_8)).toMap()
             for (themeJson in json["configuredThemes"] as List<Map<String, Any>>) {
                 val theme = Class.forName(themeJson["class"].toString()).getConstructor().newInstance() as Theme
                 theme.category.load(themeJson, true)
 
-                currentTheme = theme
                 configuredThemes.add(theme)
             }
         } else {
-            currentTheme = DefaultTheme()
-            configuredThemes.add(currentTheme)
+            configuredThemes.add(DefaultTheme())
         }
 
         EventManager.register<InitializeEvent> {
@@ -52,12 +51,53 @@ object ThemeManager {
                 configuredThemes.add(themeMap)
             }
 
-            IOUtils.write(JSONObject(map).toString(2), FileOutputStream(File("sorus/themes.json")))
+            IOUtils.write(JSONObject(map).toString(2), FileOutputStream(File("sorus/themes.json")), StandardCharsets.UTF_8)
         })
     }
 
     fun registerTheme(name: String, logo: String, themeClass: Class<out Theme>) {
         registeredThemes[themeClass] = Pair(name, logo)
+    }
+
+    private val openedGuis: MutableList<Container> = mutableListOf()
+
+    fun open(id: String, vararg arguments: Any) {
+        for (theme in configuredThemes) {
+            val container = theme.items[id]
+            if (container != null) {
+                theme.onOpenGui(id, *arguments)
+                ContainerRenderer.open(container)
+                openedGuis += container
+                return
+            }
+        }
+
+        error("GUI $id does not have any themes!")
+    }
+
+    fun openMainGui() {
+        open("mainGui")
+    }
+
+    fun openSettingsGui(category: DisplayedCategory) {
+        open("mainGui", category)
+    }
+
+    fun openMenuGui(menu: String) {
+        open("mainGui", menu)
+    }
+
+    fun closeGui() {
+        for (gui in openedGuis) {
+            ContainerRenderer.close(gui)
+        }
+        for (theme in configuredThemes) {
+            theme.closeGui()
+        }
+    }
+
+    fun openSearchGui() {
+        open("searchGui")
     }
 
 }
