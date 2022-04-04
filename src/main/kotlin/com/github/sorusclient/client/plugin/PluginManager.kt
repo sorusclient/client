@@ -1,24 +1,26 @@
 package com.github.sorusclient.client.plugin
 
-import org.apache.commons.io.IOUtils
-import org.json.JSONObject
+import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.bootstrap.BootstrapManager
 import java.io.File
-import java.io.IOException
-import java.nio.charset.StandardCharsets
 
-//TODO: reimplment
 object PluginManager {
 
     private val plugins: MutableList<Plugin> = ArrayList()
 
     fun findPlugins() {
-        if (true) return
+        val pluginFile = File("sorus/plugin")
+        pluginFile.mkdirs()
+
+        for (plugin in pluginFile.listFiles()!!) {
+            BootstrapManager.addURL(plugin.toURI().toURL())
+        }
+
         plugins.clear()
-        val resources = PluginManager::class.java.classLoader.getResources("plugin.json")
-        while (resources.hasMoreElements()) {
-            val resource = resources.nextElement()
-            val contents = IOUtils.toString(resource.openStream(), StandardCharsets.UTF_8)
-            val json = JSONObject(contents)
+
+        for (resource in PluginManager::class.java.classLoader.getResources("plugin.json")) {
+            val json = BootstrapManager.loadJson(resource, AdapterManager.adapter.version)
+
             val id = json.getString("id")
 
             if (plugins.any { it.id == id }) continue

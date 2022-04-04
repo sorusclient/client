@@ -46,12 +46,12 @@ object Enhancements {
     fun saveSettings() {
         val jsonObject = settingsLoader.save(settings)
         settings = jsonObject
-        val settingsFile = File("settings.json")
+        val settingsFile = File("sorus/settings.json")
         FileUtils.writeStringToFile(settingsFile, JSONObject(Util.toData(settings) as Map<*, *>).toString(2), StandardCharsets.UTF_8)
     }
 
     fun loadSettings() {
-        val settingsFile = File("settings.json")
+        val settingsFile = File("sorus/settings.json")
         if (!settingsFile.exists()) return
 
         val contents = FileUtils.readFileToString(settingsFile, StandardCharsets.UTF_8)

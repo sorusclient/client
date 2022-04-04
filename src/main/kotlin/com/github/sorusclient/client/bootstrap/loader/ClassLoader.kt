@@ -114,13 +114,7 @@ class ClassLoader : URLClassLoader(arrayOfNulls(0), null) {
             }
 
             result[0]
-        } catch (e: IOException) {
-            e.printStackTrace()
-            ByteArray(0)
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-            ByteArray(0)
-        } catch (e: InvocationTargetException) {
+        } catch (e: Exception) {
             e.printStackTrace()
             ByteArray(0)
         }

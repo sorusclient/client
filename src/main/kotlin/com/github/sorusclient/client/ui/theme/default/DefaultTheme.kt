@@ -1603,8 +1603,6 @@ class DefaultTheme: Theme() {
 
                                 addChild("plugins", Container()
                                     .apply {
-                                        if (true) return@apply
-
                                         storedState += "hasInitPlugins"
                                         onStateUpdate["hasInitPlugins"] = { state ->
                                             if (state["hasInitPlugins"] != null && state["hasInitPlugins"] == false) {

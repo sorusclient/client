@@ -11,7 +11,7 @@ class Launcher {
         @JvmStatic
         fun main(args: Array<String>) {
             val version = args[args.indexOf("--minecraftVersion") + 1]
-            BootstrapManager.loadJson("sorus.json", version)
+            BootstrapManager.loadJson(Launcher::class.java.classLoader.getResource("sorus.json")!!, version)
 
             Sorus.initialize()
 
