@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.feature.impl.perspective.v1_8_9
 
-import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.perspective.Perspective
 import v1_8_9.net.minecraft.util.math.MathHelper
 
+@Suppress("UNUSED")
 object PerspectiveHook {
 
     private var x = true
@@ -14,10 +14,9 @@ object PerspectiveHook {
 
     @JvmStatic
     fun modifyDelta(delta: Float): Float {
-        val perspective = FeatureManager.get<Perspective>()
         val isYaw = x
         x = !x
-        return if (perspective.isEnabled() && perspective.isToggled) {
+        return if (Perspective.isEnabled() && Perspective.isToggled) {
             if (isYaw) {
                 val oldYaw = yaw
                 yaw = (yaw.toDouble() + delta.toDouble() * 0.15).toFloat()
@@ -36,32 +35,28 @@ object PerspectiveHook {
 
     @JvmStatic
     fun modifyPitch(pitch: Float): Float {
-        val perspective = FeatureManager.get<Perspective>()
-        return if (perspective.isEnabled() && perspective.isToggled) {
+        return if (Perspective.isEnabled() && Perspective.isToggled) {
             PerspectiveHook.pitch
         } else pitch
     }
 
     @JvmStatic
     fun modifyYaw(yaw: Float): Float {
-        val perspective = FeatureManager.get<Perspective>()
-        return if (perspective.isEnabled() && perspective.isToggled) {
+        return if (Perspective.isEnabled() && Perspective.isToggled) {
             PerspectiveHook.yaw
         } else yaw
     }
 
     @JvmStatic
     fun modifyPrevPitch(prevPitch: Float): Float {
-        val perspective = FeatureManager.get<Perspective>()
-        return if (perspective.isEnabled() && perspective.isToggled) {
+        return if (Perspective.isEnabled() && Perspective.isToggled) {
             PerspectiveHook.prevPitch
         } else prevPitch
     }
 
     @JvmStatic
     fun modifyPrevYaw(prevYaw: Float): Float {
-        val perspective = FeatureManager.get<Perspective>()
-        return if (perspective.isEnabled() && perspective.isToggled) {
+        return if (Perspective.isEnabled() && Perspective.isToggled) {
             PerspectiveHook.prevYaw
         } else prevYaw
     }

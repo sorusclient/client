@@ -13,20 +13,21 @@ import com.github.sorusclient.client.feature.impl.perspective.Perspective
 import com.github.sorusclient.client.feature.impl.togglesprintsneak.ToggleSprintSneak
 import com.github.sorusclient.client.feature.impl.zoom.Zoom
 
+@Suppress("UNUSED")
 class FeatureListener: Initializer {
 
     override fun initialize() {
-        FeatureManager.features.add(AutoGG())
-        FeatureManager.features.add(BlockOverlay())
-        FeatureManager.features.add(Enhancements())
-        FeatureManager.features.add(EnvironmentChanger())
-        FeatureManager.features.add(FullBright())
-        FeatureManager.features.add(ItemPhysics())
-        FeatureManager.features.add(OldAnimations())
-        FeatureManager.features.add(Particles())
-        FeatureManager.features.add(Perspective())
-        FeatureManager.features.add(ToggleSprintSneak())
-        FeatureManager.features.add(Zoom())
+        AutoGG
+        BlockOverlay
+        Enhancements
+        EnvironmentChanger
+        FullBright
+        ItemPhysics
+        OldAnimations
+        Particles
+        Perspective
+        ToggleSprintSneak
+        Zoom
     }
 
 }

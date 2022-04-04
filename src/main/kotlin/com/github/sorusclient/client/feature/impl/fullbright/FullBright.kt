@@ -7,7 +7,7 @@ import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.SettingData
 
-class FullBright {
+object FullBright {
 
     private var enabled: Setting<Boolean>
 

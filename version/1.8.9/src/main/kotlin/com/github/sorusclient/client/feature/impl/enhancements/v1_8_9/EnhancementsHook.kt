@@ -1,18 +1,17 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
-import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.org.lwjgl.opengl.Display
 
+@Suppress("UNUSED")
 object EnhancementsHook {
 
     @JvmStatic
     fun preRenderFireFirstPerson() {
-        val enhancements = FeatureManager.get<Enhancements>()
         GlStateManager.pushMatrix()
-        GlStateManager.translated(0.0, -enhancements.getFireHeightValue() * 0.4, 0.0)
+        GlStateManager.translated(0.0, -Enhancements.getFireHeightValue() * 0.4, 0.0)
     }
 
     @JvmStatic
@@ -22,8 +21,7 @@ object EnhancementsHook {
 
     @JvmStatic
     fun modifyPotionOffset(offset: Int): Int {
-        val enhancements = FeatureManager.get<com.github.sorusclient.client.feature.impl.enhancements.v1_8_9.Enhancements>()
-        return if (enhancements.isCenteredInventoryValue()) {
+        return if (com.github.sorusclient.client.feature.impl.enhancements.v1_8_9.Enhancements.isCenteredInventoryValue()) {
             0
         } else offset
     }
@@ -44,7 +42,7 @@ object EnhancementsHook {
 
     @JvmStatic
     fun onSave() {
-        FeatureManager.get<Enhancements>().saveSettings()
+        Enhancements.saveSettings()
     }
 
     lateinit var options: Any
@@ -52,7 +50,7 @@ object EnhancementsHook {
     @JvmStatic
     fun onLoad(options: Any) {
         EnhancementsHook.options = options
-        FeatureManager.get<Enhancements>().loadSettings()
+        Enhancements.loadSettings()
     }
 
     @JvmStatic

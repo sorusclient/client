@@ -11,7 +11,7 @@ import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 
-class Enhancements {
+object Enhancements {
 
     private val centeredInventory: Setting<Boolean>
     private val hideCrossHairThirdPerson: Setting<Boolean>

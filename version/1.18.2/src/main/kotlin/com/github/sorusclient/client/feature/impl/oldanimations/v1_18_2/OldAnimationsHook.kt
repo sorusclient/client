@@ -1,9 +1,9 @@
 package com.github.sorusclient.client.feature.impl.oldanimations.v1_18_2
 
-import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.oldanimations.OldAnimations
 import v1_18_2.net.minecraft.entity.LivingEntity
 
+@Suppress("UNUSED")
 object OldAnimationsHook {
 
     private var livingEntity: LivingEntity? = null
@@ -42,8 +42,7 @@ object OldAnimationsHook {
 
     @JvmStatic
     fun showArmorDamage(): Boolean {
-        val oldAnimations = FeatureManager.get<OldAnimations>()
-        return oldAnimations.showArmorDamageValue()
+        return OldAnimations.showArmorDamageValue()
     }
 
 }

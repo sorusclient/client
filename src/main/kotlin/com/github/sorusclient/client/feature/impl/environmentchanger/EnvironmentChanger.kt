@@ -7,7 +7,7 @@ import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 
-class EnvironmentChanger {
+object EnvironmentChanger {
 
     //TODO: Make world lighting reflect time of day
     private var modifyTime: Setting<Boolean>

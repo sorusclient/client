@@ -42,11 +42,13 @@ class BlockOverlayTransformer: Transformer() {
                             2 -> "modifyOutlineBlue"
                             else -> null!!
                         }))
+                        methodNode.instructions.remove(node)
                         i++
                     }
 
                     if (node is LdcInsnNode && node.cst == 0.4f) {
                         methodNode.instructions.insert(node, this.getHook("modifyOutlineAlpha"))
+                        methodNode.instructions.remove(node)
                     }
                 }
             }

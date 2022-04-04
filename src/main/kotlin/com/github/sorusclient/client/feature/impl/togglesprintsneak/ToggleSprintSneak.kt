@@ -14,7 +14,7 @@ import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.keybind.KeyBind
 import com.github.sorusclient.client.util.keybind.KeyBindManager
 
-class ToggleSprintSneak {
+object ToggleSprintSneak {
 
     private val toggleSprint: Setting<Boolean>
     private val useCustomSprintKey: Setting<Boolean>

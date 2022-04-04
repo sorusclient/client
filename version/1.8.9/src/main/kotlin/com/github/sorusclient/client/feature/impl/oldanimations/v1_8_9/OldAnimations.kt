@@ -7,7 +7,7 @@ import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 
-class OldAnimations {
+object OldAnimations {
 
     private var oldBlockHit: Setting<Boolean>
 

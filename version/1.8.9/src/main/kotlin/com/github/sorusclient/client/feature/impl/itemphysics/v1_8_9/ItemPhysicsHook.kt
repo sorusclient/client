@@ -1,18 +1,17 @@
 package com.github.sorusclient.client.feature.impl.itemphysics.v1_8_9
 
-import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.itemphysics.ItemPhysics
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.entity.ItemEntity
 import v1_8_9.net.minecraft.util.math.BlockPos
 
+@Suppress("UNUSED")
 object ItemPhysicsHook {
 
     @JvmStatic
     fun modifyItemBob(bob: Float): Float {
-        val itemPhysics = FeatureManager.get<ItemPhysics>()
-        return if (itemPhysics.isEnabled()) {
+        return if (ItemPhysics.isEnabled()) {
             0.0F
         } else {
             bob
@@ -21,8 +20,7 @@ object ItemPhysicsHook {
 
     @JvmStatic
     fun modifyItemRotate(rotate: Float): Float {
-        val itemPhysics = FeatureManager.get<ItemPhysics>()
-        return if (itemPhysics.isEnabled()) {
+        return if (ItemPhysics.isEnabled()) {
             0.0F
         } else {
             rotate
@@ -33,8 +31,7 @@ object ItemPhysicsHook {
 
     @JvmStatic
     fun preRenderItem(entity: ItemEntity) {
-        val itemPhysics = FeatureManager.get<ItemPhysics>()
-        if (itemPhysics.isEnabled()) {
+        if (ItemPhysics.isEnabled()) {
             val block = MinecraftClient.getInstance().world.getBlockAt(BlockPos(entity.x, entity.y, entity.z))
             if (block.translationKey != "tile.snow") {
                 GlStateManager.translated(0.0, -0.225, 0.0)

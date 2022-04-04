@@ -5,7 +5,7 @@ import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.feature.impl.perspective.IPerspectiveHelper
 import v1_8_9.net.minecraft.client.MinecraftClient
 
-class PerspectiveHelper : Initializer, IPerspectiveHelper {
+class PerspectiveHelper : IPerspectiveHelper, Initializer {
 
     override fun initialize() {
         InterfaceManager.register(this)

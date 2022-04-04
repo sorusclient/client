@@ -15,15 +15,6 @@ abstract class Theme {
 
     abstract fun initialize()
 
-    //abstract fun onOpenMainGui()
-    //abstract fun onCloseGui()
-    //abstract fun onOpenSearchBar()
-
-    //abstract fun openSettingsScreen(category: DisplayedCategory)
-    //abstract fun openUIScreen(tab: String)
-
-    //abstract fun onForceClose()
-
     abstract fun onOpenGui(id: String, vararg arguments: Any)
     abstract fun closeGui()
 

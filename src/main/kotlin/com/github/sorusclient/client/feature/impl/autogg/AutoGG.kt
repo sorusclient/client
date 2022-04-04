@@ -10,7 +10,7 @@ import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 
-class AutoGG {
+object AutoGG {
 
     private var enabled: Setting<Boolean>
     private var autoggTriggers: MutableList<Regex> = ArrayList()

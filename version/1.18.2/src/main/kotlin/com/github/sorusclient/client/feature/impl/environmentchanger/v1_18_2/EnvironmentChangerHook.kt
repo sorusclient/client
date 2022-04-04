@@ -1,17 +1,16 @@
 package com.github.sorusclient.client.feature.impl.environmentchanger.v1_18_2
 
-import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.environmentchanger.EnvironmentChanger
 import com.github.sorusclient.client.feature.impl.environmentchanger.EnvironmentChanger.Weather
 import v1_18_2.net.minecraft.client.MinecraftClient
 
+@Suppress("UNUSED")
 object EnvironmentChangerHook {
 
     @JvmStatic
     fun modifySkyAngle(angle: Float): Float {
-        val environmentChanger = FeatureManager.get<EnvironmentChanger>()
-        return if (environmentChanger.modifyTime()) {
-            MinecraftClient.getInstance().world!!.dimension.getSkyAngle(environmentChanger.getTimeValue())
+        return if (EnvironmentChanger.modifyTime()) {
+            MinecraftClient.getInstance().world!!.dimension.getSkyAngle(EnvironmentChanger.getTimeValue())
         } else {
             angle
         }
@@ -19,9 +18,8 @@ object EnvironmentChangerHook {
 
     @JvmStatic
     fun modifyTime(time: Long): Long {
-        val environmentChanger = FeatureManager.get<EnvironmentChanger>()
-        return if (environmentChanger.modifyTime()) {
-            environmentChanger.getTimeValue()
+        return if (EnvironmentChanger.modifyTime()) {
+            EnvironmentChanger.getTimeValue()
         } else {
             time
         }
@@ -29,9 +27,8 @@ object EnvironmentChangerHook {
 
     @JvmStatic
     fun modifyRainGradient(angle: Float): Float {
-        val environmentChanger = FeatureManager.get<EnvironmentChanger>()
-        return if (environmentChanger.modifyWeather()) {
-            when (environmentChanger.getWeatherValue()) {
+        return if (EnvironmentChanger.modifyWeather()) {
+            when (EnvironmentChanger.getWeatherValue()) {
                 Weather.CLEAR -> 0.0F
                 Weather.RAIN -> 1.0F
             }

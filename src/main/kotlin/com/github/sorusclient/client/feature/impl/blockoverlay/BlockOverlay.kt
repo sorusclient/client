@@ -8,7 +8,7 @@ import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.util.Color
 
-class BlockOverlay {
+object BlockOverlay {
 
     var borderColor: Setting<Color>
     var borderThickness: Setting<Double>

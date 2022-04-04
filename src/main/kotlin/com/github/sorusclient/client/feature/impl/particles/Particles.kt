@@ -7,7 +7,7 @@ import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 
-class Particles {
+object Particles {
 
     private val multiplier: Setting<Double>
     private val alwaysCriticalParticles: Setting<Boolean>

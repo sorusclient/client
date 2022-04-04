@@ -15,7 +15,7 @@ import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.keybind.KeyBind
 import com.github.sorusclient.client.util.keybind.KeyBindManager
 
-class Zoom {
+object Zoom {
 
     private val enabled: Setting<Boolean>
     private val key: Setting<out MutableList<Key>>

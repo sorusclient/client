@@ -1,6 +1,5 @@
 package com.github.sorusclient.client.feature.impl.blockoverlay.v1_18_2
 
-import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.blockoverlay.BlockOverlay
 import com.github.sorusclient.client.util.Color
 import v1_18_2.com.mojang.blaze3d.platform.GlStateManager
@@ -13,20 +12,19 @@ import v1_18_2.net.minecraft.client.util.math.Vector3d
 import v1_18_2.net.minecraft.util.hit.BlockHitResult
 import v1_18_2.net.minecraft.util.math.Vec3d
 
-
+@Suppress("UNUSED")
 object BlockOverlayHook {
 
     @JvmStatic
     fun modifyLineWidth(lineWidth: Float): Float {
         if (lineWidth > 1.0f) {
-            return FeatureManager.get<BlockOverlay>().borderThickness.value.toFloat()
+            return BlockOverlay.borderThickness.value.toFloat()
         }
         return lineWidth
     }
 
     @JvmStatic
     fun render(matrices: MatrixStack, camera: Camera) {
-        val blockOverlay = FeatureManager.get<BlockOverlay>()
         val vec: Vec3d = camera.pos
         val cam = Vector3d(vec.getX(), vec.getY(), vec.getZ())
         if (MinecraftClient.getInstance().crosshairTarget is BlockHitResult) {
@@ -51,7 +49,7 @@ object BlockOverlayHook {
             val shape = MinecraftClient.getInstance().world!!.getBlockState(blockPos).getOutlineShape(MinecraftClient.getInstance().world, blockPos, ShapeContext.of(MinecraftClient.getInstance().player))
 
             shape.forEachBox { minX, minY, minZ, maxX, maxY, maxZ ->
-                drawBox(entry, buffer, minX.toFloat() + offset.x.toFloat() - 0.0001f, minY.toFloat() + offset.y.toFloat() - 0.0001f, minZ.toFloat() + offset.z.toFloat() - 0.0001f, maxX.toFloat() + offset.x.toFloat() + 0.0001f, maxY.toFloat() + offset.y.toFloat() + 0.0001f, maxZ.toFloat() + offset.z.toFloat() + 0.0001f, blockOverlay.fillColor.value)
+                drawBox(entry, buffer, minX.toFloat() + offset.x.toFloat() - 0.0001f, minY.toFloat() + offset.y.toFloat() - 0.0001f, minZ.toFloat() + offset.z.toFloat() - 0.0001f, maxX.toFloat() + offset.x.toFloat() + 0.0001f, maxY.toFloat() + offset.y.toFloat() + 0.0001f, maxZ.toFloat() + offset.z.toFloat() + 0.0001f, BlockOverlay.fillColor.value)
             }
 
             tessellator.draw()
@@ -95,27 +93,23 @@ object BlockOverlayHook {
     }
 
     @JvmStatic
-    fun modifyOutlineRed(color: Float): Float {
-        val blockOverlay = FeatureManager.get<BlockOverlay>()
-        return blockOverlay.borderColor.value.red.toFloat()
+    fun modifyOutlineRed(): Float {
+        return BlockOverlay.borderColor.value.red.toFloat()
     }
 
     @JvmStatic
-    fun modifyOutlineGreen(color: Float): Float {
-        val blockOverlay = FeatureManager.get<BlockOverlay>()
-        return blockOverlay.borderColor.value.green.toFloat()
+    fun modifyOutlineGreen(): Float {
+        return BlockOverlay.borderColor.value.green.toFloat()
     }
 
     @JvmStatic
-    fun modifyOutlineBlue(color: Float): Float {
-        val blockOverlay = FeatureManager.get<BlockOverlay>()
-        return blockOverlay.borderColor.value.blue.toFloat()
+    fun modifyOutlineBlue(): Float {
+        return BlockOverlay.borderColor.value.blue.toFloat()
     }
 
     @JvmStatic
-    fun modifyOutlineAlpha(color: Float): Float {
-        val blockOverlay = FeatureManager.get<BlockOverlay>()
-        return blockOverlay.borderColor.value.alpha.toFloat()
+    fun modifyOutlineAlpha(): Float {
+        return BlockOverlay.borderColor.value.alpha.toFloat()
     }
 
 }

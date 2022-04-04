@@ -1,6 +1,5 @@
 package com.github.sorusclient.client.feature.impl.itemphysics.v1_18_2
 
-import com.github.sorusclient.client.feature.FeatureManager
 import com.github.sorusclient.client.feature.impl.itemphysics.ItemPhysics
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.util.math.MatrixStack
@@ -8,12 +7,12 @@ import v1_18_2.net.minecraft.entity.ItemEntity
 import v1_18_2.net.minecraft.util.math.BlockPos
 import v1_18_2.net.minecraft.util.math.Vec3f
 
+@Suppress("UNUSED")
 object ItemPhysicsHook {
 
     @JvmStatic
     fun modifyItemBob(bob: Float): Float {
-        val itemPhysics = FeatureManager.get<ItemPhysics>()
-        return if (itemPhysics.isEnabled()) {
+        return if (ItemPhysics.isEnabled()) {
             0.0F
         } else {
             bob
@@ -22,8 +21,7 @@ object ItemPhysicsHook {
 
     @JvmStatic
     fun modifyItemRotate(rotate: Float): Float {
-        val itemPhysics = FeatureManager.get<ItemPhysics>()
-        return if (itemPhysics.isEnabled()) {
+        return if (ItemPhysics.isEnabled()) {
             0.0F
         } else {
             rotate
@@ -34,8 +32,7 @@ object ItemPhysicsHook {
 
     @JvmStatic
     fun preRenderItem(entity: ItemEntity, matrixStack: MatrixStack) {
-        val itemPhysics = FeatureManager.get<ItemPhysics>()
-        if (itemPhysics.isEnabled()) {
+        if (ItemPhysics.isEnabled()) {
             val block = MinecraftClient.getInstance().world!!.getBlockState(BlockPos(entity.x, entity.y, entity.z))
             if (!block.toString().contains("minecraft:snow")) {
                 matrixStack.translate(0.0, 0.0225, 0.0)

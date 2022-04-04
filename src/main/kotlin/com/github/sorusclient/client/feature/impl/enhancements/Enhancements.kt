@@ -14,7 +14,7 @@ import org.json.JSONObject
 import java.io.File
 import java.nio.charset.StandardCharsets
 
-class Enhancements {
+object Enhancements {
 
     private val fireHeight: Setting<Double>
 

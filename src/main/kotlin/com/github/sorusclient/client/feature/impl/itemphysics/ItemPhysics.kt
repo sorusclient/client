@@ -6,7 +6,7 @@ import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 
-class ItemPhysics {
+object ItemPhysics {
 
     private var enabled: Setting<Boolean>
 
