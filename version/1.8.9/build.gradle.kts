@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2022. Danterus
+ * Copyright (c) 2022. Sorus Contributors
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 plugins {
     id("org.jetbrains.kotlin.jvm")
 }

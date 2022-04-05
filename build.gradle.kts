@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2022. Danterus
+ * Copyright (c) 2022. Sorus Contributors
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import com.github.glassmc.kiln.standard.KilnStandardExtension
 import com.github.glassmc.kiln.standard.environment.Environment
 
@@ -19,7 +26,7 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
+    id("org.jetbrains.kotlin.jvm") version "1.6.20"
 }
 
 apply(plugin = "kiln-main")
@@ -32,7 +39,7 @@ repositories {
 }
 
 dependencies {
-    "shadowApi"("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    "shadowApi"("org.jetbrains.kotlin:kotlin-stdlib:1.6.20")
     "shadowApi"("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
     "shadowApi"("org.ow2.asm:asm-tree:9.2")
