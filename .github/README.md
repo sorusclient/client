@@ -18,4 +18,6 @@ TODO
 
 **4)** A run configuration should be generated in your ide. (if on IntelliJ and when you run the configuration you recieve and error complaining about `net.minecraft.client.main.Main` not existing, then switch the module of the run configuration to `client`, as opposed to `client.main`.
 
+Make sure to build the project with a java 8 jdk. (and 1.18 will have to be run with a java 17 jdk since minecraft uses that version)
+
 If you encounter any issues, join the discord for support.

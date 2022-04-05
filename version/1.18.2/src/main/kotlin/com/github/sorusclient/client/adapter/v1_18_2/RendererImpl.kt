@@ -225,17 +225,17 @@ class RendererImpl: IRenderer {
 
             val window = MinecraftClient.getInstance().window
 
-            GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+            GL20.glUniform4f(GL20.glGetUniformLocation(roundedRectangleProgram, "position1"), x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
             //TODO: Make colors vary for different corners
             GL20.glUniform4f(
-                2,
+                GL20.glGetUniformLocation(roundedRectangleProgram, "colorIn"),
                 topLeftColor.red.toFloat(),
                 topLeftColor.green.toFloat(),
                 topLeftColor.blue.toFloat(),
                 topLeftColor.alpha.toFloat()
             )
-            GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-            GL20.glUniform1f(4, cornerRadius.toFloat())
+            GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+            GL20.glUniform1f(GL20.glGetUniformLocation(roundedRectangleProgram, "cornerRadiusIn"), cornerRadius.toFloat())
 
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
 
@@ -367,11 +367,11 @@ class RendererImpl: IRenderer {
         GL30.glBindVertexArray(roundedRectangleBorderVao)
         GL20.glEnableVertexAttribArray(0)
         val window = MinecraftClient.getInstance().window
-        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
-        GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-        GL20.glUniform1f(4, cornerRadius.toFloat())
-        GL20.glUniform1f(5, thickness.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "position1"), x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "colorIn"), color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+        GL20.glUniform1f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "cornerRadiusIn"), cornerRadius.toFloat())
+        GL20.glUniform1f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "thicknessIn"), thickness.toFloat())
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
         GL20.glDisableVertexAttribArray(0)
         GL30.glBindVertexArray(0)
@@ -454,11 +454,11 @@ class RendererImpl: IRenderer {
         GL20.glEnableVertexAttribArray(0)
         GL20.glEnableVertexAttribArray(1)
         val window = MinecraftClient.getInstance().window
-        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
-        GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-        GL20.glUniform1f(4, cornerRadius.toFloat())
-        GL20.glUniform4f(5, textureX.toFloat(), textureY.toFloat(), textureWidth.toFloat(), textureHeight.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "position1"), x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "colorIn"), color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        GL20.glUniform2f(GL20.glGetUniformLocation(imageProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+        GL20.glUniform1f(GL20.glGetUniformLocation(imageProgram, "cornerRadiusIn"), cornerRadius.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "imagePositionIn"), textureX.toFloat(), textureY.toFloat(), textureWidth.toFloat(), textureHeight.toFloat())
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
         GL20.glDisableVertexAttribArray(0)
         GL30.glBindVertexArray(0)
@@ -541,11 +541,11 @@ class RendererImpl: IRenderer {
         val factor = 200 * scale.toFloat()
         var xOffset = 0.0
         for (character in text.toCharArray()) {
-            GL20.glUniform4f(1, (xOffset + x).toFloat(), y.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat() * factor, fontData.characterData[character.code]!!.textureHeight.toFloat() * factor)
-            GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-            GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-            GL20.glUniform1f(4, 0f)
-            GL20.glUniform4f(5, fontData.characterData[character.code]!!.textureX.toFloat(), fontData.characterData[character.code]!!.textureY.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat(), fontData.characterData[character.code]!!.textureHeight.toFloat())
+            GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "position1"), (xOffset + x).toFloat(), y.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat() * factor, fontData.characterData[character.code]!!.textureHeight.toFloat() * factor)
+            GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "colorIn"), color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+            GL20.glUniform2f(GL20.glGetUniformLocation(imageProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+            GL20.glUniform1f(GL20.glGetUniformLocation(imageProgram, "cornerRadiusIn"), 0f)
+            GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "imagePositionIn"), fontData.characterData[character.code]!!.textureX.toFloat(), fontData.characterData[character.code]!!.textureY.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat(), fontData.characterData[character.code]!!.textureHeight.toFloat())
             xOffset += fontData.characterData[character.code]!!.textureWidth * factor
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
         }

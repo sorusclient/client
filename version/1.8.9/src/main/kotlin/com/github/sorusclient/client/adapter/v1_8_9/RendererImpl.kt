@@ -34,6 +34,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.lang.reflect.Method
 import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.imageio.ImageIO
 import kotlin.collections.ArrayList
@@ -94,7 +95,7 @@ class RendererImpl : IRenderer {
         val program = GL20.glCreateProgram()
         val vertexShader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER)
         try {
-            GL20.glShaderSource(vertexShader, IOUtils.toString(Objects.requireNonNull(com.github.sorusclient.client.adapter.v1_8_9.RendererImpl::class.java.classLoader.getResourceAsStream(vertexShaderPath))))
+            GL20.glShaderSource(vertexShader, IOUtils.toString(Objects.requireNonNull(RendererImpl::class.java.classLoader.getResourceAsStream(vertexShaderPath)), StandardCharsets.UTF_8))
             GL20.glCompileShader(vertexShader)
             val compiled = GL20.glGetShaderi(vertexShader, GL20.GL_COMPILE_STATUS)
             if (compiled == 0) {
@@ -104,10 +105,11 @@ class RendererImpl : IRenderer {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
         GL20.glAttachShader(program, vertexShader)
         val fragmentShader = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER)
         try {
-            GL20.glShaderSource(fragmentShader, IOUtils.toString(Objects.requireNonNull(com.github.sorusclient.client.adapter.v1_8_9.RendererImpl::class.java.classLoader.getResourceAsStream(fragmentShaderPath))))
+            GL20.glShaderSource(fragmentShader, IOUtils.toString(Objects.requireNonNull(RendererImpl::class.java.classLoader.getResourceAsStream(fragmentShaderPath)), StandardCharsets.UTF_8))
             GL20.glCompileShader(fragmentShader)
             val compiled = GL20.glGetShaderi(fragmentShader, GL20.GL_COMPILE_STATUS)
             if (compiled == 0) {
@@ -118,6 +120,7 @@ class RendererImpl : IRenderer {
             e.printStackTrace()
         }
         GL20.glAttachShader(program, fragmentShader)
+
         GL20.glLinkProgram(program)
         val linked = GL20.glGetProgrami(program, GL20.GL_LINK_STATUS)
         if (linked == 0) {
@@ -203,17 +206,17 @@ class RendererImpl : IRenderer {
 
             val window = Window(MinecraftClient.getInstance())
 
-            GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+            GL20.glUniform4f(GL20.glGetUniformLocation(roundedRectangleProgram, "position1"), x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
             //TODO: Make colors vary for different corners
             GL20.glUniform4f(
-                2,
+                GL20.glGetUniformLocation(roundedRectangleProgram, "colorIn"),
                 topLeftColor.red.toFloat(),
                 topLeftColor.green.toFloat(),
                 topLeftColor.blue.toFloat(),
                 topLeftColor.alpha.toFloat()
             )
-            GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-            GL20.glUniform1f(4, cornerRadius.toFloat())
+            GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+            GL20.glUniform1f(GL20.glGetUniformLocation(roundedRectangleProgram, "cornerRadiusIn"), cornerRadius.toFloat())
 
             GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
 
@@ -357,11 +360,11 @@ class RendererImpl : IRenderer {
         GL30.glBindVertexArray(roundedRectangleBorderVao)
         GL20.glEnableVertexAttribArray(0)
         val window = Window(MinecraftClient.getInstance())
-        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
-        GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-        GL20.glUniform1f(4, cornerRadius.toFloat())
-        GL20.glUniform1f(5, thickness.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "position1"), x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "colorIn"), color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+        GL20.glUniform1f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "cornerRadiusIn"), cornerRadius.toFloat())
+        GL20.glUniform1f(GL20.glGetUniformLocation(roundedRectangleBorderProgram, "thicknessIn"), thickness.toFloat())
         GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
         GL20.glDisableVertexAttribArray(0)
         GL30.glBindVertexArray(0)
@@ -451,11 +454,11 @@ class RendererImpl : IRenderer {
         GL20.glEnableVertexAttribArray(0)
         GL20.glEnableVertexAttribArray(1)
         val window = Window(MinecraftClient.getInstance())
-        GL20.glUniform4f(1, x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
-        GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-        GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-        GL20.glUniform1f(4, cornerRadius.toFloat())
-        GL20.glUniform4f(5, textureX.toFloat(), textureY.toFloat(), textureWidth.toFloat(), textureHeight.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "position1"), x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "colorIn"), color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        GL20.glUniform2f(GL20.glGetUniformLocation(imageProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+        GL20.glUniform1f(GL20.glGetUniformLocation(imageProgram, "cornerRadiusIn"), cornerRadius.toFloat())
+        GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "imagePositionIn"), textureX.toFloat(), textureY.toFloat(), textureWidth.toFloat(), textureHeight.toFloat())
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
         GL20.glDisableVertexAttribArray(0)
         GL20.glDisableVertexAttribArray(1)
@@ -546,11 +549,11 @@ class RendererImpl : IRenderer {
         val factor = 200 * scale.toFloat()
         var xOffset = 0.0
         for (character in text.toCharArray()) {
-            GL20.glUniform4f(1, (xOffset + x).toFloat(), y.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat() * factor, fontData.characterData[character.code]!!.textureHeight.toFloat() * factor)
-            GL20.glUniform4f(2, color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-            GL20.glUniform2f(3, window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-            GL20.glUniform1f(4, 0f)
-            GL20.glUniform4f(5, fontData.characterData[character.code]!!.textureX.toFloat(), fontData.characterData[character.code]!!.textureY.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat(), fontData.characterData[character.code]!!.textureHeight.toFloat())
+            GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "position1"), (xOffset + x).toFloat(), y.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat() * factor, fontData.characterData[character.code]!!.textureHeight.toFloat() * factor)
+            GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "colorIn"), color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+            GL20.glUniform2f(GL20.glGetUniformLocation(imageProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+            GL20.glUniform1f(GL20.glGetUniformLocation(imageProgram, "cornerRadiusIn"), 0f)
+            GL20.glUniform4f(GL20.glGetUniformLocation(imageProgram, "imagePositionIn"), fontData.characterData[character.code]!!.textureX.toFloat(), fontData.characterData[character.code]!!.textureY.toFloat(), fontData.characterData[character.code]!!.textureWidth.toFloat(), fontData.characterData[character.code]!!.textureHeight.toFloat())
             xOffset += fontData.characterData[character.code]!!.textureWidth * factor
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
         }

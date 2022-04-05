@@ -1,12 +1,12 @@
-#version 430 core
+#version 130
 
-layout(location = 0) in vec2 position;
-layout(location = 1) uniform vec4 position1;
-layout(location = 2) uniform vec4 colorIn1;
-layout(location = 3) uniform vec4 colorIn2;
-layout(location = 4) uniform vec4 colorIn3;
-layout(location = 5) uniform vec4 colorIn4;
-layout(location = 6) uniform vec2 resolutionIn;
+in vec2 position;
+uniform vec4 position1;
+uniform vec4 colorIn1;
+uniform vec4 colorIn2;
+uniform vec4 colorIn3;
+uniform vec4 colorIn4;
+uniform vec2 resolutionIn;
 
 out vec4 color;
 out vec2 positionFrag;

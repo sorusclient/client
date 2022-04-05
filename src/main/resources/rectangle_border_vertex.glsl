@@ -1,11 +1,11 @@
-#version 430 core
+#version 130
 
-layout(location = 0) in vec2 position;
-layout(location = 1) uniform vec4 position1;
-layout(location = 2) uniform vec4 colorIn;
-layout(location = 3) uniform vec2 resolutionIn;
-layout(location = 4) uniform float cornerRadiusIn;
-layout(location = 5) uniform float thicknessIn;
+in vec2 position;
+uniform vec4 position1;
+uniform vec4 colorIn;
+uniform vec2 resolutionIn;
+uniform float cornerRadiusIn;
+uniform float thicknessIn;
 
 out vec4 color;
 out vec2 positionFrag;

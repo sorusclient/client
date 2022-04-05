@@ -1,4 +1,4 @@
-#version 330 core
+#version 130
 
 in vec4 color;
 in vec4 dimensionsFrag;

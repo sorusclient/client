@@ -81,6 +81,11 @@ class ClassLoader : URLClassLoader(arrayOfNulls(0), null) {
     @Throws(ClassNotFoundException::class)
     fun getModifiedBytes(name: String): ByteArray {
         var data = loadClassData(name)
+
+        if (data.isEmpty()) {
+            throw ClassNotFoundException(name)
+        }
+
         for (transformer in getTransformers()) {
             val formattedName = name.replace(".", "/")
 
