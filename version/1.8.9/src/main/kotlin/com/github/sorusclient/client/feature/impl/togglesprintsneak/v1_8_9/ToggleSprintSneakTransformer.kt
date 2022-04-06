@@ -20,15 +20,16 @@ class ToggleSprintSneakTransformer : Transformer() {
 
     init {
         setHookClass(ToggleSprintSneakHook::class.java)
-        register("v1_8_9/net/minecraft/client/network/ClientPlayerEntity", this::transformClientPlayerEntity)
+        register("v1_8_9/net/minecraft/entity/player/ClientPlayerEntity", this::transformClientPlayerEntity)
         register("v1_8_9/net/minecraft/client/input/KeyboardInput", this::transformKeyboardInput)
     }
 
     private fun transformClientPlayerEntity(classNode: ClassNode) {
-        val tickMovement = "v1_8_9/net/minecraft/client/network/ClientPlayerEntity#tickMovement()V".toIdentifier()
+        val tickMovement = "v1_8_9/net/minecraft/entity/player/ClientPlayerEntity#tickMovement()V".toIdentifier()
         val isPressed = "v1_8_9/net/minecraft/client/options/KeyBinding#isPressed()Z".toIdentifier()
         classNode.findMethod(tickMovement)
             .apply { methodNode: MethodNode ->
+                println(methodNode)
                 methodNode.findMethodCalls(isPressed)
                     .apply(InsertAfter(methodNode, this.getHook("modifyIsSprintPressed")))
             }

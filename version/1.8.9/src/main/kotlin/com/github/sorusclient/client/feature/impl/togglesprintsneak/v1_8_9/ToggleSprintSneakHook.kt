@@ -14,6 +14,7 @@ object ToggleSprintSneakHook {
 
     @JvmStatic
     fun modifyIsSprintPressed(keyPressed: Boolean): Boolean {
+        println(ToggleSprintSneak.isSprintToggledValue())
         return if (ToggleSprintSneak.isSprintToggledValue()) {
             true
         } else {
