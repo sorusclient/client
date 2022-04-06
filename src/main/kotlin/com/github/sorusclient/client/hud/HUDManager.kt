@@ -363,14 +363,43 @@ object HUDManager {
                 val y = element.getY(screenDimensions[1])
                 val width = element.scaledWidth
                 val height = element.scaledHeight
-                renderer.drawRectangle(x - width / 2, y - height / 2, width, height, if (element == draggedHud) {
+                renderer.drawRectangle(x - width / 2, y - height / 2, width, height, if (element == draggedHud && interactType == InteractType.MOVE) {
                     Color.fromRGB(200, 200, 200, 100)
-                } else if (mouseLocation[0] > x - width / 2 && mouseLocation[0] < x + width / 2 && mouseLocation[1] > y - width / 2 && mouseLocation[1] < y + height / 2) {
+                } else if ((mouseLocation[0] > x - width / 2 && mouseLocation[0] < x + width / 2 && mouseLocation[1] > y - height / 2 && mouseLocation[1] < y + height / 2) || element == draggedHud) {
                     Color.fromRGB(200, 200, 200, 75)
                 } else {
                     Color.fromRGB(200, 200, 200, 50)
                 })
                 renderer.drawRectangleBorder(x - width / 2, y - height / 2, width, height, 0.5, Color.fromRGB(200, 200, 200, 150))
+
+                renderer.drawRectangle(x - width / 2 - 2, y - height / 2 - 2, 4.0, 4.0, if (element == draggedHud && interactType == InteractType.RESIZE_TOP_LEFT) {
+                    Color.fromRGB(200, 200, 200, 100)
+                } else if (mouseLocation[0] > x - width / 2 - 2 && mouseLocation[0] < x - width / 2 + 2 && mouseLocation[1] > y - height / 2 - 2 && mouseLocation[1] < y - height / 2 + 2) {
+                    Color.fromRGB(200, 200, 200, 75)
+                } else {
+                    Color.fromRGB(200, 200, 200, 50)
+                })
+                renderer.drawRectangle(x + width / 2 - 2, y - height / 2 - 2, 4.0, 4.0, if (element == draggedHud && interactType == InteractType.RESIZE_TOP_RIGHT) {
+                    Color.fromRGB(200, 200, 200, 100)
+                } else if (mouseLocation[0] > x + width / 2 - 2 && mouseLocation[0] < x + width / 2 + 2 && mouseLocation[1] > y - height / 2 - 2 && mouseLocation[1] < y - height / 2 + 2) {
+                    Color.fromRGB(200, 200, 200, 75)
+                } else {
+                    Color.fromRGB(200, 200, 200, 50)
+                })
+                renderer.drawRectangle(x + width / 2 - 2, y + height / 2 - 2, 4.0, 4.0, if (element == draggedHud && interactType == InteractType.RESIZE_BOTTOM_RIGHT) {
+                    Color.fromRGB(200, 200, 200, 100)
+                } else if (mouseLocation[0] > x + width / 2 - 2 && mouseLocation[0] < x + width / 2 + 2 && mouseLocation[1] > y + height / 2 - 2 && mouseLocation[1] < y + height / 2 + 2) {
+                    Color.fromRGB(200, 200, 200, 75)
+                } else {
+                    Color.fromRGB(200, 200, 200, 50)
+                })
+                renderer.drawRectangle(x - width / 2 - 2, y + height / 2 - 2, 4.0, 4.0, if (element == draggedHud && interactType == InteractType.RESIZE_BOTTOM_LEFT) {
+                    Color.fromRGB(200, 200, 200, 100)
+                } else if (mouseLocation[0] > x - width / 2 - 2 && mouseLocation[0] < x - width / 2 + 2 && mouseLocation[1] > y + height / 2 - 2 && mouseLocation[1] < y + height / 2 + 2) {
+                    Color.fromRGB(200, 200, 200, 75)
+                } else {
+                    Color.fromRGB(200, 200, 200, 50)
+                })
 
                 renderer.drawImage("sorus/ui/navbar/settings.png", x - width / 2 + 2, y - height / 2 + 2, 4.0, 4.0, Color.WHITE)
                 renderer.drawImage("sorus/ui/profiles/delete.png", x - width / 2 + 8, y - height / 2 + 2, 4.0, 4.0, Color.fromRGB(220, 50, 50, 255))
