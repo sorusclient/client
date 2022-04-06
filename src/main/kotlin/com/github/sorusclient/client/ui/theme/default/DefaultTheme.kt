@@ -3526,6 +3526,8 @@ class DefaultTheme: Theme() {
                 storedState += "editedColor"
                 storedState += "value"
 
+                handleAllEvents = true
+
                 onStateUpdate["value"] = { state ->
                     val stateValue = state["value"] as FloatArray
                     val rgb = java.awt.Color.HSBtoRGB(stateValue[0], stateValue[1], stateValue[2])

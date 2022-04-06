@@ -16,7 +16,6 @@ import com.github.sorusclient.client.ui.framework.constraint.Absolute
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.ui.toAbsolute
 import com.github.sorusclient.client.util.Color
-import java.util.Arrays
 import java.util.function.Consumer
 import kotlin.collections.List
 
@@ -56,6 +55,7 @@ open class Container : Component() {
     val onClose: MutableList<(MutableMap<String, Any>) -> Unit> = ArrayList()
     var scissor = false
     var consumeClicks = true
+    var handleAllEvents = false
 
     var selectedByDefault = false
 
@@ -364,6 +364,11 @@ open class Container : Component() {
             state["interacted"] = heldClick
 
             this.availableState = state
+
+            if (handleAllEvents) {
+                return true
+            }
+
             return handled
         }
 

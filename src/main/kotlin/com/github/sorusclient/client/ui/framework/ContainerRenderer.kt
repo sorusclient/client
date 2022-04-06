@@ -59,7 +59,7 @@ object ContainerRenderer {
                 }
             }
             for (event in ArrayList(mouseEvents)) {
-                for (container in ArrayList(containers)) {
+                for (container in containers.reversed()) {
                     if (container.runtime.handleMouseEvent(event)) {
                         break
                     }
