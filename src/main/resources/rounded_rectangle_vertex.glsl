@@ -1,4 +1,4 @@
-#version 130
+#version 120
 
 in vec2 position;
 uniform vec4 position1;
@@ -6,11 +6,11 @@ uniform vec4 colorIn;
 uniform vec2 resolutionIn;
 uniform float cornerRadiusIn;
 
-out vec4 color;
-out vec2 positionFrag;
-out vec2 resolutionFrag;
-out vec4 dimensionsFrag;
-out float cornerRadiusFrag;
+varying vec4 color;
+varying vec2 positionFrag;
+varying vec2 resolutionFrag;
+varying vec4 dimensionsFrag;
+varying float cornerRadiusFrag;
 
 void main()
 {

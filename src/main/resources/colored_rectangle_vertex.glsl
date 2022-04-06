@@ -1,4 +1,4 @@
-#version 130
+#version 120
 
 in vec2 position;
 uniform vec4 position1;
@@ -8,10 +8,10 @@ uniform vec4 colorIn3;
 uniform vec4 colorIn4;
 uniform vec2 resolutionIn;
 
-out vec4 color;
-out vec2 positionFrag;
-out vec2 resolutionFrag;
-out vec4 dimensionsFrag;
+varying vec4 color;
+varying vec2 positionFrag;
+varying vec2 resolutionFrag;
+varying vec4 dimensionsFrag;
 
 void main()
 {

@@ -1,15 +1,15 @@
-#version 130
+#version 120
 
 in vec4 color;
 in vec4 dimensionsFrag;
 in vec2 positionFrag;
 in vec2 resolutionFrag;
-out vec4 fragColor;
+//varying vec4 fragColor;
 
 void main() {
     //float value = 0.3;
 
-    fragColor = color;
+    gl_FragColor = color;
     /*if (positionFrag[0] < dimensionsFrag[0] + dimensionsFrag[2] - cornerRadiusFrag && positionFrag[0] > dimensionsFrag[0] + cornerRadiusFrag) {
         fragColor = vec4(color[0], color[1], color[2], color[3] * (1 - smoothstep(dimensionsFrag[3] / 2 - value, dimensionsFrag[3] / 2, abs(positionFrag[1] - (dimensionsFrag[1] + dimensionsFrag[3] / 2)))));
     } else if (positionFrag[1] < dimensionsFrag[1] + dimensionsFrag[3] - cornerRadiusFrag && positionFrag[1] > dimensionsFrag[1] + cornerRadiusFrag) {
