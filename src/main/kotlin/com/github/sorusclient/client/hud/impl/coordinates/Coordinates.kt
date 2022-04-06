@@ -128,7 +128,7 @@ class Coordinates : HUDElement("coordinates") {
 
     private fun getText(identifier: String, value: String): Array<Pair<String, Color>> {
         return when (modeType.value) {
-            ModeType.SEMI_COLON -> arrayOf(
+            ModeType.COLON -> arrayOf(
                 Pair(identifier, identifierColor.value),
                 Pair(": ", otherColor.value),
                 Pair(value, valueColor.value)
@@ -198,6 +198,6 @@ class Coordinates : HUDElement("coordinates") {
     }
 
     enum class ModeType {
-        SEMI_COLON, BRACKET
+        COLON, BRACKET
     }
 }

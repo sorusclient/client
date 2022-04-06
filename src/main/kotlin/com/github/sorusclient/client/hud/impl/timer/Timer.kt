@@ -142,7 +142,7 @@ class Timer : HUDElement("timer") {
 
     private fun getText(value: String): Array<Pair<String, Color>> {
         return when (modeType.value) {
-            ModeType.SEMI_COLON -> arrayOf(
+            ModeType.COLON -> arrayOf(
                 Pair("Timer", identifierColor.value),
                 Pair(": ", otherColor.value),
                 Pair(value, valueColor.value)
@@ -209,6 +209,6 @@ class Timer : HUDElement("timer") {
     }
 
     enum class ModeType {
-        SEMI_COLON, BRACKET
+        COLON, BRACKET
     }
 }

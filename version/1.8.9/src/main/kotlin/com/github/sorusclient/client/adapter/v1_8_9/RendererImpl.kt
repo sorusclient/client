@@ -351,10 +351,10 @@ class RendererImpl : IRenderer {
         var width = width
         var height = height
 
-        x -= 0.1
-        y -= 0.1
-        width += 0.2
-        height += 0.2
+        //x -= 0.05
+        //y -= 0.05
+        //width += 0.1
+        //height += 0.1
         createPrograms()
         GlStateManager.enableBlend()
         GL20.glUseProgram(roundedRectangleBorderProgram)

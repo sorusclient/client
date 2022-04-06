@@ -1023,6 +1023,8 @@ class DefaultTheme: Theme() {
                                 stateId = "tab"
                                 defaultTab = "home"
 
+                                resetTab = true
+
                                 addChild("home", Container())
 
                                 addChild("settings", Container()
@@ -3940,6 +3942,7 @@ class DefaultTheme: Theme() {
 
         when (id) {
             "mainGui" -> {
+                var resetSettingsScreen = true
                 if (arguments.isNotEmpty()) {
                     when (arguments[0]) {
                         is String -> {
@@ -3954,11 +3957,17 @@ class DefaultTheme: Theme() {
                                 children[0].apply {
                                     runtime.setState("tab", "settings")
                                     runtime.setState("currentSettingsCategory", arguments[0] as DisplayedCategory)
-                                    runtime.setState("resetSettingsScreen", false)
+                                    resetSettingsScreen = false
                                     (arguments[0] as DisplayedCategory).onShow()
                                 }
                             }
                         }
+                    }
+                }
+
+                mainGui.apply {
+                    children[0].apply {
+                        runtime.setState("resetSettingsScreen", resetSettingsScreen)
                     }
                 }
             }

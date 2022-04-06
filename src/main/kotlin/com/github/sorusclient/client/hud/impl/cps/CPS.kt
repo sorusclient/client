@@ -9,7 +9,6 @@ package com.github.sorusclient.client.hud.impl.cps
 
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
-import com.github.sorusclient.client.adapter.IEntity
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.event.EventManager
@@ -123,7 +122,7 @@ class CPS : HUDElement("cps") {
 
     private fun getText(value: String): Array<Pair<String, Color>> {
         return when (modeType.value) {
-            ModeType.SEMI_COLON -> arrayOf(
+            ModeType.COLON -> arrayOf(
                 Pair("CPS", identifierColor.value),
                 Pair(": ", otherColor.value),
                 Pair(value, valueColor.value)
@@ -194,6 +193,6 @@ class CPS : HUDElement("cps") {
     }
 
     enum class ModeType {
-        SEMI_COLON, BRACKET, POST
+        COLON, BRACKET, POST
     }
 }

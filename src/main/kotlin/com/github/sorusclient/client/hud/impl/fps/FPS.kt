@@ -106,7 +106,7 @@ class FPS : HUDElement("fps") {
 
     private fun getText(value: String): Array<Pair<String, Color>> {
         return when (modeType.value) {
-            ModeType.SEMI_COLON -> arrayOf(
+            ModeType.COLON -> arrayOf(
                 Pair("FPS", identifierColor.value),
                 Pair(": ", otherColor.value),
                 Pair(value, valueColor.value)
@@ -177,6 +177,6 @@ class FPS : HUDElement("fps") {
     }
 
     enum class ModeType {
-        SEMI_COLON, BRACKET, POST
+        COLON, BRACKET, POST
     }
 }
