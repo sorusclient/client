@@ -24,12 +24,15 @@ class TabHolder : Container() {
     // In milliseconds
     var transitionFadeTime = 0
 
+    private var tempDisableAnimation = false
+
     init {
         runtime = Runtime()
 
         storedState += "switchTime"
 
         onInit += { state ->
+            tempDisableAnimation = true
             if (resetTab && stateId != null && defaultTab != null) {
                 state.second[stateId!!] = defaultTab!!
             }
@@ -73,20 +76,24 @@ class TabHolder : Container() {
                     prevTab = tabs[prevCurrentTab]
                 }
 
+                var switchTime = 0L
+
+                if (!tempDisableAnimation) {
+                    switchTime =  System.currentTimeMillis()
+                } else {
+                    tempDisableAnimation = false
+                }
+
                 (tabs[prevCurrentTab] as Container?)?.transmitColor = { state: Map<String, Any> ->
-                    val switchTime = state["switchTime"] as Long
                     Color(1.0, 1.0, 1.0, min(1.0, 1.0 - (System.currentTimeMillis() - switchTime) / (transitionFadeTime.toDouble() / 2)))
                 }.toDependent()
                 (tabs[currentTab] as Container?)?.transmitColor = { state: Map<String, Any> ->
-                    val switchTime = state["switchTime"] as Long
                     Color(1.0, 1.0, 1.0, min(1.0, ((System.currentTimeMillis() - switchTime) - transitionFadeTime / 2) / (transitionFadeTime.toDouble() / 2)))
                 }.toDependent()
 
                 prevCurrentTab = currentTab
 
                 tabs[currentTab]?.runtime?.onInit()
-
-                setState("switchTime", System.currentTimeMillis())
 
                 /*if (cancelAnimationsState == null || getState(cancelAnimationsState) == null || !(getState(cancelAnimationsState) as Boolean)) {
 
