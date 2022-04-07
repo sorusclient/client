@@ -22,6 +22,7 @@ import kotlin.collections.List
 open class Container : Component() {
     var backgroundCornerRadius: Constraint = Absolute(0.0)
 
+    var transmitColor: Constraint = Color.WHITE.toAbsolute()
     var backgroundColor: Constraint? = null
     var topLeftBackgroundColor: Constraint? = null
     var bottomLeftBackgroundColor: Constraint? = null
@@ -34,6 +35,9 @@ open class Container : Component() {
     var backgroundImage: Constraint? = null
         set(value) {
             value?.getStringValue(null)?.let { AdapterManager.adapter.renderer.createTexture(it) }
+            if (backgroundColor == null && value != null) {
+                backgroundColor = Color.WHITE.toAbsolute()
+            }
             field = value
         }
     var backgroundImageBounds: Array<Double> = arrayOf(0.0, 0.0, 1.0, 1.0)
@@ -115,6 +119,28 @@ open class Container : Component() {
         final override var bottomPadding = 0.0
             private set
 
+        val realTransmitColor: Color
+            get() {
+                if (parent != null) {
+                    val color = transmitColor.getColorValue(this)
+                    val parentColor = (parent!!.runtime as Runtime).realTransmitColor
+                    return Color(color.red * parentColor.red, color.green * parentColor.green, color.blue * parentColor.blue, color.alpha * parentColor.alpha)
+                }
+
+                return transmitColor.getColorValue(this)
+            }
+
+        fun getRealColor(color: Constraint?): Color? {
+            if (color == null) return null
+
+            var color = color.getColorValue(this)
+
+            val transmitColor = realTransmitColor
+
+            color = Color(color.red * transmitColor.red, color.green * transmitColor.green, color.blue * transmitColor.blue, color.alpha * transmitColor.alpha)
+            return color
+        }
+
         val placedComponents: MutableList<Pair<Component?, DoubleArray>> = ArrayList()
         private val placedComponents2: MutableList<Component> = ArrayList()
         private var prevClick: Long = 0
@@ -161,25 +187,24 @@ open class Container : Component() {
             }
 
             val renderer = AdapterManager.adapter.renderer
+
             if (container.backgroundImage != null) {
-                var color = Color.WHITE
-                if (container.backgroundColor != null) {
-                    color = container.backgroundColor!!.getColorValue(this)
+                if (getRealColor(backgroundColor) != null) {
+                    renderer.drawImage(
+                        container.backgroundImage!!.getStringValue(this)!!,
+                        x - width / 2,
+                        y - height / 2,
+                        width,
+                        height,
+                        container.backgroundCornerRadius.getCornerRadiusValue(this),
+                        backgroundImageBounds[0],
+                        backgroundImageBounds[1],
+                        backgroundImageBounds[2],
+                        backgroundImageBounds[3],
+                        true,
+                        getRealColor(backgroundColor)!!
+                    )
                 }
-                renderer.drawImage(
-                    container.backgroundImage!!.getStringValue(this)!!,
-                    x - width / 2,
-                    y - height / 2,
-                    width,
-                    height,
-                    container.backgroundCornerRadius.getCornerRadiusValue(this),
-                    backgroundImageBounds[0],
-                    backgroundImageBounds[1],
-                    backgroundImageBounds[2],
-                    backgroundImageBounds[3],
-                    true,
-                    color
-                )
             } else if (container.topLeftBackgroundColor != null) {
                 renderer.drawRectangle(
                     x - width / 2,
@@ -192,19 +217,19 @@ open class Container : Component() {
                     container.bottomRightBackgroundColor!!.getColorValue(this),
                     container.topRightBackgroundColor!!.getColorValue(this)
                 )
-            } else if (container.backgroundColor != null) {
+            } else if (getRealColor(backgroundColor) != null) {
                 renderer.drawRectangle(
                     x - width / 2,
                     y - height / 2,
                     width,
                     height,
                     container.backgroundCornerRadius.getCornerRadiusValue(this),
-                    container.backgroundColor!!.getColorValue(this)
+                    getRealColor(backgroundColor)!!
                 )
             }
 
-            if (container.borderColor != null) {
-                renderer.drawRectangleBorder(x - width / 2, y - height / 2, width, height, container.backgroundCornerRadius.getCornerRadiusValue(this), container.borderThickness!!.getPaddingValue(this), container.borderColor!!.getColorValue(this))
+            if (getRealColor(container.borderColor) != null) {
+                renderer.drawRectangleBorder(x - width / 2, y - height / 2, width, height, container.backgroundCornerRadius.getCornerRadiusValue(this), container.borderThickness!!.getPaddingValue(this), getRealColor(container.borderColor)!!)
             }
 
             placedComponents.add(Pair(null, doubleArrayOf(width / 2 + 0.5, 0.0, 1.0, height + 1, 0.0, 0.0, 0.0, 0.0)))

@@ -29,7 +29,6 @@ class ToggleSprintSneakTransformer : Transformer() {
         val isPressed = "v1_8_9/net/minecraft/client/options/KeyBinding#isPressed()Z".toIdentifier()
         classNode.findMethod(tickMovement)
             .apply { methodNode: MethodNode ->
-                println(methodNode)
                 methodNode.findMethodCalls(isPressed)
                     .apply(InsertAfter(methodNode, this.getHook("modifyIsSprintPressed")))
             }

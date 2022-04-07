@@ -99,7 +99,6 @@ class RendererImpl : IRenderer {
             GL20.glCompileShader(vertexShader)
             val compiled = GL20.glGetShaderi(vertexShader, GL20.GL_COMPILE_STATUS)
             if (compiled == 0) {
-                println(vertexShaderPath)
                 System.err.println(GL20.glGetShaderInfoLog(vertexShader, GL20.glGetShaderi(vertexShader, GL20.GL_INFO_LOG_LENGTH)))
                 throw IllegalStateException("Failed to compile shader")
             }

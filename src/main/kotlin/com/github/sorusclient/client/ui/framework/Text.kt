@@ -76,6 +76,20 @@ class Text : Component() {
         override var bottomPadding = 0.0
             private set
 
+        val realTransmitColor: Color
+            get() {
+                return (parent!!.runtime as Container.Runtime).realTransmitColor
+            }
+
+        val realTextColor: Color
+            get() {
+                var color = textColor.getColorValue(this)
+                val transmitColor = realTransmitColor
+
+                color = Color(color.red * transmitColor.red, color.green * transmitColor.green, color.blue * transmitColor.blue, color.alpha * transmitColor.alpha)
+                return color
+            }
+
         override fun render(x: Double, y: Double, width: Double, height: Double) {
             if (cachedFontId != fontRenderer!!.getStringValue(this)) {
                 cachedFontId = fontRenderer!!.getStringValue(this)
@@ -88,7 +102,7 @@ class Text : Component() {
                     x - this.width / 2,
                     y - this.height / 2,
                     scale.getPaddingValue(this),
-                    textColor.getColorValue(this)
+                    realTextColor
             )
         }
 

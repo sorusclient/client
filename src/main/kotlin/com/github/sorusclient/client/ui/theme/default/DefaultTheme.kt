@@ -1023,7 +1023,11 @@ class DefaultTheme: Theme() {
                                 stateId = "tab"
                                 defaultTab = "home"
 
-                                resetTab = true
+                                resetTab = false
+
+                                transitionFadeTime = 275
+
+                                cancelAnimationsState = "cancelMenuAnimation"
 
                                 addChild("home", Container())
 
@@ -3270,7 +3274,7 @@ class DefaultTheme: Theme() {
                                                                                                                     text = {
                                                                                                                         if (friend.second.second == "offline") {
                                                                                                                             "Offline"
-                                                                                                                        } else if (!friend.second.second.isEmpty()) {
+                                                                                                                        } else if (friend.second.second.isNotEmpty()) {
                                                                                                                             "Playing ${friend.second.second} on ${friend.second.first}"
                                                                                                                         } else {
                                                                                                                             "Playing on ${friend.second.first}"
@@ -3335,6 +3339,7 @@ class DefaultTheme: Theme() {
                         storedState += "keepState"
 
                         storedState += "tab"
+                        storedState += "cancelMenuAnimation"
                     }
             }
 
@@ -3944,12 +3949,14 @@ class DefaultTheme: Theme() {
 
         when (id) {
             "mainGui" -> {
+                var setTab = false
                 var resetSettingsScreen = true
                 if (arguments.isNotEmpty()) {
                     when (arguments[0]) {
                         is String -> {
                             mainGui.apply {
                                 children[0].apply {
+                                    setTab = true
                                     runtime.setState("tab", arguments[0])
                                 }
                             }
@@ -3957,6 +3964,7 @@ class DefaultTheme: Theme() {
                         is DisplayedCategory -> {
                             mainGui.apply {
                                 children[0].apply {
+                                    setTab = true
                                     runtime.setState("tab", "settings")
                                     runtime.setState("currentSettingsCategory", arguments[0] as DisplayedCategory)
                                     resetSettingsScreen = false
@@ -3970,6 +3978,9 @@ class DefaultTheme: Theme() {
                 mainGui.apply {
                     children[0].apply {
                         runtime.setState("resetSettingsScreen", resetSettingsScreen)
+                        if (!setTab) {
+                            runtime.setState("tab", "home")
+                        }
                     }
                 }
             }

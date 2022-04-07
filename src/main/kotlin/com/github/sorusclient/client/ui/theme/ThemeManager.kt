@@ -72,8 +72,8 @@ object ThemeManager {
         for (theme in configuredThemes) {
             val container = theme.items[id]
             if (container != null) {
-                theme.onOpenGui(id, *arguments)
                 ContainerRenderer.open(container)
+                theme.onOpenGui(id, *arguments)
                 openedGuis += container
                 return
             }

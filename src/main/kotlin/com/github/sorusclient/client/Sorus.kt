@@ -17,6 +17,7 @@ import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.ui.framework.ContainerRenderer
 import com.github.sorusclient.client.ui.theme.ThemeManager
+import com.github.sorusclient.client.websocket.WebSocketManager
 
 object Sorus {
 
@@ -44,6 +45,8 @@ object Sorus {
         Runtime.getRuntime().addShutdownHook(Thread {
             SettingManager.saveCurrent()
         })
+
+        WebSocketManager
     }
 
 }

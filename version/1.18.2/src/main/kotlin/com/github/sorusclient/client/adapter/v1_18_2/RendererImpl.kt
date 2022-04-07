@@ -340,7 +340,6 @@ class RendererImpl: IRenderer {
         GL30.glBindVertexArray(prevBoundVertexArray)
         GL15.glBindBuffer(prevBoundBufferTarget, prevBoundBuffer)
         GL20.glUseProgram(prevProgram)
-        //println(prevProgram)
     }
 
     override fun drawRectangleBorder(
