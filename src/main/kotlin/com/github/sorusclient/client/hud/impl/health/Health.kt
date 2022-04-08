@@ -22,7 +22,7 @@ class Health : HUDElement("health") {
         get() = (1 + 8 * 10 + 1 + 1).toDouble()
     override val height: Double
         get() {
-            val player: ILivingEntity = AdapterManager.adapter.player!!
+            val player: ILivingEntity = AdapterManager.getAdapter().player!!
             val absorption = player.absorption
             val absorptionInt = ceil(absorption).toInt()
             val totalHealth = (ceil(player.maxHealth).toInt() + absorptionInt) / 2
@@ -40,9 +40,9 @@ class Health : HUDElement("health") {
     private var regenStartTime: Long = 0
     private var prevHasRegen = false
     override fun render(x: Double, y: Double, scale: Double) {
-        if (!(AdapterManager.adapter.gameMode == GameMode.SURVIVAL || AdapterManager.adapter.gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
 
-        val player: ILivingEntity = AdapterManager.adapter.player!!
+        val player: ILivingEntity = AdapterManager.getAdapter().player!!
         var hasRegen = false
         for (effect in player.effects) {
             if (effect.type == IPotionEffect.PotionType.REGENERATION) {
@@ -80,7 +80,7 @@ class Health : HUDElement("health") {
                 showDamageEffect = true
             }
         }
-        val healthRenderer = InterfaceManager.get<IHealthRenderer>()
+        val healthRenderer = InterfaceManager.get(IHealthRenderer::class.java)
         val totalHealth = (ceil(player.maxHealth).toInt() + absorptionInt) / 2
         val totalRows = ceil(totalHealth / 10.0).toInt()
         for (i in 0 until totalHealth) {

@@ -24,11 +24,11 @@ class Hunger : HUDElement("hunger") {
         get() = "Hunger"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        if (!(AdapterManager.adapter.gameMode == GameMode.SURVIVAL || AdapterManager.adapter.gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
 
-        val player = AdapterManager.adapter.player!!
+        val player = AdapterManager.getAdapter().player!!
         val hunger = player.hunger.toInt()
-        val hungerRenderer = InterfaceManager.get<IHungerRenderer>()
+        val hungerRenderer = InterfaceManager.get(IHungerRenderer::class.java)
         for (i in 0..9) {
             val heartX = x + (1 + i * 8) * scale
             hungerRenderer.renderHungerBackground(heartX, y + 1 * scale, scale)

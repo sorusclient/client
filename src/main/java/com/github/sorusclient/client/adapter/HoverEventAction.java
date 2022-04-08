@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2022. Danterus
+ * Copyright (c) 2022. Sorus Contributors
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
+package com.github.sorusclient.client.adapter;
+
+public enum HoverEventAction {
+    SHOW_ENTITY,
+    SHOW_ACHIEVEMENT,
+    SHOW_TEXT
+}

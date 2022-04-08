@@ -34,13 +34,13 @@ class FPS : HUDElement("fps") {
         get() {
             return when (mode.value) {
                 Mode.STANDARD -> {
-                    val renderer = AdapterManager.adapter.renderer
+                    val renderer = AdapterManager.getAdapter().renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
                     fontRenderer.getHeight() + 3 * 2
                 }
                 Mode.CUSTOM -> {
-                    val renderer = AdapterManager.adapter.renderer
+                    val renderer = AdapterManager.getAdapter().renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
                     val numberShown = customText.value.size
@@ -88,12 +88,12 @@ class FPS : HUDElement("fps") {
     }
 
     private fun renderStandard(x: Double, y: Double, scale: Double) {
-        val renderer = AdapterManager.adapter.renderer
+        val renderer = AdapterManager.getAdapter().renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
         val textY = y + 3 * scale
 
-        val text = getText(AdapterManager.adapter.fps.toString())
+        val text = getText(AdapterManager.getAdapter().fps.toString())
         var textString = ""
         for (pair in text) {
             textString += pair.first
@@ -125,7 +125,7 @@ class FPS : HUDElement("fps") {
     }
 
     private fun renderCustom(x: Double, y: Double, scale: Double) {
-        val renderer = AdapterManager.adapter.renderer
+        val renderer = AdapterManager.getAdapter().renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
@@ -154,7 +154,7 @@ class FPS : HUDElement("fps") {
 
     private fun applyValues(string: String): String {
         var string = string
-        string = string.replace("\$FPS", AdapterManager.adapter.fps.toString())
+        string = string.replace("\$FPS", AdapterManager.getAdapter().fps.toString())
         return string
     }
 

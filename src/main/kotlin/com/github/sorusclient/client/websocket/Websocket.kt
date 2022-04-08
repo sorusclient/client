@@ -40,7 +40,7 @@ class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml:8443")) {
             }
 
             WebSocketManager.sendMessage("updateStatus", JSONObject().apply {
-                put("version", AdapterManager.adapter.version)
+                put("version", AdapterManager.getAdapter().version)
                 put("action", "")
             }, true)
 

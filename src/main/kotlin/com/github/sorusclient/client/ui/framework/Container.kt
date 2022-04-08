@@ -34,7 +34,7 @@ open class Container : Component() {
 
     var backgroundImage: Constraint? = null
         set(value) {
-            value?.getStringValue(null)?.let { AdapterManager.adapter.renderer.createTexture(it) }
+            value?.getStringValue(null)?.let { AdapterManager.getAdapter().renderer.createTexture(it) }
             if (backgroundColor == null && value != null) {
                 backgroundColor = Color.WHITE.toAbsolute()
             }
@@ -186,7 +186,7 @@ open class Container : Component() {
                 return
             }
 
-            val renderer = AdapterManager.adapter.renderer
+            val renderer = AdapterManager.getAdapter().renderer
 
             if (container.backgroundImage != null) {
                 if (getRealColor(backgroundColor) != null) {

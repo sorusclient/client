@@ -182,7 +182,7 @@ abstract class HUDElement(val id: String) {
         get() = height * getScale()
 
     fun render() {
-        val screenDimensions = AdapterManager.adapter.screenDimensions
+        val screenDimensions = AdapterManager.getAdapter().screenDimensions
         this.render(
             getX(screenDimensions[0]) - scaledWidth / 2, getY(screenDimensions[1]) - scaledHeight / 2,
             getScale()

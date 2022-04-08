@@ -26,7 +26,7 @@ object PluginManager {
         plugins.clear()
 
         for (resource in PluginManager::class.java.classLoader.getResources("plugin.json")) {
-            val json = BootstrapManager.loadJson(resource, AdapterManager.adapter.version)
+            val json = BootstrapManager.loadJson(resource, AdapterManager.getAdapter().version)
 
             val id = json.getString("id")
 

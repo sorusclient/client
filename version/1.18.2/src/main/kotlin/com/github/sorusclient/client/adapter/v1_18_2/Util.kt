@@ -20,28 +20,28 @@ import v1_18_2.net.minecraft.util.Formatting
 
 object Util {
 
-    fun getItemByItemType(itemType: IItem.ItemType?): Item? {
+    fun getItemByItemType(itemType: ItemType?): Item? {
         return when (itemType) {
-            IItem.ItemType.LEATHER_HELMET -> Items.LEATHER_HELMET
-            IItem.ItemType.LEATHER_CHESTPLATE -> Items.LEATHER_CHESTPLATE
-            IItem.ItemType.LEATHER_LEGGINGS -> Items.LEATHER_LEGGINGS
-            IItem.ItemType.LEATHER_BOOTS -> Items.LEATHER_BOOTS
-            IItem.ItemType.CHAIN_HELMET -> Items.CHAINMAIL_HELMET
-            IItem.ItemType.CHAIN_CHESTPLATE -> Items.CHAINMAIL_CHESTPLATE
-            IItem.ItemType.CHAIN_LEGGINGS -> Items.CHAINMAIL_LEGGINGS
-            IItem.ItemType.CHAIN_BOOTS -> Items.CHAINMAIL_BOOTS
-            IItem.ItemType.IRON_HELMET -> Items.IRON_HELMET
-            IItem.ItemType.IRON_CHESTPLATE -> Items.IRON_CHESTPLATE
-            IItem.ItemType.IRON_LEGGINGS -> Items.IRON_LEGGINGS
-            IItem.ItemType.IRON_BOOTS -> Items.IRON_BOOTS
-            IItem.ItemType.DIAMOND_HELMET -> Items.DIAMOND_HELMET
-            IItem.ItemType.DIAMOND_CHESTPLATE -> Items.DIAMOND_CHESTPLATE
-            IItem.ItemType.DIAMOND_LEGGINGS -> Items.DIAMOND_LEGGINGS
-            IItem.ItemType.DIAMOND_BOOTS -> Items.DIAMOND_BOOTS
-            IItem.ItemType.GOLD_HELMET -> Items.GOLDEN_HELMET
-            IItem.ItemType.GOLD_CHESTPLATE -> Items.GOLDEN_CHESTPLATE
-            IItem.ItemType.GOLD_LEGGINGS -> Items.GOLDEN_LEGGINGS
-            IItem.ItemType.GOLD_BOOTS -> Items.GOLDEN_BOOTS
+            ItemType.LEATHER_HELMET -> Items.LEATHER_HELMET
+            ItemType.LEATHER_CHESTPLATE -> Items.LEATHER_CHESTPLATE
+            ItemType.LEATHER_LEGGINGS -> Items.LEATHER_LEGGINGS
+            ItemType.LEATHER_BOOTS -> Items.LEATHER_BOOTS
+            ItemType.CHAIN_HELMET -> Items.CHAINMAIL_HELMET
+            ItemType.CHAIN_CHESTPLATE -> Items.CHAINMAIL_CHESTPLATE
+            ItemType.CHAIN_LEGGINGS -> Items.CHAINMAIL_LEGGINGS
+            ItemType.CHAIN_BOOTS -> Items.CHAINMAIL_BOOTS
+            ItemType.IRON_HELMET -> Items.IRON_HELMET
+            ItemType.IRON_CHESTPLATE -> Items.IRON_CHESTPLATE
+            ItemType.IRON_LEGGINGS -> Items.IRON_LEGGINGS
+            ItemType.IRON_BOOTS -> Items.IRON_BOOTS
+            ItemType.DIAMOND_HELMET -> Items.DIAMOND_HELMET
+            ItemType.DIAMOND_CHESTPLATE -> Items.DIAMOND_CHESTPLATE
+            ItemType.DIAMOND_LEGGINGS -> Items.DIAMOND_LEGGINGS
+            ItemType.DIAMOND_BOOTS -> Items.DIAMOND_BOOTS
+            ItemType.GOLD_HELMET -> Items.GOLDEN_HELMET
+            ItemType.GOLD_CHESTPLATE -> Items.GOLDEN_CHESTPLATE
+            ItemType.GOLD_LEGGINGS -> Items.GOLDEN_LEGGINGS
+            ItemType.GOLD_BOOTS -> Items.GOLDEN_BOOTS
             else -> null
         }
     }

@@ -31,7 +31,7 @@ object WebSocketManager {
         Runtime.getRuntime().addShutdownHook(Thread {
             runBlocking {
                 sendMessage("updateStatus", JSONObject().apply {
-                    put("version", AdapterManager.adapter.version)
+                    put("version", AdapterManager.getAdapter().version)
                     put("action", "offline")
                 })
             }
@@ -42,7 +42,7 @@ object WebSocketManager {
                 lastConnectTime = System.currentTimeMillis()
 
                 Thread {
-                    val session = AdapterManager.adapter.session
+                    val session = AdapterManager.getAdapter().session
                     val sorusMlHash = "800D46DF17044D7033A983D9943E61CAA11835CB"
 
                     runBlocking {

@@ -12,6 +12,7 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.PerspectiveMode
 import com.github.sorusclient.client.adapter.ScreenType
+import com.github.sorusclient.client.event.call
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
@@ -63,12 +64,12 @@ object Perspective {
     }
 
     private fun onKeyUpdate(pressed: Boolean) {
-        val adapter = AdapterManager.adapter
+        val adapter = AdapterManager.getAdapter()
         if (isEnabled() && adapter.openScreen == ScreenType.IN_GAME) {
 
             if (pressed) {
                 previousPerspective = adapter.perspective
-                InterfaceManager.get<IPerspectiveHelper>().onToggle()
+                InterfaceManager.get(IPerspectiveHelper::class.java).onToggle()
                 adapter.perspective = PerspectiveMode.THIRD_PERSON_BACK
             } else {
                 adapter.perspective = previousPerspective

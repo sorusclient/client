@@ -98,11 +98,11 @@ class Adapter: IAdapter, Initializer {
             }
         }
 
-    override fun getKeyBind(type: IKeyBind.KeyBindType): IKeyBind {
+    override fun getKeyBind(type: KeyBindType): IKeyBind {
         val options = MinecraftClient.getInstance().options
         val keyBinding: KeyBinding = when (type) {
-            IKeyBind.KeyBindType.SPRINT -> options.sprintKey
-            IKeyBind.KeyBindType.SNEAK -> options.sneakKey
+            KeyBindType.SPRINT -> options.sprintKey
+            KeyBindType.SNEAK -> options.sneakKey
         }
         return KeyBindImpl(keyBinding)
     }

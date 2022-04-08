@@ -36,7 +36,7 @@ object UserInterface {
     lateinit var searchResults: List<SearchResult>
 
     fun initialize() {
-        val adapter = AdapterManager.adapter
+        val adapter = AdapterManager.getAdapter()
 
         KeyBindManager.register(KeyBind({ mainGuiKey.value }, { pressed ->
             if (pressed && adapter.openScreen == ScreenType.IN_GAME) {
@@ -83,7 +83,7 @@ object UserInterface {
             for (serverJsonData in AssetUtil.getAllServerJson()) {
                 val serverJson = JSONObject(serverJsonData.value)
                 val logoAssetName = "${serverJson["name"]}-logo"
-                AdapterManager.adapter.renderer.createTexture(logoAssetName, URL(AssetUtil.baseServersUrl + "/${serverJsonData.key}/${serverJson["logo"]}"))
+                AdapterManager.getAdapter().renderer.createTexture(logoAssetName, URL(AssetUtil.baseServersUrl + "/${serverJsonData.key}/${serverJson["logo"]}"))
                 searchResults.add(ServerSearchResult(serverJson["name"] as String, serverJson["ip"] as String, logoAssetName))
             }
 
@@ -96,7 +96,7 @@ object UserInterface {
         }
 
         EventManager.register<TickEvent> {
-            if (AdapterManager.adapter.openScreen == ScreenType.IN_GAME && ContainerRenderer.containers.size > 0) {
+            if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME && ContainerRenderer.containers.size > 0) {
                 ThemeManager.closeGui()
             }
         }
@@ -218,8 +218,8 @@ object UserInterface {
 
         override fun onSelect() {
             ThemeManager.closeGui()
-            AdapterManager.adapter.renderer.unloadBlur()
-            AdapterManager.adapter.openScreen(type)
+            AdapterManager.getAdapter().renderer.unloadBlur()
+            AdapterManager.getAdapter().openScreen(type)
         }
 
     }
@@ -228,9 +228,9 @@ object UserInterface {
 
         override fun onSelect() {
             ThemeManager.closeGui()
-            AdapterManager.adapter.openScreen(ScreenType.IN_GAME)
-            AdapterManager.adapter.leaveWorld()
-            AdapterManager.adapter.joinServer(ip)
+            AdapterManager.getAdapter().openScreen(ScreenType.IN_GAME)
+            AdapterManager.getAdapter().leaveWorld()
+            AdapterManager.getAdapter().joinServer(ip)
         }
 
     }

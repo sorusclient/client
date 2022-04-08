@@ -26,13 +26,13 @@ class Experience : HUDElement("experience") {
         get() = "Experience"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        if (!(AdapterManager.adapter.gameMode == GameMode.SURVIVAL || AdapterManager.adapter.gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
+        if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
 
-        val player = AdapterManager.adapter.player!!
+        val player = AdapterManager.getAdapter().player!!
         val experiencePercent = player.experiencePercentUntilNextLevel
-        val experienceRenderer = InterfaceManager.get<IExperienceRenderer>()
+        val experienceRenderer = InterfaceManager.get(IExperienceRenderer::class.java)
         experienceRenderer.renderExperienceBar(x + 1 * scale, y + 1 * scale, scale, experiencePercent)
-        val renderer = AdapterManager.adapter.renderer
+        val renderer = AdapterManager.getAdapter().renderer
         val minecraftFontRenderer = renderer.getFontRenderer("minecraft")!!
         val experienceLevel = player.experienceLevel.toString()
 

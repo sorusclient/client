@@ -7,8 +7,6 @@
 
 package com.github.sorusclient.client.adapter
 
-import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
-
 interface IAdapter {
     val openScreen: ScreenType?
     val screenDimensions: DoubleArray

@@ -338,8 +338,8 @@ object HUDManager {
     }
 
     fun render() {
-        val adapter = AdapterManager.adapter
-        val renderer = AdapterManager.adapter.renderer
+        val adapter = AdapterManager.getAdapter()
+        val renderer = AdapterManager.getAdapter().renderer
         val screenDimensions = adapter.screenDimensions
         val mouseLocation = adapter.mouseLocation
         val isHudEditScreenOpen = prevIsHudEditScreenOpen
@@ -656,7 +656,7 @@ object HUDManager {
     }
 
     private fun displaySnaps(screenDimensions: DoubleArray, snaps: List<Snap>) {
-        val renderer = AdapterManager.adapter.renderer
+        val renderer = AdapterManager.getAdapter().renderer
         for (snap in snaps) {
             if (snap.axis === Axis.X) {
                 renderer.drawRectangle(
@@ -745,7 +745,7 @@ object HUDManager {
 
     private fun onClick(event: MouseEvent) {
         if (isHudEditScreenOpen.get()) {
-            val screenDimensions = AdapterManager.adapter.screenDimensions
+            val screenDimensions = AdapterManager.getAdapter().screenDimensions
             if (event.x > screenDimensions[0] - screenDimensions[1] * 0.075 - 2 && event.y < screenDimensions[1] * 0.075) {
                 hoveredCloseButton = true
                 hoveredAddButton = false
@@ -771,7 +771,7 @@ object HUDManager {
         if (event.button != Button.PRIMARY) return
 
         if (event.isPressed && isHudEditScreenOpen.get()) {
-            val screenDimensions = AdapterManager.adapter.screenDimensions
+            val screenDimensions = AdapterManager.getAdapter().screenDimensions
             for (element in getElements().values) {
                 val x = element.getX(screenDimensions[0])
                 val y = element.getY(screenDimensions[1])

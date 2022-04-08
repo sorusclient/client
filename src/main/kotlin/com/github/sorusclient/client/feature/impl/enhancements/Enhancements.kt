@@ -48,7 +48,7 @@ object Enhancements {
     }
 
     private var settings: Map<String, Any> = HashMap()
-    private var settingsLoader: ISettingsLoader = InterfaceManager.get()
+    private var settingsLoader = InterfaceManager.get(ISettingsLoader::class.java)
 
     fun saveSettings() {
         val jsonObject = settingsLoader.save(settings)

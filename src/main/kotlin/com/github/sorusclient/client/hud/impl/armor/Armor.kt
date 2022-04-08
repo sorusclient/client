@@ -11,7 +11,7 @@ import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.GameMode
 import com.github.sorusclient.client.adapter.IItem
-import com.github.sorusclient.client.adapter.IItem.ItemType
+import com.github.sorusclient.client.adapter.ItemType
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.setting.Setting
@@ -21,6 +21,7 @@ import com.github.sorusclient.client.util.Color
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
+import kotlin.math.max
 
 class Armor : HUDElement("armor") {
 
@@ -56,10 +57,10 @@ class Armor : HUDElement("armor") {
         get() = "Armor"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val player = AdapterManager.adapter.player!!
-        val renderer = AdapterManager.adapter.renderer
+        val player = AdapterManager.getAdapter().player!!
+        val renderer = AdapterManager.getAdapter().renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
-        val armorRenderer = InterfaceManager.get<IArmorRenderer>()
+        val armorRenderer = InterfaceManager.get(IArmorRenderer::class.java)
         when (mode.value) {
             Mode.INDIVIDUAL -> {
                 renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
@@ -79,7 +80,7 @@ class Armor : HUDElement("armor") {
                 }
             }
             Mode.TOTAL -> {
-                if ((!(AdapterManager.adapter.gameMode == GameMode.SURVIVAL || AdapterManager.adapter.gameMode == GameMode.ADVENTURE) || player.armorProtection == 0.0) && !HUDManager.isHudEditScreenOpen.get()) return
+                if ((!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) || player.armorProtection == 0.0) && !HUDManager.isHudEditScreenOpen.get()) return
 
                 val armor = player.armorProtection.toInt()
                 var i = 0
@@ -127,7 +128,7 @@ class Armor : HUDElement("armor") {
 
     private val armor: List<IItem>
         get() {
-            val adapter = AdapterManager.adapter
+            val adapter = AdapterManager.getAdapter()
             val editing = HUDManager.isHudEditScreenOpen.get()
             val realArmor = adapter.player!!.armor
             return if (!editing || realArmor.stream().anyMatch { o: IItem? ->
@@ -155,7 +156,7 @@ class Armor : HUDElement("armor") {
         get() {
             return when (mode.value) {
                 Mode.INDIVIDUAL -> {
-                    val renderer = AdapterManager.adapter.renderer
+                    val renderer = AdapterManager.getAdapter().renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
                     val index = AtomicInteger(0)
                     val armor = armor.stream().filter { item: IItem? ->
@@ -169,17 +170,27 @@ class Armor : HUDElement("armor") {
             }
         }
 
-    private class FakeArmorItem(
-        override val remainingDurability: Double,
-        override val maxDurability: Double,
-        override val type: ItemType
-    ) : IItem {
+    private class FakeArmorItem(private val durability: Double, private val maxDurability: Double, val itemType: ItemType) : IItem {
 
-        override val inner: Any?
-            get() = null
+        override fun getRemainingDurability(): Double {
+            return durability
+        }
 
-        override val count: Int
-            get() = 0
+        override fun getMaxDurability(): Double {
+            return maxDurability
+        }
+
+        override fun getType(): ItemType {
+            return itemType
+        }
+
+        override fun getInner(): Any {
+            TODO("Not yet implemented")
+        }
+
+        override fun getCount(): Int {
+            TODO("Not yet implemented")
+        }
 
     }
 

@@ -9,7 +9,6 @@ package com.github.sorusclient.client.adapter.v1_8_9
 
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.*
-import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
 import com.github.sorusclient.client.bootstrap.Initializer
 import v1_8_9.org.lwjgl.input.Mouse
 import v1_8_9.org.lwjgl.opengl.Display
@@ -24,6 +23,7 @@ import v1_8_9.net.minecraft.client.network.ServerInfo
 import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.client.util.Window
 import v1_8_9.net.minecraft.entity.Entity
+import v1_8_9.net.minecraft.entity.player.PlayerEntity
 import v1_8_9.net.minecraft.network.ServerAddress
 import v1_8_9.net.minecraft.text.LiteralText
 import v1_8_9.net.minecraft.world.level.LevelInfo
@@ -59,7 +59,7 @@ class Adapter : IAdapter, Initializer {
         }
     override val player: IPlayerEntity?
         get() {
-            val player: Entity? = MinecraftClient.getInstance().player
+            val player: PlayerEntity? = MinecraftClient.getInstance().player
             return player?.let { PlayerEntityImpl(it) }
         }
     override val world: IWorld

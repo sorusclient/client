@@ -8,10 +8,8 @@
 package com.github.sorusclient.client.feature.impl.togglesprintsneak
 
 import com.github.sorusclient.client.adapter.AdapterManager
-import com.github.sorusclient.client.adapter.IKeyBind
 import com.github.sorusclient.client.adapter.Key
-import com.github.sorusclient.client.adapter.event.KeyEvent
-import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.adapter.KeyBindType
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
@@ -87,13 +85,13 @@ object ToggleSprintSneak {
 
     private val sprintKey: Key
         get() {
-            val adapter = AdapterManager.adapter
-            return if (useCustomSprintKey.value) customSprintKey.value[0] else adapter.getKeyBind(IKeyBind.KeyBindType.SPRINT).key
+            val adapter = AdapterManager.getAdapter()
+            return if (useCustomSprintKey.value) customSprintKey.value[0] else adapter.getKeyBind(KeyBindType.SPRINT).key
         }
     private val sneakKey: Key
         get() {
-            val adapter = AdapterManager.adapter
-            return if (useCustomSneakKey.value) customSneakKey.value[0] else adapter.getKeyBind(IKeyBind.KeyBindType.SNEAK).key
+            val adapter = AdapterManager.getAdapter()
+            return if (useCustomSneakKey.value) customSneakKey.value[0] else adapter.getKeyBind(KeyBindType.SNEAK).key
         }
 
     fun isSprintToggledValue(): Boolean {

@@ -23,8 +23,8 @@ class HotBar : HUDElement("hotBar") {
         get() = "HotBar"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val inventory = AdapterManager.adapter.player!!.inventory
-        val hotBarRenderer = InterfaceManager.get<IHotBarRenderer>()
+        val inventory = AdapterManager.getAdapter().player!!.inventory
+        val hotBarRenderer = InterfaceManager.get(IHotBarRenderer::class.java)
         hotBarRenderer.renderBackground(x + 1 * scale, y + 1 * scale, scale)
         hotBarRenderer.renderSelectedSlot(x + 20 * inventory.selectedSlot.ordinal * scale, y, scale)
         for (i in 0..8) {

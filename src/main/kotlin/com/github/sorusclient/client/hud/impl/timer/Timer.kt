@@ -42,13 +42,13 @@ class Timer : HUDElement("timer") {
         get() {
             return when (mode.value) {
                 Mode.STANDARD -> {
-                    val renderer = AdapterManager.adapter.renderer
+                    val renderer = AdapterManager.getAdapter().renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
                     fontRenderer.getHeight() + 3 * 2
                 }
                 Mode.CUSTOM -> {
-                    val renderer = AdapterManager.adapter.renderer
+                    val renderer = AdapterManager.getAdapter().renderer
                     val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
                     val numberShown = customText.value.size
@@ -124,7 +124,7 @@ class Timer : HUDElement("timer") {
     }
 
     private fun renderStandard(x: Double, y: Double, scale: Double) {
-        val renderer = AdapterManager.adapter.renderer
+        val renderer = AdapterManager.getAdapter().renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
         val textY = y + 3 * scale
@@ -157,7 +157,7 @@ class Timer : HUDElement("timer") {
     }
 
     private fun renderCustom(x: Double, y: Double, scale: Double) {
-        val renderer = AdapterManager.adapter.renderer
+        val renderer = AdapterManager.getAdapter().renderer
         val fontRenderer = renderer.getFontRenderer("minecraft")!!
 
         renderer.drawRectangle(x, y, width * scale, height * scale, Color.fromRGB(0, 0, 0, 100))
