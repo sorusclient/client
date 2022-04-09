@@ -28,7 +28,7 @@ public class BlockOverlayHook {
         com.github.sorusclient.client.adapter.Box box2 = new com.github.sorusclient.client.adapter.Box(box.minX, box.maxX, box.minY, box.maxY, box.minZ, box.maxZ);
         RenderBuffer buffer = new RenderBuffer();
         buffer.setDrawMode(DrawMode.QUAD);
-        Color fillColor = (Color)BlockOverlay.INSTANCE.getFillColor().getValue();
+        Color fillColor = BlockOverlay.INSTANCE.getFillColor().getValue();
         buffer.push((new Vertex()).setPoint(new Point(box2.minX(), box2.minY(), box2.minZ())).setColor(fillColor));
         buffer.push((new Vertex()).setPoint(new Point(box2.minX(), box2.maxY(), box2.minZ())).setColor(fillColor));
         buffer.push((new Vertex()).setPoint(new Point(box2.maxX(), box2.maxY(), box2.minZ())).setColor(fillColor));

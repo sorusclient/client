@@ -8,7 +8,7 @@
 package com.github.sorusclient.client.hud.impl.potions.v1_8_9
 
 import com.github.sorusclient.client.InterfaceManager
-import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
+import com.github.sorusclient.client.adapter.PotionType
 import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager

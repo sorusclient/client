@@ -185,11 +185,11 @@ object Util {
             if (text.style?.color != null) {
                 style.setFormatting(com.github.sorusclient.client.adapter.v1_8_9.Util.textFormattingToFormatting(text.style?.color!!))
             }
-            style.isBold = text.style!!.bold
-            style.isItalic = text.style!!.italic
-            style.isObfuscated = text.style!!.obfuscated
-            style.isStrikethrough = text.style!!.strikethrough
-            style.setUnderline(text.style!!.underlined)
+            style.isBold = text.style!!.isBold
+            style.isItalic = text.style!!.isItalic
+            style.isObfuscated = text.style!!.isObfuscate
+            style.isStrikethrough = text.style!!.isStrikethrough
+            style.setUnderline(text.style!!.isUnderline)
 
             text1.style = style
         }

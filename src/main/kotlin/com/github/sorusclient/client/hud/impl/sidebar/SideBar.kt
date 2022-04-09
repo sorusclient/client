@@ -22,7 +22,7 @@ class SideBar : HUDElement("sideBar") {
     private val sidebarObjective: IScoreboardObjective?
         get() {
             val scoreboard = AdapterManager.getAdapter().world.scoreboard
-            val sidebarObjective = scoreboard.getObjective(IScoreboard.Slot.SIDEBAR)
+            val sidebarObjective = scoreboard.getObjective(ScoreboardSlot.SIDEBAR)
             val editing = HUDManager.isHudEditScreenOpen.get()
             return if (sidebarObjective != null || !editing) {
                 sidebarObjective
@@ -97,8 +97,28 @@ class SideBar : HUDElement("sideBar") {
         }
     }
 
-    private class FakeScoreboardObjective(override val scores: List<IScoreboardScore>, override val name: IText) : IScoreboardObjective
+    private class FakeScoreboardObjective(private val scores: List<IScoreboardScore>, private val name: IText) : IScoreboardObjective {
 
-    private class FakeScoreboardScore(override val name: IText, override val score: Int) : IScoreboardScore
+        override fun getScores(): List<IScoreboardScore> {
+            return scores
+        }
+
+        override fun getName(): IText {
+            return name
+        }
+
+    }
+
+    private class FakeScoreboardScore(private val name: IText, private val score: Int) : IScoreboardScore {
+
+        override fun getName(): IText {
+            return name
+        }
+
+        override fun getScore(): Int {
+            return score
+        }
+
+    }
 
 }

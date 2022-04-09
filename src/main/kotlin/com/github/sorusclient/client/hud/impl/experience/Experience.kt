@@ -29,7 +29,7 @@ class Experience : HUDElement("experience") {
         if (!(AdapterManager.getAdapter().gameMode == GameMode.SURVIVAL || AdapterManager.getAdapter().gameMode == GameMode.ADVENTURE) && !HUDManager.isHudEditScreenOpen.get()) return
 
         val player = AdapterManager.getAdapter().player!!
-        val experiencePercent = player.experiencePercentUntilNextLevel
+        val experiencePercent = player.experiencePercent
         val experienceRenderer = InterfaceManager.get(IExperienceRenderer::class.java)
         experienceRenderer.renderExperienceBar(x + 1 * scale, y + 1 * scale, scale, experiencePercent)
         val renderer = AdapterManager.getAdapter().renderer

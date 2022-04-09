@@ -34,7 +34,7 @@ public class PlayerEntityImpl extends LivingEntityImpl<PlayerEntity> implements 
     }
 
     @Override
-    public double getExperiencePercentUntilNextLevel() {
+    public double getExperiencePercent() {
         return entity.experienceProgress;
     }
 

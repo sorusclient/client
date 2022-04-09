@@ -8,10 +8,7 @@
 package com.github.sorusclient.client.hud.impl.health
 
 import com.github.sorusclient.client.InterfaceManager
-import com.github.sorusclient.client.adapter.AdapterManager
-import com.github.sorusclient.client.adapter.GameMode
-import com.github.sorusclient.client.adapter.ILivingEntity
-import com.github.sorusclient.client.adapter.IPotionEffect
+import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import kotlin.math.ceil
@@ -45,7 +42,7 @@ class Health : HUDElement("health") {
         val player: ILivingEntity = AdapterManager.getAdapter().player!!
         var hasRegen = false
         for (effect in player.effects) {
-            if (effect.type == IPotionEffect.PotionType.REGENERATION) {
+            if (effect.type == PotionType.REGENERATION) {
                 hasRegen = true
                 break
             }

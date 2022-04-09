@@ -189,11 +189,11 @@ object Util {
             }
 
             style = style
-                .withBold(text.style!!.bold)
-                .withItalic(text.style!!.italic)
-                .withObfuscated(text.style!!.obfuscated)
-                .withStrikethrough(text.style!!.strikethrough)
-                .withUnderline(text.style!!.underlined)
+                .withBold(text.style!!.isBold)
+                .withItalic(text.style!!.isItalic)
+                .withObfuscated(text.style!!.isObfuscate)
+                .withStrikethrough(text.style!!.isStrikethrough)
+                .withUnderline(text.style!!.isUnderline)
 
             text1.style = style
         }

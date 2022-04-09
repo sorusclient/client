@@ -10,7 +10,7 @@ package com.github.sorusclient.client.hud.impl.potions
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IPotionEffect
-import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
+import com.github.sorusclient.client.adapter.PotionType
 import com.github.sorusclient.client.hud.HUDElement
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.util.Color
@@ -89,11 +89,24 @@ class Potions : HUDElement("potionStatus") {
             }
         }
 
-    private class FakePotionEffect(
-        override val duration: String,
-        override val name: String,
-        override val amplifier: Int,
-        override val type: PotionType
-    ) : IPotionEffect
+    class FakePotionEffect(private val duration: String, private val name: String, private val amplifier: Int, val potionType: PotionType): IPotionEffect {
+
+        override fun getDuration(): String {
+            return duration
+        }
+
+        override fun getName(): String {
+            return name
+        }
+
+        override fun getAmplifier(): Int {
+            return amplifier
+        }
+
+        override fun getType(): PotionType {
+            return potionType
+        }
+
+    }
 
 }
