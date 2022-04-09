@@ -212,9 +212,9 @@ object EventHook {
     @JvmStatic
     @Suppress("Unused")
     fun onGetUseCinematicCamera(useCinematicCamera: Boolean): Boolean {
-        val event = GetUseCinematicCamera(useCinematicCamera)
+        val event = GetUseCinematicCameraEvent(useCinematicCamera)
         event.call()
-        return event.useCinematicCamera
+        return event.isUseCinematicCamera
     }
 
     @JvmStatic
@@ -251,7 +251,7 @@ object EventHook {
     fun onRenderCrosshair(): Boolean {
         val event = RenderCrosshairEvent()
         event.call()
-        return event.canceled
+        return event.isCanceled
     }
 
 }

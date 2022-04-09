@@ -1,7 +1,7 @@
 {
   "namespace": "com.github.sorusclient.client",
   "initializers": [
-    "adapter.v1_18_2.Adapter",
+    "adapter.v1_18_2.AdapterImpl",
     "feature.impl.perspective.v1_18_2.PerspectiveHelper",
     "feature.impl.enhancements.v1_18_2.EnhancementsInitializeListener",
     "hud.impl.potions.v1_18_2.PotionEffectRenderer",

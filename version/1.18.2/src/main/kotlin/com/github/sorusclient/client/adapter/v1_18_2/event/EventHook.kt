@@ -11,7 +11,6 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_18_2.Util
-import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.event.call
 import v1_18_2.org.lwjgl.opengl.GL11
 import v1_18_2.org.lwjgl.opengl.GL11C
@@ -221,9 +220,9 @@ object EventHook {
     @JvmStatic
     @Suppress("Unused")
     fun onGetUseCinematicCamera(useCinematicCamera: Boolean): Boolean {
-        val event = GetUseCinematicCamera(useCinematicCamera)
+        val event = GetUseCinematicCameraEvent(useCinematicCamera)
         event.call()
-        return event.useCinematicCamera
+        return event.isUseCinematicCamera
     }
 
     @JvmStatic

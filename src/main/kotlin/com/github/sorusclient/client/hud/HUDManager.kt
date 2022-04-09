@@ -232,13 +232,13 @@ object HUDManager {
         initializePossibleElements()
         setupDefaultHud()
         val eventManager = EventManager
-        eventManager.register { event: ArmorBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: BossBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: ExperienceBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: HealthBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: HotBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: HungerBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: SideBarRenderEvent -> event.canceled = true }
+        eventManager.register { event: ArmorBarRenderEvent -> event.isCanceled = true }
+        eventManager.register { event: BossBarRenderEvent -> event.isCanceled = true }
+        eventManager.register { event: ExperienceBarRenderEvent -> event.isCanceled = true }
+        eventManager.register { event: HealthBarRenderEvent -> event.isCanceled = true }
+        eventManager.register { event: HotBarRenderEvent -> event.isCanceled = true }
+        eventManager.register { event: HungerBarRenderEvent -> event.isCanceled = true }
+        eventManager.register { event: SideBarRenderEvent -> event.isCanceled = true }
     }
 
     private fun setupDefaultHud() {

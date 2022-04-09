@@ -1,7 +1,7 @@
 {
   "namespace": "com.github.sorusclient.client",
   "initializers": [
-    "adapter.v1_8_9.Adapter",
+    "adapter.v1_8_9.AdapterImpl",
     "feature.v1_8_9.FeatureListener",
     "feature.impl.perspective.v1_8_9.PerspectiveHelper",
     "feature.impl.enhancements.v1_8_9.EnhancementsInitializeListener",

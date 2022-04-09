@@ -48,7 +48,7 @@ object ServerIntegrationManager {
 
     private fun onCustomPacket(event: SorusCustomPacketEvent) {
         if (event.channel == "integration") {
-            applyServerConfiguration(event.contents)
+            applyServerConfiguration(event.content)
         }
     }
 

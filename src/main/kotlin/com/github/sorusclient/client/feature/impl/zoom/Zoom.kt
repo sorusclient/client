@@ -12,7 +12,7 @@ import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.GetFOVEvent
 import com.github.sorusclient.client.adapter.event.GetSensitivityEvent
-import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
+import com.github.sorusclient.client.adapter.event.GetUseCinematicCameraEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.*
 import com.github.sorusclient.client.setting.data.CategoryData
@@ -69,9 +69,9 @@ object Zoom {
             }
         }
 
-        EventManager.register<GetUseCinematicCamera> { event ->
+        EventManager.register<GetUseCinematicCameraEvent> { event ->
             if (applyZoom()) {
-                event.useCinematicCamera = cinematicCamera.value
+                event.isUseCinematicCamera = cinematicCamera.value
             }
         }
 

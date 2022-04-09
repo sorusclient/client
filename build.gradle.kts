@@ -27,6 +27,7 @@ buildscript {
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.6.20"
+    kotlin("plugin.lombok") version "1.6.20"
 }
 
 apply(plugin = "kiln-main")
@@ -36,6 +37,7 @@ repositories {
     maven {
         url = uri("https://jitpack.io/")
     }
+    maven { url = uri("https://projectlombok.org/edge-releases") }
 }
 
 dependencies {
@@ -49,6 +51,9 @@ dependencies {
 
     "shadowApi"("org.java-websocket:Java-WebSocket:1.5.2")
     "shadowApi"("io.ktor:ktor-client-cio:1.6.8")
+
+    compileOnly("org.projectlombok:lombok:edge-SNAPSHOT")
+    annotationProcessor("org.projectlombok:lombok:edge-SNAPSHOT")
 }
 
 configure<KilnStandardExtension> {
@@ -58,7 +63,7 @@ configure<KilnStandardExtension> {
 class SorusEnvironment: Environment {
 
     override fun getMainClass(): String {
-        return "com.github.sorusclient.client.bootstrap.MainKt"
+        return "com.github.sorusclient.client.bootstrap.Main"
     }
 
     override fun getProgramArguments(environment: String, version: String): Array<String> {
