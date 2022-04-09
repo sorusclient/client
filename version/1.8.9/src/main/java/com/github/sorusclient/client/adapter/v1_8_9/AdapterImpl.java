@@ -34,7 +34,7 @@ public class AdapterImpl implements IAdapter, Initializer {
 
     @Override
     public ScreenType getOpenScreen() {
-        return Util.INSTANCE.screenToScreenType(MinecraftClient.getInstance().currentScreen);
+        return Util.screenToScreenType(MinecraftClient.getInstance().currentScreen);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class AdapterImpl implements IAdapter, Initializer {
         var window = new Window(MinecraftClient.getInstance());
         var x = Mouse.getX();
         var y = Mouse.getY();
-        return new double[] {x / (double) Display.getWidth() * window.getScaledWidth(), window.getScaledWidth() - y / (double) Display.getHeight() * window.getScaledHeight()};
+        return new double[] {x / (double) Display.getWidth() * window.getScaledWidth(), window.getScaledHeight() - y / (double) Display.getHeight() * window.getScaledHeight()};
     }
 
     @Override
@@ -205,7 +205,7 @@ public class AdapterImpl implements IAdapter, Initializer {
 
     @Override
     public IText createText(String string) {
-        return Util.INSTANCE.textToApiText(new LiteralText(string));
+        return Util.textToApiText(new LiteralText(string));
     }
 
     @Override

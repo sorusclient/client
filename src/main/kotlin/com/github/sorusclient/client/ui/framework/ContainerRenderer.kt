@@ -23,11 +23,10 @@ object ContainerRenderer {
     var containers: MutableList<Container> = ArrayList()
 
     fun initialize() {
-        val eventManager = EventManager
-        eventManager.register { e: KeyEvent -> keyEvents.add(e) }
-        eventManager.register { e: MouseEvent -> mouseEvents.add(e) }
-        eventManager.register { e: KeyCharEvent -> keyCharEvents.add(e) }
-        eventManager.register { _: RenderEvent -> render() }
+        EventManager.register(KeyEvent::class.java) { e: KeyEvent -> keyEvents.add(e) }
+        EventManager.register(MouseEvent::class.java) { e: MouseEvent -> mouseEvents.add(e) }
+        EventManager.register(KeyCharEvent::class.java) { e: KeyCharEvent -> keyCharEvents.add(e) }
+        EventManager.register(RenderEvent::class.java) { _: RenderEvent -> render() }
     }
 
     fun open(container: Container) {

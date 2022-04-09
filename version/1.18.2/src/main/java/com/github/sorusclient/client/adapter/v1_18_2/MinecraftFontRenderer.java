@@ -46,9 +46,9 @@ public class MinecraftFontRenderer implements IFontRenderer {
         RenderSystem.enableBlend();
 
         if (shadow) {
-            textRenderer.drawWithShadow(matrixStack, Util.INSTANCE.apiTextToText(text), (float) (x / scale), (float) (y / scale), color.getRgb());
+            textRenderer.drawWithShadow(matrixStack, Util.apiTextToText(text), (float) (x / scale), (float) (y / scale), color.getRgb());
         } else {
-            textRenderer.draw(matrixStack, Util.INSTANCE.apiTextToText(text), (float) (x / scale), (float) (y / scale), color.getRgb());
+            textRenderer.draw(matrixStack, Util.apiTextToText(text), (float) (x / scale), (float) (y / scale), color.getRgb());
         }
 
         RenderSystem.enableDepthTest();
@@ -59,7 +59,7 @@ public class MinecraftFontRenderer implements IFontRenderer {
     }
 
     public double getWidth(IText text) {
-        return textRenderer.getWidth(Util.INSTANCE.apiTextToText(text)) - 1;
+        return textRenderer.getWidth(Util.apiTextToText(text)) - 1;
     }
 
     public double getHeight() {

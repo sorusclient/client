@@ -21,7 +21,7 @@ public class TextHoverEventImpl implements ITextHoverEvent {
     private final HoverEventAction action;
 
     public TextHoverEventImpl(HoverEvent hoverEvent) {
-        value = Util.INSTANCE.textToApiText((Text) Objects.requireNonNull(hoverEvent.getValue(hoverEvent.getAction())));
+        value = Util.textToApiText((Text) Objects.requireNonNull(hoverEvent.getValue(hoverEvent.getAction())));
         if (hoverEvent.getAction() == HoverEvent.Action.SHOW_ENTITY) {
             action = HoverEventAction.SHOW_ENTITY;
         } else {

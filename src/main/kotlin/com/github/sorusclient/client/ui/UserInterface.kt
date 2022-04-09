@@ -71,7 +71,7 @@ object UserInterface {
                 add(DisplayedSetting.KeyBind(mainGuiKey, "Main GUI KeyBind"))
             }
 
-        EventManager.register<InitializeEvent> {
+        EventManager.register(InitializeEvent::class.java) {
             val searchResults: MutableList<SearchResult> = ArrayList()
             addSettingResults(searchResults, SettingManager.mainUICategory, "")
 
@@ -95,7 +95,7 @@ object UserInterface {
             this.searchResults = searchResults
         }
 
-        EventManager.register<TickEvent> {
+        EventManager.register(TickEvent::class.java) {
             if (AdapterManager.getAdapter().openScreen == ScreenType.IN_GAME && ContainerRenderer.containers.size > 0) {
                 ThemeManager.closeGui()
             }

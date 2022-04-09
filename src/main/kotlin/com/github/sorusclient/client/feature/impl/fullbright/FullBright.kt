@@ -29,7 +29,7 @@ object FullBright {
                 add(Toggle(enabled, "FullBright"))
             }
 
-        EventManager.register<GetGammaEvent> { event ->
+        EventManager.register(GetGammaEvent::class.java) { event ->
             if (enabled.value) {
                 event.gamma = 100.0
             }

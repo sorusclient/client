@@ -42,13 +42,7 @@ object Enhancements {
                     }
             }
 
-        EventManager.register { event: RenderCrosshairEvent ->
-            if (AdapterManager.getAdapter().perspective != PerspectiveMode.FIRST_PERSON && hideCrossHairThirdPerson.value) {
-                event.isCanceled = true
-            }
-        }
-
-        EventManager.register { event: RenderCrosshairEvent ->
+        EventManager.register(RenderCrosshairEvent::class.java) { event: RenderCrosshairEvent ->
             if (AdapterManager.getAdapter().perspective != PerspectiveMode.FIRST_PERSON && hideCrossHairThirdPerson.value) {
                 event.isCanceled = true
             }

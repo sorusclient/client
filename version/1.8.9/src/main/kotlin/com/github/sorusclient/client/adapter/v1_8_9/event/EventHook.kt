@@ -9,7 +9,7 @@ package com.github.sorusclient.client.adapter.v1_8_9.event
 
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_8_9.Util
-import com.github.sorusclient.client.event.call
+import com.github.sorusclient.client.event.EventManager
 import v1_8_9.org.lwjgl.input.Keyboard
 import v1_8_9.org.lwjgl.input.Mouse
 import v1_8_9.org.lwjgl.opengl.Display
@@ -29,7 +29,7 @@ object EventHook {
     fun onRender() {
         val textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
         val blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND)
-        RenderEvent().call()
+        EventManager.call(RenderEvent())
         setEnabled(GL11.GL_TEXTURE_2D, textureEnabled)
         setEnabled(GL11.GL_BLEND, blendEnabled)
     }
@@ -39,7 +39,7 @@ object EventHook {
     fun onInGameRender() {
         val textureEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
         val blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND)
-        RenderInGameEvent().call()
+        EventManager.call(RenderInGameEvent())
         setEnabled(GL11.GL_TEXTURE_2D, textureEnabled)
         setEnabled(GL11.GL_BLEND, blendEnabled)
     }
@@ -69,13 +69,13 @@ object EventHook {
         val key = Keyboard.getEventKey()
         val pressed = Keyboard.getEventKeyState()
         val repeat = Keyboard.isRepeatEvent()
-        KeyEvent(Util.getKey(key), pressed, repeat).call()
+        EventManager.call(KeyEvent(Util.getKey(key), pressed, repeat))
 
         var string = "0123456789abcdefghijklmnoppqrstuvwxyz .,/"
         string += string.uppercase()
 
         if (string.contains(Keyboard.getEventCharacter())) {
-            KeyCharEvent(Keyboard.getEventCharacter()).call()
+            EventManager.call(KeyCharEvent(Keyboard.getEventCharacter()))
         }
     }
 
@@ -88,20 +88,20 @@ object EventHook {
         val y = Mouse.getEventY()
         val window = Window(MinecraftClient.getInstance())
 
-        MouseEvent(
+        EventManager.call(MouseEvent(
             Util.getButton(button),
             pressed,
             x / Display.getWidth().toDouble() * window.scaledWidth,
             window.scaledHeight - y / Display.getHeight().toDouble() * window.scaledHeight,
             Mouse.getDWheel() / 120.0
-        ).call()
+        ))
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onConnect(world: ClientWorld?, ip: String) {
         if (world == null && ip.isEmpty()) {
-            GameLeaveEvent().call()
+            EventManager.call(GameLeaveEvent())
         }
     }
 
@@ -111,21 +111,21 @@ object EventHook {
         var channel = packet.channel
         if (channel.startsWith("sorus:")) {
             channel = channel.substring(6)
-            SorusCustomPacketEvent(channel, packet.payload.readString(32767)).call()
+            EventManager.call(SorusCustomPacketEvent(channel, packet.payload.readString(32767)))
         }
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onGameJoin() {
-        GameJoinEvent().call()
+        EventManager.call(GameJoinEvent())
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onArmorBarRender(): ArmorBarRenderEvent {
         val event = ArmorBarRenderEvent()
-        event.call()
+        EventManager.call(event)
         return event
     }
 
@@ -133,7 +133,7 @@ object EventHook {
     @Suppress("Unused")
     fun onBossBarRender(): BossBarRenderEvent {
         val event = BossBarRenderEvent()
-        event.call()
+        EventManager.call(event)
         return event
     }
 
@@ -141,7 +141,7 @@ object EventHook {
     @Suppress("Unused")
     fun onExperienceBarRender(): ExperienceBarRenderEvent {
         val event = ExperienceBarRenderEvent()
-        event.call()
+        EventManager.call(event)
         return event
     }
 
@@ -149,7 +149,7 @@ object EventHook {
     @Suppress("Unused")
     fun onHealthBarRender(): HealthBarRenderEvent {
         val event = HealthBarRenderEvent()
-        event.call()
+        EventManager.call(event)
         return event
     }
 
@@ -157,7 +157,7 @@ object EventHook {
     @Suppress("Unused")
     fun onHotBarRender(): HotBarRenderEvent {
         val event = HotBarRenderEvent()
-        event.call()
+        EventManager.call(event)
         return event
     }
 
@@ -165,7 +165,7 @@ object EventHook {
     @Suppress("Unused")
     fun onHungerBarRender(): HungerBarRenderEvent {
         val event = HungerBarRenderEvent()
-        event.call()
+        EventManager.call(event)
         return event
     }
 
@@ -173,7 +173,7 @@ object EventHook {
     @Suppress("Unused")
     fun onSideBarRender(): SideBarRenderEvent {
         val event = SideBarRenderEvent()
-        event.call()
+        EventManager.call(event)
         return event
     }
 
@@ -181,7 +181,7 @@ object EventHook {
     @Suppress("Unused")
     fun onChatReceived(text: Text): Text {
         val event = ChatReceivedEvent(text.asFormattedString(), Util.textToApiText(text))
-        event.call()
+        EventManager.call(event)
         return Util.apiTextToText(event.text)
     }
 
@@ -189,7 +189,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetClientBrand(brand: String): String {
         val event = GetClientBrandEvent(brand)
-        event.call()
+        EventManager.call(event)
         return event.brand
     }
 
@@ -197,7 +197,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetFOV(fov: Float): Float {
         val event = GetFOVEvent(fov.toDouble())
-        event.call()
+        EventManager.call(event)
         return event.fov.toFloat()
     }
 
@@ -205,7 +205,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetSensitivity(sensitivity: Float): Float {
         val event = GetSensitivityEvent(sensitivity.toDouble())
-        event.call()
+        EventManager.call(event)
         return event.sensitivity.toFloat()
     }
 
@@ -213,7 +213,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetUseCinematicCamera(useCinematicCamera: Boolean): Boolean {
         val event = GetUseCinematicCameraEvent(useCinematicCamera)
-        event.call()
+        EventManager.call(event)
         return event.isUseCinematicCamera
     }
 
@@ -221,7 +221,7 @@ object EventHook {
     @Suppress("Unused")
     fun onGetGamma(gamma: Float): Float {
         val event = GetGammaEvent(gamma.toDouble())
-        event.call()
+        EventManager.call(event)
         return event.gamma.toFloat()
     }
 
@@ -229,28 +229,28 @@ object EventHook {
     @Suppress("Unused")
     fun onInitialize() {
         val event = InitializeEvent()
-        event.call()
+        EventManager.call(event)
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onTick() {
         val event = TickEvent()
-        event.call()
+        EventManager.call(event)
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onOpenScreen(screen: Any) {
         val event = OpenScreenEvent(Util.screenToScreenType(screen as Screen))
-        event.call()
+        EventManager.call(event)
     }
 
     @JvmStatic
     @Suppress("Unused")
     fun onRenderCrosshair(): Boolean {
         val event = RenderCrosshairEvent()
-        event.call()
+        EventManager.call(event)
         return event.isCanceled
     }
 

@@ -16,7 +16,7 @@ object KeyBindManager {
     private val keyBinds: MutableList<KeyBind> = ArrayList()
 
     init {
-        EventManager.register(this::onKey)
+        EventManager.register(KeyEvent::class.java, this::onKey)
     }
 
     fun register(keyBind: KeyBind) {

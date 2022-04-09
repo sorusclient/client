@@ -24,7 +24,7 @@ public class TranslatableTextImpl extends TextImpl<TranslatableText> implements 
         arguments = new ArrayList<>();
         for (var argument : text.getArgs()) {
             if (argument instanceof Text text1) {
-                arguments.add(Util.INSTANCE.textToApiText(text1));
+                arguments.add(Util.textToApiText(text1));
             } else {
                 arguments.add(argument);
             }

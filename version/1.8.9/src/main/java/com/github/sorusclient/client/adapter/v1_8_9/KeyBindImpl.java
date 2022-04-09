@@ -21,7 +21,7 @@ public class KeyBindImpl implements IKeyBind {
 
     @Override
     public Key getKey() {
-        return Util.INSTANCE.getKey(keyBinding.getCode());
+        return Util.getKey(keyBinding.getCode());
     }
 
 }

@@ -39,7 +39,7 @@ public class ScoreboardObjectiveImpl implements IScoreboardObjective {
 
     @Override
     public IText getName() {
-        return Util.INSTANCE.textToApiText(new LiteralText(scoreboardObjective.getDisplayName()));
+        return Util.textToApiText(new LiteralText(scoreboardObjective.getDisplayName()));
     }
 
 }

@@ -57,19 +57,19 @@ object Zoom {
                     })
             }
 
-        EventManager.register<GetFOVEvent> { event ->
+        EventManager.register(GetFOVEvent::class.java) { event ->
             if (applyZoom()) {
                 event.fov = fov.value
             }
         }
 
-        EventManager.register<GetSensitivityEvent> { event ->
+        EventManager.register(GetSensitivityEvent::class.java) { event ->
             if (applyZoom()) {
                 event.sensitivity = event.sensitivity * sensitivity.value
             }
         }
 
-        EventManager.register<GetUseCinematicCameraEvent> { event ->
+        EventManager.register(GetUseCinematicCameraEvent::class.java) { event ->
             if (applyZoom()) {
                 event.isUseCinematicCamera = cinematicCamera.value
             }

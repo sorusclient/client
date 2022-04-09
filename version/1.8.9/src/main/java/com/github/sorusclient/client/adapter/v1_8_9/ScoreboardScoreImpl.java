@@ -24,7 +24,7 @@ public class ScoreboardScoreImpl implements IScoreboardScore {
     @Override
     public IText getName() {
         Team team = score.getScoreboard().getTeam(score.getPlayerName());
-        return Util.INSTANCE.textToApiText(new LiteralText(Team.decorateName(team, score.getPlayerName())));
+        return Util.textToApiText(new LiteralText(Team.decorateName(team, score.getPlayerName())));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class KeyBindImpl implements IKeyBind {
     @Override
     public Key getKey() {
         try {
-            return Util.INSTANCE.getKey(((InputUtil.Key) boundKey.get(keyBinding)).getCode());
+            return Util.getKey(((InputUtil.Key) boundKey.get(keyBinding)).getCode());
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }

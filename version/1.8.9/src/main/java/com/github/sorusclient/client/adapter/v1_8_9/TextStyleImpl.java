@@ -33,7 +33,7 @@ public class TextStyleImpl implements ITextStyle {
 
         if (style.getColor() != null) {
             var formatting = Formatting.byName(style.getColor().getName());
-            color = formatting != null ? Util.INSTANCE.formattingToTextFormatting(formatting) : null;
+            color = formatting != null ? Util.formattingToTextFormatting(formatting) : null;
         } else {
             color = null;
         }

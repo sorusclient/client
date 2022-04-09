@@ -38,7 +38,7 @@ object SocialManager {
         WebSocketManager.listeners["updateStatus"] = this::onUpdateStatus
         WebSocketManager.listeners["requestUpdateStatus"] = this::onRequestUpdateStatus
 
-        EventManager.register<TickEvent> {
+        EventManager.register(TickEvent::class.java) {
             if (serverToJoin != null) {
                 val adapter = AdapterManager.getAdapter()
                 adapter.leaveWorld()
@@ -47,7 +47,7 @@ object SocialManager {
             }
         }
 
-        EventManager.register<GameJoinEvent> {
+        EventManager.register(GameJoinEvent::class.java) {
             val server = AdapterManager.getAdapter().currentServer
 
             if (server != null) {
@@ -57,7 +57,7 @@ object SocialManager {
             }
         }
 
-        EventManager.register<GameLeaveEvent> {
+        EventManager.register(GameLeaveEvent::class.java) {
             updateStatus("")
         }
     }

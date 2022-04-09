@@ -27,7 +27,7 @@ object Sorus {
         HUDManager.initialize()
         ContainerRenderer.initialize()
 
-        EventManager.register<InitializeEvent> {
+        EventManager.register(InitializeEvent::class.java) {
             val adapter = AdapterManager.getAdapter()
             adapter.setDisplayTitle("Sorus | " + AdapterManager.getAdapter().version)
             adapter.setDisplayIcon("sorus/icon_16x.png", "sorus/icon_32x.png")
@@ -38,7 +38,7 @@ object Sorus {
 
         SettingManager.initialize()
 
-        EventManager.register<GetClientBrandEvent> {
+        EventManager.register(GetClientBrandEvent::class.java) {
             it.brand = "sorus"
         }
 

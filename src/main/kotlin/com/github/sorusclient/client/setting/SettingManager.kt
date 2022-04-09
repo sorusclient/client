@@ -7,7 +7,7 @@
 
 package com.github.sorusclient.client.setting
 
-import com.github.sorusclient.client.server.ServerIntegrationManager
+import com.github.sorusclient.client.bootstrap.server.ServerIntegrationManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import org.apache.commons.io.FileUtils
@@ -37,8 +37,8 @@ object SettingManager {
     fun initialize() {
         loadProfiles()
         load("/")
-        ServerIntegrationManager.joinListeners["settings"] = this::handleJoinForced
-        ServerIntegrationManager.leaveListeners.add(this::handleLeaveForced)
+        ServerIntegrationManager.registerJoinListener("settings", this::handleJoinForced)
+        ServerIntegrationManager.registerLeaveListener(this::handleLeaveForced)
     }
 
     private fun handleJoinForced(json: Any) {

@@ -37,7 +37,7 @@ object WebSocketManager {
             }
         })
 
-        EventManager.register<TickEvent> {
+        EventManager.register(TickEvent::class.java) {
             if (System.currentTimeMillis() - lastConnectTime > 10000 && !connected) {
                 lastConnectTime = System.currentTimeMillis()
 

@@ -11,7 +11,6 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.event.call
 import com.github.sorusclient.client.notification.Interaction
 import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.NotificationManager
@@ -59,7 +58,7 @@ class DefaultTheme: Theme() {
     override val items: MutableMap<String, Container> = mutableMapOf()
 
     init {
-        EventManager.register { event: KeyEvent ->
+        EventManager.register(KeyEvent::class.java) { event: KeyEvent ->
             if (event.isPressed && event.key == Key.U) {
                 initialize()
             }
@@ -3939,7 +3938,7 @@ class DefaultTheme: Theme() {
         items["mainGui"] = mainGui
         items["searchGui"] = searchGui
 
-        DefaultThemeInitializeEvent(this).call()
+        EventManager.call(DefaultThemeInitializeEvent(this))
     }
 
     private var openedNotificationsUI: Container? = null

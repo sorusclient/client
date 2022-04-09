@@ -19,7 +19,7 @@ object NotificationManager {
     private val notificationTimes: MutableMap<Notification, Long> = HashMap()
 
     init {
-        EventManager.register<TickEvent> {
+        EventManager.register(TickEvent::class.java) {
             for (notification in notifications) {
                 if (!notificationTimes.containsKey(notification)) {
                     notificationTimes[notification] = System.currentTimeMillis()

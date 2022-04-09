@@ -231,14 +231,13 @@ object HUDManager {
 
         initializePossibleElements()
         setupDefaultHud()
-        val eventManager = EventManager
-        eventManager.register { event: ArmorBarRenderEvent -> event.isCanceled = true }
-        eventManager.register { event: BossBarRenderEvent -> event.isCanceled = true }
-        eventManager.register { event: ExperienceBarRenderEvent -> event.isCanceled = true }
-        eventManager.register { event: HealthBarRenderEvent -> event.isCanceled = true }
-        eventManager.register { event: HotBarRenderEvent -> event.isCanceled = true }
-        eventManager.register { event: HungerBarRenderEvent -> event.isCanceled = true }
-        eventManager.register { event: SideBarRenderEvent -> event.isCanceled = true }
+        EventManager.register(ArmorBarRenderEvent::class.java) { event: ArmorBarRenderEvent -> event.isCanceled = true }
+        EventManager.register(BossBarRenderEvent::class.java) { event: BossBarRenderEvent -> event.isCanceled = true }
+        EventManager.register(ExperienceBarRenderEvent::class.java) { event: ExperienceBarRenderEvent -> event.isCanceled = true }
+        EventManager.register(HealthBarRenderEvent::class.java) { event: HealthBarRenderEvent -> event.isCanceled = true }
+        EventManager.register(HotBarRenderEvent::class.java) { event: HotBarRenderEvent -> event.isCanceled = true }
+        EventManager.register(HungerBarRenderEvent::class.java) { event: HungerBarRenderEvent -> event.isCanceled = true }
+        EventManager.register(SideBarRenderEvent::class.java) { event: SideBarRenderEvent -> event.isCanceled = true }
     }
 
     private fun setupDefaultHud() {
@@ -291,15 +290,13 @@ object HUDManager {
     }
 
     fun initialize() {
-        EventManager.apply {
-            register<RenderInGameEvent> { render() }
-            register(this@HUDManager::onClick)
-            register<InitializeEvent> { initializeUserInterface() }
+        EventManager.register(RenderInGameEvent::class.java) { render() }
+        EventManager.register(MouseEvent::class.java, this@HUDManager::onClick)
+        EventManager.register(InitializeEvent::class.java) { initializeUserInterface() }
 
-            register { event: KeyEvent ->
-                if (event.isPressed && !event.isRepeat && event.key === Key.U) {
-                    initializeUserInterface()
-                }
+        EventManager.register(KeyEvent::class.java) { event: KeyEvent ->
+            if (event.isPressed && !event.isRepeat && event.key === Key.U) {
+                initializeUserInterface()
             }
         }
 
@@ -343,7 +340,7 @@ object HUDManager {
         val screenDimensions = adapter.screenDimensions
         val mouseLocation = adapter.mouseLocation
         val isHudEditScreenOpen = prevIsHudEditScreenOpen
-        if (!isHudEditScreenOpen) {
+        if (!isHudEditScreenOpen || draggedHud == null) {
             for (element in getElements().values) {
                 for ((attachedId, _) in element.attached.value) {
                     val attachedElement = getById(attachedId)

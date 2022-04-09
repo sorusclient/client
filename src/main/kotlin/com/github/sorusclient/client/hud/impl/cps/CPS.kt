@@ -85,7 +85,7 @@ class CPS : HUDElement("cps") {
                 add(DisplayedSetting.Dependent(DisplayedSetting.CustomTextColor(customText, "Custom Text"), mode, Mode.CUSTOM))
             }
 
-        EventManager.register { event: MouseEvent ->
+        EventManager.register(MouseEvent::class.java) { event: MouseEvent ->
             if (event.button == Button.PRIMARY && event.isPressed) {
                 primaryClicks.add(System.currentTimeMillis())
             }

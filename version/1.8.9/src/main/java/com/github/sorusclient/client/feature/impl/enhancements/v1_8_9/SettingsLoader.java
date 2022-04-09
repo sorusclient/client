@@ -59,7 +59,7 @@ public class SettingsLoader implements ISettingsLoader {
     }
 
     private Key getKey(KeyBinding keyBinding) {
-        return Util.INSTANCE.getKey(keyBinding.getCode());
+        return Util.getKey(keyBinding.getCode());
     }
 
     public void load(Map<String, Object> map) {
@@ -86,7 +86,7 @@ public class SettingsLoader implements ISettingsLoader {
 
     private void setKey(KeyBinding keyBinding, Map<String, ?> settings, String id) {
         if (settings.containsKey(id)) {
-            keyBinding.setCode(Util.INSTANCE.getKeyCode((Key) settings.get(id)));
+            keyBinding.setCode(Util.getKeyCode((Key) settings.get(id)));
             try {
                 ((IntObjectStorage) this.keyMap.get(null)).set(keyBinding.getCode(), keyBinding);
             } catch (IllegalAccessException e) {

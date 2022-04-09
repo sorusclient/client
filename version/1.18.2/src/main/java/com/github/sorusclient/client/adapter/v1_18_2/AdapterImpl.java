@@ -37,7 +37,7 @@ public class AdapterImpl implements IAdapter, Initializer {
 
     @Override
     public ScreenType getOpenScreen() {
-        return Util.INSTANCE.screenToScreenType(MinecraftClient.getInstance().currentScreen);
+        return Util.screenToScreenType(MinecraftClient.getInstance().currentScreen);
     }
 
     @Override
@@ -47,6 +47,7 @@ public class AdapterImpl implements IAdapter, Initializer {
             case SETTINGS -> createSettingsScreen();
             case CONTROLS -> new ControlsOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options);
             case VIDEO_SETTINGS -> new VideoOptionsScreen(createSettingsScreen(), MinecraftClient.getInstance().options);
+            case IN_GAME -> null;
             default -> throw new IllegalStateException("Unexpected value: " + screenType);
         };
 
@@ -179,7 +180,7 @@ public class AdapterImpl implements IAdapter, Initializer {
 
     @Override
     public IText createText(String string) {
-        return Util.INSTANCE.textToApiText(new LiteralText(string));
+        return Util.textToApiText(new LiteralText(string));
     }
 
     @Override

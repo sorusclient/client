@@ -16,9 +16,13 @@ repositories {
     maven {
         url = uri("https://jitpack.io/")
     }
+    maven { url = uri("https://projectlombok.org/edge-releases") }
 }
 
 dependencies {
     compileOnly(project(":"))
     compileOnly("net.minecraft:client-1.8.9:yarn")
+
+    compileOnly("org.projectlombok:lombok:edge-SNAPSHOT")
+    annotationProcessor("org.projectlombok:lombok:edge-SNAPSHOT")
 }

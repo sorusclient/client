@@ -12,7 +12,6 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.PerspectiveMode
 import com.github.sorusclient.client.adapter.ScreenType
-import com.github.sorusclient.client.event.call
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager

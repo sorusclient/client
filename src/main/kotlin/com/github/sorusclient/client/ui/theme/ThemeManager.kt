@@ -42,7 +42,7 @@ object ThemeManager {
             configuredThemes.add(DefaultTheme())
         }
 
-        EventManager.register<InitializeEvent> {
+        EventManager.register(InitializeEvent::class.java) {
             for (theme in configuredThemes) {
                 theme.initialize()
             }

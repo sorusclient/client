@@ -25,7 +25,7 @@ public class TextImpl<T extends BaseText> implements IText {
         style = new TextStyleImpl(text.getStyle());
         siblings = new ArrayList<>();
         for (var sibling : text.getSiblings()) {
-            siblings.add(Util.INSTANCE.textToApiText(sibling));
+            siblings.add(Util.textToApiText(sibling));
         }
     }
 

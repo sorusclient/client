@@ -41,7 +41,7 @@ public class MinecraftFontRenderer implements IFontRenderer {
 
     @Override
     public double getWidth(IText text) {
-        return getWidth(Util.INSTANCE.apiTextToText(text).getString());
+        return getWidth(Util.apiTextToText(text).getString());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MinecraftFontRenderer implements IFontRenderer {
 
     @Override
     public void drawString(IText text, double x, double y, double scale, Color color, boolean shadow) {
-        drawString(Util.INSTANCE.apiTextToText(text).getString(), x, y, scale, color, shadow);
+        drawString(Util.apiTextToText(text).getString(), x, y, scale, color, shadow);
     }
 
 }
