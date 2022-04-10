@@ -12,6 +12,7 @@ import com.github.sorusclient.client.Sorus
 class Launcher {
 
     companion object {
+
         @JvmStatic
         fun main(args: Array<String>) {
             val version = args[args.indexOf("--minecraftVersion") + 1]
@@ -23,6 +24,7 @@ class Launcher {
             val mainMethod = main.getMethod("main", Array<String>::class.java)
             mainMethod.invoke(null, args)
         }
+
     }
 
 }

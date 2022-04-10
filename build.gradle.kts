@@ -21,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.glassmc:kiln:0.8.6")
+        classpath("com.github.glassmc:kiln:0.8.7")
     }
 }
 
