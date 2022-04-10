@@ -11,6 +11,7 @@ import com.github.sorusclient.client.adapter.IPlayerEntity
 import com.github.sorusclient.client.adapter.IPlayerInventory
 import v1_18_2.net.minecraft.entity.Entity
 import v1_18_2.net.minecraft.entity.player.PlayerEntity
+import java.util.*
 
 class PlayerEntityImpl(entity: Entity) : LivingEntityImpl(entity), IPlayerEntity {
 

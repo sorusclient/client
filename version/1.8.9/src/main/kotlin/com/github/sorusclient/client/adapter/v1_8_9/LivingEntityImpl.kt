@@ -13,12 +13,12 @@ import com.github.sorusclient.client.adapter.IPotionEffect
 import v1_8_9.net.minecraft.entity.Entity
 import v1_8_9.net.minecraft.entity.LivingEntity
 
-open class LivingEntityImpl(entity: Entity) : com.github.sorusclient.client.adapter.v1_8_9.EntityImpl(entity), ILivingEntity {
+open class LivingEntityImpl(entity: Entity) : EntityImpl(entity), ILivingEntity {
     override val effects: List<IPotionEffect>
         get() {
             val effects: MutableList<IPotionEffect> = ArrayList()
             for (effect in (entity as LivingEntity).statusEffectInstances) {
-                effects.add(com.github.sorusclient.client.adapter.v1_8_9.PotionEffectImpl(effect))
+                effects.add(PotionEffectImpl(effect))
             }
             return effects
         }
@@ -27,7 +27,7 @@ open class LivingEntityImpl(entity: Entity) : com.github.sorusclient.client.adap
             val armor: MutableList<IItem?> = ArrayList()
             for (itemStack in entity.armorStacks) {
                 if (itemStack != null) {
-                    armor.add(0, com.github.sorusclient.client.adapter.v1_8_9.ItemImpl(itemStack))
+                    armor.add(0, ItemImpl(itemStack))
                 } else {
                     armor.add(0, null)
                 }

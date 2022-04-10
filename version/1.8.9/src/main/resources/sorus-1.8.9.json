@@ -22,6 +22,7 @@
     "feature.impl.particles.v1_8_9.ParticlesTransformer",
     "feature.impl.enhancements.v1_8_9.EnhancementsTransformer",
     "feature.impl.blockoverlay.v1_8_9.BlockOverlayTransformer",
-    "feature.impl.togglesprintsneak.v1_8_9.ToggleSprintSneakTransformer"
+    "feature.impl.togglesprintsneak.v1_8_9.ToggleSprintSneakTransformer",
+    "v1_8_9.SocialTransformer"
   ]
 }

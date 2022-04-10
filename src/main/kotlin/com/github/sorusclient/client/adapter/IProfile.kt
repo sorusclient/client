@@ -7,8 +7,8 @@
 
 package com.github.sorusclient.client.adapter
 
-interface IWorld {
-    val scoreboard: IScoreboard
-    val bossBars: List<IBossBar>
-    val players: List<IPlayerEntity>
+import java.util.UUID
+
+interface IProfile {
+    val uuid: UUID
 }

@@ -99,11 +99,14 @@ class EventTransformer : Transformer() {
         classNode.findMethod(handleKeyInput)
             .apply(Insert(this.getHook("onKey")))
         classNode.findMethod(connect)
-            .apply(Insert(createList { insnList: InsnList ->
-                insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
-                insnList.add(VarInsnNode(Opcodes.ALOAD, 2))
-                insnList.add(this.getHook("onConnect"))
-            }))
+            .apply { methodNode ->
+                findMethodReturns(methodNode)
+                    .apply(InsertBefore(methodNode, createList { insnList: InsnList ->
+                        insnList.add(VarInsnNode(Opcodes.ALOAD, 1))
+                        insnList.add(VarInsnNode(Opcodes.ALOAD, 2))
+                        insnList.add(this.getHook("onConnect"))
+                    }))
+            }
 
         val initializeGame = "v1_8_9/net/minecraft/client/MinecraftClient#initializeGame()V".toIdentifier()
         val createContext = "v1_8_9/com/mojang/blaze3d/platform/GLX#createContext()V".toIdentifier()

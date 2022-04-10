@@ -8,6 +8,7 @@
 package com.github.sorusclient.client.adapter.v1_18_2
 
 import com.github.sorusclient.client.adapter.IBossBar
+import com.github.sorusclient.client.adapter.IPlayerEntity
 import com.github.sorusclient.client.adapter.IScoreboard
 import com.github.sorusclient.client.adapter.IWorld
 import com.github.sorusclient.client.toIdentifier
@@ -40,6 +41,18 @@ class WorldImpl(private val world: World) : IWorld {
             }
 
             return bossBarsList
+        }
+
+    override val players: List<IPlayerEntity>
+        get() {
+            val players = world.players
+
+            val playersList = ArrayList<IPlayerEntity>()
+            for (player in players) {
+                playersList.add(PlayerEntityImpl(player))
+            }
+
+            return playersList
         }
 
 }

@@ -21,7 +21,7 @@ class SideBar : HUDElement("sideBar") {
 
     private val sidebarObjective: IScoreboardObjective?
         get() {
-            val scoreboard = AdapterManager.adapter.world.scoreboard
+            val scoreboard = AdapterManager.adapter.world!!.scoreboard
             val sidebarObjective = scoreboard.getObjective(IScoreboard.Slot.SIDEBAR)
             val editing = HUDManager.isHudEditScreenOpen.get()
             return if (sidebarObjective != null || !editing) {

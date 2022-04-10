@@ -8,6 +8,8 @@
 package com.github.sorusclient.client.social
 
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.IPlayerEntity
+import com.github.sorusclient.client.adapter.IProfile
 import com.github.sorusclient.client.adapter.event.GameJoinEvent
 import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.TickEvent
@@ -28,6 +30,8 @@ object SocialManager {
     var currentGroup: Group? = null
     val friends: MutableList<Pair<String, Pair<String, String>>> = ArrayList()
 
+    val onlinePlayers: MutableSet<String> = HashSet()
+
     private var serverToJoin: String? = null
 
     init {
@@ -41,6 +45,7 @@ object SocialManager {
         WebSocketManager.listeners["groupWarp"] = this::onWarpGroup
         WebSocketManager.listeners["updateStatus"] = this::onUpdateStatus
         WebSocketManager.listeners["requestUpdateStatus"] = this::onRequestUpdateStatus
+        WebSocketManager.listeners["updateInGameStatus"] = this::onUpdateInGameStatus
 
         EventManager.register<TickEvent> {
             if (serverToJoin != null) {
@@ -63,6 +68,24 @@ object SocialManager {
 
         EventManager.register<GameLeaveEvent> {
             updateStatus("")
+        }
+
+        var cachedPlayers: List<IProfile> = ArrayList()
+
+        EventManager.register<TickEvent> {
+            if (AdapterManager.adapter.world == null) return@register
+
+            val players = AdapterManager.adapter.players
+            if (players.size != cachedPlayers.size) {
+                for (player in players) {
+                    if (!cachedPlayers.any { it.uuid == player.uuid }) {
+                        WebSocketManager.sendMessage("updateInGameStatus", JSONObject().apply {
+                            put("user", player.uuid.toString().replace("-", ""))
+                        })
+                    }
+                }
+                cachedPlayers = players
+            }
         }
     }
 
@@ -156,6 +179,11 @@ object SocialManager {
                 friend.second.second = json.getString("action")
             }
         }
+    }
+
+    private fun onUpdateInGameStatus(json: JSONObject) {
+        val user = json.getString("user")
+        onlinePlayers.add(user)
     }
 
     private fun onRequestUpdateStatus(@Suppress("UNUSED_PARAMETER") json: JSONObject) {

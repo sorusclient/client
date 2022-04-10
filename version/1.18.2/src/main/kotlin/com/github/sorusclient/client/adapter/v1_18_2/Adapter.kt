@@ -50,8 +50,8 @@ class Adapter: IAdapter, Initializer {
     override val player: IPlayerEntity
         get() = PlayerEntityImpl(MinecraftClient.getInstance().player!!)
 
-    override val world: IWorld
-        get() = WorldImpl(MinecraftClient.getInstance().world!!)
+    override val world: IWorld?
+        get() = MinecraftClient.getInstance().world?.let { WorldImpl(it) }
 
     override fun openScreen(screenType: ScreenType) {
         val screen = when (screenType) {
@@ -163,5 +163,17 @@ class Adapter: IAdapter, Initializer {
 
     override val fps: Int
         get() = currentFps.getInt(MinecraftClient.getInstance())
+
+    override val players: List<IProfile>
+        get() {
+            val players = MinecraftClient.getInstance().networkHandler!!.playerList
+
+            val playersList = ArrayList<IProfile>()
+            for (player in players) {
+                playersList.add(ProfileImpl(player.profile));
+            }
+
+            return playersList
+        }
 
 }

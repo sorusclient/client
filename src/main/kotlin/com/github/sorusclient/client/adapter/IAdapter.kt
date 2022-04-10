@@ -17,12 +17,13 @@ interface IAdapter {
     val mouseLocation: DoubleArray
 
     val player: IPlayerEntity?
-    val world: IWorld
+    val world: IWorld?
     var perspective: PerspectiveMode
     val currentServer: IServer?
     val gameMode: GameMode
     val session: ISession
     val fps: Int
+    val players: List<IProfile>
 
     fun getKeyBind(type: KeyBindType): IKeyBind
     fun sendPlayerMessage(message: String)

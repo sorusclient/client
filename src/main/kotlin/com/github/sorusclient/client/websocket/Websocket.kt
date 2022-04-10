@@ -16,7 +16,7 @@ import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
 import java.net.URI
 
-class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml:8443")) {
+class Websocket: WebSocketClient(URI.create("ws://localhost:8080")) {
 
     override fun onOpen(handshakedata: ServerHandshake?) {
 

@@ -45,7 +45,6 @@ object WebSocketManager {
                     val session = AdapterManager.adapter.session
                     val sorusMlHash = "800D46DF17044D7033A983D9943E61CAA11835CB"
 
-                    var failedToAuthenticate = false
                     runBlocking {
                         try {
                             val client = HttpClient {
@@ -60,19 +59,16 @@ object WebSocketManager {
                                         "  }\n"
                             }
                         } catch (e: Exception) {
-                            failedToAuthenticate = true
                             System.err.println("Failed to authenticate with Mojang Session Server!")
                         }
                     }
 
-                    if (!failedToAuthenticate) {
-                        webSocket = Websocket()
-                        if (webSocket.connectBlocking()) {
-                            val jsonObject = JSONObject()
-                            jsonObject.put("username", session.getUsername())
-                            jsonObject.put("uuid", session.getUUID())
-                            sendMessage("authenticate", jsonObject, true)
-                        }
+                    webSocket = Websocket()
+                    if (webSocket.connectBlocking()) {
+                        val jsonObject = JSONObject()
+                        jsonObject.put("username", session.getUsername())
+                        jsonObject.put("uuid", session.getUUID())
+                        sendMessage("authenticate", jsonObject, true)
                     }
                 }.start()
             }

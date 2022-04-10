@@ -23,7 +23,7 @@ class BossBar : HUDElement("bossBar") {
         get() = "BossBar"
 
     override fun render(x: Double, y: Double, scale: Double) {
-        val bossBars = AdapterManager.adapter.world.bossBars
+        val bossBars = AdapterManager.adapter.world!!.bossBars
         if (bossBars.isEmpty()) return
 
         val percent = bossBars[0].percentage

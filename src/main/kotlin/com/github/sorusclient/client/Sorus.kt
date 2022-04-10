@@ -8,16 +8,20 @@
 package com.github.sorusclient.client
 
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.adapter.IPlayerEntity
 import com.github.sorusclient.client.adapter.event.GetClientBrandEvent
 import com.github.sorusclient.client.adapter.event.InitializeEvent
+import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.hud.HUDManager
 import com.github.sorusclient.client.plugin.PluginManager
 import com.github.sorusclient.client.setting.SettingManager
+import com.github.sorusclient.client.social.SocialManager
 import com.github.sorusclient.client.ui.UserInterface
 import com.github.sorusclient.client.ui.framework.ContainerRenderer
 import com.github.sorusclient.client.ui.theme.ThemeManager
 import com.github.sorusclient.client.websocket.WebSocketManager
+import org.json.JSONObject
 
 object Sorus {
 
@@ -47,6 +51,7 @@ object Sorus {
         })
 
         WebSocketManager
+        SocialManager
     }
 
 }
