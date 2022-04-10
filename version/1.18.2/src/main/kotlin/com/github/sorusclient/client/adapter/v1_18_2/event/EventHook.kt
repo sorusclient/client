@@ -11,12 +11,11 @@ import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.Button
 import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.adapter.v1_18_2.Util
-import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.event.call
-import v1_18_2.org.lwjgl.opengl.GL11
-import v1_18_2.org.lwjgl.opengl.GL11C
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_2.net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
+import v1_18_2.org.lwjgl.opengl.GL11
+import v1_18_2.org.lwjgl.opengl.GL11C
 
 object EventHook {
 

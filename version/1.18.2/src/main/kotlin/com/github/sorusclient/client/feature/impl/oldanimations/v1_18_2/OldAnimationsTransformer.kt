@@ -11,7 +11,8 @@ import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.Transformer
 import com.github.sorusclient.client.transform.findMethod
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.*
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.VarInsnNode
 
 @Suppress("UNUSED")
 class OldAnimationsTransformer : Transformer() {

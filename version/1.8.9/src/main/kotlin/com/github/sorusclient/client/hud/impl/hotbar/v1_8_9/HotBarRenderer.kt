@@ -18,6 +18,7 @@ import v1_8_9.net.minecraft.client.render.GuiLighting
 import v1_8_9.net.minecraft.item.ItemStack
 import v1_8_9.net.minecraft.util.Identifier
 
+@Suppress("UNUSED")
 class HotBarRenderer : IHotBarRenderer, Initializer {
 
     override fun initialize() {
@@ -28,12 +29,15 @@ class HotBarRenderer : IHotBarRenderer, Initializer {
         GlStateManager.pushMatrix()
         GlStateManager.translated(x, y, 0.0)
         GlStateManager.scaled(scale, scale, 1.0)
+
         GlStateManager.color4f(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
         GlStateManager.enableTexture()
+
         val drawableHelper = DrawableHelper()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/widgets.png"))
         drawableHelper.drawTexture(0, 0, 0, 0, 182, 22)
+
         GlStateManager.popMatrix()
     }
 
@@ -41,10 +45,13 @@ class HotBarRenderer : IHotBarRenderer, Initializer {
         GlStateManager.pushMatrix()
         GlStateManager.translated(x, y, 0.0)
         GlStateManager.scaled(scale, scale, 1.0)
+
         GlStateManager.color4f(1f, 1f, 1f, 1f)
         GuiLighting.enable()
+
         MinecraftClient.getInstance().itemRenderer.renderInGuiWithOverrides(item.inner as ItemStack, 0, 0)
         MinecraftClient.getInstance().itemRenderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, item.inner as ItemStack, 0, 0, null)
+
         GuiLighting.disable()
         GlStateManager.popMatrix()
     }
@@ -53,10 +60,13 @@ class HotBarRenderer : IHotBarRenderer, Initializer {
         GlStateManager.pushMatrix()
         GlStateManager.translated(x, y, 0.0)
         GlStateManager.scaled(scale, scale, 1.0)
+
         GlStateManager.color4f(1f, 1f, 1f, 1f)
+
         val drawableHelper = DrawableHelper()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/widgets.png"))
         drawableHelper.drawTexture(0, 0, 0, 22, 24, 24)
+
         GlStateManager.popMatrix()
     }
 

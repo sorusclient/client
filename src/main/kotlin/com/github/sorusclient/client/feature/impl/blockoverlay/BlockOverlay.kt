@@ -7,12 +7,13 @@
 
 package com.github.sorusclient.client.feature.impl.blockoverlay
 
-import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.ColorPicker
+import com.github.sorusclient.client.setting.display.DisplayedSetting.Slider
 import com.github.sorusclient.client.util.Color
 
 object BlockOverlay {

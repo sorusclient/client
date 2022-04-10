@@ -13,9 +13,6 @@ import com.github.sorusclient.client.setting.display.DisplayedCategory
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 object SettingManager {
 

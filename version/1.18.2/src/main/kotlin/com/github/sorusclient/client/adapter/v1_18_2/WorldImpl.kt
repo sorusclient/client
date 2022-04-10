@@ -16,7 +16,7 @@ import v1_18_2.net.minecraft.client.gui.hud.BossBarHud
 import v1_18_2.net.minecraft.client.gui.hud.ClientBossBar
 import v1_18_2.net.minecraft.world.World
 import java.lang.reflect.Field
-import java.util.UUID
+import java.util.*
 
 class WorldImpl(private val world: World) : IWorld {
 
@@ -34,7 +34,7 @@ class WorldImpl(private val world: World) : IWorld {
         get() {
             val bossBars = bossBarsField.get(MinecraftClient.getInstance().inGameHud.bossBarHud) as Map<UUID, ClientBossBar>
 
-            val bossBarsList = java.util.ArrayList<IBossBar>()
+            val bossBarsList = ArrayList<IBossBar>()
             for (bossBar in bossBars) {
                 bossBarsList.add(BossBarImpl(bossBar.value))
             }

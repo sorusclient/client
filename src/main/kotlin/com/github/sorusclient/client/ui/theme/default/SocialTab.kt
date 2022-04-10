@@ -21,6 +21,7 @@ import com.github.sorusclient.client.ui.framework.constraint.Relative
 import com.github.sorusclient.client.ui.framework.constraint.Side
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.MojangUtil
+import com.github.sorusclient.client.util.Rectangle
 import com.github.sorusclient.client.websocket.WebSocketManager
 
 class SocialTab(private val defaultTheme: DefaultTheme): Container() {
@@ -423,7 +424,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
 
                                                                                         backgroundCornerRadius = 0.15.toRelative()
                                                                                         backgroundImage = "$member-skin".toAbsolute()
-                                                                                        backgroundImageBounds = arrayOf(0.125, 0.125, 0.125, 0.125)
+                                                                                        backgroundImageBounds = Rectangle(0.125, 0.125, 0.125, 0.125)
                                                                                     }
 
                                                                                 children += Container()
@@ -435,7 +436,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
 
                                                                                         backgroundCornerRadius = 0.15.toRelative()
                                                                                         backgroundImage = "$member-skin".toAbsolute()
-                                                                                        backgroundImageBounds = arrayOf(0.625, 0.125, 0.125, 0.125)
+                                                                                        backgroundImageBounds = Rectangle(0.625, 0.125, 0.125, 0.125)
                                                                                     }
                                                                             }
 
@@ -794,7 +795,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
 
                                                                                             backgroundCornerRadius = 0.15.toRelative()
                                                                                             backgroundImage = "${friend.first}-skin".toAbsolute()
-                                                                                            backgroundImageBounds = arrayOf(0.125, 0.125, 0.125, 0.125)
+                                                                                            backgroundImageBounds = Rectangle(0.125, 0.125, 0.125, 0.125)
                                                                                         }
 
                                                                                     children += Container()
@@ -806,7 +807,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
 
                                                                                             backgroundCornerRadius = 0.15.toRelative()
                                                                                             backgroundImage = "${friend.first}-skin".toAbsolute()
-                                                                                            backgroundImageBounds = arrayOf(0.625, 0.125, 0.125, 0.125)
+                                                                                            backgroundImageBounds = Rectangle(0.625, 0.125, 0.125, 0.125)
 
                                                                                             borderThickness = 0.055.toRelative()
                                                                                             borderColor = Dependent { if (friend.second.second == "offline") { Color.fromRGB(0, 0, 0, 0).toAbsolute() } else { Color.fromRGB(45, 175, 60, 255).toAbsolute() } }

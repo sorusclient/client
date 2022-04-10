@@ -16,17 +16,17 @@ import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.util.Color
 import org.apache.commons.io.IOUtils
-import v1_8_9.org.lwjgl.BufferUtils
-import v1_8_9.org.lwjgl.opengl.GL11
-import v1_8_9.org.lwjgl.opengl.GL15
-import v1_8_9.org.lwjgl.opengl.GL20
-import v1_8_9.org.lwjgl.opengl.GL30
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.render.GameRenderer
 import v1_8_9.net.minecraft.client.render.Tessellator
 import v1_8_9.net.minecraft.client.render.VertexFormats
 import v1_8_9.net.minecraft.client.util.Window
+import v1_8_9.org.lwjgl.BufferUtils
+import v1_8_9.org.lwjgl.opengl.GL11
+import v1_8_9.org.lwjgl.opengl.GL15
+import v1_8_9.org.lwjgl.opengl.GL20
+import v1_8_9.org.lwjgl.opengl.GL30
 import java.awt.*
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
@@ -37,7 +37,6 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.imageio.ImageIO
-import kotlin.collections.ArrayList
 import kotlin.math.cos
 import kotlin.math.sin
 

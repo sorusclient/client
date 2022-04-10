@@ -9,13 +9,13 @@ package com.github.sorusclient.client.feature.impl.enhancements
 
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.Key
-import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.Util
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting.Slider
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File

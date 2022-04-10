@@ -11,9 +11,7 @@ import com.github.sorusclient.client.adapter.IScoreboardObjective
 import com.github.sorusclient.client.adapter.IScoreboardScore
 import com.github.sorusclient.client.adapter.IText
 import v1_8_9.net.minecraft.scoreboard.ScoreboardObjective
-import v1_8_9.net.minecraft.text.BaseText
 import v1_8_9.net.minecraft.text.LiteralText
-import v1_8_9.net.minecraft.text.Text
 
 class ScoreboardObjectiveImpl(private val scoreboardObjective: ScoreboardObjective) : IScoreboardObjective {
     override val scores: List<IScoreboardScore>

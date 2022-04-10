@@ -15,6 +15,7 @@ import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.util.Identifier
 
+@Suppress("UNUSED")
 class ExperienceRenderer : IExperienceRenderer, Initializer {
 
     override fun initialize() {
@@ -25,12 +26,15 @@ class ExperienceRenderer : IExperienceRenderer, Initializer {
         GlStateManager.pushMatrix()
         GlStateManager.translated(x, y, 0.0)
         GlStateManager.scaled(scale, scale, 1.0)
-        val drawableHelper = DrawableHelper()
+
         GlStateManager.color4f(1f, 1f, 1f, 1f)
         GlStateManager.enableTexture()
+
+        val drawableHelper = DrawableHelper()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
         drawableHelper.drawTexture(0, 0, 0, 64, 183, 5)
         drawableHelper.drawTexture(0, 0, 0, 69 /* nice */, (183 * percent).toInt(), 5)
+
         GlStateManager.popMatrix()
     }
 

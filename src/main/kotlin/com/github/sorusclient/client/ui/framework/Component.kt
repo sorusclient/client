@@ -13,7 +13,6 @@ import com.github.sorusclient.client.adapter.event.MouseEvent
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.ui.framework.constraint.Flexible
 import com.github.sorusclient.client.ui.framework.constraint.Side
-import java.util.function.Consumer
 
 abstract class Component {
     var x: Constraint = Side(Side.ZERO)

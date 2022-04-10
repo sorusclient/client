@@ -9,8 +9,11 @@ package com.github.sorusclient.client.ui.theme.default
 
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.ui.*
-import com.github.sorusclient.client.ui.framework.*
-import com.github.sorusclient.client.ui.framework.constraint.*
+import com.github.sorusclient.client.ui.framework.Container
+import com.github.sorusclient.client.ui.framework.List
+import com.github.sorusclient.client.ui.framework.TabHolder
+import com.github.sorusclient.client.ui.framework.constraint.Dependent
+import com.github.sorusclient.client.ui.framework.constraint.Side
 
 class MainGui(private val defaultTheme: DefaultTheme) : Container() {
     

@@ -10,13 +10,13 @@ package com.github.sorusclient.client.adapter.v1_18_2
 import com.github.sorusclient.client.adapter.*
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import v1_18_2.org.lwjgl.glfw.GLFW
 import v1_18_2.net.minecraft.client.gui.screen.GameMenuScreen
 import v1_18_2.net.minecraft.client.gui.screen.Screen
 import v1_18_2.net.minecraft.item.Item
 import v1_18_2.net.minecraft.item.Items
 import v1_18_2.net.minecraft.text.*
 import v1_18_2.net.minecraft.util.Formatting
+import v1_18_2.org.lwjgl.glfw.GLFW
 
 object Util {
 

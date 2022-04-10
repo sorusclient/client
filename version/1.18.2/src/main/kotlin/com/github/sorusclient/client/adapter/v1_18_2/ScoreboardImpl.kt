@@ -13,7 +13,7 @@ import v1_18_2.net.minecraft.scoreboard.Scoreboard
 
 class ScoreboardImpl(private val scoreboard: Scoreboard) : IScoreboard {
 
-    override fun getObjective(slot: IScoreboard.Slot?): IScoreboardObjective? {
+    override fun getObjective(slot: IScoreboard.Slot): IScoreboardObjective? {
         val slotName: String = when (slot) {
             IScoreboard.Slot.SIDEBAR -> "sidebar"
             else -> "unknown"

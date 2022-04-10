@@ -13,7 +13,9 @@ import com.github.sorusclient.client.transform.Transformer
 import com.github.sorusclient.client.transform.findMethod
 import com.github.sorusclient.client.transform.findMethodCalls
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.*
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.LdcInsnNode
+import org.objectweb.asm.tree.VarInsnNode
 
 @Suppress("UNUSED")
 class BlockOverlayTransformer: Transformer() {

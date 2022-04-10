@@ -27,7 +27,7 @@ class PotionEffectImpl(protected val effect: StatusEffectInstance) : IPotionEffe
             return minutes.toString() + ":" + (if (secondsReal < 10) "0" else "") + secondsReal
         }
 
-    override val name: String?
+    override val name: String
         get() = I18n.translate(effect.translationKey)
 
     override val amplifier: Int

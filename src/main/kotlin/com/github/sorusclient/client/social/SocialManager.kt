@@ -12,10 +12,14 @@ import com.github.sorusclient.client.adapter.event.GameJoinEvent
 import com.github.sorusclient.client.adapter.event.GameLeaveEvent
 import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.notification.*
+import com.github.sorusclient.client.notification.Icon
+import com.github.sorusclient.client.notification.Interaction
+import com.github.sorusclient.client.notification.Notification
+import com.github.sorusclient.client.notification.display
 import com.github.sorusclient.client.util.MojangUtil
-import com.github.sorusclient.client.websocket.WebSocketManager
 import com.github.sorusclient.client.util.Pair
+import com.github.sorusclient.client.util.Rectangle
+import com.github.sorusclient.client.websocket.WebSocketManager
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
@@ -72,7 +76,7 @@ object SocialManager {
         Notification().apply {
             title = "Group Invite"
             content = "${MojangUtil.getUsername(inviter)} invited you."
-            icons = listOf(Icon("$inviter-skin", arrayOf(0.125, 0.125, 0.125, 0.125)), Icon("$inviter-skin", arrayOf(0.625, 0.125, 0.125, 0.125)))
+            icons = listOf(Icon("$inviter-skin", Rectangle(0.125, 0.125, 0.125, 0.125)), Icon("$inviter-skin", Rectangle(0.625, 0.125, 0.125, 0.125)))
 
             interactions += Interaction.Button().apply {
                 text = "Accept"
@@ -108,7 +112,7 @@ object SocialManager {
         Notification().apply {
             title = "Friend Request"
             content = "${MojangUtil.getUsername(user)} friended you."
-            icons = listOf(Icon("$user-skin", arrayOf(0.125, 0.125, 0.125, 0.125)), Icon("$user-skin", arrayOf(0.625, 0.125, 0.125, 0.125)))
+            icons = listOf(Icon("$user-skin", Rectangle(0.125, 0.125, 0.125, 0.125)), Icon("$user-skin", Rectangle(0.625, 0.125, 0.125, 0.125)))
 
             interactions += Interaction.Button().apply {
                 text = "Accept"

@@ -10,7 +10,6 @@ package com.github.sorusclient.client.adapter.v1_18_2
 import com.github.sorusclient.client.adapter.ITranslatableText
 import v1_18_2.net.minecraft.text.Text
 import v1_18_2.net.minecraft.text.TranslatableText
-import java.util.ArrayList
 
 class TranslatableTextImpl(text: TranslatableText) : TextImpl<TranslatableText>(text), ITranslatableText {
     override val arguments: List<Any>

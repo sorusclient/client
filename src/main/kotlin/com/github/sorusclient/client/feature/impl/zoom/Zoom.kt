@@ -14,7 +14,8 @@ import com.github.sorusclient.client.adapter.event.GetFOVEvent
 import com.github.sorusclient.client.adapter.event.GetSensitivityEvent
 import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.Setting
+import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory

@@ -10,13 +10,11 @@ package com.github.sorusclient.client.feature.impl.togglesprintsneak
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.IKeyBind
 import com.github.sorusclient.client.adapter.Key
-import com.github.sorusclient.client.adapter.event.KeyEvent
-import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
+import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.keybind.KeyBind
 import com.github.sorusclient.client.util.keybind.KeyBindManager

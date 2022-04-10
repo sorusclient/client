@@ -8,9 +8,6 @@
 package com.github.sorusclient.client.bootstrap
 
 import com.github.sorusclient.client.Sorus
-import org.apache.commons.io.IOUtils
-import org.json.JSONObject
-import java.nio.charset.StandardCharsets
 
 class Launcher {
 

@@ -10,8 +10,6 @@ package com.github.sorusclient.client.setting
 import java.lang.reflect.Modifier
 import java.math.BigDecimal
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 object Util {
 

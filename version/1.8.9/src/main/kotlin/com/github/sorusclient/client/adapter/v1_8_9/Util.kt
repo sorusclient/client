@@ -11,7 +11,6 @@ import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IItem.ItemType
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
 import v1_8_9.net.minecraft.client.gui.screen.Screen
 import v1_8_9.net.minecraft.text.*

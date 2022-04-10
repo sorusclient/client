@@ -7,21 +7,23 @@
 
 package com.github.sorusclient.client.adapter.v1_18_2
 
-import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.adapter.IFontRenderer
 import com.github.sorusclient.client.adapter.IRenderer
 import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.v1_18_2.event.EventHook
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.util.Color
-import v1_18_2.org.apache.commons.io.IOUtils
-import v1_18_2.org.lwjgl.opengl.*
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.render.GameRenderer
 import v1_18_2.net.minecraft.client.render.Tessellator
 import v1_18_2.net.minecraft.client.render.VertexFormat
 import v1_18_2.net.minecraft.client.render.VertexFormats
+import v1_18_2.org.apache.commons.io.IOUtils
+import v1_18_2.org.lwjgl.opengl.GL11
+import v1_18_2.org.lwjgl.opengl.GL15
+import v1_18_2.org.lwjgl.opengl.GL20
+import v1_18_2.org.lwjgl.opengl.GL30
 import java.awt.Font
 import java.awt.FontFormatException
 import java.awt.Graphics2D

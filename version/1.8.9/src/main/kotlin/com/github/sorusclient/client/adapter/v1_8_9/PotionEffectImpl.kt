@@ -13,6 +13,7 @@ import v1_8_9.net.minecraft.client.resource.language.I18n
 import v1_8_9.net.minecraft.entity.effect.StatusEffectInstance
 
 class PotionEffectImpl(protected val effect: StatusEffectInstance) : IPotionEffect {
+
     override val duration: String
         get() {
             if (effect.isPermanent) {
@@ -24,11 +25,14 @@ class PotionEffectImpl(protected val effect: StatusEffectInstance) : IPotionEffe
             val secondsReal = if (minutes == 0) seconds else seconds % (minutes * 60)
             return minutes.toString() + ":" + (if (secondsReal < 10) "0" else "") + secondsReal
         }
-    override val name: String?
+
+    override val name: String
         get() = I18n.translate(effect.translationKey)
+
     override val amplifier: Int
         get() = effect.amplifier + 1
-    override val type: PotionType?
+
+    override val type: PotionType
         get() = when (effect.effectId) {
             1 -> PotionType.SPEED
             2 -> PotionType.SLOWNESS
@@ -55,4 +59,5 @@ class PotionEffectImpl(protected val effect: StatusEffectInstance) : IPotionEffe
             23 -> PotionType.SATURATION
             else -> PotionType.UNKNOWN
         }
+
 }

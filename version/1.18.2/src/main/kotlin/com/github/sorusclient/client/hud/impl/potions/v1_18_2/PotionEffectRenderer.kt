@@ -9,6 +9,7 @@ package com.github.sorusclient.client.hud.impl.potions.v1_18_2
 
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
+import com.github.sorusclient.client.adapter.v1_18_2.drawTexture
 import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
@@ -16,6 +17,7 @@ import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.entity.effect.StatusEffects
 
+@Suppress("UNUSED")
 class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
 
     override fun initialize() {
@@ -67,24 +69,6 @@ class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
         RenderSystem.setShaderTexture(0, sprite.atlas.id)
 
         drawTexture(x, y, (sprite.minU.toDouble() * 256), (sprite.minV.toDouble() * 256), 18 * scale, 18 * scale, ((sprite.maxU - sprite.minU).toDouble() * 256).toInt(), ((sprite.maxV - sprite.minV).toDouble() * 256).toInt())
-    }
-
-    private fun drawTexture(var1: Double, var2: Double, textureX: Double, textureY: Double, width: Double, height: Double, textureWidth: Int, textureHeight: Int) {
-        val textureX = textureX + 0.1
-        val width = width - 0.1
-
-        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-
-        val var9 = Tessellator.getInstance()
-        val var10 = var9.buffer
-        var10.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
-        var10.vertex((var1 + 0), (var2 + height), 0.0).texture((textureX + 0).toFloat() / 256, ((textureY + textureHeight).toFloat() / 256)).next()
-        var10.vertex((var1 + width), (var2 + height), 0.0).texture(((textureX + textureWidth).toFloat() / 256), ((textureY + textureHeight).toFloat() / 256)).next()
-        var10.vertex((var1 + width), (var2 + 0), 0.0).texture(((textureX + textureWidth).toFloat() / 256), ((textureY + 0).toFloat() / 256)).next()
-        var10.vertex((var1 + 0), (var2 + 0), 0.0).texture(((textureX + 0).toFloat() / 256), ((textureY + 0).toFloat() / 256)).next()
-        var10.end()
-        BufferRenderer.draw(var10)
     }
 
 }

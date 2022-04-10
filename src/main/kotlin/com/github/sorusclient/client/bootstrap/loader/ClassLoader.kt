@@ -9,12 +9,10 @@ package com.github.sorusclient.client.bootstrap.loader
 
 import org.apache.commons.io.IOUtils
 import java.io.IOException
-import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.net.URL
 import java.net.URLClassLoader
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ClassLoader : URLClassLoader(arrayOfNulls(0), null) {
 

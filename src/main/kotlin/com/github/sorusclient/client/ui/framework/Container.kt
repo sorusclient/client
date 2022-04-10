@@ -16,6 +16,7 @@ import com.github.sorusclient.client.ui.framework.constraint.Absolute
 import com.github.sorusclient.client.ui.framework.constraint.Constraint
 import com.github.sorusclient.client.ui.toAbsolute
 import com.github.sorusclient.client.util.Color
+import com.github.sorusclient.client.util.Rectangle
 import java.util.function.Consumer
 import kotlin.collections.List
 
@@ -40,7 +41,7 @@ open class Container : Component() {
             }
             field = value
         }
-    var backgroundImageBounds: Array<Double> = arrayOf(0.0, 0.0, 1.0, 1.0)
+    var backgroundImageBounds: Rectangle = Rectangle(0.0, 0.0, 1.0, 1.0)
 
     var paddingLeft: Constraint = Absolute(0.0)
     var paddingRight: Constraint = Absolute(0.0)
@@ -130,7 +131,7 @@ open class Container : Component() {
                 return transmitColor.getColorValue(this)
             }
 
-        fun getRealColor(color: Constraint?): Color? {
+        private fun getRealColor(color: Constraint?): Color? {
             if (color == null) return null
 
             var color = color.getColorValue(this)
@@ -178,6 +179,7 @@ open class Container : Component() {
             for (onUpdate in onUpdate) {
                 onUpdate(state)
             }
+
             this.availableState = state
             if (getState("hidden") as Boolean) {
                 setState("clicked", false)
@@ -197,10 +199,10 @@ open class Container : Component() {
                         width,
                         height,
                         container.backgroundCornerRadius.getCornerRadiusValue(this),
-                        backgroundImageBounds[0],
-                        backgroundImageBounds[1],
-                        backgroundImageBounds[2],
-                        backgroundImageBounds[3],
+                        backgroundImageBounds.x,
+                        backgroundImageBounds.y,
+                        backgroundImageBounds.width,
+                        backgroundImageBounds.height,
                         true,
                         getRealColor(backgroundColor)!!
                     )

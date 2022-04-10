@@ -10,7 +10,6 @@ package com.github.sorusclient.client.setting.data
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.Util
 import java.util.*
-import kotlin.collections.ArrayList
 
 class SettingData(val setting: Setting<*>): AbstractData() {
 

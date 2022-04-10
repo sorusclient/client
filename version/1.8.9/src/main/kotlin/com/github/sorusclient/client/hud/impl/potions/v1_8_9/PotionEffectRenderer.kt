@@ -9,14 +9,15 @@ package com.github.sorusclient.client.hud.impl.potions.v1_8_9
 
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
+import com.github.sorusclient.client.adapter.v1_8_9.drawTexture
 import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
-import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.entity.effect.StatusEffect
 import v1_8_9.net.minecraft.util.Identifier
 
+@Suppress("UNUSED")
 class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
 
     override fun initialize() {
@@ -50,15 +51,20 @@ class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
             PotionType.SATURATION -> 22
             else -> -1
         }
+
         val index = StatusEffect.STATUS_EFFECTS[id].method_2444()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/container/inventory.png"))
+
         GlStateManager.enableTexture()
         GlStateManager.enableBlend()
         GlStateManager.color4f(1f, 1f, 1f, 1f)
+
         GlStateManager.pushMatrix()
         GlStateManager.translated(x, y, 0.0)
         GlStateManager.scaled(scale, scale, 1.0)
-        DrawableHelper().drawTexture(0, 0, index % 8 * 18, 198 + index / 8 * 18, 18, 18)
+
+        drawTexture(0, 0, index % 8 * 18.0, 198 + index / 8 * 18.0, 18, 18)
+
         GlStateManager.popMatrix()
     }
 

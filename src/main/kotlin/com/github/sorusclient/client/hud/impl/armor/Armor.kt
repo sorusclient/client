@@ -169,11 +169,7 @@ class Armor : HUDElement("armor") {
             }
         }
 
-    private class FakeArmorItem(
-        override val remainingDurability: Double,
-        override val maxDurability: Double,
-        override val type: ItemType
-    ) : IItem {
+    private class FakeArmorItem(override val remainingDurability: Double, override val maxDurability: Double, override val type: ItemType) : IItem {
 
         override val inner: Any?
             get() = null

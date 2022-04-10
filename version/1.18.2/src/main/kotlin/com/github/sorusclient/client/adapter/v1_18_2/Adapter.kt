@@ -7,7 +7,6 @@
 
 package com.github.sorusclient.client.adapter.v1_18_2
 
-import com.github.sorusclient.client.Identifier
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.bootstrap.Initializer
@@ -21,9 +20,9 @@ import v1_18_2.net.minecraft.client.gui.screen.option.OptionsScreen
 import v1_18_2.net.minecraft.client.gui.screen.option.VideoOptionsScreen
 import v1_18_2.net.minecraft.client.network.ServerAddress
 import v1_18_2.net.minecraft.client.network.ServerInfo
+import v1_18_2.net.minecraft.client.option.KeyBinding
 import v1_18_2.net.minecraft.client.option.Perspective
 import v1_18_2.net.minecraft.text.LiteralText
-import v1_18_2.net.minecraft.client.option.KeyBinding
 import java.lang.reflect.Field
 
 class Adapter: IAdapter, Initializer {

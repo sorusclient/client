@@ -13,7 +13,9 @@ import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.InitializeEvent
 import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
-import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.Profile
+import com.github.sorusclient.client.setting.Setting
+import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.Displayed
 import com.github.sorusclient.client.setting.display.DisplayedCategory

@@ -11,7 +11,6 @@ import com.github.sorusclient.client.adapter.IText
 import com.github.sorusclient.client.adapter.ITextStyle
 import v1_8_9.net.minecraft.text.BaseText
 import v1_8_9.net.minecraft.text.Style
-import java.util.ArrayList
 
 open class TextImpl<T : BaseText>(protected val text: T) : IText {
 

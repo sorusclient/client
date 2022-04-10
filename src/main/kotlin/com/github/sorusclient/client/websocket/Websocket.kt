@@ -9,13 +9,11 @@ package com.github.sorusclient.client.websocket
 
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.notification.Notification
-import com.github.sorusclient.client.notification.NotificationManager
 import com.github.sorusclient.client.notification.display
 import kotlinx.coroutines.runBlocking
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
-import java.lang.Exception
 import java.net.URI
 
 class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml:8443")) {
@@ -39,12 +37,12 @@ class Websocket: WebSocketClient(URI.create("wss://socket.sorus.ml:8443")) {
                 }.display()
             }
 
+            WebSocketManager.connected = true
+
             WebSocketManager.sendMessage("updateStatus", JSONObject().apply {
                 put("version", AdapterManager.adapter.version)
                 put("action", "")
-            }, true)
-
-            WebSocketManager.connected = true
+            })
         }
 
         runBlocking {

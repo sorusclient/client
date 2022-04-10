@@ -8,33 +8,26 @@
 package com.github.sorusclient.client.hud.impl.health.v1_18_2
 
 import com.github.sorusclient.client.InterfaceManager
+import com.github.sorusclient.client.adapter.v1_18_2.drawTexture
 import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.BackgroundType
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.HeartType
 import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
-import v1_18_2.net.minecraft.client.render.BufferRenderer
-import v1_18_2.net.minecraft.client.render.GameRenderer
-import v1_18_2.net.minecraft.client.render.Tessellator
-import v1_18_2.net.minecraft.client.render.VertexFormat
-import v1_18_2.net.minecraft.client.render.VertexFormats
+import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.util.Identifier
 
+@Suppress("UNUSED")
 class HealthRenderer : IHealthRenderer, Initializer {
 
     override fun initialize() {
         InterfaceManager.register(this)
     }
 
-    override fun renderHeart(
-        x: Double,
-        y: Double,
-        scale: Double,
-        heartType: HeartType,
-        heartRenderType: IHealthRenderer.HeartRenderType
-    ) {
+    override fun renderHeart(x: Double, y: Double, scale: Double, heartType: HeartType, heartRenderType: IHealthRenderer.HeartRenderType) {
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
+
         RenderSystem.setShaderTexture(0, Identifier("textures/gui/icons.png"))
 
         val xLocation = if (heartType == HeartType.HEALTH) 52 else 52 + 12 * 9
@@ -61,9 +54,6 @@ class HealthRenderer : IHealthRenderer, Initializer {
     }
 
     override fun renderHeartBackground(x: Double, y: Double, scale: Double, backgroundType: BackgroundType?) {
-        //GL11.glPushMatrix()
-        //GL11.glTranslated(x, y, 0.0)
-        //GL11.glScaled(scale, scale, 1.0)
         RenderSystem.enableBlend()
         RenderSystem.enableTexture()
         RenderSystem.setShaderTexture(0, Identifier("textures/gui/icons.png"))
@@ -73,25 +63,6 @@ class HealthRenderer : IHealthRenderer, Initializer {
             BackgroundType.FLASHING_OUTLINE -> drawTexture(x, y, 25.0, 0.0, 9 * scale, 9 * scale, 9, 9)
             else -> {}
         }
-        //GL11.glPopMatrix()
-    }
-
-    private fun drawTexture(var1: Double, var2: Double, textureX: Double, textureY: Double, width: Double, height: Double, textureWidth: Int, textureHeight: Int) {
-        val textureX = textureX + 0.1
-        val width = width - 0.1
-
-        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-
-        val var9 = Tessellator.getInstance()
-        val var10 = var9.buffer
-        var10.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
-        var10.vertex((var1 + 0), (var2 + height), 0.0).texture((textureX + 0).toFloat() / 256, ((textureY + textureHeight).toFloat() / 256)).next()
-        var10.vertex((var1 + width), (var2 + height), 0.0).texture(((textureX + textureWidth).toFloat() / 256), ((textureY + textureHeight).toFloat() / 256)).next()
-        var10.vertex((var1 + width), (var2 + 0), 0.0).texture(((textureX + textureWidth).toFloat() / 256), ((textureY + 0).toFloat() / 256)).next()
-        var10.vertex((var1 + 0), (var2 + 0), 0.0).texture(((textureX + 0).toFloat() / 256), ((textureY + 0).toFloat() / 256)).next()
-        var10.end()
-        BufferRenderer.draw(var10)
     }
 
 }

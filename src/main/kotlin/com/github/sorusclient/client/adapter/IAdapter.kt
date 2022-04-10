@@ -10,27 +10,31 @@ package com.github.sorusclient.client.adapter
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
 
 interface IAdapter {
+    fun openScreen(screenType: ScreenType)
     val openScreen: ScreenType?
+
     val screenDimensions: DoubleArray
     val mouseLocation: DoubleArray
+
     val player: IPlayerEntity?
     val world: IWorld
-    fun openScreen(screenType: ScreenType)
     var perspective: PerspectiveMode
     val currentServer: IServer?
-    fun getKeyBind(type: KeyBindType): IKeyBind
-    fun sendPlayerMessage(message: String)
-    fun setDisplayTitle(title: String)
-    fun setDisplayIcon(iconSmall: String, iconLarge: String)
-    fun leaveWorld()
-    fun joinServer(ip: String)
     val gameMode: GameMode
     val session: ISession
+    val fps: Int
 
+    fun getKeyBind(type: KeyBindType): IKeyBind
+    fun sendPlayerMessage(message: String)
     fun createText(string: String): IText
+
+    fun setDisplayTitle(title: String)
+    fun setDisplayIcon(iconSmall: String, iconLarge: String)
+
+    fun leaveWorld()
+    fun joinServer(ip: String)
 
     val version: String
 
     val renderer: IRenderer
-    val fps: Int
 }

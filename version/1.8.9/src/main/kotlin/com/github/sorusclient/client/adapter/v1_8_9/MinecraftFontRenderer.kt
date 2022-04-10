@@ -12,7 +12,6 @@ import com.github.sorusclient.client.adapter.IText
 import com.github.sorusclient.client.util.Color
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.font.TextRenderer
-import v1_8_9.net.minecraft.text.BaseText
 
 class MinecraftFontRenderer(private val textRenderer: TextRenderer) : IFontRenderer {
 

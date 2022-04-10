@@ -25,17 +25,7 @@ interface IRenderer {
         this.drawRectangle(x, y, width, height, cornerRadius, color, color, color, color)
     }
 
-    fun drawRectangle(
-        x: Double,
-        y: Double,
-        width: Double,
-        height: Double,
-        cornerRadius: Double,
-        topLeftColor: Color,
-        bottomLeftColor: Color,
-        bottomRightColor: Color,
-        topRightColor: Color
-    )
+    fun drawRectangle(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, topLeftColor: Color, bottomLeftColor: Color, bottomRightColor: Color, topRightColor: Color)
 
     fun drawRectangleBorder(x: Double, y: Double, width: Double, height: Double, thickness: Double, color: Color) {
         drawRectangleBorder(x, y, width, height, 0.0, thickness, color)

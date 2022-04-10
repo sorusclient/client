@@ -11,14 +11,8 @@ import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
 import com.github.sorusclient.client.bootstrap.Initializer
-import v1_8_9.org.lwjgl.input.Mouse
-import v1_8_9.org.lwjgl.opengl.Display
 import v1_8_9.net.minecraft.client.MinecraftClient
-import v1_8_9.net.minecraft.client.gui.screen.ConnectScreen
-import v1_8_9.net.minecraft.client.gui.screen.GameMenuScreen
-import v1_8_9.net.minecraft.client.gui.screen.SettingsScreen
-import v1_8_9.net.minecraft.client.gui.screen.TitleScreen
-import v1_8_9.net.minecraft.client.gui.screen.VideoOptionsScreen
+import v1_8_9.net.minecraft.client.gui.screen.*
 import v1_8_9.net.minecraft.client.gui.screen.options.ControlsOptionsScreen
 import v1_8_9.net.minecraft.client.network.ServerInfo
 import v1_8_9.net.minecraft.client.options.KeyBinding
@@ -27,6 +21,8 @@ import v1_8_9.net.minecraft.entity.Entity
 import v1_8_9.net.minecraft.network.ServerAddress
 import v1_8_9.net.minecraft.text.LiteralText
 import v1_8_9.net.minecraft.world.level.LevelInfo
+import v1_8_9.org.lwjgl.input.Mouse
+import v1_8_9.org.lwjgl.opengl.Display
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 

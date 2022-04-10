@@ -9,7 +9,10 @@ package com.github.sorusclient.client.ui.theme.default
 
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.ui.*
-import com.github.sorusclient.client.ui.framework.*
+import com.github.sorusclient.client.ui.framework.Container
+import com.github.sorusclient.client.ui.framework.Scroll
+import com.github.sorusclient.client.ui.framework.TabHolder
+import com.github.sorusclient.client.ui.framework.Text
 import com.github.sorusclient.client.ui.framework.constraint.Dependent
 import com.github.sorusclient.client.ui.framework.constraint.Relative
 import com.github.sorusclient.client.ui.framework.constraint.Side

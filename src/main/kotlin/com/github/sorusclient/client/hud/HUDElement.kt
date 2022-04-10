@@ -8,7 +8,7 @@
 package com.github.sorusclient.client.hud
 
 import com.github.sorusclient.client.adapter.AdapterManager
-import com.github.sorusclient.client.setting.*
+import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory

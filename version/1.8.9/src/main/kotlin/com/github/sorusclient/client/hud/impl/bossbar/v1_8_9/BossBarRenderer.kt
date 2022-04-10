@@ -16,6 +16,7 @@ import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.util.Identifier
 
+@Suppress("UNUSED")
 class BossBarRenderer : IBossBarRenderer, Initializer {
 
     override fun initialize() {
@@ -26,11 +27,14 @@ class BossBarRenderer : IBossBarRenderer, Initializer {
         GlStateManager.pushMatrix()
         GlStateManager.translated(x, y, 0.0)
         GlStateManager.scaled(scale, scale, 1.0)
+
         GlStateManager.color4f(1f, 1f, 1f, 1f)
+
         val drawableHelper = DrawableHelper()
         MinecraftClient.getInstance().textureManager.bindTexture(Identifier("textures/gui/icons.png"))
         drawableHelper.drawTexture(0, 0, 0, 74, 183, 5)
         drawableHelper.drawTexture(0, 0, 0, 79, (183 * percent).toInt(), 5)
+
         GlStateManager.popMatrix()
     }
 

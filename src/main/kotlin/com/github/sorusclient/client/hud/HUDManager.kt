@@ -27,13 +27,16 @@ import com.github.sorusclient.client.hud.impl.timer.Timer
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.data.AbstractData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.ui.*
 import com.github.sorusclient.client.ui.framework.Container
 import com.github.sorusclient.client.ui.framework.Scroll
 import com.github.sorusclient.client.ui.framework.Text
 import com.github.sorusclient.client.ui.framework.constraint.Dependent
 import com.github.sorusclient.client.ui.framework.constraint.Relative
 import com.github.sorusclient.client.ui.framework.constraint.Side
+import com.github.sorusclient.client.ui.toAbsolute
+import com.github.sorusclient.client.ui.toCopy
+import com.github.sorusclient.client.ui.toRelative
+import com.github.sorusclient.client.ui.toSide
 import com.github.sorusclient.client.util.Axis
 import com.github.sorusclient.client.util.Color
 import com.github.sorusclient.client.util.keybind.KeyBind

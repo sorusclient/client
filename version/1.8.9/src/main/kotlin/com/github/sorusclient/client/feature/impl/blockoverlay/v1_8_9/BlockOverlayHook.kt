@@ -12,8 +12,8 @@ import com.github.sorusclient.client.adapter.Point
 import com.github.sorusclient.client.adapter.RenderBuffer
 import com.github.sorusclient.client.adapter.Vertex
 import com.github.sorusclient.client.feature.impl.blockoverlay.BlockOverlay
-import v1_8_9.org.lwjgl.opengl.GL11
 import v1_8_9.net.minecraft.util.math.Box
+import v1_8_9.org.lwjgl.opengl.GL11
 
 @Suppress("UNUSED")
 object BlockOverlayHook {
