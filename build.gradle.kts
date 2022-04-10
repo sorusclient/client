@@ -31,6 +31,21 @@ plugins {
 
 apply(plugin = "kiln-main")
 
+allprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
+        .all {
+            kotlinOptions {
+                if (System.getProperty("release") == "true") {
+                    freeCompilerArgs += arrayOf(
+                        "-Xno-call-assertions",
+                        "-Xno-receiver-assertions",
+                        "-Xno-param-assertions"
+                    )
+                }
+            }
+        }
+}
+
 repositories {
     mavenCentral()
     maven {
