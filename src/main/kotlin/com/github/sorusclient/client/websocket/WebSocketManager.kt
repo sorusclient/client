@@ -10,6 +10,9 @@ package com.github.sorusclient.client.websocket
 import com.github.sorusclient.client.adapter.AdapterManager
 import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
+import com.github.sorusclient.client.notification.Icon
+import com.github.sorusclient.client.notification.Notification
+import com.github.sorusclient.client.notification.display
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.client.request.*
@@ -69,6 +72,14 @@ object WebSocketManager {
                         jsonObject.put("username", session.getUsername())
                         jsonObject.put("uuid", session.getUUID())
                         sendMessage("authenticate", jsonObject, true)
+                    } else if (!failedToConnect) {
+                        Notification().apply {
+                            title = "Websocket"
+                            content = "Websocket disconnected!"
+                            subIcon = Icon("sorus/ui/error.png")
+                        }.display()
+
+                        failedToConnect = true
                     }
                 }.start()
             }

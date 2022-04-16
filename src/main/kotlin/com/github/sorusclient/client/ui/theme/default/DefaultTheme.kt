@@ -24,6 +24,7 @@ import com.github.sorusclient.client.ui.framework.Text
 import com.github.sorusclient.client.ui.framework.constraint.*
 import com.github.sorusclient.client.ui.theme.DefaultThemeInitializeEvent
 import com.github.sorusclient.client.ui.theme.Theme
+import com.github.sorusclient.client.ui.theme.ThemeManager
 import com.github.sorusclient.client.util.Color
 import java.lang.reflect.InvocationTargetException
 import kotlin.math.max
@@ -573,7 +574,7 @@ class DefaultTheme: Theme() {
                                                 }
 
                                             setting.setting.setValueRaw(color)
-                                            ContainerRenderer.open(colorPickerGui)
+                                            ThemeManager.open("colorPicker")
                                         }
 
                                         backgroundCornerRadius = 0.01.toRelative()
@@ -920,11 +921,12 @@ class DefaultTheme: Theme() {
             ContainerRenderer.close(openedNotificationsUI!!)
         }
 
-        ContainerRenderer.containers += notificationsUi
+        ContainerRenderer.open(notificationsUi)
         openedNotificationsUI = notificationsUi
 
         items["mainGui"] = mainGui
         items["searchGui"] = searchGui
+        items["colorPicker"] = colorPickerGui
 
         DefaultThemeInitializeEvent(this).call()
     }

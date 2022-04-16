@@ -8,6 +8,7 @@
 package com.github.sorusclient.client.websocket
 
 import com.github.sorusclient.client.adapter.AdapterManager
+import com.github.sorusclient.client.notification.Icon
 import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.display
 import kotlinx.coroutines.runBlocking
@@ -53,6 +54,14 @@ class Websocket: WebSocketClient(URI.create(if (System.getProperty("sorus.test")
     override fun onClose(code: Int, reason: String, remote: Boolean) {
         println(reason)
         WebSocketManager.connected = false
+
+        if (!WebSocketManager.failedToConnect) {
+            Notification().apply {
+                title = "Websocket"
+                content = "Websocket disconnected!"
+                subIcon = Icon("sorus/ui/error.png")
+            }.display()
+        }
     }
 
     override fun onError(ex: Exception) {
