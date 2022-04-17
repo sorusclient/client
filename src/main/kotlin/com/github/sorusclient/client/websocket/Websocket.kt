@@ -53,15 +53,16 @@ class Websocket: WebSocketClient(URI.create(if (System.getProperty("sorus.test")
 
     override fun onClose(code: Int, reason: String, remote: Boolean) {
         println(reason)
-        WebSocketManager.connected = false
 
-        if (!WebSocketManager.failedToConnect) {
+        if (!WebSocketManager.failedToConnect && WebSocketManager.connected) {
             Notification().apply {
                 title = "Websocket"
                 content = "Websocket disconnected!"
                 subIcon = Icon("sorus/ui/error.png")
             }.display()
         }
+
+        WebSocketManager.connected = false
     }
 
     override fun onError(ex: Exception) {
