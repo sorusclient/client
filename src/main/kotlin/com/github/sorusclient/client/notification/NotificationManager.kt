@@ -19,7 +19,7 @@ object NotificationManager {
     init {
         EventManager.register<TickEvent> {
             for (notification in notifications) {
-                if (System.currentTimeMillis() - notification.initTime > 5000L) {
+                if (System.currentTimeMillis() - notification.initTime > notification.timeToLive) {
                     notifications -= notification
                 }
             }
