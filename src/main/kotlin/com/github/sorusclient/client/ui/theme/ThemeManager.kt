@@ -7,7 +7,9 @@
 
 package com.github.sorusclient.client.ui.theme
 
+import com.github.sorusclient.client.adapter.Key
 import com.github.sorusclient.client.adapter.event.InitializeEvent
+import com.github.sorusclient.client.adapter.event.KeyEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.ui.framework.Container
@@ -60,6 +62,14 @@ object ThemeManager {
 
             IOUtils.write(JSONObject(map).toString(2), FileOutputStream(File("sorus/themes.json")), StandardCharsets.UTF_8)
         })
+
+        if (System.getProperty("sorus.test") == "true") {
+            EventManager.register { event: KeyEvent ->
+                for (theme in configuredThemes) {
+                    theme.initialize()
+                }
+            }
+        }
     }
 
     fun registerTheme(name: String, logo: String, themeClass: Class<out Theme>) {

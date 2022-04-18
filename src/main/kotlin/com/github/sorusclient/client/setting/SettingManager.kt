@@ -13,6 +13,7 @@ import com.github.sorusclient.client.setting.display.DisplayedCategory
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
+import java.nio.charset.StandardCharsets
 
 object SettingManager {
 
@@ -50,7 +51,7 @@ object SettingManager {
         val mainProfileFolder = File(profileFile, "main")
         if (!mainProfileFolder.exists()) {
             mainProfileFolder.mkdirs()
-            FileUtils.write(File(mainProfileFolder, "settings.json"), "{}")
+            FileUtils.write(File(mainProfileFolder, "settings.json"), "{}", StandardCharsets.UTF_8)
         }
 
         mainProfile = Profile.read(mainProfileFolder)
@@ -136,7 +137,7 @@ object SettingManager {
             }
 
             for (thing in any1) {
-                if (thing.value !is Map<*, *> || any2[thing.value!!] == null) {
+                if (thing.value !is Map<*, *> || any2[thing.key!!] == null) {
                     newMap[thing.key as String] = thing.value!!
                 }
             }

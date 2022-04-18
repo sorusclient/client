@@ -46,12 +46,6 @@ class DefaultTheme: Theme() {
     override val items: MutableMap<String, Container> = mutableMapOf()
 
     init {
-        EventManager.register { event: KeyEvent ->
-            if (event.isPressed && event.key == Key.U) {
-                initialize()
-            }
-        }
-
         category
             .apply {
                 Color.fromRGB(15, 15, 15, 200)
