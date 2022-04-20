@@ -13,6 +13,7 @@ import com.github.sorusclient.client.adapter.ScreenType
 import com.github.sorusclient.client.adapter.event.GetFOVEvent
 import com.github.sorusclient.client.adapter.event.GetSensitivityEvent
 import com.github.sorusclient.client.adapter.event.GetUseCinematicCamera
+import com.github.sorusclient.client.adapter.event.TickEvent
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
@@ -22,16 +23,23 @@ import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.keybind.KeyBind
 import com.github.sorusclient.client.util.keybind.KeyBindManager
+import kotlin.math.min
 
 object Zoom {
 
     private val enabled: Setting<Boolean>
     private val key: Setting<out MutableList<Key>>
-    private val fov: Setting<Double>
+    private val fovMultiplier: Setting<Double>
     private val sensitivity: Setting<Double>
     private val cinematicCamera: Setting<Boolean>
+    private val animation: Setting<Boolean>
 
     private var toggled = false
+
+    private var lastAnimatedFov = 1.0
+    private var animatedFov = 1.0
+    private var animationUpdateTime = -1L
+    private var animationTarget = 1.0
 
     init {
         SettingManager.settingsCategory
@@ -40,9 +48,10 @@ object Zoom {
                         .apply {
                             data["enabled"] = SettingData(Setting(false).also { enabled = it })
                             data["key"] = SettingData(Setting(arrayListOf(Key.C)).also { key = it })
-                            data["fov"] = SettingData(Setting(30.0).also { fov = it })
+                            data["fovMultiplier"] = SettingData(Setting(0.33).also { fovMultiplier = it })
                             data["sensitivity"] = SettingData(Setting(0.5).also { sensitivity = it })
                             data["cinematicCamera"] = SettingData(Setting(false).also { cinematicCamera = it })
+                            data["animation"] = SettingData(Setting(true).also { animation = it })
                         }
             }
 
@@ -52,15 +61,26 @@ object Zoom {
                     .apply {
                         add(DisplayedSetting.Toggle(enabled, "Enabled"))
                         add(DisplayedSetting.KeyBind(key, "Key"))
-                        add(DisplayedSetting.Slider(fov, "FOV", 15.0, 100.0))
+                        add(DisplayedSetting.Slider(fovMultiplier, "FOV Multiplier", 0.1, 0.75))
                         add(DisplayedSetting.Slider(sensitivity, "Sensitivity", 0.25, 1.0))
                         add(DisplayedSetting.Toggle(cinematicCamera, "Cinematic Camera"))
+                        add(DisplayedSetting.Toggle(animation, "Animation"))
                     })
             }
 
         EventManager.register<GetFOVEvent> { event ->
-            if (applyZoom()) {
-                event.fov = fov.value
+            if (applyAnimation()) {
+                animationTarget = 1.0
+
+                if (toggled) {
+                    animationTarget *= fovMultiplier.value
+                }
+
+                val multiplier = min(lastAnimatedFov + (animatedFov - lastAnimatedFov) * ((System.currentTimeMillis() - animationUpdateTime) / 50.0), 1.0)
+
+                event.fov *= multiplier
+            } else if (applyZoom()) {
+                event.fov *= fovMultiplier.value
             }
         }
 
@@ -74,6 +94,12 @@ object Zoom {
             if (applyZoom()) {
                 event.useCinematicCamera = cinematicCamera.value
             }
+        }
+
+        EventManager.register<TickEvent> {
+            animationUpdateTime = System.currentTimeMillis()
+            lastAnimatedFov = animatedFov
+            animatedFov += (animationTarget - animatedFov) * 0.75F
         }
 
         KeyBindManager.register(KeyBind(
@@ -92,6 +118,10 @@ object Zoom {
 
     private fun applyZoom(): Boolean {
         return enabled.value && toggled
+    }
+
+    private fun applyAnimation(): Boolean {
+        return enabled.value && animation.value
     }
 
 }
