@@ -23,12 +23,13 @@ import com.github.sorusclient.client.setting.display.DisplayedCategory
 import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.util.keybind.KeyBind
 import com.github.sorusclient.client.util.keybind.KeyBindManager
+import kotlin.math.min
 
 object Zoom {
 
     private val enabled: Setting<Boolean>
     private val key: Setting<out MutableList<Key>>
-    private val fovDivisor: Setting<Double>
+    private val fovMultiplier: Setting<Double>
     private val sensitivity: Setting<Double>
     private val cinematicCamera: Setting<Boolean>
     private val animation: Setting<Boolean>
@@ -47,7 +48,7 @@ object Zoom {
                         .apply {
                             data["enabled"] = SettingData(Setting(false).also { enabled = it })
                             data["key"] = SettingData(Setting(arrayListOf(Key.C)).also { key = it })
-                            data["fovDivisor"] = SettingData(Setting(4.0).also { fovDivisor = it })
+                            data["fovMultiplier"] = SettingData(Setting(0.33).also { fovMultiplier = it })
                             data["sensitivity"] = SettingData(Setting(0.5).also { sensitivity = it })
                             data["cinematicCamera"] = SettingData(Setting(false).also { cinematicCamera = it })
                             data["animation"] = SettingData(Setting(true).also { animation = it })
@@ -60,7 +61,7 @@ object Zoom {
                     .apply {
                         add(DisplayedSetting.Toggle(enabled, "Enabled"))
                         add(DisplayedSetting.KeyBind(key, "Key"))
-                        add(DisplayedSetting.Slider(fovDivisor, "FOV Divisor", 2.0, 64.0))
+                        add(DisplayedSetting.Slider(fovMultiplier, "FOV Multiplier", 0.1, 0.75))
                         add(DisplayedSetting.Slider(sensitivity, "Sensitivity", 0.25, 1.0))
                         add(DisplayedSetting.Toggle(cinematicCamera, "Cinematic Camera"))
                         add(DisplayedSetting.Toggle(animation, "Animation"))
@@ -72,15 +73,14 @@ object Zoom {
                 animationTarget = 1.0
 
                 if (toggled) {
-                    animationTarget /= fovDivisor.value;
+                    animationTarget *= fovMultiplier.value
                 }
 
-                val multiplier = Math.min(lastAnimatedFov +
-                        (animatedFov - lastAnimatedFov) * ((System.currentTimeMillis() - animationUpdateTime) / 50.0), 1.0)
+                val multiplier = min(lastAnimatedFov + (animatedFov - lastAnimatedFov) * ((System.currentTimeMillis() - animationUpdateTime) / 50.0), 1.0)
 
                 event.fov *= multiplier
             } else if (applyZoom()) {
-                event.fov /= fovDivisor.value
+                event.fov *= fovMultiplier.value
             }
         }
 
