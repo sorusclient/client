@@ -15,6 +15,7 @@ import com.github.sorusclient.client.setting.Util
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
+import com.github.sorusclient.client.setting.display.DisplayedSetting
 import com.github.sorusclient.client.setting.display.DisplayedSetting.Slider
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets
 object Enhancements {
 
     private val fireHeight: Setting<Double>
+    private val dynamicFov: Setting<Boolean>
 
     init {
         SettingManager.settingsCategory
@@ -31,6 +33,7 @@ object Enhancements {
                 add("enhancements", CategoryData())
                     .apply {
                         data["fireHeight"] = SettingData(Setting(0.0).also { fireHeight = it })
+                        data["dynamicFov"] = SettingData(Setting(true).also { dynamicFov = it })
                     }
             }
 
@@ -39,6 +42,7 @@ object Enhancements {
                 add(DisplayedCategory("Enhancements"))
                     .apply {
                         add(Slider(fireHeight, "Fire Height", 0.0, 1.0))
+                        add(DisplayedSetting.Toggle(dynamicFov, "Dynamic FOV"))
                     }
             }
     }
@@ -102,6 +106,10 @@ object Enhancements {
         OFF,
         CROSSHAIR,
         HOTBAR
+    }
+
+    fun isDynamicFov(): Boolean {
+        return dynamicFov.value
     }
 
 }

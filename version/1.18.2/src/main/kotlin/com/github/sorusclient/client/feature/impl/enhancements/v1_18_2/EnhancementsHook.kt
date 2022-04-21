@@ -37,4 +37,13 @@ object EnhancementsHook {
         matrixStack.pop()
     }
 
+    @JvmStatic
+    fun modifySpeedFov(speed: Float): Float {
+        return if (Enhancements.isDynamicFov()) {
+            speed
+        } else {
+            1f
+        }
+    }
+
 }

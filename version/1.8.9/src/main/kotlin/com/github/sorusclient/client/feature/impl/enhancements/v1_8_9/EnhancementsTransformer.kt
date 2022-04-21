@@ -26,6 +26,7 @@ class EnhancementsTransformer : Transformer() {
         register("v1_8_9/net/minecraft/client/font/TextRenderer", this::transformTextRenderer)
         register("v1_8_9/net/minecraft/client/options/GameOptions", this::transformGameOptions)
         register("v1_8_9/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
+        register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
     }
 
     private fun transformHeldItemRenderer(classNode: ClassNode) {
@@ -297,6 +298,20 @@ class EnhancementsTransformer : Transformer() {
             .apply(Applier.Insert(createList { insnList ->
                 insnList.add(this.getHook("onStop"))
             }))
+    }
+
+    private fun transformGameRenderer(classNode: ClassNode) {
+        val updateMovementFovMultiplier = "v1_8_9/net/minecraft/client/render/GameRenderer#updateMovementFovMultiplier()V".toIdentifier()
+
+        classNode.findMethod(updateMovementFovMultiplier)
+            .apply { methodNode ->
+                methodNode.findVarReferences(1, VarReferenceType.STORE)
+                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.FLOAD, 1))
+                        insnList.add(getHook("modifySpeedFov"))
+                        insnList.add(VarInsnNode(Opcodes.FSTORE, 1))
+                    }))
+            }
     }
 
 }

@@ -8,10 +8,7 @@
 package com.github.sorusclient.client.feature.impl.enhancements.v1_18_2
 
 import com.github.sorusclient.client.toIdentifier
-import com.github.sorusclient.client.transform.Applier
-import com.github.sorusclient.client.transform.Transformer
-import com.github.sorusclient.client.transform.findMethod
-import com.github.sorusclient.client.transform.findReturns
+import com.github.sorusclient.client.transform.*
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.VarInsnNode
@@ -24,6 +21,7 @@ class EnhancementsTransformer : Transformer() {
 
         register("v1_18_2/net/minecraft/client/gui/hud/InGameOverlayRenderer", this::transformInGameOverlayRenderer)
         register("v1_18_2/net/minecraft/client/option/GameOptions", this::transformGameOptions)
+        register("v1_18_2/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
     }
 
     private fun transformInGameOverlayRenderer(classNode: ClassNode) {
@@ -63,6 +61,20 @@ class EnhancementsTransformer : Transformer() {
                     .apply(Applier.InsertBefore(methodNode, createList { insnList ->
                         insnList.add(VarInsnNode(Opcodes.ALOAD, 0))
                         insnList.add(this.getHook("onLoad"))
+                    }))
+            }
+    }
+
+    private fun transformGameRenderer(classNode: ClassNode) {
+        val updateMovementFovMultiplier = "v1_18_2/net/minecraft/client/render/GameRenderer#updateFovMultiplier()V".toIdentifier()
+
+        classNode.findMethod(updateMovementFovMultiplier)
+            .apply { methodNode ->
+                methodNode.findVarReferences(1, VarReferenceType.STORE)
+                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
+                        insnList.add(VarInsnNode(Opcodes.FLOAD, 1))
+                        insnList.add(getHook("modifySpeedFov"))
+                        insnList.add(VarInsnNode(Opcodes.FSTORE, 1))
                     }))
             }
     }

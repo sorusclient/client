@@ -65,4 +65,13 @@ object EnhancementsHook {
         Display.destroy()
     }
 
+    @JvmStatic
+    fun modifySpeedFov(speed: Float): Float {
+        return if (Enhancements.isDynamicFov()) {
+            speed
+        } else {
+            1f
+        }
+    }
+
 }
