@@ -21,7 +21,10 @@ class TextClickEventImpl(clickEvent: ClickEvent) : ITextClickEvent {
             ClickEvent.Action.SUGGEST_COMMAND -> ClickEventAction.SUGGEST_COMMAND
             ClickEvent.Action.RUN_COMMAND -> ClickEventAction.RUN_COMMAND
             ClickEvent.Action.OPEN_URL -> ClickEventAction.OPEN_URL
-            else -> null!!
+            else -> {
+                error("Unknown click event action " + clickEvent.action + ".")
+                null!!
+            }
         }
     }
 

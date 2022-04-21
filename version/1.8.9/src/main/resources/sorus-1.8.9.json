@@ -5,6 +5,7 @@
     "feature.v1_8_9.FeatureListener",
     "feature.impl.perspective.v1_8_9.PerspectiveHelper",
     "feature.impl.enhancements.v1_8_9.EnhancementsInitializeListener",
+    "feature.impl.zoom.v1_8_9.ZoomHelper",
     "hud.impl.potions.v1_8_9.PotionEffectRenderer",
     "hud.impl.armor.v1_8_9.ArmorRenderer",
     "hud.impl.health.v1_8_9.HealthRenderer",
@@ -23,6 +24,7 @@
     "feature.impl.enhancements.v1_8_9.EnhancementsTransformer",
     "feature.impl.blockoverlay.v1_8_9.BlockOverlayTransformer",
     "feature.impl.togglesprintsneak.v1_8_9.ToggleSprintSneakTransformer",
+    "feature.impl.zoom.v1_8_9.ZoomTransformer",
     "v1_8_9.SocialTransformer"
   ]
 }

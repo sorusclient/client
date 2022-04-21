@@ -4,6 +4,7 @@
     "adapter.v1_18_2.Adapter",
     "feature.impl.perspective.v1_18_2.PerspectiveHelper",
     "feature.impl.enhancements.v1_18_2.EnhancementsInitializeListener",
+    "feature.impl.zoom.v1_18_2.ZoomHelper",
     "hud.impl.potions.v1_18_2.PotionEffectRenderer",
     "hud.impl.health.v1_18_2.HealthRenderer",
     "hud.impl.bossbar.v1_18_2.BossBarRenderer",
@@ -22,6 +23,7 @@
     "feature.impl.particles.v1_18_2.ParticlesTransformer",
     "feature.impl.togglesprintsneak.v1_18_2.ToggleSprintSneakTransformer",
     "feature.impl.enhancements.v1_18_2.EnhancementsTransformer",
+    "feature.impl.zoom.v1_18_2.ZoomTransformer",
     "v1_18_2.SocialTransformer"
   ]
 }

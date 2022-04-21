@@ -7,6 +7,9 @@
 
 package com.github.sorusclient.client.ui.framework
 
+import kotlin.math.max
+import kotlin.math.min
+
 class Scroll(type: Int) : List(type) {
 
     init {
@@ -37,8 +40,8 @@ class Scroll(type: Int) : List(type) {
             if (scroll == null || scroll.isNaN()) {
                 scroll = 0.0
             }
-            scroll = Math.max(scroll, -(prevYLocation - this.height + children[0].runtime.topPadding))
-            scroll = Math.min(scroll, 0.0)
+            scroll = max(scroll, -(prevYLocation - this.height + children[0].runtime.topPadding))
+            scroll = min(scroll, 0.0)
             setState("scroll", scroll)
             super.renderChild(childRuntime, x, y + scroll, width, height)
         }

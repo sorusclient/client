@@ -35,18 +35,10 @@ class ClassLoader : URLClassLoader(arrayOfNulls(0), null) {
         exclusions.add("org.slf4j.")
         exclusions.add("com.mojang.blocklist.")
         exclusions.add("com.github.sorusclient.client.bootstrap.transformer.Transformer")
-        exclusions.add("com.github.glassmc.loader.api.ClassDefinition")
 
-        canTransformMethod = this.loadClass("com.github.sorusclient.client.bootstrap.transformer.Transformer")!!.getMethod(
-            "canTransform",
-            String::class.java
-        )
+        canTransformMethod = this.loadClass("com.github.sorusclient.client.bootstrap.transformer.Transformer")!!.getMethod("canTransform", String::class.java)
 
-        transformMethod = this.loadClass("com.github.sorusclient.client.bootstrap.transformer.Transformer")!!.getMethod(
-            "transform",
-            String::class.java,
-            ByteArray::class.java
-        )
+        transformMethod = this.loadClass("com.github.sorusclient.client.bootstrap.transformer.Transformer")!!.getMethod("transform", String::class.java, ByteArray::class.java)
     }
 
     @Throws(ClassNotFoundException::class)
@@ -99,10 +91,6 @@ class ClassLoader : URLClassLoader(arrayOfNulls(0), null) {
     }
 
     private fun getTransformers(): List<Any> {
-        //val transformers: MutableList<Any> = ArrayList()
-        //transformers.addAll(this.transformers[0])
-        //transformers.addAll(this.transformers[1])
-        //transformers.addAll(this.transformers[2])
         return this.transformers
     }
 
@@ -167,23 +155,5 @@ class ClassLoader : URLClassLoader(arrayOfNulls(0), null) {
 
     fun addTransformer(transformer: Class<*>) {
         this.transformers.add(transformer.getConstructor().newInstance())
-        /*try {
-            val listIndex: Int
-            listIndex = when (order) {
-                TransformerOrder.FIRST -> 0
-                TransformerOrder.LAST -> 2
-                TransformerOrder.DEFAULT -> 1
-                else -> -1
-            }
-            transformers[listIndex].add(transformer.getConstructor().newInstance())
-        } catch (e: InstantiationException) {
-            e.printStackTrace()
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        } catch (e: InvocationTargetException) {
-            e.printStackTrace()
-        } catch (e: NoSuchMethodException) {
-            e.printStackTrace()
-        }*/
     }
 }
