@@ -7,10 +7,8 @@
 
 package com.github.sorusclient.client.adapter.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.*
 import com.github.sorusclient.client.adapter.IKeyBind.KeyBindType
-import com.github.sorusclient.client.bootstrap.Initializer
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.client.gui.screen.*
 import v1_8_9.net.minecraft.client.gui.screen.options.ControlsOptionsScreen
@@ -26,11 +24,7 @@ import v1_8_9.org.lwjgl.opengl.Display
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
-class Adapter : IAdapter, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(Adapter())
-    }
+class Adapter : IAdapter {
 
     override val openScreen: ScreenType
         get() {

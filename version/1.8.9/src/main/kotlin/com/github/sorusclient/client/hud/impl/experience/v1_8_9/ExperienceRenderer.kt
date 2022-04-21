@@ -7,8 +7,6 @@
 
 package com.github.sorusclient.client.hud.impl.experience.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
-import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.experience.IExperienceRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -16,11 +14,7 @@ import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.util.Identifier
 
 @Suppress("UNUSED")
-class ExperienceRenderer : IExperienceRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class ExperienceRenderer : IExperienceRenderer {
 
     override fun renderExperienceBar(x: Double, y: Double, scale: Double, percent: Double) {
         GlStateManager.pushMatrix()

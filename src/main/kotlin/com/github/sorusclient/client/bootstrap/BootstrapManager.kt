@@ -7,6 +7,7 @@
 
 package com.github.sorusclient.client.bootstrap
 
+import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.bootstrap.transformer.Transformer
 import org.apache.commons.io.IOUtils
 import org.json.JSONObject
@@ -42,6 +43,16 @@ object BootstrapManager {
             for (initializer in json.getJSONArray("initializers")) {
                 val initializer = Class.forName(if (namespace != null) { "$namespace." } else { "" } + initializer as String).newInstance() as Initializer
                 initializer.initialize()
+            }
+        }
+
+        if (json.has("interfaces")) {
+            for (initializer in json.getJSONArray("interfaces")) {
+                val `interface` = Class.forName(if (namespace != null) { "$namespace." } else { "" } + initializer as String).newInstance()
+                if (`interface` is Initializer) {
+                    error("Interface $`interface` should not also implemented Initializer!")
+                }
+                InterfaceManager.register(`interface`)
             }
         }
 

@@ -7,9 +7,7 @@
 
 package com.github.sorusclient.client.hud.impl.bossbar.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.BossBarColor
-import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.bossbar.IBossBarRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -17,11 +15,7 @@ import v1_8_9.net.minecraft.client.gui.DrawableHelper
 import v1_8_9.net.minecraft.util.Identifier
 
 @Suppress("UNUSED")
-class BossBarRenderer : IBossBarRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(BossBarRenderer())
-    }
+class BossBarRenderer : IBossBarRenderer {
 
     override fun renderBossBar(x: Double, y: Double, scale: Double, percent: Double, color: BossBarColor) {
         GlStateManager.pushMatrix()

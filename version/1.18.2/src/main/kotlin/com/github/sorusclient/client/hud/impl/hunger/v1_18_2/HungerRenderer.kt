@@ -17,11 +17,7 @@ import v1_18_2.net.minecraft.client.render.GameRenderer
 import v1_18_2.net.minecraft.client.render.VertexFormat
 
 @Suppress("UNUSED")
-class HungerRenderer : IHungerRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class HungerRenderer : IHungerRenderer{
 
     override fun renderHunger(x: Double, y: Double, scale: Double, heartRenderType: IHungerRenderer.HeartRenderType) {
         RenderSystem.enableBlend()

@@ -16,11 +16,7 @@ import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_2.net.minecraft.client.render.*
 
 @Suppress("UNUSED")
-class BossBarRenderer : IBossBarRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class BossBarRenderer : IBossBarRenderer{
 
     override fun renderBossBar(x: Double, y: Double, scale: Double, percent: Double, color: BossBarColor) {
         RenderSystem.enableBlend()

@@ -7,9 +7,7 @@
 
 package com.github.sorusclient.client.hud.impl.health.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.v1_8_9.drawTexture
-import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.BackgroundType
 import com.github.sorusclient.client.hud.impl.health.IHealthRenderer.HeartType
@@ -18,11 +16,7 @@ import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.util.Identifier
 
 @Suppress("UNUSED")
-class HealthRenderer : IHealthRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class HealthRenderer : IHealthRenderer {
 
     override fun renderHeart(x: Double, y: Double, scale: Double, heartType: HeartType, heartRenderType: IHealthRenderer.HeartRenderType) {
         GlStateManager.pushMatrix()

@@ -18,11 +18,7 @@ import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.item.ItemStack
 
 @Suppress("UNUSED")
-class HotBarRenderer : IHotBarRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class HotBarRenderer : IHotBarRenderer{
 
     override fun renderBackground(x: Double, y: Double, scale: Double) {
         RenderSystem.enableBlend()

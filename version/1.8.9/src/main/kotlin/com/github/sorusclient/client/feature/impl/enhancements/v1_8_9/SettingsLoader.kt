@@ -18,6 +18,7 @@ import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.net.minecraft.util.collection.IntObjectStorage
 import java.lang.reflect.Field
 
+@Suppress("UNUSED")
 class SettingsLoader: ISettingsLoader {
 
     override fun save(cached: Map<String, Any>): Map<String, Any> {

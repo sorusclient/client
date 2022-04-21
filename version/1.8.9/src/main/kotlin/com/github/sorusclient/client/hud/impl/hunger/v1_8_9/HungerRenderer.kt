@@ -7,20 +7,14 @@
 
 package com.github.sorusclient.client.hud.impl.hunger.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.v1_8_9.drawTexture
-import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.hunger.IHungerRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
 import v1_8_9.net.minecraft.util.Identifier
 
 @Suppress("UNUSED")
-class HungerRenderer : IHungerRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class HungerRenderer : IHungerRenderer {
 
     override fun renderHunger(x: Double, y: Double, scale: Double, heartRenderType: IHungerRenderer.HeartRenderType) {
         GlStateManager.pushMatrix()

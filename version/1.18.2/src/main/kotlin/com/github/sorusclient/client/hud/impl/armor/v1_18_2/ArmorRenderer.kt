@@ -19,11 +19,7 @@ import v1_18_2.net.minecraft.client.MinecraftClient
 import v1_18_2.net.minecraft.item.ItemStack
 
 @Suppress("UNUSED")
-class ArmorRenderer : IArmorRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class ArmorRenderer : IArmorRenderer{
 
     override fun render(item: IItem, x: Double, y: Double, scale: Double) {
         var itemStack = item.inner as ItemStack?

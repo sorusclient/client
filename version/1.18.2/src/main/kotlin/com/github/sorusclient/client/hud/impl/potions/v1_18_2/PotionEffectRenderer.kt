@@ -18,11 +18,7 @@ import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.entity.effect.StatusEffects
 
 @Suppress("UNUSED")
-class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class PotionEffectRenderer : IPotionEffectRenderer{
 
     override fun render(type: PotionType?, x: Double, y: Double, scale: Double) {
         val potion = when (type) {

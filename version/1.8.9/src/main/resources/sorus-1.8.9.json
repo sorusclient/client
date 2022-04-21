@@ -1,10 +1,12 @@
 {
   "namespace": "com.github.sorusclient.client",
   "initializers": [
+    "feature.v1_8_9.FeatureListener"
+  ],
+  "interfaces": [
     "adapter.v1_8_9.Adapter",
-    "feature.v1_8_9.FeatureListener",
+    "feature.impl.enhancements.v1_8_9.SettingsLoader",
     "feature.impl.perspective.v1_8_9.PerspectiveHelper",
-    "feature.impl.enhancements.v1_8_9.EnhancementsInitializeListener",
     "feature.impl.zoom.v1_8_9.ZoomHelper",
     "hud.impl.potions.v1_8_9.PotionEffectRenderer",
     "hud.impl.armor.v1_8_9.ArmorRenderer",

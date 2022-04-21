@@ -18,11 +18,7 @@ import v1_18_2.net.minecraft.client.render.*
 import v1_18_2.net.minecraft.util.Identifier
 
 @Suppress("UNUSED")
-class HealthRenderer : IHealthRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class HealthRenderer : IHealthRenderer{
 
     override fun renderHeart(x: Double, y: Double, scale: Double, heartType: HeartType, heartRenderType: IHealthRenderer.HeartRenderType) {
         RenderSystem.enableBlend()

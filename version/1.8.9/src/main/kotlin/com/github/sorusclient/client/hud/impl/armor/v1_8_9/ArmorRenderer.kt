@@ -7,11 +7,9 @@
 
 package com.github.sorusclient.client.hud.impl.armor.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IItem
 import com.github.sorusclient.client.adapter.v1_8_9.Util
 import com.github.sorusclient.client.adapter.v1_8_9.drawTexture
-import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer
 import com.github.sorusclient.client.hud.impl.armor.IArmorRenderer.ArmorRenderType
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
@@ -21,11 +19,7 @@ import v1_8_9.net.minecraft.item.ItemStack
 import v1_8_9.net.minecraft.util.Identifier
 
 @Suppress("UNUSED")
-class ArmorRenderer : IArmorRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class ArmorRenderer : IArmorRenderer {
 
     override fun render(item: IItem, x: Double, y: Double, scale: Double) {
         var itemStack = item.inner as ItemStack?

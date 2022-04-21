@@ -15,11 +15,7 @@ import v1_18_2.com.mojang.blaze3d.systems.RenderSystem
 import v1_18_2.net.minecraft.client.render.*
 
 @Suppress("UNUSED")
-class ExperienceRenderer : IExperienceRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class ExperienceRenderer : IExperienceRenderer{
 
     override fun renderExperienceBar(x: Double, y: Double, scale: Double, percent: Double) {
         RenderSystem.enableBlend()

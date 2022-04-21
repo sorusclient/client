@@ -7,16 +7,11 @@
 
 package com.github.sorusclient.client.feature.impl.perspective.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
-import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.feature.impl.perspective.IPerspectiveHelper
 import v1_8_9.net.minecraft.client.MinecraftClient
 
-class PerspectiveHelper : IPerspectiveHelper, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+@Suppress("UNUSED")
+class PerspectiveHelper : IPerspectiveHelper {
 
     override fun onToggle() {
         PerspectiveHook.yaw = MinecraftClient.getInstance().player!!.yaw

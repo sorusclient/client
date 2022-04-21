@@ -7,10 +7,8 @@
 
 package com.github.sorusclient.client.hud.impl.potions.v1_8_9
 
-import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.IPotionEffect.PotionType
 import com.github.sorusclient.client.adapter.v1_8_9.drawTexture
-import com.github.sorusclient.client.bootstrap.Initializer
 import com.github.sorusclient.client.hud.impl.potions.IPotionEffectRenderer
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
@@ -18,11 +16,7 @@ import v1_8_9.net.minecraft.entity.effect.StatusEffect
 import v1_8_9.net.minecraft.util.Identifier
 
 @Suppress("UNUSED")
-class PotionEffectRenderer : IPotionEffectRenderer, Initializer {
-
-    override fun initialize() {
-        InterfaceManager.register(this)
-    }
+class PotionEffectRenderer : IPotionEffectRenderer {
 
     override fun render(type: PotionType?, x: Double, y: Double, scale: Double) {
         val id = when (type) {

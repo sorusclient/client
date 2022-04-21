@@ -1,9 +1,9 @@
 {
   "namespace": "com.github.sorusclient.client",
-  "initializers": [
+  "interfaces": [
     "adapter.v1_18_2.Adapter",
     "feature.impl.perspective.v1_18_2.PerspectiveHelper",
-    "feature.impl.enhancements.v1_18_2.EnhancementsInitializeListener",
+    "feature.impl.enhancements.v1_18_2.SettingsLoader",
     "feature.impl.zoom.v1_18_2.ZoomHelper",
     "hud.impl.potions.v1_18_2.PotionEffectRenderer",
     "hud.impl.health.v1_18_2.HealthRenderer",
