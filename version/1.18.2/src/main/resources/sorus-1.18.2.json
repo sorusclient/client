@@ -16,6 +16,7 @@
   "transformers": [
     "adapter.v1_18_2.event.EventTransformer",
     "feature.impl.environmentchanger.v1_18_2.EnvironmentChangerTransformer",
+    "feature.impl.fov.v1_18_2.FOVTransformer",
     "feature.impl.itemphysics.v1_18_2.ItemPhysicsTransformer",
     "feature.impl.oldanimations.v1_18_2.OldAnimationsTransformer",
     "feature.impl.blockoverlay.v1_18_2.BlockOverlayTransformer",

@@ -20,6 +20,7 @@
     "adapter.v1_8_9.event.EventTransformer",
     "feature.impl.itemphysics.v1_8_9.ItemPhysicsTransformer",
     "feature.impl.environmentchanger.v1_8_9.EnvironmentChangerTransformer",
+    "feature.impl.fov.v1_8_9.FOVTransformer",
     "feature.impl.oldanimations.v1_8_9.OldAnimationsTransformer",
     "feature.impl.perspective.v1_8_9.PerspectiveTransformer",
     "feature.impl.particles.v1_8_9.ParticlesTransformer",

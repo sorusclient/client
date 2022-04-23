@@ -38,15 +38,6 @@ object EnhancementsHook {
     }
 
     @JvmStatic
-    fun modifySpeedFov(speed: Float): Float {
-        return if (Enhancements.isDynamicFov()) {
-            speed
-        } else {
-            1f
-        }
-    }
-
-    @JvmStatic
     fun modifyBobView(bobView: Boolean): Boolean {
         if (Enhancements.isPartialViewBobbing()) {
             return false

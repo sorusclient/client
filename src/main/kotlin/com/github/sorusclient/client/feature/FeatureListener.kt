@@ -12,6 +12,7 @@ import com.github.sorusclient.client.feature.impl.autogg.AutoGG
 import com.github.sorusclient.client.feature.impl.blockoverlay.BlockOverlay
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import com.github.sorusclient.client.feature.impl.environmentchanger.EnvironmentChanger
+import com.github.sorusclient.client.feature.impl.fov.FOV
 import com.github.sorusclient.client.feature.impl.itemphysics.ItemPhysics
 import com.github.sorusclient.client.feature.impl.oldanimations.OldAnimations
 import com.github.sorusclient.client.feature.impl.particles.Particles
@@ -27,6 +28,7 @@ class FeatureListener: Initializer {
         BlockOverlay
         Enhancements
         EnvironmentChanger
+        FOV
         ItemPhysics
         OldAnimations
         Particles

@@ -66,18 +66,6 @@ class EnhancementsTransformer : Transformer() {
     }
 
     private fun transformGameRenderer(classNode: ClassNode) {
-        val updateMovementFovMultiplier = "v1_18_2/net/minecraft/client/render/GameRenderer#updateFovMultiplier()V".toIdentifier()
-
-        classNode.findMethod(updateMovementFovMultiplier)
-            .apply { methodNode ->
-                methodNode.findVarReferences(1, VarReferenceType.STORE)
-                    .apply(Applier.InsertAfter(methodNode, createList { insnList ->
-                        insnList.add(VarInsnNode(Opcodes.FLOAD, 1))
-                        insnList.add(getHook("modifySpeedFov"))
-                        insnList.add(VarInsnNode(Opcodes.FSTORE, 1))
-                    }))
-            }
-
         val renderWorld = "v1_18_2/net/minecraft/client/render/GameRenderer#renderWorld(FJLv1_18_2/net/minecraft/client/util/math/MatrixStack;)V".toIdentifier()
         val bobView = "v1_18_2/net/minecraft/client/option/GameOptions#bobView".toIdentifier()
 

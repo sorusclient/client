@@ -10,6 +10,9 @@ package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
+import v1_8_9.net.minecraft.client.gui.screen.Screen
+import v1_8_9.net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen
+import v1_8_9.net.minecraft.client.gui.screen.ingame.SurvivalInventoryScreen
 import v1_8_9.net.minecraft.client.options.KeyBinding
 import v1_8_9.org.lwjgl.input.Keyboard
 import v1_8_9.org.lwjgl.opengl.Display
@@ -68,15 +71,6 @@ object EnhancementsHook {
     }
 
     @JvmStatic
-    fun modifySpeedFov(speed: Float): Float {
-        return if (Enhancements.isDynamicFov()) {
-            speed
-        } else {
-            1f
-        }
-    }
-
-    @JvmStatic
     fun modifyBobView(bobView: Boolean): Boolean {
         if (Enhancements.isPartialViewBobbing()) {
             return false
@@ -86,11 +80,12 @@ object EnhancementsHook {
     }
 
     @JvmStatic
-    fun onCloseContainer() {
+    fun onCloseContainer(screen: Screen?) {
+        if (screen is CreativeInventoryScreen) return
+
         for (keyBind in MinecraftClient.getInstance().options.keysAll) {
             if (keyBind.code > 0 && Keyboard.isKeyDown(keyBind.code) && keyBind != MinecraftClient.getInstance().options.keyInventory) {
                 KeyBinding.setKeyPressed(keyBind.code, true)
-
             }
         }
     }

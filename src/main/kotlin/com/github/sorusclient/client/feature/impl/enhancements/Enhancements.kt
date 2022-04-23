@@ -26,7 +26,6 @@ import java.nio.charset.StandardCharsets
 object Enhancements {
 
     private val fireHeight: Setting<Double>
-    private val dynamicFov: Setting<Boolean>
     private val partialViewBobbing: Setting<Boolean>
     private val fullBright: Setting<Boolean>
 
@@ -37,7 +36,6 @@ object Enhancements {
                     .apply {
                         data["fullBright"] = SettingData(Setting(false).also { fullBright = it })
                         data["fireHeight"] = SettingData(Setting(0.0).also { fireHeight = it })
-                        data["dynamicFov"] = SettingData(Setting(true).also { dynamicFov = it })
                         data["partialViewBobbing"] = SettingData(Setting(false).also { partialViewBobbing = it })
                     }
             }
@@ -48,7 +46,6 @@ object Enhancements {
                     .apply {
                         add(Toggle(fullBright, "FullBright"))
                         add(Slider(fireHeight, "Fire Height", 0.0, 1.0))
-                        add(Toggle(dynamicFov, "Dynamic FOV"))
                         add(Toggle(partialViewBobbing, "Partial View Bobbing"))
                     }
             }
@@ -119,10 +116,6 @@ object Enhancements {
         OFF,
         CROSSHAIR,
         HOTBAR
-    }
-
-    fun isDynamicFov(): Boolean {
-        return dynamicFov.value
     }
 
     fun isPartialViewBobbing(): Boolean {
