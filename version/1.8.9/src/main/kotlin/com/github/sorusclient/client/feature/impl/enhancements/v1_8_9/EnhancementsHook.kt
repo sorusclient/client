@@ -10,7 +10,8 @@ package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 import com.github.sorusclient.client.feature.impl.enhancements.Enhancements
 import v1_8_9.com.mojang.blaze3d.platform.GlStateManager
 import v1_8_9.net.minecraft.client.MinecraftClient
-import v1_8_9.net.minecraft.entity.attribute.EntityAttributes
+import v1_8_9.net.minecraft.client.options.KeyBinding
+import v1_8_9.org.lwjgl.input.Keyboard
 import v1_8_9.org.lwjgl.opengl.Display
 
 @Suppress("UNUSED")
@@ -68,7 +69,6 @@ object EnhancementsHook {
 
     @JvmStatic
     fun modifySpeedFov(speed: Float): Float {
-        println(MinecraftClient.getInstance().player.initializeAttribute(EntityAttributes.GENERIC_MOVEMENT_SPEED).value)
         return if (Enhancements.isDynamicFov()) {
             speed
         } else {
@@ -83,6 +83,16 @@ object EnhancementsHook {
         }
 
         return bobView
+    }
+
+    @JvmStatic
+    fun onCloseContainer() {
+        for (keyBind in MinecraftClient.getInstance().options.keysAll) {
+            if (keyBind.code > 0 && Keyboard.isKeyDown(keyBind.code) && keyBind != MinecraftClient.getInstance().options.keyInventory) {
+                KeyBinding.setKeyPressed(keyBind.code, true)
+
+            }
+        }
     }
 
 }

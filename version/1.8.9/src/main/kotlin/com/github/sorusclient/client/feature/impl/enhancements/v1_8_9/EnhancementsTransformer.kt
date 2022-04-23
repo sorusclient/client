@@ -7,10 +7,13 @@
 
 package com.github.sorusclient.client.feature.impl.enhancements.v1_8_9
 
+import com.github.sorusclient.client.adapter.event.TickEvent
+import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.toIdentifier
 import com.github.sorusclient.client.transform.*
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
+import v1_8_9.net.minecraft.client.MinecraftClient
 
 @Suppress("UNUSED")
 class EnhancementsTransformer : Transformer() {
@@ -27,7 +30,7 @@ class EnhancementsTransformer : Transformer() {
         register("v1_8_9/net/minecraft/client/options/GameOptions", this::transformGameOptions)
         register("v1_8_9/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
         register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
-        register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
+        register("v1_8_9/net/minecraft/client/gui/screen/ingame/HandledScreen", this::transformHandledScreen)
     }
 
     private fun transformHeldItemRenderer(classNode: ClassNode) {
@@ -322,6 +325,13 @@ class EnhancementsTransformer : Transformer() {
                 methodNode.findFieldReferences(bobView, FieldReferenceType.GET)
                     .apply(Applier.InsertAfter(methodNode, getHook("modifyBobView")))
             }
+    }
+
+    private fun transformHandledScreen(classNode: ClassNode) {
+        val removed = "v1_8_9/net/minecraft/client/gui/screen/ingame/HandledScreen#removed()V".toIdentifier()
+
+        classNode.findMethod(removed)
+            .apply(Applier.Insert(getHook("onCloseContainer")))
     }
 
 }
