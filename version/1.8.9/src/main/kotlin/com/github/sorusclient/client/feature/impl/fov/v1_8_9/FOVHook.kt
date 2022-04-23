@@ -28,7 +28,10 @@ object FOVHook {
         for (statusEffectInstance in player.statusEffectInstances) {
             val statusEffect = StatusEffect.STATUS_EFFECTS[statusEffectInstance.effectId]
 
-            speed += statusEffect.attributeModifiers[EntityAttributes.GENERIC_MOVEMENT_SPEED]!!.amount * (statusEffectInstance.amplifier + 1) * FOV.getPotionEffect() / 2
+            val movementSpeedModifier = statusEffect.attributeModifiers[EntityAttributes.GENERIC_MOVEMENT_SPEED]
+            if (movementSpeedModifier != null) {
+                speed += movementSpeedModifier.amount * (statusEffectInstance.amplifier + 1) * FOV.getPotionEffect() / 2
+            }
         }
 
         return speed.toFloat()
