@@ -27,6 +27,7 @@ class EnhancementsTransformer : Transformer() {
         register("v1_8_9/net/minecraft/client/options/GameOptions", this::transformGameOptions)
         register("v1_8_9/net/minecraft/client/MinecraftClient", this::transformMinecraftClient)
         register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
+        register("v1_8_9/net/minecraft/client/render/GameRenderer", this::transformGameRenderer)
     }
 
     private fun transformHeldItemRenderer(classNode: ClassNode) {
@@ -311,6 +312,15 @@ class EnhancementsTransformer : Transformer() {
                         insnList.add(getHook("modifySpeedFov"))
                         insnList.add(VarInsnNode(Opcodes.FSTORE, 1))
                     }))
+            }
+
+        val setupCamera = "v1_8_9/net/minecraft/client/render/GameRenderer#setupCamera(FI)V".toIdentifier()
+        val bobView = "v1_8_9/net/minecraft/client/options/GameOptions#bobView".toIdentifier()
+
+        classNode.findMethod(setupCamera)
+            .apply { methodNode ->
+                methodNode.findFieldReferences(bobView, FieldReferenceType.GET)
+                    .apply(Applier.InsertAfter(methodNode, getHook("modifyBobView")))
             }
     }
 

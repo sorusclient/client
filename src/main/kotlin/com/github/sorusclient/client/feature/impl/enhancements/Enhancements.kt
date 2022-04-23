@@ -9,14 +9,15 @@ package com.github.sorusclient.client.feature.impl.enhancements
 
 import com.github.sorusclient.client.InterfaceManager
 import com.github.sorusclient.client.adapter.Key
+import com.github.sorusclient.client.adapter.event.GetGammaEvent
+import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.setting.Setting
 import com.github.sorusclient.client.setting.SettingManager
 import com.github.sorusclient.client.setting.Util
 import com.github.sorusclient.client.setting.data.CategoryData
 import com.github.sorusclient.client.setting.data.SettingData
 import com.github.sorusclient.client.setting.display.DisplayedCategory
-import com.github.sorusclient.client.setting.display.DisplayedSetting
-import com.github.sorusclient.client.setting.display.DisplayedSetting.Slider
+import com.github.sorusclient.client.setting.display.DisplayedSetting.*
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.File
@@ -26,14 +27,18 @@ object Enhancements {
 
     private val fireHeight: Setting<Double>
     private val dynamicFov: Setting<Boolean>
+    private val partialViewBobbing: Setting<Boolean>
+    private val fullBright: Setting<Boolean>
 
     init {
         SettingManager.settingsCategory
             .apply {
                 add("enhancements", CategoryData())
                     .apply {
+                        data["fullBright"] = SettingData(Setting(false).also { fullBright = it })
                         data["fireHeight"] = SettingData(Setting(0.0).also { fireHeight = it })
                         data["dynamicFov"] = SettingData(Setting(true).also { dynamicFov = it })
+                        data["partialViewBobbing"] = SettingData(Setting(false).also { partialViewBobbing = it })
                     }
             }
 
@@ -41,10 +46,18 @@ object Enhancements {
             .apply {
                 add(DisplayedCategory("Enhancements"))
                     .apply {
+                        add(Toggle(fullBright, "FullBright"))
                         add(Slider(fireHeight, "Fire Height", 0.0, 1.0))
-                        add(DisplayedSetting.Toggle(dynamicFov, "Dynamic FOV"))
+                        add(Toggle(dynamicFov, "Dynamic FOV"))
+                        add(Toggle(partialViewBobbing, "Partial View Bobbing"))
                     }
             }
+
+        EventManager.register<GetGammaEvent> { event ->
+            if (fullBright.value) {
+                event.gamma = 100.0
+            }
+        }
     }
 
     fun getFireHeightValue(): Double {
@@ -110,6 +123,10 @@ object Enhancements {
 
     fun isDynamicFov(): Boolean {
         return dynamicFov.value
+    }
+
+    fun isPartialViewBobbing(): Boolean {
+        return partialViewBobbing.value
     }
 
 }

@@ -77,6 +77,15 @@ class EnhancementsTransformer : Transformer() {
                         insnList.add(VarInsnNode(Opcodes.FSTORE, 1))
                     }))
             }
+
+        val renderWorld = "v1_18_2/net/minecraft/client/render/GameRenderer#renderWorld(FJLv1_18_2/net/minecraft/client/util/math/MatrixStack;)V".toIdentifier()
+        val bobView = "v1_18_2/net/minecraft/client/option/GameOptions#bobView".toIdentifier()
+
+        classNode.findMethod(renderWorld)
+            .apply { methodNode ->
+                methodNode.findFieldReferences(bobView, FieldReferenceType.GET)
+                    .apply(Applier.InsertAfter(methodNode, getHook("modifyBobView")))
+            }
     }
 
 }

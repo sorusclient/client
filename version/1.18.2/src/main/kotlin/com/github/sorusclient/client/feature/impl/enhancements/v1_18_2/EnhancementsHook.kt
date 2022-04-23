@@ -46,4 +46,13 @@ object EnhancementsHook {
         }
     }
 
+    @JvmStatic
+    fun modifyBobView(bobView: Boolean): Boolean {
+        if (Enhancements.isPartialViewBobbing()) {
+            return false
+        }
+
+        return bobView
+    }
+
 }
