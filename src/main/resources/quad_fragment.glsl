@@ -1,13 +1,13 @@
 #version 120
 
-in vec4 color;
-in vec2 positionFrag;
-in vec2 position1Frag;
-in vec2 position2Frag;
-in vec2 position3Frag;
-in vec2 position4Frag;
-in vec2 resolutionFrag;
-in float cornerRadiusFrag;
+varying vec4 color;
+varying vec2 positionFrag;
+varying vec2 position1Frag;
+varying vec2 position2Frag;
+varying vec2 position3Frag;
+varying vec2 position4Frag;
+varying vec2 resolutionFrag;
+varying float cornerRadiusFrag;
 
 float distToLine(vec2 pt1, vec2 pt2, vec2 testPt){
     vec2 lineDir = pt2 - pt1;

@@ -53,7 +53,7 @@ class Clock: HUDElement("clock") {
         val centerY = y + 25.0 * scale
 
         for (i in 0 until 12) {
-            renderer.drawLine(centerX + cos((i / 12.0) * 2 * PI - PI / 2) * 22.5, centerY + sin((i / 12.0) * 2 * PI - PI / 2) * 22.5, centerX + cos((i / 12.0) * 2 * PI - PI / 2) * 18.75, centerY + sin((i / 12.0) * 2 * PI - PI / 2) * 18.75, 0.75, Color.WHITE)
+            renderer.drawLine(centerX + cos((i / 12.0) * 2 * PI - PI / 2) * 22.5 * scale, centerY + sin((i / 12.0) * 2 * PI - PI / 2) * 22.5 * scale, centerX + cos((i / 12.0) * 2 * PI - PI / 2) * 18.75 * scale, centerY + sin((i / 12.0) * 2 * PI - PI / 2) * 18.75 * scale, 0.75, Color.WHITE)
         }
 
         renderer.drawLine(centerX, centerY, centerX + 20.0 * scale * cos(time.minute / 60.0 * 2 * PI - PI / 2), centerY + 20.0 * scale * sin(time.minute / 60.0 * 2 * PI - PI / 2), 1.25, minutesHandColor.value)

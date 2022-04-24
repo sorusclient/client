@@ -1,10 +1,10 @@
 #version 120
 
-in vec4 color;
-in vec4 dimensionsFrag;
-in vec2 positionFrag;
-in vec2 resolutionFrag;
-in float cornerRadiusFrag;
+varying vec4 color;
+varying vec4 dimensionsFrag;
+varying vec2 positionFrag;
+varying vec2 resolutionFrag;
+varying float cornerRadiusFrag;
 //varying vec4 fragColor;
 
 void main() {

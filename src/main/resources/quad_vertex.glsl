@@ -1,6 +1,6 @@
 #version 120
 
-in vec2 position;
+attribute vec2 position;
 uniform vec2 position1;
 uniform vec2 position2;
 uniform vec2 position3;

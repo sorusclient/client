@@ -1,6 +1,6 @@
 #version 120
 
-in vec2 position;
+attribute vec2 position;
 uniform vec4 position1;
 uniform vec4 colorIn;
 uniform vec2 resolutionIn;
