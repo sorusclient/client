@@ -37,8 +37,12 @@ object PluginManager {
             val description = if (json.has("description")) json.getString("description") else ""
             val logo = if (json.has("logo")) json.getString("logo") else null
             var filePath = resource.toString()
-            filePath = filePath.replace("jar:file:", "")
-            filePath = filePath.substring(0, filePath.indexOf("!"))
+
+            if (filePath.contains("jar:file:")) {
+                filePath = filePath.replace("jar:file:", "")
+                filePath = filePath.substring(0, filePath.indexOf("!"))
+            }
+
             plugins.add(Plugin(id, version, name, description, File(filePath), logo))
         }
     }

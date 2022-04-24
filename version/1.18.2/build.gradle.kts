@@ -7,7 +7,11 @@
 
 plugins {
     id("org.jetbrains.kotlin.jvm")
+    id("maven-publish")
 }
+
+group = "com.github.sorusclient.client"
+version = parent!!.parent!!.version
 
 apply(plugin = "kiln-standard")
 
