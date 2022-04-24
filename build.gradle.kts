@@ -27,9 +27,13 @@ buildscript {
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.6.20"
+    id("maven-publish")
 }
 
 apply(plugin = "kiln-main")
+
+group = "com.github.sorusclient"
+version = "0.1"
 
 allprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java)
@@ -89,3 +93,15 @@ class SorusEnvironment: Environment {
     }
 
 }
+
+/*publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.sorusclient"
+            artifactId = "client"
+            version = "0.1"
+
+            from(components["java"])
+        }
+    }
+}*/

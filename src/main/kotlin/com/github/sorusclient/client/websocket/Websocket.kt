@@ -13,11 +13,12 @@ import com.github.sorusclient.client.notification.Notification
 import com.github.sorusclient.client.notification.display
 import kotlinx.coroutines.runBlocking
 import org.java_websocket.client.WebSocketClient
+import org.java_websocket.drafts.Draft_6455
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
 import java.net.URI
 
-class Websocket: WebSocketClient(URI.create(if (System.getProperty("sorus.test") == "true") { "ws://localhost:3000" } else { "wss://socket.sorus.ml" })) {
+class Websocket: WebSocketClient(URI.create(if (System.getProperty("sorus.test") == "true") { "ws://localhost:3000" } else { "wss://socket.sorus.ml" }), Draft_6455(), null, 5000) {
 
     override fun onOpen(handshakedata: ServerHandshake?) {
 
