@@ -10,8 +10,8 @@ package com.github.sorusclient.client.ui.framework.constraint
 import com.github.sorusclient.client.ui.framework.Component
 import com.github.sorusclient.client.util.Color
 
-class Relative @JvmOverloads constructor(private val percent: Double, private val otherSide: Boolean = false) :
-    Constraint {
+class Relative @JvmOverloads constructor(private val percent: Double, private val otherSide: Boolean = false) : Constraint {
+
     override fun getXValue(componentRuntime: Component.Runtime): Double {
         return componentRuntime.getParent()!!.width * percent
     }
@@ -46,4 +46,5 @@ class Relative @JvmOverloads constructor(private val percent: Double, private va
     override fun getCornerRadiusValue(componentRuntime: Component.Runtime): Double {
         return getPaddingValue(componentRuntime)
     }
+
 }

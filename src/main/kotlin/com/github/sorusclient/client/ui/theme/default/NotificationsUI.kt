@@ -57,7 +57,7 @@ class NotificationsUI(private val defaultTheme: DefaultTheme): Container() {
 
                                     backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                                     borderColor = { defaultTheme.borderColor.value }.toDependent()
-                                    borderThickness = 0.4.toAbsolute()
+                                    borderThickness = 0.001.toRelative()
                                     backgroundCornerRadius = 0.025.toRelative()
 
                                     setPadding(0.01.toRelative())
@@ -176,7 +176,7 @@ class NotificationsUI(private val defaultTheme: DefaultTheme): Container() {
                                                                                 defaultTheme.borderColor.value
                                                                             }
                                                                         }.toDependent()
-                                                                        borderThickness = 0.4.toAbsolute()
+                                                                        borderThickness = 0.001.toRelative()
                                                                         backgroundCornerRadius = 0.025.toRelative()
 
                                                                         children += Text()

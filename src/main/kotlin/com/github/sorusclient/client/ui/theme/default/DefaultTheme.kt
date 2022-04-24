@@ -73,7 +73,7 @@ class DefaultTheme: Theme() {
             is DisplayedSetting.Toggle -> {
                 return Container()
                     .apply {
-                        height = 15.0.toAbsolute()
+                        height = 0.075.toRelative()
 
                         onUpdate += { state ->
                             state["hidden"] = false
@@ -114,7 +114,7 @@ class DefaultTheme: Theme() {
                                                 { this@DefaultTheme.midgroundColor.value }.toDependent()
                                             }
                                         }
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.002.toRelative()
                                         borderColor = Dependent { state ->
                                             val toggled = setting.setting.value
                                             if ((state["hovered"] as Boolean && !setting.setting.isForcedValue) || toggled) {
@@ -152,7 +152,7 @@ class DefaultTheme: Theme() {
             is DisplayedSetting.Slider -> {
                 return Container()
                     .apply {
-                        height = 15.0.toAbsolute()
+                        height = 0.075.toRelative()
                         onUpdate += { state ->
                             state["hidden"] = false
                         }
@@ -192,7 +192,7 @@ class DefaultTheme: Theme() {
 
                                         backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
 
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.002.toRelative()
                                         borderColor = Dependent { state ->
                                             if (state["hovered"] as Boolean || state["interacted"] as Boolean) {
                                                 { this@DefaultTheme.selectedBorderColor.value }.toDependent()
@@ -266,7 +266,7 @@ class DefaultTheme: Theme() {
             is DisplayedSetting.KeyBind -> {
                 return Container()
                     .apply {
-                        height = 15.0.toAbsolute()
+                        height = 0.075.toRelative()
                         onUpdate += { state ->
                             state["hidden"] = false
                         }
@@ -311,7 +311,7 @@ class DefaultTheme: Theme() {
                                                 { this@DefaultTheme.midgroundColor.value }.toDependent()
                                             }
                                         }
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.002.toRelative()
                                         borderColor = Dependent { state ->
                                             if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                 { this@DefaultTheme.selectedBorderColor.value }.toDependent()
@@ -368,7 +368,7 @@ class DefaultTheme: Theme() {
             is DisplayedSetting.ClickThrough -> {
                 return Container()
                     .apply {
-                        height = 15.0.toAbsolute()
+                        height = 0.075.toRelative()
                         onUpdate += { state ->
                             state["hidden"] = false
                         }
@@ -413,7 +413,7 @@ class DefaultTheme: Theme() {
                                                 { this@DefaultTheme.midgroundColor.value }.toDependent()
                                             }
                                         }
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.002.toRelative()
                                         borderColor = Dependent { state ->
                                             if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                 { this@DefaultTheme.selectedBorderColor.value }.toDependent()
@@ -520,7 +520,7 @@ class DefaultTheme: Theme() {
             is DisplayedSetting.ColorPicker -> {
                 return Container()
                     .apply {
-                        height = 15.0.toAbsolute()
+                        height = 0.075.toRelative()
 
                         children += Container()
                             .apply {
@@ -629,7 +629,7 @@ class DefaultTheme: Theme() {
                                         width = 0.965.toRelative()
 
                                         backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.002.toRelative()
                                         borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                         backgroundCornerRadius = 0.01.toRelative()
 
@@ -657,7 +657,7 @@ class DefaultTheme: Theme() {
                                                                 setPadding(0.025.toRelative())
 
                                                                 backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                borderThickness = 0.4.toAbsolute()
+                                                                borderThickness = 0.002.toRelative()
                                                                 borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                                 backgroundCornerRadius = 0.02.toRelative()
 
@@ -675,7 +675,7 @@ class DefaultTheme: Theme() {
                                                                                 this@DefaultTheme.midgroundColor.value
                                                                             }
                                                                         }.toDependent()
-                                                                        borderThickness = 0.4.toAbsolute()
+                                                                        borderThickness = 0.002.toRelative()
                                                                         borderColor = { state: Map<String, Any> ->
                                                                             if (state["hovered"] as Boolean || state["clicked"] as Boolean) {
                                                                                 this@DefaultTheme.selectedBorderColor.value
@@ -714,7 +714,7 @@ class DefaultTheme: Theme() {
                                                                                 this@DefaultTheme.midgroundColor.value
                                                                             }
                                                                         }.toDependent()
-                                                                        borderThickness = 0.4.toAbsolute()
+                                                                        borderThickness = 0.002.toRelative()
                                                                         borderColor = { state: Map<String, Any> ->
                                                                             if (state["hovered"] as Boolean || state["clicked"] as Boolean) {
                                                                                 this@DefaultTheme.selectedBorderColor.value
@@ -750,7 +750,7 @@ class DefaultTheme: Theme() {
                                                                                     setPadding(0.0125.toRelative())
 
                                                                                     backgroundColor = { this@DefaultTheme.midgroundColor.value }.toDependent()
-                                                                                    borderThickness = 0.4.toAbsolute()
+                                                                                    borderThickness = 0.002.toRelative()
                                                                                     borderColor = { this@DefaultTheme.borderColor.value }.toDependent()
                                                                                     backgroundCornerRadius = 0.02.toRelative()
 
@@ -780,7 +780,7 @@ class DefaultTheme: Theme() {
                                                                                                     this@DefaultTheme.midgroundColor.value
                                                                                                 }
                                                                                             }.toDependent()
-                                                                                            borderThickness = 0.4.toAbsolute()
+                                                                                            borderThickness = 0.002.toRelative()
                                                                                             borderColor = { state: Map<String, Any> ->
                                                                                                 if (state["hovered"] as Boolean || state["clicked"] as Boolean) {
                                                                                                     this@DefaultTheme.selectedBorderColor.value
@@ -861,7 +861,7 @@ class DefaultTheme: Theme() {
                                                         this@DefaultTheme.midgroundColor.value
                                                     }
                                                 }.toDependent()
-                                                borderThickness = 0.4.toAbsolute()
+                                                borderThickness = 0.002.toRelative()
                                                 borderColor = { state: Map<String, Any> ->
                                                     if (state["hovered"] as Boolean || state["clicked"] as Boolean) {
                                                         this@DefaultTheme.selectedBorderColor.value

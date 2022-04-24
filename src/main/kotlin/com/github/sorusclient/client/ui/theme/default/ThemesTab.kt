@@ -84,7 +84,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                                 setPadding(0.025.toRelative())
 
                                                 backgroundCornerRadius = 0.025.toRelative()
-                                                borderThickness = 0.4.toAbsolute()
+                                                borderThickness = 0.002.toRelative()
 
                                                 backgroundColor = {
                                                     defaultTheme.midgroundColor.value
@@ -100,7 +100,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                                         width = 1.0.toCopy()
                                                         setPadding(Relative(0.15, true))
 
-                                                        backgroundCornerRadius = 0.02.toRelative()
+                                                        backgroundCornerRadius = 0.001.toRelative()
                                                         backgroundImage = ThemeManager.registeredThemes[theme.javaClass]!!.second.toAbsolute()
                                                     }
 
@@ -124,7 +124,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                                         setPadding(Relative(0.2, true))
 
                                                         backgroundCornerRadius = 0.015.toRelative()
-                                                        borderThickness = 0.4.toAbsolute()
+                                                        borderThickness = 0.002.toRelative()
 
                                                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
 
@@ -163,7 +163,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                                         setPadding(Relative(0.2, true))
 
                                                         backgroundCornerRadius = 0.015.toRelative()
-                                                        borderThickness = 0.4.toAbsolute()
+                                                        borderThickness = 0.002.toRelative()
 
                                                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
 
@@ -204,7 +204,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                                                 height = 0.45.toRelative()
 
                                                                 backgroundCornerRadius = 0.1375.toRelative()
-                                                                borderThickness = 0.4.toAbsolute()
+                                                                borderThickness = 0.002.toRelative()
 
                                                                 backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
 
@@ -234,7 +234,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                                                 height = 0.45.toRelative()
 
                                                                 backgroundCornerRadius = 0.1375.toRelative()
-                                                                borderThickness = 0.4.toAbsolute()
+                                                                borderThickness = 0.002.toRelative()
 
                                                                 backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
 
@@ -319,7 +319,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                                     { defaultTheme.midgroundColor.value }.toDependent()
                                                 }
                                             }
-                                            borderThickness = 0.4.toAbsolute()
+                                            borderThickness = 0.002.toRelative()
                                             borderColor = Dependent { state ->
                                                 if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                     { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -368,7 +368,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
 
                 backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                 borderColor = { defaultTheme.borderColor.value }.toDependent()
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
 
                 onInit += {
                     clear()
@@ -400,7 +400,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
                                         setPadding(0.025.toRelative())
 
                                         backgroundCornerRadius = 0.025.toRelative()
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.002.toRelative()
 
                                         backgroundColor =
                                             { defaultTheme.midgroundColor.value }.toDependent()
@@ -439,7 +439,7 @@ class ThemesTab(private val defaultTheme: DefaultTheme): Container() {
 
                                                 backgroundCornerRadius =
                                                     0.015.toRelative()
-                                                borderThickness = 0.4.toAbsolute()
+                                                borderThickness = 0.002.toRelative()
 
                                                 backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
                                                 borderColor =

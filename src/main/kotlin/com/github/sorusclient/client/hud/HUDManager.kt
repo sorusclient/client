@@ -81,7 +81,7 @@ object HUDManager {
 
                 backgroundColor = Color.fromRGB(15, 15, 15, 200).toAbsolute()
                 borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
 
                 children += Container()
                     .apply {
@@ -122,7 +122,7 @@ object HUDManager {
                                             setPadding(0.01.toRelative())
 
                                             backgroundColor = Color.fromRGB(0, 0, 0, 65).toAbsolute()
-                                            borderThickness = 0.4.toAbsolute()
+                                            borderThickness = 0.001.toRelative()
                                             borderColor = Color.fromRGB(10, 10, 10, 150).toAbsolute()
                                             borderColor = Dependent { state ->
                                                 if (state["hovered"] as Boolean) {

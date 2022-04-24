@@ -64,7 +64,7 @@ class ColorPickerUI(private val defaultTheme: DefaultTheme): Container() {
                         paddingLeft = Relative(0.2, true)
 
                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
-                        borderThickness = 0.4.toAbsolute()
+                        borderThickness = 0.001.toRelative()
                         borderColor = { defaultTheme.borderColor.value }.toDependent()
                         backgroundCornerRadius = 0.015.toRelative()
 
@@ -197,7 +197,7 @@ class ColorPickerUI(private val defaultTheme: DefaultTheme): Container() {
                                         height = 0.2.toRelative()
                                         setPadding(Relative(0.075, true))
 
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.001.toRelative()
                                         backgroundCornerRadius = 0.025.toRelative()
                                         backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                                         borderColor = { state: Map<String, Any> ->
@@ -236,7 +236,7 @@ class ColorPickerUI(private val defaultTheme: DefaultTheme): Container() {
                                         paddingLeft = Relative(0.4, true)
 
                                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.001.toRelative()
                                         borderColor = { defaultTheme.borderColor.value }.toDependent()
                                         backgroundCornerRadius = 0.025.toRelative()
 

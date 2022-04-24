@@ -49,7 +49,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
 
                 backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                 borderColor = { defaultTheme.borderColor.value }.toDependent()
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
 
                 onStateUpdate["hasInitGroups"] = { state ->
                     state["hasInit"] = false
@@ -119,7 +119,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                     { defaultTheme.midgroundColor.value }.toDependent()
                                                 }
                                             }
-                                            borderThickness = 0.4.toAbsolute()
+                                            borderThickness = 0.001.toRelative()
                                             borderColor = Dependent { state ->
                                                 if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                     { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -183,7 +183,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                                     { defaultTheme.midgroundColor.value }.toDependent()
                                                                 }
                                                             }
-                                                            borderThickness = 0.4.toAbsolute()
+                                                            borderThickness = 0.0025.toRelative()
                                                             borderColor = Dependent { state ->
                                                                 if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) && AdapterManager.adapter.currentServer != null) {
                                                                     { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -234,7 +234,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                                     { defaultTheme.midgroundColor.value }.toDependent()
                                                                 }
                                                             }
-                                                            borderThickness = 0.4.toAbsolute()
+                                                            borderThickness = 0.0025.toRelative()
                                                             borderColor = Dependent { state ->
                                                                 if (((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean)) {
                                                                     { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -279,7 +279,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                     backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
                                                     borderColor = { defaultTheme.borderColor.value }.toDependent()
                                                     backgroundCornerRadius = 0.025.toRelative()
-                                                    borderThickness = 0.4.toAbsolute()
+                                                    borderThickness = 0.0025.toRelative()
 
                                                     paddingLeft = 0.075.toRelative()
                                                     paddingRight = 0.075.toRelative()
@@ -398,7 +398,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                                         x = Side.POSITIVE.toSide()
 
                                                                         backgroundCornerRadius = 0.035.toRelative()
-                                                                        borderThickness = 0.4.toAbsolute()
+                                                                        borderThickness = 0.0025.toRelative()
 
                                                                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
 
@@ -466,7 +466,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                                                 setPadding(Relative(0.175, true))
 
                                                                                 backgroundCornerRadius = 0.0175.toRelative()
-                                                                                borderThickness = 0.4.toAbsolute()
+                                                                                borderThickness = 0.0025.toRelative()
 
                                                                                 backgroundColor = Dependent { state ->
                                                                                     if (state["clicked"] != null && state["clicked"] as Boolean) {
@@ -539,7 +539,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
 
                 backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                 borderColor = { defaultTheme.borderColor.value }.toDependent()
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
 
                 children += Container()
                     .apply {
@@ -600,7 +600,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                 { defaultTheme.midgroundColor.value }.toDependent()
                                             }
                                         }
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.0025.toRelative()
                                         borderColor = Dependent { state ->
                                             if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                 { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -649,7 +649,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                             backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
                                             borderColor = { defaultTheme.borderColor.value }.toDependent()
                                             backgroundCornerRadius = 0.025.toRelative()
-                                            borderThickness = 0.4.toAbsolute()
+                                            borderThickness = 0.0025.toRelative()
 
                                             paddingLeft = 0.075.toRelative()
                                             paddingRight = 0.075.toRelative()
@@ -764,7 +764,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                             children += List(com.github.sorusclient.client.ui.framework.List.VERTICAL)
                                                                 .apply {
                                                                     backgroundCornerRadius = 0.035.toRelative()
-                                                                    borderThickness = 0.4.toAbsolute()
+                                                                    borderThickness = 0.0025.toRelative()
 
                                                                     backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
 
@@ -840,7 +840,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                                                     setPadding(Relative(0.175, true))
 
                                                                                     backgroundCornerRadius = 0.0175.toRelative()
-                                                                                    borderThickness = 0.4.toAbsolute()
+                                                                                    borderThickness = 0.0025.toRelative()
 
                                                                                     backgroundColor = Dependent { state ->
                                                                                         if (state["clicked"] != null && state["clicked"] as Boolean && friend.second.second != "offline" && SocialManager.currentGroup != null) {
@@ -882,7 +882,7 @@ class SocialTab(private val defaultTheme: DefaultTheme): Container() {
                                                                                     setPadding(Relative(0.175, true))
 
                                                                                     backgroundCornerRadius = 0.0175.toRelative()
-                                                                                    borderThickness = 0.4.toAbsolute()
+                                                                                    borderThickness = 0.0025.toRelative()
 
                                                                                     backgroundColor = Dependent { state ->
                                                                                         if (state["clicked"] != null && state["clicked"] as Boolean) {

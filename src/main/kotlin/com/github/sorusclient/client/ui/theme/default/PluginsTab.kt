@@ -75,7 +75,7 @@ class PluginsTab(private val defaultTheme: DefaultTheme): Container() {
                                         setPadding(0.025.toRelative())
 
                                         backgroundCornerRadius = 0.025.toRelative()
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.0025.toRelative()
 
                                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
                                         borderColor = { defaultTheme.borderColor.value }.toDependent()
@@ -122,7 +122,7 @@ class PluginsTab(private val defaultTheme: DefaultTheme): Container() {
                                                 setPadding(Relative(0.2, true))
 
                                                 backgroundCornerRadius = 0.015.toRelative()
-                                                borderThickness = 0.4.toAbsolute()
+                                                borderThickness = 0.0025.toRelative()
 
                                                 backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
 
@@ -172,7 +172,7 @@ class PluginsTab(private val defaultTheme: DefaultTheme): Container() {
 
                 backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                 borderColor = { defaultTheme.borderColor.value }.toDependent()
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
 
                 val pluginsFull = ArrayList<Triple<String, Map<String, ByteArray>, JSONObject>>()
                 for (plugin in AssetUtil.getAllPlugins()) {
@@ -216,7 +216,7 @@ class PluginsTab(private val defaultTheme: DefaultTheme): Container() {
                                         setPadding(0.025.toRelative())
 
                                         backgroundCornerRadius = 0.025.toRelative()
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.0025.toRelative()
 
                                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
                                         borderColor = { defaultTheme.borderColor.value }.toDependent()
@@ -263,7 +263,7 @@ class PluginsTab(private val defaultTheme: DefaultTheme): Container() {
                                                 setPadding(Relative(0.2, true))
 
                                                 backgroundCornerRadius = 0.015.toRelative()
-                                                borderThickness = 0.4.toAbsolute()
+                                                borderThickness = 0.0025.toRelative()
 
                                                 backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
                                                 borderColor = { state: Map<String, Any> ->

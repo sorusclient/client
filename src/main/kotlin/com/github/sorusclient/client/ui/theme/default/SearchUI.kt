@@ -30,7 +30,7 @@ class SearchUI(val defaultTheme: DefaultTheme): Container() {
 
                 backgroundCornerRadius = 0.01.toRelative()
 
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
                 backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                 borderColor = { defaultTheme.borderColor.value }.toDependent()
 
@@ -88,7 +88,7 @@ class SearchUI(val defaultTheme: DefaultTheme): Container() {
                                 children += Container()
                                     .apply {
                                         x = Side.NEGATIVE.toSide()
-                                        width = 0.4.toAbsolute()
+                                        width = 0.05.toRelative()
                                         height = 0.6.toRelative()
 
                                         backgroundColor = Color.WHITE.toAbsolute()
@@ -164,7 +164,7 @@ class SearchUI(val defaultTheme: DefaultTheme): Container() {
                                         backgroundCornerRadius = 0.025.toRelative()
 
                                         backgroundColor = { defaultTheme.midgroundColor.value }.toDependent()
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.001.toRelative()
                                         borderColor = { state: Map<String, Any> ->
                                             if (state.getOrDefault("selectedResult", 0) == i) {
                                                 { defaultTheme.selectedBorderColor.value }.toDependent()

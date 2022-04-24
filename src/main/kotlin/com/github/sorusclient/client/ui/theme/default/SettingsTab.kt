@@ -72,7 +72,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
 
                 backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                 borderColor = { defaultTheme.borderColor.value }.toDependent()
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
 
                 onInit += {
                     clear()
@@ -160,7 +160,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
                                             { defaultTheme.midgroundColor.value }.toDependent()
                                         }
                                     }
-                                    borderThickness = 0.4.toAbsolute()
+                                    borderThickness = 0.0035.toRelative()
                                     borderColor = Dependent { state ->
                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                             { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -210,7 +210,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
                                             { defaultTheme.midgroundColor.value }.toDependent()
                                         }
                                     }
-                                    borderThickness = 0.4.toAbsolute()
+                                    borderThickness = 0.0035.toRelative()
                                     borderColor = Dependent { state ->
                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                             { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -277,7 +277,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
                                                     width = (1.0 - profile.second * 0.1).toRelative()
 
                                                     backgroundCornerRadius = 0.035.toRelative()
-                                                    borderThickness = 0.4.toAbsolute()
+                                                    borderThickness = 0.0035.toRelative()
 
                                                     backgroundColor = Dependent {
                                                         return@Dependent if (SettingManager.currentProfile == profile.first) {
@@ -369,7 +369,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
 
                 backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                 borderColor = { defaultTheme.borderColor.value }.toDependent()
-                borderThickness = 0.4.toAbsolute()
+                borderThickness = 0.001.toRelative()
 
                 storedState += "hasInitSettings"
 
@@ -423,7 +423,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
                                                 { defaultTheme.midgroundColor.value }.toDependent()
                                             }
                                         }
-                                        borderThickness = 0.4.toAbsolute()
+                                        borderThickness = 0.0015.toRelative()
                                         borderColor = Dependent { state ->
                                             if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                 { defaultTheme.selectedBorderColor.value }.toDependent()
@@ -484,7 +484,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
                                                                 { defaultTheme.midgroundColor.value }.toDependent()
                                                             }
                                                         }
-                                                        borderThickness = 0.4.toAbsolute()
+                                                        borderThickness = 0.0015.toRelative()
                                                         borderColor = { defaultTheme.borderColor.value }.toDependent()
                                                         borderColor = Dependent { state ->
                                                             if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
@@ -550,7 +550,7 @@ class SettingsTab(private val defaultTheme: DefaultTheme) : Container() {
                                                             { defaultTheme.midgroundColor.value }.toDependent()
                                                         }
                                                     }
-                                                    borderThickness = 0.4.toAbsolute()
+                                                    borderThickness = 0.0015.toRelative()
                                                     borderColor = Dependent { state ->
                                                         if ((state["clicked"] != null && state["clicked"] as Boolean) || state["hovered"] as Boolean) {
                                                             { defaultTheme.selectedBorderColor.value }.toDependent()

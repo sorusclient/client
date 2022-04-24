@@ -32,7 +32,7 @@ class MainGui(private val defaultTheme: DefaultTheme) : Container() {
 
                         backgroundColor = { defaultTheme.backgroundColor.value }.toDependent()
                         borderColor = { defaultTheme.borderColor.value }.toDependent()
-                        borderThickness = 0.4.toAbsolute()
+                        borderThickness = 0.001.toRelative()
 
                         onUpdate += { state ->
                             val displayedCategory = state["currentSettingsCategory"] as DisplayedCategory?
@@ -88,7 +88,7 @@ class MainGui(private val defaultTheme: DefaultTheme) : Container() {
                                                 }
                                             }
 
-                                            borderThickness = 0.4.toAbsolute()
+                                            borderThickness = 0.0125.toRelative()
 
                                             children += Container()
                                                 .apply {
