@@ -93,3 +93,7 @@ class SorusEnvironment: Environment {
     }
 
 }
+
+java {
+    withSourcesJar()
+}
