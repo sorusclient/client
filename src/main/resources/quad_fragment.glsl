@@ -20,5 +20,4 @@ void main() {
     float value = 0.3;
 
     gl_FragColor = vec4(color[0], color[1], color[2], color[3] * min(min(smoothstep(0, value, distToLine(position2Frag, position3Frag, positionFrag)), smoothstep(0, value, distToLine(position4Frag, position1Frag, positionFrag))), min(smoothstep(0, value, distToLine(position1Frag, position2Frag, positionFrag)), smoothstep(0, value, distToLine(position3Frag, position4Frag, positionFrag)))));
-
 }

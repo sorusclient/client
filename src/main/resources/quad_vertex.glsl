@@ -17,7 +17,6 @@ varying vec2 position3Frag;
 varying vec2 position4Frag;
 varying vec2 resolutionFrag;
 varying vec4 dimensionsFrag;
-//varying float cornerRadiusFrag;
 
 void main()
 {

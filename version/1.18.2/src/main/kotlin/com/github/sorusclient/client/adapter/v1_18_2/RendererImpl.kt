@@ -37,6 +37,9 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
 import javax.imageio.ImageIO
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 class RendererImpl: IRenderer {
 
@@ -71,6 +74,9 @@ class RendererImpl: IRenderer {
 
     private var roundedRectangleProgram = 0
     private var roundedRectangleVao = 0
+
+    private var quadProgram = 0
+    private var quadVao = 0
 
     private var roundedRectangleBorderProgram = 0
     private var roundedRectangleBorderVao = 0
@@ -134,6 +140,27 @@ class RendererImpl: IRenderer {
             val verticesBuffer = ByteBuffer.allocateDirect(vertices.size shl 2).order(ByteOrder.nativeOrder()).asFloatBuffer()
             verticesBuffer.put(vertices).flip()
 
+            val vboID = GL15.glGenBuffers()
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
+            GL30.glBindVertexArray(0)
+        }
+        quadProgram = createProgram("quad_vertex.glsl", "quad_fragment.glsl")
+        run {
+            quadVao = GL30.glGenVertexArrays()
+            GL30.glBindVertexArray(quadVao)
+            val vertices = floatArrayOf(
+                1f, 1f,
+                1f, 0f,
+                0f, 0f,
+                0f, 0f,
+                0f, 1f,
+                1f, 1f
+            )
+
+            val verticesBuffer = ByteBuffer.allocateDirect(vertices.size shl 2).order(ByteOrder.nativeOrder()).asFloatBuffer()
+            verticesBuffer.put(vertices).flip()
             val vboID = GL15.glGenBuffers()
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW)
@@ -334,15 +361,44 @@ class RendererImpl: IRenderer {
     }
 
     override fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double, width: Double, color: Color) {
-        val tessellator = Tessellator.getInstance()
-        val buffer = tessellator.buffer
+        this.createPrograms()
 
-        RenderSystem.lineWidth(width.toFloat())
-        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR)
-        buffer.vertex(x1, y1, 0.0).color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat()).next()
-        buffer.vertex(x2, y2, 0.0).color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat()).next()
+        RenderSystem.enableBlend()
+        RenderSystem.disableTexture()
 
-        tessellator.draw()
+        GL20.glUseProgram(quadProgram)
+
+        GL30.glBindVertexArray(quadVao)
+        GL20.glEnableVertexAttribArray(0)
+
+        val window = MinecraftClient.getInstance().window
+
+        val angle = atan2(x2 - x1, y2 - y1).toFloat()
+
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position1"), x1.toFloat() - cos(angle) * width.toFloat() / 2, y1.toFloat() + sin(angle) * width.toFloat() / 2)
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position2"), x1.toFloat() + cos(angle) * width.toFloat() / 2, y1.toFloat() - sin(angle) * width.toFloat() / 2)
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position3"), x2.toFloat() + cos(angle) * width.toFloat() / 2, y2.toFloat() - sin(angle) * width.toFloat() / 2)
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position4"), x2.toFloat() - cos(angle) * width.toFloat() / 2, y2.toFloat() + sin(angle) * width.toFloat() / 2)
+
+        GL20.glUniform4f(
+            GL20.glGetUniformLocation(quadProgram, "colorIn"),
+            color.red.toFloat(),
+            color.green.toFloat(),
+            color.blue.toFloat(),
+            color.alpha.toFloat()
+        )
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
+
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6)
+
+        GL20.glDisableVertexAttribArray(0)
+        GL30.glBindVertexArray(0)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+
+        GL20.glUseProgram(0)
+
+        RenderSystem.disableBlend()
+        RenderSystem.enableTexture()
     }
 
     private val textures: MutableMap<String, Int> = HashMap()

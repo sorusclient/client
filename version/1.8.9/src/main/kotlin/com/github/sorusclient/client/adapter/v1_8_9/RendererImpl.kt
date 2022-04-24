@@ -37,7 +37,6 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.imageio.ImageIO
-import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -87,9 +86,10 @@ class RendererImpl : IRenderer {
     private var imageVao = 0
 
     private var roundedRectangleProgram = 0
-    private var roundedRectangleProgram2 = 0
     private var roundedRectangleVao = 0
-    private var roundedRectangleVao2 = 0
+
+    private var quadProgram = 0
+    private var quadVao = 0
 
     private var roundedRectangleBorderProgram = 0
     private var roundedRectangleBorderVao = 0
@@ -154,10 +154,10 @@ class RendererImpl : IRenderer {
             GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
             GL30.glBindVertexArray(0)
         }
-        roundedRectangleProgram2 = createProgram("rounded_rectangle_vertex2.glsl", "rectangle_fragment2.glsl")
+        quadProgram = createProgram("quad_vertex.glsl", "quad_fragment.glsl")
         run {
-            roundedRectangleVao2 = GL30.glGenVertexArrays()
-            GL30.glBindVertexArray(roundedRectangleVao2)
+            quadVao = GL30.glGenVertexArrays()
+            GL30.glBindVertexArray(quadVao)
             val vertices = floatArrayOf(
                 1f, 1f,
                 1f, 0f,
@@ -394,27 +394,14 @@ class RendererImpl : IRenderer {
     }
 
     override fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double, width: Double, color: Color) {
-        /*GlStateManager.disableTexture()
-        GlStateManager.enableBlend()
-
-        val tessellator = Tessellator.getInstance()
-        val buffer = tessellator.buffer
-
-        GL11.glLineWidth(width.toFloat())
-        buffer.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR)
-        buffer.vertex(x1, y1, 0.0).color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat()).next()
-        buffer.vertex(x2, y2, 0.0).color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat()).next()
-
-        tessellator.draw()*/
-
         this.createPrograms()
 
         GlStateManager.enableBlend()
         GlStateManager.disableTexture()
 
-        GL20.glUseProgram(roundedRectangleProgram2)
+        GL20.glUseProgram(quadProgram)
 
-        GL30.glBindVertexArray(roundedRectangleVao2)
+        GL30.glBindVertexArray(quadVao)
         GL20.glEnableVertexAttribArray(0)
 
         GlStateManager.color4f(1f, 1f, 1f, 1f)
@@ -423,20 +410,19 @@ class RendererImpl : IRenderer {
 
         val angle = atan2(x2 - x1, y2 - y1).toFloat()
 
-        GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleProgram2, "position1"), x1.toFloat() - cos(angle) * width.toFloat() / 2, y1.toFloat() + sin(angle) * width.toFloat() / 2)
-        GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleProgram2, "position2"), x1.toFloat() + cos(angle) * width.toFloat() / 2, y1.toFloat() - sin(angle) * width.toFloat() / 2)
-        GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleProgram2, "position3"), x2.toFloat() + cos(angle) * width.toFloat() / 2, y2.toFloat() - sin(angle) * width.toFloat() / 2)
-        GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleProgram2, "position4"), x2.toFloat() - cos(angle) * width.toFloat() / 2, y2.toFloat() + sin(angle) * width.toFloat() / 2)
-        //TODO: Make colors vary for different corners
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position1"), x1.toFloat() - cos(angle) * width.toFloat() / 2, y1.toFloat() + sin(angle) * width.toFloat() / 2)
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position2"), x1.toFloat() + cos(angle) * width.toFloat() / 2, y1.toFloat() - sin(angle) * width.toFloat() / 2)
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position3"), x2.toFloat() + cos(angle) * width.toFloat() / 2, y2.toFloat() - sin(angle) * width.toFloat() / 2)
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "position4"), x2.toFloat() - cos(angle) * width.toFloat() / 2, y2.toFloat() + sin(angle) * width.toFloat() / 2)
+
         GL20.glUniform4f(
-            GL20.glGetUniformLocation(roundedRectangleProgram2, "colorIn"),
+            GL20.glGetUniformLocation(quadProgram, "colorIn"),
             color.red.toFloat(),
             color.green.toFloat(),
             color.blue.toFloat(),
             color.alpha.toFloat()
         )
-        GL20.glUniform2f(GL20.glGetUniformLocation(roundedRectangleProgram2, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
-        //GL20.glUniform1f(GL20.glGetUniformLocation(roundedRectangleProgram, "cornerRadiusIn"), cornerRadius.toFloat())
+        GL20.glUniform2f(GL20.glGetUniformLocation(quadProgram, "resolutionIn"), window.scaledWidth.toFloat(), window.scaledHeight.toFloat())
 
         GL11.glDrawArrays(GL11.GL_QUADS, 0, 4)
 
