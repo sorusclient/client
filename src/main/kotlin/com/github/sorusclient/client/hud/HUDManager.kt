@@ -14,6 +14,7 @@ import com.github.sorusclient.client.adapter.event.*
 import com.github.sorusclient.client.event.EventManager
 import com.github.sorusclient.client.hud.impl.armor.Armor
 import com.github.sorusclient.client.hud.impl.bossbar.BossBar
+import com.github.sorusclient.client.hud.impl.clock.Clock
 import com.github.sorusclient.client.hud.impl.coordinates.Coordinates
 import com.github.sorusclient.client.hud.impl.cps.CPS
 import com.github.sorusclient.client.hud.impl.experience.Experience
@@ -234,14 +235,14 @@ object HUDManager {
 
         initializePossibleElements()
         setupDefaultHud()
-        val eventManager = EventManager
-        eventManager.register { event: ArmorBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: BossBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: ExperienceBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: HealthBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: HotBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: HungerBarRenderEvent -> event.canceled = true }
-        eventManager.register { event: SideBarRenderEvent -> event.canceled = true }
+
+        EventManager.register { event: ArmorBarRenderEvent -> event.canceled = true }
+        EventManager.register { event: BossBarRenderEvent -> event.canceled = true }
+        EventManager.register { event: ExperienceBarRenderEvent -> event.canceled = true }
+        EventManager.register { event: HealthBarRenderEvent -> event.canceled = true }
+        EventManager.register { event: HotBarRenderEvent -> event.canceled = true }
+        EventManager.register { event: HungerBarRenderEvent -> event.canceled = true }
+        EventManager.register { event: SideBarRenderEvent -> event.canceled = true }
     }
 
     private fun setupDefaultHud() {
@@ -316,6 +317,7 @@ object HUDManager {
     private fun initializePossibleElements() {
         register(Armor::class.java, "Armor", "yes yersy")
         register(BossBar::class.java, "BossBar", "yes yersy")
+        register(Clock::class.java, "Clock", "yes yersy")
         register(Coordinates::class.java, "Coordinates", "yes yersy")
         register(CPS::class.java, "CPS", "yes yersy")
         register(Experience::class.java, "Experience", "yes yersy")

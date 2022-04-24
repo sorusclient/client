@@ -33,6 +33,8 @@ interface IRenderer {
 
     fun drawRectangleBorder(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, thickness: Double, color: Color)
 
+    fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double, width: Double, color: Color)
+
     fun drawImage(id: String, x: Double, y: Double, width: Double, height: Double, color: Color) {
         drawImage(id, x, y, width, height, true, color)
     }

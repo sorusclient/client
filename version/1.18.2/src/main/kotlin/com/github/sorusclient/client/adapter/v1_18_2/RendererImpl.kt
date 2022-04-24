@@ -298,45 +298,6 @@ class RendererImpl: IRenderer {
 
             RenderSystem.disableBlend()
             RenderSystem.enableTexture()
-
-            /*RenderSystem.disableTexture()
-            RenderSystem.enableBlend()
-
-            RenderSystem.setShader { GameRenderer.getPositionColorShader() }
-
-            GL20.glEnableVertexAttribArray(0)
-
-            //GlStateManager.shadeModel(GL11.GL_SMOOTH)
-            val tessellator = Tessellator.getInstance()
-            val bufferBuilder = tessellator.buffer
-            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
-            bufferBuilder.vertex(x, y + height, 0.0).color(
-                topRightColor.red.toFloat(),
-                topRightColor.green.toFloat(),
-                topRightColor.blue.toFloat(),
-                topRightColor.alpha.toFloat()
-            ).next()
-            bufferBuilder.vertex(x + width, y + height, 0.0).color(
-                topRightColor.red.toFloat(),
-                topRightColor.green.toFloat(),
-                topRightColor.blue.toFloat(),
-                topRightColor.alpha.toFloat()
-            ).next()
-            bufferBuilder.vertex(x + width, y, 0.0).color(
-                topRightColor.red.toFloat(),
-                topRightColor.green.toFloat(),
-                topRightColor.blue.toFloat(),
-                topRightColor.alpha.toFloat()
-            ).next()
-            bufferBuilder.vertex(x, y, 0.0).color(
-                topRightColor.red.toFloat(),
-                topRightColor.green.toFloat(),
-                topRightColor.blue.toFloat(),
-                topRightColor.alpha.toFloat()
-            ).next()
-            tessellator.draw()*/
-
-            //GlStateManager.color4f(1f, 1f, 1f, 1f)
         }
 
         GL30.glBindVertexArray(prevBoundVertexArray)
@@ -344,15 +305,7 @@ class RendererImpl: IRenderer {
         GL20.glUseProgram(prevProgram)
     }
 
-    override fun drawRectangleBorder(
-        x: Double,
-        y: Double,
-        width: Double,
-        height: Double,
-        cornerRadius: Double,
-        thickness: Double,
-        color: Color
-    ) {
+    override fun drawRectangleBorder(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, thickness: Double, color: Color) {
         var x = x
         var y = y
         var width = width
@@ -378,6 +331,18 @@ class RendererImpl: IRenderer {
         GL30.glBindVertexArray(0)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
         GL20.glUseProgram(0)
+    }
+
+    override fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double, width: Double, color: Color) {
+        val tessellator = Tessellator.getInstance()
+        val buffer = tessellator.buffer
+
+        RenderSystem.lineWidth(width.toFloat())
+        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR)
+        buffer.vertex(x1, y1, 0.0).color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat()).next()
+        buffer.vertex(x2, y2, 0.0).color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat()).next()
+
+        tessellator.draw()
     }
 
     private val textures: MutableMap<String, Int> = HashMap()
