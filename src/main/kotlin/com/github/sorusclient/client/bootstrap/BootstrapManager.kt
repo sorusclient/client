@@ -66,12 +66,12 @@ object BootstrapManager {
 
     fun addURL(url: URL) {
         val classLoader = BootstrapManager::class.java.classLoader
-        classLoader.javaClass.getMethod("addURL", Class::class.java).invoke(classLoader, url)
+        classLoader.javaClass.getMethod("addURL", URL::class.java).invoke(classLoader, url)
     }
 
     fun removeURL(url: URL) {
         val classLoader = BootstrapManager::class.java.classLoader
-        classLoader.javaClass.getMethod("removeURL", Class::class.java).invoke(classLoader, url)
+        classLoader.javaClass.getMethod("removeURL", URL::class.java).invoke(classLoader, url)
     }
 
 }
